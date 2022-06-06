@@ -11,6 +11,7 @@ TagManager:
   - 
   - Water
   - UI
+  - Environment/Floor
   - 
   - 
   - 
@@ -33,10 +34,9 @@ TagManager:
   - 
   - 
   - 
-  - 
-  - 
-  - 
-  - 
+  - PlayerCollider
+  - LocalPlayer
+  - Player
   m_SortingLayers:
   - name: Default
     uniqueID: 0
