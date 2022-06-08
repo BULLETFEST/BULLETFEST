@@ -5,15 +5,35 @@ using Mirror;
 
 public class Bullet : NetworkBehaviour
 {
-  // Start is called before the first frame update
-  void Start()
+  [HideInInspector]
+  public float damage;
+
+  [HideInInspector]
+  public NetworkConnection owner;
+
+  [HideInInspector]
+  public bool passThrough = false;
+  [HideInInspector]
+  public int passThroughAmount = 0;
+
+  int passedThrough = 0;
+
+  private void OnCollisionEnter2D(Collision2D other)
   {
+    if (other.gameObject.layer != 31)
+    {
+      NetworkServer.Destroy(this.gameObject);
+      return;
+    }
 
-  }
+    other.gameObject.GetComponent<PlayerBehavior>().TakeDamage(damage, owner);
 
-  // Update is called once per frame
-  void Update()
-  {
-
+    if (!passThrough) NetworkServer.Destroy(this.gameObject);
+    else
+    {
+      if (passedThrough >= passThroughAmount) NetworkServer.Destroy(this.gameObject);
+      Physics2D.IgnoreCollision(GetComponent<Collider2D>(), other.collider);
+      passedThrough++;
+    }
   }
 }

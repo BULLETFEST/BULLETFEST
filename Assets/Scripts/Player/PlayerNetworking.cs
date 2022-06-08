@@ -5,31 +5,24 @@ using Mirror;
 
 public class PlayerNetworking : NetworkBehaviour
 {
-  PlayerObjects playerObjects;
+  PlayerVars playerVars;
 
-  void Start()
+  public override void OnStartClient()
   {
+    base.OnStartClient();
     if (isLocalPlayer)
       gameObject.layer = 30;
 
-    playerObjects = GetComponent<PlayerObjects>();
+    playerVars = GetComponent<PlayerVars>();
 
-    Server_InitializePlayer();
-  }
-
-  [Command]
-  void Server_InitializePlayer()
-  {
-    string name = PlayerPrefs.GetString("name");
-    playerObjects.uiName.text = name;
-
-    ClientRpc_InitializePlayer(name);
+    string playerName = PlayerPrefs.GetString("PlayerName", "Guest");
+    ClientRpc_InitializePlayer(playerName);
   }
 
   [ClientRpc]
-  void ClientRpc_InitializePlayer(string name)
+  void ClientRpc_InitializePlayer(string playerName)
   {
-    playerObjects.uiName.text = name;
+    playerVars.uiName.text = playerName;
   }
 
 }

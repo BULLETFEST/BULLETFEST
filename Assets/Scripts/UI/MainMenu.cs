@@ -16,12 +16,17 @@ public class MainMenu : MonoBehaviour
   void Start()
   {
     nm = FindObjectOfType<NetworkManager>();
+
+    addr = PlayerPrefs.GetString("Address", "localhost");
+    playerName = PlayerPrefs.GetString("PlayerName", "Guest");
+
   }
 
   public void InitializeGame()
   {
     nm.networkAddress = addr;
-    PlayerPrefs.SetString("name", playerName);
+    PlayerPrefs.SetString("PlayerName", playerName);
+    PlayerPrefs.SetString("Address", addr);
   }
 
   public void Connect()

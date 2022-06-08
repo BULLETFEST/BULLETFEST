@@ -29,7 +29,7 @@ public class Server : NetworkBehaviour
 
     foreach (GameObject player in players)
     {
-      names[players.IndexOf(player)] = player.GetComponent<PlayerObjects>().uiName.text;
+      names[players.IndexOf(player)] = player.GetComponent<PlayerVars>().uiName.text;
     }
 
     InitializePlayer(conn, players.ToArray(), names);
@@ -40,7 +40,7 @@ public class Server : NetworkBehaviour
   {
     foreach (GameObject player in players)
     {
-      player.GetComponent<PlayerObjects>().uiName.text = names[System.Array.IndexOf(players, player)];
+      player.GetComponent<PlayerVars>().uiName.text = names[System.Array.IndexOf(players, player)];
     }
   }
 }
