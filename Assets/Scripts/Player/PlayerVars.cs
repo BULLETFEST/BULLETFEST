@@ -13,8 +13,10 @@ public class PlayerVars : NetworkBehaviour
 
   public string playerName { get; set; }
 
+  public Coroutine reloadRoutine { get; set; }
+
   [HideInInspector]
-  public bool lockMovement = false;
+  public bool lockMovement = false, isReloading = false;
 
   public GameObject graphics;
 

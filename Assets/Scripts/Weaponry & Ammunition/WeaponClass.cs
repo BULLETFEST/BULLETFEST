@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 [System.Serializable]
-public class WeaponClass
+public class WeaponClass : MonoBehaviour
 {
   public enum FireMode
   {

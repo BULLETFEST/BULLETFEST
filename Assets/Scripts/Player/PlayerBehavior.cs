@@ -11,6 +11,7 @@ public class PlayerBehavior : NetworkBehaviour
   public float health = 1f;
 
   PlayerVars playerVars;
+  PlayerUI uiController;
 
   WeaponBehavior weaponBehavior;
 
@@ -20,6 +21,8 @@ public class PlayerBehavior : NetworkBehaviour
     health = maxHealth;
 
     playerVars = GetComponent<PlayerVars>();
+    uiController = GetComponent<PlayerUI>();
+
     weaponBehavior = GetComponentInChildren<WeaponBehavior>();
     weaponBehavior.owner = NetworkClient.connection;
   }
@@ -38,10 +41,46 @@ public class PlayerBehavior : NetworkBehaviour
   }
 
   [Command]
-  void Server_Shoot() => Rpc_Shoot();
+  void Server_Shoot()
+  {
+    if (playerVars.isReloading)
+    {
+      if (weaponBehavior.weapon.reloadType == WeaponClass.ReloadType.Shells &&
+          weaponBehavior.weapon.bulletsInMag > 0)
+      {
+        CancelReload(connectionToClient);
+      }
+    }
+    else
+    {
+      Rpc_Shoot(weaponBehavior.weapon.ID);
+
+      PostFire(connectionToClient);
+    }
+  }
+
+  [TargetRpc]
+  void CancelReload(NetworkConnection conn)
+  {
+    StopCoroutine(playerVars.reloadRoutine);
+    uiController.uiReloadCircle.enabled = false;
+    playerVars.isReloading = false;
+  }
+
+  [TargetRpc]
+  void PostFire(NetworkConnection conn)
+  {
+    weaponBehavior.weapon.bulletsInMag--;
+    uiController.UpdateAmmoText(weaponBehavior.weapon);
+
+    if (weaponBehavior.weapon.bulletsInMag <= 0)
+    {
+      playerVars.reloadRoutine = StartCoroutine(weaponBehavior.Reload());
+    }
+  }
 
   [ClientRpc]
-  void Rpc_Shoot()
+  void Rpc_Shoot(string weaponID)
   {
     // WeaponClass WeaponStats = weaponBehavior.WeaponStats;
     // GameObject spawnedBullet = Instantiate(WeaponStats.bulletPrefab, WeaponStats.bulletSpawnPoint.transform.position, Quaternion.Euler(0, 0, Random.Range(WeaponStats.inaccuracyRange[0], WeaponStats.inaccuracyRange[1])));
@@ -50,7 +89,7 @@ public class PlayerBehavior : NetworkBehaviour
 
     // spawnedBullet.GetComponent<Bullet>().owner = null;
     // spawnedBullet.GetComponent<Bullet>().damage = WeaponStats.damage;
-    weaponBehavior.Invoke("ShootBullet", 0f);
+    weaponBehavior.Shoot(weaponID);//.Invoke("ShootBullet", 0f);
   }
 
   public void TakeDamage(float damage, NetworkConnection owner)
