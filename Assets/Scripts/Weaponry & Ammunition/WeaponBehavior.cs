@@ -20,23 +20,27 @@ public class WeaponBehavior : MonoBehaviour
   void Start()
   {
     weapon.bulletsInMag = weapon.magazineSize;
+    weapon.fireTimeout = 0;
 
     uiController.UpdateAmmoText(weapon.bulletsInMag, weapon.magazineSize);
     uiController.UpdateWeaponUI(weapon);
   }
 
-  public void Fire_Regular()
+  public void Fire_Regular(GameObject shooter)
   {
+    GameObject spawnedBullet = Instantiate(weapon.bulletPrefab, shootingPoint.transform.position, Quaternion.Euler(0, 0, transform.rotation.eulerAngles.z + Random.Range(weapon.inaccuracyRange[0], weapon.inaccuracyRange[1])));
 
-    GameObject spawnedBullet = Instantiate(weapon.bulletPrefab, shootingPoint.transform.position, Quaternion.Euler(0, playerVars.graphics.transform.rotation.y != 0 ? 180 : 0, Random.Range(weapon.inaccuracyRange[0], weapon.inaccuracyRange[1] + 1)));
+    Physics2D.IgnoreCollision(spawnedBullet.GetComponent<Collider2D>(), shooter.GetComponent<Collider2D>());
 
     spawnedBullet.GetComponent<Rigidbody2D>().velocity = weapon.bulletVelocity * spawnedBullet.transform.right;
 
     spawnedBullet.GetComponent<Bullet>().owner = owner;
     spawnedBullet.GetComponent<Bullet>().damage = weapon.damage;
+
+    playerVars.rb.AddForce(weapon.shotPushback * -transform.right, ForceMode2D.Impulse);
   }
 
-  public void Shoot(string weaponId)
+  public void Shoot(string weaponId, GameObject shooter)
   {
     WeaponClass equippedWeapon = arsenal.Where(w => w.ID == weaponId).ToArray()[0];
 
@@ -48,7 +52,7 @@ public class WeaponBehavior : MonoBehaviour
       case "hdg":
       case "stg":
       case "smg":
-        Fire_Regular();
+        Fire_Regular(shooter);
         break;
       case "rpg":
         throw new System.NotImplementedException();

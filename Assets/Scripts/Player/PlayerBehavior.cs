@@ -67,8 +67,15 @@ public class PlayerBehavior : NetworkBehaviour
   [Command]
   void SwitchWeapon()
   {
+    TargetRpc_SwitchWeapon(connectionToClient, weaponToPickup.GetComponent<WeaponItem>().WeaponID);
     weaponBehavior.SwitchWeapon(weaponToPickup.GetComponent<WeaponItem>().WeaponID);
     NetworkServer.Destroy(weaponToPickup);
+  }
+
+  [TargetRpc]
+  void TargetRpc_SwitchWeapon(NetworkConnection conn, string WeaponID)
+  {
+    weaponBehavior.SwitchWeapon(WeaponID);
   }
 
   [Command] void ShootKeyUp() => shootKeyUp = true;
@@ -89,7 +96,7 @@ public class PlayerBehavior : NetworkBehaviour
     {
       if (weaponBehavior.weapon.firingMode == WeaponClass.FireMode.Single && !shootKeyUp) return;
       if (weaponBehavior.weapon.fireTimeout > NetworkTime.time) return;
-      Rpc_Shoot(weaponBehavior.weapon.ID);
+      Rpc_Shoot(weaponBehavior.weapon.ID, connectionToClient.identity.gameObject);
 
       weaponBehavior.weapon.bulletsInMag--;
       weaponBehavior.weapon.fireTimeout = (float)NetworkTime.time + weaponBehavior.weapon.fireRate;
@@ -120,7 +127,7 @@ public class PlayerBehavior : NetworkBehaviour
 
   // Spawn Bullet on ALL clients
   [ClientRpc]
-  void Rpc_Shoot(string weaponID) => weaponBehavior.Shoot(weaponID);
+  void Rpc_Shoot(string weaponID, GameObject shooter) => weaponBehavior.Shoot(weaponID, shooter);
 
   public void TakeDamage(float damage, NetworkConnection owner)
   {

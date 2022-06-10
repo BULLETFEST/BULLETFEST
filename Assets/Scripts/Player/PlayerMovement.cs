@@ -25,11 +25,15 @@ public class PlayerMovement : NetworkBehaviour
 
   LayerMask playerLm;
 
+  WeaponBehavior weaponBehavior;
+
   void Start()
   {
     playerVars = GetComponent<PlayerVars>();
 
     playerLm = LayerMask.GetMask("Player");
+
+    weaponBehavior = GetComponentInChildren<WeaponBehavior>();
 
     if (isLocalPlayer)
     {
@@ -48,6 +52,14 @@ public class PlayerMovement : NetworkBehaviour
 
     float x = Input.GetAxis("Horizontal");
     float xRaw = Input.GetAxisRaw("Horizontal");
+
+    Vector3 difference = Camera.main.ScreenToWorldPoint(Input.mousePosition) - weaponBehavior.gameObject.transform.position;
+    difference.Normalize();
+
+    playerVars.graphics.transform.rotation = Quaternion.Euler(0, difference.x < 0 ? 180 : 0, 0);
+
+    float rotation_z = Mathf.Atan2(difference.y, difference.x) * Mathf.Rad2Deg;
+    weaponBehavior.gameObject.transform.rotation = Quaternion.Euler(0f, 0f, rotation_z);
 
     ValidateMovement(x, xRaw);
   }
@@ -79,28 +91,32 @@ public class PlayerMovement : NetworkBehaviour
   void HandleMovement(GameObject playerObj, float x, float xRaw, bool lockMovement)
   {
     BoxCollider2D bc = playerObj.GetComponent<BoxCollider2D>();
+    Rigidbody2D rb = playerObj.GetComponent<Rigidbody2D>();
 
     if ((PlayersOnLeft(playerObj, bc) && xRaw == -1) || (PlayersOnRight(playerObj, bc) && xRaw == 1)) x = 0;
 
-    playerObj.GetComponent<Rigidbody2D>().AddForce(new Vector2(x * Time.deltaTime * moveForce, 0), ForceMode2D.Impulse);
+    rb.AddForce(new Vector2(x * Time.deltaTime * moveForce, 0), ForceMode2D.Impulse);
 
-    if (xRaw != 0) playerVars.graphics.transform.rotation = Quaternion.Euler(0, xRaw == -1 ? 180 : 0, 0);
+    // if (xRaw != 0) playerVars.graphics.transform.rotation = Quaternion.Euler(0, xRaw == -1 ? 180 : 0, 0);
 
-    LimitVelocity(xRaw, playerObj.GetComponent<Rigidbody2D>(), lockMovement);
+    LimitVelocity(xRaw, rb);
   }
 
-  void LimitVelocity(float x, Rigidbody2D rb, bool lockMovement)
+  void LimitVelocity(float x, Rigidbody2D rb)
   {
-    if (Mathf.Abs(rb.velocity.x) > maxSpeedX)
-    {
-      rb.velocity = new Vector2(maxSpeedX * x, rb.velocity.y);
-    }
+    // Add drag
+    if (rb.velocity.x != 0) rb.velocity = new Vector2(rb.velocity.x * (1 - 0.2f), rb.velocity.y);
 
-    if (x == 0 && !lockMovement)
+    float speed = rb.velocity.x;
+    if (speed > maxSpeedX)
     {
-      rb.velocity = new Vector2(0, rb.velocity.y);
-    }
+      float brakeSpeed = speed - maxSpeedX;  // calculate the speed decrease
 
+      Vector3 normalisedVelocity = rb.velocity.normalized;
+      Vector3 brakeVelocity = normalisedVelocity * brakeSpeed;  // make the brake Vector3 value
+
+      rb.AddForce(new Vector2(-brakeVelocity.x, 0), ForceMode2D.Impulse);
+    }
   }
 
   bool Grounded(GameObject player, BoxCollider2D bc)

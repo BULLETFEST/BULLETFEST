@@ -166,7 +166,7 @@ MonoBehaviour:
   pelletCount: 0
   inaccuracyRange: f6ffffff0a000000
   reloadTime: 3
-  shotPushback: 0
+  shotPushback: 20
   range: 0
   damage: 1
   fireRate: 0.05
@@ -178,5 +178,5 @@ MonoBehaviour:
   bulletPrefab: {fileID: 7740076768845922023, guid: bd0cfe2c8625b2c4daefea4409372304, type: 3}
   bulletSpawnPoint: {fileID: 5449872525946486571}
   weaponSprite: {fileID: -1454497904, guid: cce83fdaf70387641a662afe9fdffe74, type: 3}
-  fireTimeout: 22.07271
-  bulletsInMag: 0
+  fireTimeout: 18.114082
+  bulletsInMag: 10
