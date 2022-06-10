@@ -25,14 +25,6 @@ public class PlayerMovement : NetworkBehaviour
 
   LayerMask playerLm;
 
-  // private void OnCollisionEnter2D(Collision2D other)
-  // {
-  //   if (other.gameObject.layer == 31)
-  //   {
-  //     playerObjects.rb.velocity = Vector3.ProjectOnPlane(playerObjects.rb.velocity, other.contacts[0].normal);
-  //   }
-  // }
-
   void Start()
   {
     playerVars = GetComponent<PlayerVars>();
@@ -104,7 +96,7 @@ public class PlayerMovement : NetworkBehaviour
       rb.velocity = new Vector2(maxSpeedX * x, rb.velocity.y);
     }
 
-    if (x == 0 && lockMovement)
+    if (x == 0 && !lockMovement)
     {
       rb.velocity = new Vector2(0, rb.velocity.y);
     }

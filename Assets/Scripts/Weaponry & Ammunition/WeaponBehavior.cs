@@ -13,22 +13,24 @@ public class WeaponBehavior : MonoBehaviour
 
   public WeaponClass[] arsenal;
 
+  public GameObject shootingPoint;
+
   Coroutine reloadRoutine;
 
   void Start()
   {
-    weapon.fireRate /= 10;
     weapon.bulletsInMag = weapon.magazineSize;
 
-    uiController.UpdateAmmoText(weapon);
+    uiController.UpdateAmmoText(weapon.bulletsInMag, weapon.magazineSize);
     uiController.UpdateWeaponUI(weapon);
   }
 
   public void Fire_Regular()
   {
-    GameObject spawnedBullet = Instantiate(weapon.bulletPrefab, weapon.bulletSpawnPoint.transform.position, Quaternion.Euler(0, 0, Random.Range(weapon.inaccuracyRange[0], weapon.inaccuracyRange[1])));
 
-    spawnedBullet.GetComponent<Rigidbody2D>().velocity = new Vector2(weapon.bulletVelocity, 0) * transform.right;
+    GameObject spawnedBullet = Instantiate(weapon.bulletPrefab, shootingPoint.transform.position, Quaternion.Euler(0, playerVars.graphics.transform.rotation.y != 0 ? 180 : 0, Random.Range(weapon.inaccuracyRange[0], weapon.inaccuracyRange[1] + 1)));
+
+    spawnedBullet.GetComponent<Rigidbody2D>().velocity = weapon.bulletVelocity * spawnedBullet.transform.right;
 
     spawnedBullet.GetComponent<Bullet>().owner = owner;
     spawnedBullet.GetComponent<Bullet>().damage = weapon.damage;
@@ -41,28 +43,15 @@ public class WeaponBehavior : MonoBehaviour
     // Get the weapon prefix ID (stg, hdg, etc)
     string weaponType = equippedWeapon.ID.Substring(0, 3).ToLower();
 
-    // Single weapon firing
-    if (equippedWeapon.firingMode == WeaponClass.FireMode.Single)
+    switch (weaponType)
     {
-      switch (weaponType)
-      {
-        case "hdg":
-        case "stg":
-          Fire_Regular();
-          break;
-        case "rpg":
-          throw new System.NotImplementedException();
-      }
-    }
-    // Auto/Burst firing
-    else if (equippedWeapon.firingMode != WeaponClass.FireMode.Single)
-    {
-      switch (weaponType)
-      {
-        case "smg":
-          Fire_Regular();
-          break;
-      }
+      case "hdg":
+      case "stg":
+      case "smg":
+        Fire_Regular();
+        break;
+      case "rpg":
+        throw new System.NotImplementedException();
     }
 
     // if (!isReloading && currWeapon.bulletsInMag < currWeapon.magSize && (Input.GetKeyDown(Utilities.StringToKeyCode(keybinds["reload"])) || Input.GetKeyDown(Utilities.StringToKeyCode(keybinds["reload2"]))))
@@ -82,7 +71,7 @@ public class WeaponBehavior : MonoBehaviour
       yield return new WaitForSeconds(weapon.reloadTime);
       weapon.bulletsInMag = weapon.magazineSize;
 
-      uiController.UpdateAmmoText(weapon);
+      uiController.UpdateAmmoText(weapon.bulletsInMag, weapon.magazineSize);
     }
     else
     {
@@ -91,11 +80,23 @@ public class WeaponBehavior : MonoBehaviour
         yield return new WaitForSeconds(weapon.reloadTime);
         weapon.bulletsInMag++;
 
-        uiController.UpdateAmmoText(weapon);
+        uiController.UpdateAmmoText(weapon.bulletsInMag, weapon.magazineSize);
       }
     }
 
     uiController.uiReloadCircle.enabled = false;
     playerVars.isReloading = false;
+  }
+
+  public void SwitchWeapon(string weaponID)
+  {
+    weapon = arsenal.Where(w => w.ID == weaponID).ToArray()[0];
+    weapon.bulletsInMag = weapon.magazineSize;
+    weapon.fireTimeout = 0;
+
+    uiController.UpdateWeaponUI(weapon);
+    uiController.UpdateAmmoText(weapon.bulletsInMag, weapon.magazineSize);
+
+    shootingPoint.transform.localPosition = weapon.bulletSpawnPoint.localPosition;
   }
 }

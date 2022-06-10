@@ -59,7 +59,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 0, g: 0, b: 0, a: 0.392}
+  m_Color: {r: 0, g: 0, b: 0, a: 0.5882353}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -639,6 +639,8 @@ MonoBehaviour:
   playerVars: {fileID: 957314521401609472}
   arsenal:
   - {fileID: 3366149238512663894, guid: 0a317f4ae61eaee4e986cecaa30d5046, type: 3}
+  - {fileID: 3366149238512663894, guid: 5782fa51db3b6c446bbd752762f84548, type: 3}
+  shootingPoint: {fileID: 4053166059224769511}
 --- !u!1 &4447784110684332225
 GameObject:
   m_ObjectHideFlags: 0
@@ -1268,6 +1270,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 01b86ab8c6f751049a54c72da200235e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  syncMode: 0
+  syncInterval: 0.1
   uiGunIcon: {fileID: 8526235360915878361}
   uiReloadCircle: {fileID: 3158917183431369321}
   uiGunPanel: {fileID: 6019506867826396018}
@@ -1403,7 +1407,7 @@ MonoBehaviour:
   m_VertexBufferAutoSizeReduction: 1
   m_useMaxVisibleDescender: 1
   m_pageToDisplay: 1
-  m_margin: {x: 25, y: 0, z: 0, w: 0}
+  m_margin: {x: 10, y: 0, z: 0, w: 0}
   m_isUsingLegacyAnimationComponent: 0
   m_isVolumetricText: 0
   m_hasFontAssetChanged: 0
@@ -1640,7 +1644,7 @@ MonoBehaviour:
   m_VertexBufferAutoSizeReduction: 1
   m_useMaxVisibleDescender: 1
   m_pageToDisplay: 1
-  m_margin: {x: 25, y: 0, z: 0, w: 0}
+  m_margin: {x: 10, y: 0, z: 0, w: 0}
   m_isUsingLegacyAnimationComponent: 0
   m_isVolumetricText: 0
   m_hasFontAssetChanged: 0
@@ -1717,5 +1721,10 @@ MonoBehaviour:
 --- !u!4 &2556239015668388188 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 446163630103249763, guid: 0a317f4ae61eaee4e986cecaa30d5046, type: 3}
+  m_PrefabInstance: {fileID: 2686540812000973375}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1 &4053166059224769511 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 2123235757600240088, guid: 0a317f4ae61eaee4e986cecaa30d5046, type: 3}
   m_PrefabInstance: {fileID: 2686540812000973375}
   m_PrefabAsset: {fileID: 0}

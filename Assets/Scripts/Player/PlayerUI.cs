@@ -39,9 +39,9 @@ public class PlayerUI : NetworkBehaviour
     uiGunIcon.rectTransform.sizeDelta = new Vector2(weapon.weaponSprite.bounds.size.x / (weapon.weaponSprite.bounds.size.y / 160), 160);
   }
 
-  public void UpdateAmmoText(WeaponClass weapon)
+  public void UpdateAmmoText(int bulletsInMag, int magazineSize)
   {
-    uiGunAmmo.text = $"{weapon.bulletsInMag} / {weapon.magazineSize}";
+    uiGunAmmo.text = $"{bulletsInMag} / {magazineSize}";
     uiGunAmmo.ForceMeshUpdate();
     uiReloadCircle.rectTransform.anchoredPosition = new Vector2(uiGunAmmo.GetRenderedValues(false).x + 58, -21);
   }

@@ -91,7 +91,7 @@ MonoBehaviour:
   firingMode: 0
   reloadType: 0
   bulletPrefab: {fileID: 7740076768845922023, guid: bd0cfe2c8625b2c4daefea4409372304, type: 3}
-  bulletSpawnPoint: {fileID: 2123235757600240088}
+  bulletSpawnPoint: {fileID: 5449872525946486571}
   weaponSprite: {fileID: 1275859677, guid: 426f6200e188d1241b9d9fcb1d9780f6, type: 3}
   fireTimeout: 0
   bulletsInMag: 0

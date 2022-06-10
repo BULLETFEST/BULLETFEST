@@ -41,7 +41,7 @@ public class WeaponClass : MonoBehaviour
   public ReloadType reloadType;
 
   public GameObject bulletPrefab;
-  public GameObject bulletSpawnPoint;
+  public Transform bulletSpawnPoint;
 
   public Sprite weaponSprite;
 

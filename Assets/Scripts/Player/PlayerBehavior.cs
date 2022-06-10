@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using Mirror;
+using System.Linq;
 
 public class PlayerBehavior : NetworkBehaviour
 {
@@ -14,6 +15,24 @@ public class PlayerBehavior : NetworkBehaviour
   PlayerUI uiController;
 
   WeaponBehavior weaponBehavior;
+
+  bool shootKeyUp = true;
+
+  GameObject weaponToPickup;
+
+  private void OnTriggerEnter2D(Collider2D other)
+  {
+    if (other.gameObject.tag != "WeaponItem") return;
+
+    weaponToPickup = other.gameObject;
+  }
+
+  private void OnTriggerExit2D(Collider2D other)
+  {
+    if (other.gameObject.tag != "WeaponItem") return;
+
+    weaponToPickup = null;
+  }
 
   // Start is called before the first frame update
   void Start()
@@ -34,11 +53,25 @@ public class PlayerBehavior : NetworkBehaviour
 
     if (Input.GetKeyDown(KeyCode.X)) TakeDamage(10, null);
 
-    if (Input.GetKeyDown(KeyCode.Mouse0) && !playerVars.lockMovement)
+    if (Input.GetKey(KeyCode.Mouse0) && !playerVars.lockMovement) Server_Shoot();
+
+    if (Input.GetKeyUp(KeyCode.Mouse0)) ShootKeyUp();
+
+    if (Input.GetKeyDown(KeyCode.E) && weaponToPickup != null)
     {
-      Server_Shoot();
+      SwitchWeapon();
+      weaponToPickup = null;
     }
   }
+
+  [Command]
+  void SwitchWeapon()
+  {
+    weaponBehavior.SwitchWeapon(weaponToPickup.GetComponent<WeaponItem>().WeaponID);
+    NetworkServer.Destroy(weaponToPickup);
+  }
+
+  [Command] void ShootKeyUp() => shootKeyUp = true;
 
   [Command]
   void Server_Shoot()
@@ -48,14 +81,25 @@ public class PlayerBehavior : NetworkBehaviour
       if (weaponBehavior.weapon.reloadType == WeaponClass.ReloadType.Shells &&
           weaponBehavior.weapon.bulletsInMag > 0)
       {
+        StopCoroutine(playerVars.reloadRoutine);
         CancelReload(connectionToClient);
       }
     }
     else
     {
+      if (weaponBehavior.weapon.firingMode == WeaponClass.FireMode.Single && !shootKeyUp) return;
+      if (weaponBehavior.weapon.fireTimeout > NetworkTime.time) return;
       Rpc_Shoot(weaponBehavior.weapon.ID);
 
-      PostFire(connectionToClient);
+      weaponBehavior.weapon.bulletsInMag--;
+      weaponBehavior.weapon.fireTimeout = (float)NetworkTime.time + weaponBehavior.weapon.fireRate;
+      if (weaponBehavior.weapon.bulletsInMag <= 0)
+      {
+        playerVars.reloadRoutine = StartCoroutine(weaponBehavior.Reload());
+      }
+
+      PostFire(connectionToClient, weaponBehavior.weapon.bulletsInMag, weaponBehavior.weapon.magazineSize);
+      shootKeyUp = false;
     }
   }
 
@@ -68,29 +112,15 @@ public class PlayerBehavior : NetworkBehaviour
   }
 
   [TargetRpc]
-  void PostFire(NetworkConnection conn)
+  void PostFire(NetworkConnection conn, int bulletsInMag, int magazineSize)
   {
-    weaponBehavior.weapon.bulletsInMag--;
-    uiController.UpdateAmmoText(weaponBehavior.weapon);
-
-    if (weaponBehavior.weapon.bulletsInMag <= 0)
-    {
-      playerVars.reloadRoutine = StartCoroutine(weaponBehavior.Reload());
-    }
+    if (bulletsInMag <= 0) playerVars.reloadRoutine = StartCoroutine(weaponBehavior.Reload());
+    uiController.UpdateAmmoText(bulletsInMag, magazineSize);
   }
 
+  // Spawn Bullet on ALL clients
   [ClientRpc]
-  void Rpc_Shoot(string weaponID)
-  {
-    // WeaponClass WeaponStats = weaponBehavior.WeaponStats;
-    // GameObject spawnedBullet = Instantiate(WeaponStats.bulletPrefab, WeaponStats.bulletSpawnPoint.transform.position, Quaternion.Euler(0, 0, Random.Range(WeaponStats.inaccuracyRange[0], WeaponStats.inaccuracyRange[1])));
-
-    // spawnedBullet.GetComponent<Rigidbody2D>().velocity = new Vector2(WeaponStats.bulletVelocity, 0) * playerObjects.graphics.transform.right;
-
-    // spawnedBullet.GetComponent<Bullet>().owner = null;
-    // spawnedBullet.GetComponent<Bullet>().damage = WeaponStats.damage;
-    weaponBehavior.Shoot(weaponID);//.Invoke("ShootBullet", 0f);
-  }
+  void Rpc_Shoot(string weaponID) => weaponBehavior.Shoot(weaponID);
 
   public void TakeDamage(float damage, NetworkConnection owner)
   {
@@ -122,6 +152,4 @@ public class PlayerBehavior : NetworkBehaviour
 
     Debug.Log($"{killer} KILLED {killed}");
   }
-
-
 }
