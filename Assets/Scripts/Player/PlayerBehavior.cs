@@ -20,6 +20,8 @@ public class PlayerBehavior : NetworkBehaviour
 
   GameObject weaponToPickup;
 
+  public GameObject gravestone, killfeed, killfeedItem;
+
   private void OnTriggerEnter2D(Collider2D other)
   {
     if (other.gameObject.tag != "WeaponItem") return;
@@ -148,15 +150,21 @@ public class PlayerBehavior : NetworkBehaviour
     playerVars.lockMovement = true;
 
     ClientRpc_Die(killer, killed);
+
+    GameObject spawnedGravestone = Instantiate(gravestone, new Vector3(transform.position.x, transform.position.y + 50), Quaternion.Euler(0, 0, 0));
+    NetworkServer.Spawn(spawnedGravestone);
   }
 
   [ClientRpc]
   public void ClientRpc_Die(string killer, string killed)
   {
-    playerVars.graphics.SetActive(false);
+    playerVars.graphics.DisableAll();
     this.gameObject.GetComponent<BoxCollider2D>().enabled = false;
     this.gameObject.GetComponent<Rigidbody2D>().simulated = false;
 
-    Debug.Log($"{killer} KILLED {killed}");
+    GameObject spawnedKillfeedItem = Instantiate(killfeedItem, Vector3.zero, Quaternion.Euler(0, 0, 0), killfeed.transform);
+    spawnedKillfeedItem.GetComponent<KillFeedItem>().killer.text = killer;
+    spawnedKillfeedItem.GetComponent<KillFeedItem>().killed.text = killed;
+
   }
 }

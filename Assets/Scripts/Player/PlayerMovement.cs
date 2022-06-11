@@ -53,15 +53,7 @@ public class PlayerMovement : NetworkBehaviour
     float x = Input.GetAxis("Horizontal");
     float xRaw = Input.GetAxisRaw("Horizontal");
 
-    Vector3 difference = Camera.main.ScreenToWorldPoint(Input.mousePosition) - weaponBehavior.gameObject.transform.position;
-    difference.Normalize();
-
-    playerVars.graphics.transform.rotation = Quaternion.Euler(0, difference.x < 0 ? 180 : 0, 0);
-
-    float rotation_z = Mathf.Atan2(difference.y, difference.x) * Mathf.Rad2Deg;
-    weaponBehavior.gameObject.transform.rotation = Quaternion.Euler(0f, 0f, rotation_z);
-
-    ValidateMovement(x, xRaw);
+    ValidateMovement(x, xRaw, Input.mousePosition);
   }
 
   void FixedUpdate()
@@ -78,17 +70,18 @@ public class PlayerMovement : NetworkBehaviour
 
 
   [Command]
-  void ValidateMovement(float x, float xRaw)
+  void ValidateMovement(float x, float xRaw, Vector3 mousePosition)
   {
     GameObject playerObj = this.gameObject;
     x = Mathf.Clamp(x, -1, 1);
     xRaw = Mathf.Clamp(xRaw, -1, 1);
 
-    HandleMovement(playerObj, x, xRaw, playerVars.lockMovement);
+
+    HandleMovement(playerObj, x, xRaw, mousePosition);
   }
 
   [ClientRpc]
-  void HandleMovement(GameObject playerObj, float x, float xRaw, bool lockMovement)
+  void HandleMovement(GameObject playerObj, float x, float xRaw, Vector3 mousePosition)
   {
     BoxCollider2D bc = playerObj.GetComponent<BoxCollider2D>();
     Rigidbody2D rb = playerObj.GetComponent<Rigidbody2D>();
@@ -97,7 +90,14 @@ public class PlayerMovement : NetworkBehaviour
 
     rb.AddForce(new Vector2(x * Time.deltaTime * moveForce, 0), ForceMode2D.Impulse);
 
-    // if (xRaw != 0) playerVars.graphics.transform.rotation = Quaternion.Euler(0, xRaw == -1 ? 180 : 0, 0);
+
+    GameObject weapon = playerObj.GetComponentInChildren<WeaponBehavior>().gameObject;
+    Vector3 difference = Camera.main.ScreenToWorldPoint(mousePosition) - weapon.transform.position;
+    difference.Normalize();
+    playerObj.GetComponent<PlayerVars>().graphics.transform.rotation = Quaternion.Euler(0, difference.x < 0 ? 180 : 0, 0);
+
+    float rotation_z = Mathf.Atan2(difference.y, difference.x) * Mathf.Rad2Deg;
+    playerObj.GetComponentInChildren<WeaponBehavior>().transform.rotation = Quaternion.Euler(0f, 0f, rotation_z);
 
     LimitVelocity(xRaw, rb);
   }

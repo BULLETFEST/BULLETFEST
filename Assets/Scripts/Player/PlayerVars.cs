@@ -18,7 +18,7 @@ public class PlayerVars : NetworkBehaviour
   [HideInInspector]
   public bool lockMovement = false, isReloading = false;
 
-  public GameObject graphics;
+  public SpriteGroup graphics;
 
   // Start is called before the first frame update
   void Start()
