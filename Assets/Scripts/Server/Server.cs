@@ -7,8 +7,9 @@ using Mirror;
 public class Server : NetworkBehaviour
 {
 
-  void Start()
+  public override void OnStartAuthority()
   {
+    base.OnStartAuthority();
     if (!isServer) Destroy(gameObject.GetComponent<Server>());
   }
 
@@ -33,6 +34,8 @@ public class Server : NetworkBehaviour
     }
 
     InitializePlayer(conn, players.ToArray(), names);
+
+    // conn.identity.gameObject.GetComponent<NewPB>().playerVars = conn.identity.gameObject.GetComponent<PlayerVars>();
   }
 
   [TargetRpc]

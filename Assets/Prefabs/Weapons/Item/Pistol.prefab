@@ -10,7 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 8683824508677763702}
   - component: {fileID: 1985893933}
-  m_Layer: 31
+  m_Layer: 0
   m_Name: FloorCollision
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -42,7 +42,7 @@ BoxCollider2D:
   m_Enabled: 1
   m_Density: 1
   m_Material: {fileID: 0}
-  m_IsTrigger: 1
+  m_IsTrigger: 0
   m_UsedByEffector: 0
   m_UsedByComposite: 0
   m_Offset: {x: 0, y: 0}
@@ -67,15 +67,15 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 446163630103249763}
-  - component: {fileID: 3366149238512663894}
   - component: {fileID: -4046186402334728945}
   - component: {fileID: -7464648577466137130}
   - component: {fileID: 5554321241922046133}
   - component: {fileID: 6179108467184649937}
   - component: {fileID: 1985893935}
-  m_Layer: 31
+  - component: {fileID: 9078446588377947840}
+  m_Layer: 0
   m_Name: Pistol
-  m_TagString: Untagged
+  m_TagString: WeaponItem
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -96,37 +96,6 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &3366149238512663894
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3075476997647957983}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 79cff5247a00f9440ba17186830d8908, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  magazineSize: 7
-  isShotgun: 0
-  pelletCount: 0
-  inaccuracyRange: 0000000000000000
-  reloadTime: 3
-  shotPushback: 0
-  range: 0
-  damage: 5
-  fireRate: 0.1
-  bulletVelocity: 20
-  weaponName: Pistol
-  ID: HDG_Pistol
-  firingMode: 0
-  reloadType: 0
-  bulletPrefab: {fileID: 7740076768845922023, guid: bd0cfe2c8625b2c4daefea4409372304, type: 3}
-  bulletSpawnPoint: {fileID: 0}
-  weaponSprite: {fileID: 1275859677, guid: 426f6200e188d1241b9d9fcb1d9780f6, type: 3}
-  fireTimeout: 0
-  bulletsInMag: 0
 --- !u!114 &-4046186402334728945
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -267,3 +236,18 @@ CircleCollider2D:
   m_Offset: {x: 0, y: 0}
   serializedVersion: 2
   m_Radius: 500
+--- !u!114 &9078446588377947840
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3075476997647957983}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6c1707ca27665d1408087765978c2b53, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  syncMode: 0
+  syncInterval: 0.1
+  WeaponID: HDG_Pistol

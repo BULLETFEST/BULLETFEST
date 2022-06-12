@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using Mirror;
-
+using ParrelSync;
 public class MainMenu : MonoBehaviour
 {
   NetworkManager nm;
@@ -19,6 +19,28 @@ public class MainMenu : MonoBehaviour
 
     addr = PlayerPrefs.GetString("Address", "localhost");
     playerName = PlayerPrefs.GetString("PlayerName", "Guest");
+
+
+    if (nm.isNetworkActive)
+    {
+
+      nm.StopHost();
+      nm.StopServer();
+      nm.StopClient();
+    }
+
+#if UNITY_EDITOR
+    if (ClonesManager.IsClone())
+    {
+      ChangeName("B");
+      Connect();
+    }
+    else
+    {
+      ChangeName("A");
+      Host();
+    }
+#endif
 
   }
 

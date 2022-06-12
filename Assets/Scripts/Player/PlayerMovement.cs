@@ -53,7 +53,12 @@ public class PlayerMovement : NetworkBehaviour
     float x = Input.GetAxis("Horizontal");
     float xRaw = Input.GetAxisRaw("Horizontal");
 
-    ValidateMovement(x, xRaw, Input.mousePosition);
+    GameObject weapon = GetComponentInChildren<WeaponBehavior>().gameObject;
+    Vector3 difference = Camera.main.ScreenToWorldPoint(Input.mousePosition) - weapon.transform.position;
+    difference.Normalize();
+    float rotation_z = Mathf.Atan2(difference.y, difference.x) * Mathf.Rad2Deg;
+
+    ValidateMovement(x, xRaw, Quaternion.Euler(0, difference.x < 0 ? 180 : 0, 0), Quaternion.Euler(difference.x < 0 ? 180 : 0, difference.x < 0 ? 180 : 0, (difference.x < 0 ? -1 : 1) * rotation_z));
   }
 
   void FixedUpdate()
@@ -70,35 +75,35 @@ public class PlayerMovement : NetworkBehaviour
 
 
   [Command]
-  void ValidateMovement(float x, float xRaw, Vector3 mousePosition)
+  void ValidateMovement(float x, float xRaw, Quaternion graphicsQuaternion, Quaternion gunQuaternion)
   {
     GameObject playerObj = this.gameObject;
     x = Mathf.Clamp(x, -1, 1);
     xRaw = Mathf.Clamp(xRaw, -1, 1);
 
 
-    HandleMovement(playerObj, x, xRaw, mousePosition);
+
+    HandleMovement(playerObj, x, xRaw, graphicsQuaternion, gunQuaternion);
   }
 
   [ClientRpc]
-  void HandleMovement(GameObject playerObj, float x, float xRaw, Vector3 mousePosition)
+  void HandleMovement(GameObject playerObj, float x, float xRaw, Quaternion graphicsQuaternion, Quaternion gunQuaternion)
   {
-    PlayerVars playerVars = playerObj.GetComponent<PlayerVars>();
+    Rigidbody2D rb = playerObj.GetComponent<Rigidbody2D>();
+    BoxCollider2D bc = playerObj.GetComponent<BoxCollider2D>();
 
-    if ((PlayersOnLeft(playerObj, playerVars.bc) && xRaw == -1) || (PlayersOnRight(playerObj, playerVars.bc) && xRaw == 1)) x = 0;
+    if ((PlayersOnLeft(playerObj, bc) && xRaw == -1) || (PlayersOnRight(playerObj, bc) && xRaw == 1)) x = 0;
 
-    playerVars.rb.AddForce(new Vector2(x * Time.deltaTime * moveForce, 0), ForceMode2D.Impulse);
+    rb.AddForce(new Vector2(x * Time.deltaTime * moveForce, 0), ForceMode2D.Impulse);
 
 
-    GameObject weapon = playerVars.weaponBehavior.gameObject;
-    Vector3 difference = Camera.main.ScreenToWorldPoint(mousePosition) - weapon.transform.position;
-    difference.Normalize();
-    playerVars.graphics.transform.rotation = Quaternion.Euler(0, difference.x < 0 ? 180 : 0, 0);
 
-    float rotation_z = Mathf.Atan2(difference.y, difference.x) * Mathf.Rad2Deg;
-    playerVars.weaponBehavior.transform.rotation = Quaternion.Euler(0f, 0f, rotation_z);
+    playerObj.GetComponent<PlayerVars>().graphics.transform.rotation = graphicsQuaternion;
 
-    LimitVelocity(xRaw, playerVars.rb);
+    // weapon.transform.localRotation = Quaternion.Euler((difference.x < 0 ? 180 : 0), 0f, (difference.x < 0 ? 2 : 1) * rotation_z);
+    playerObj.GetComponentInChildren<WeaponBehavior>().transform.localRotation = gunQuaternion;
+
+    LimitVelocity(xRaw, rb);
   }
 
   void LimitVelocity(float x, Rigidbody2D rb)

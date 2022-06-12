@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class SpriteGroup : MonoBehaviour
 {
-  public SpriteRenderer[] sprites;
+  public List<SpriteRenderer> sprites;
 
   public void DisableAll()
   {

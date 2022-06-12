@@ -7,13 +7,10 @@ using System.Linq;
 public class WeaponBehavior : MonoBehaviour
 {
   public WeaponClass weapon;
-  public NetworkConnection owner;
   public PlayerUI uiController;
   public PlayerVars playerVars;
 
   public WeaponClass[] arsenal;
-
-  public GameObject shootingPoint;
 
   Coroutine reloadRoutine;
 
@@ -26,38 +23,46 @@ public class WeaponBehavior : MonoBehaviour
     uiController.UpdateWeaponUI(weapon);
   }
 
-  public void Fire_Regular(GameObject shooter)
+  public GameObject Fire_Regular(NetworkConnection shooter)
   {
-    GameObject spawnedBullet = Instantiate(weapon.bulletPrefab, shootingPoint.transform.position, Quaternion.Euler(0, 0, transform.rotation.eulerAngles.z + Random.Range(weapon.inaccuracyRange[0], weapon.inaccuracyRange[1])));
+    GameObject spawnedBullet = Instantiate(weapon.bulletPrefab, weapon.bulletSpawnPoint.transform.position, Quaternion.Euler(transform.rotation.eulerAngles.x, transform.rotation.eulerAngles.y, transform.rotation.eulerAngles.z + Random.Range(weapon.inaccuracyRange[0], weapon.inaccuracyRange[1])));
 
-    Physics2D.IgnoreCollision(spawnedBullet.GetComponent<Collider2D>(), shooter.GetComponent<Collider2D>());
+    Physics2D.IgnoreCollision(spawnedBullet.GetComponent<Collider2D>(), shooter.identity.gameObject.GetComponent<Collider2D>());
 
     spawnedBullet.GetComponent<Rigidbody2D>().velocity = weapon.bulletVelocity * spawnedBullet.transform.right;
 
-    spawnedBullet.GetComponent<Bullet>().owner = owner;
+    spawnedBullet.GetComponent<Bullet>().owner = shooter;
     spawnedBullet.GetComponent<Bullet>().damage = weapon.damage;
 
-    playerVars.rb.AddForce(weapon.shotPushback * -transform.right, ForceMode2D.Impulse);
+    playerVars.rb.AddForce(new Vector2(weapon.shotPushback * -spawnedBullet.transform.right.x, 0), ForceMode2D.Impulse);
+
+    NetworkServer.Spawn(spawnedBullet);
+
+    return spawnedBullet;
   }
 
-  public void Fire_Pellets(GameObject shooter)
+  public void Fire_Pellets(NetworkConnection shooter)
   {
     for (int i = 0; i < weapon.pelletCount; i++)
     {
-      GameObject spawnedBullet = Instantiate(weapon.bulletPrefab, shootingPoint.transform.position, Quaternion.Euler(0, 0, transform.rotation.eulerAngles.z + Random.Range(weapon.inaccuracyRange[0], weapon.inaccuracyRange[1])));
+      GameObject spawnedBullet = Instantiate(weapon.bulletPrefab, weapon.bulletSpawnPoint.transform.position, Quaternion.Euler(transform.rotation.eulerAngles.x, transform.rotation.eulerAngles.y, transform.rotation.eulerAngles.z + Random.Range(weapon.inaccuracyRange[0], weapon.inaccuracyRange[1])));
 
-      Physics2D.IgnoreCollision(spawnedBullet.GetComponent<Collider2D>(), shooter.GetComponent<Collider2D>());
+      Physics2D.IgnoreCollision(spawnedBullet.GetComponent<Collider2D>(), shooter.identity.gameObject.GetComponent<Collider2D>());
 
       spawnedBullet.GetComponent<Rigidbody2D>().velocity = weapon.bulletVelocity * spawnedBullet.transform.right;
 
-      spawnedBullet.GetComponent<Bullet>().owner = owner;
+      spawnedBullet.GetComponent<Bullet>().owner = shooter;
       spawnedBullet.GetComponent<Bullet>().damage = weapon.damage;
+
+      playerVars.rb.AddForce(weapon.shotPushback * -transform.right, ForceMode2D.Impulse);
+
+      NetworkServer.Spawn(spawnedBullet);
     }
 
     playerVars.rb.AddForce(weapon.shotPushback * -transform.right, ForceMode2D.Impulse);
   }
 
-  public void Shoot(string weaponId, GameObject shooter)
+  public GameObject Shoot(string weaponId, NetworkConnection shooter)
   {
     WeaponClass equippedWeapon = arsenal.Where(w => w.ID == weaponId).ToArray()[0];
 
@@ -68,15 +73,14 @@ public class WeaponBehavior : MonoBehaviour
     {
       case "hdg":
       case "smg":
-        Fire_Regular(shooter);
-        break;
+        return Fire_Regular(shooter);
       case "stg":
         Fire_Pellets(shooter);
         break;
       case "rpg":
         throw new System.NotImplementedException();
     }
-
+    return null;
     // if (!isReloading && currWeapon.bulletsInMag < currWeapon.magSize && (Input.GetKeyDown(Utilities.StringToKeyCode(keybinds["reload"])) || Input.GetKeyDown(Utilities.StringToKeyCode(keybinds["reload2"]))))
     // {
     //   reloadRoutine = StartCoroutine(Reload(currWeapon));
@@ -113,13 +117,15 @@ public class WeaponBehavior : MonoBehaviour
 
   public void SwitchWeapon(string weaponID)
   {
-    weapon = arsenal.Where(w => w.ID == weaponID).ToArray()[0];
+    Destroy(weapon.gameObject);
+    GameObject newWeapon = Instantiate(arsenal.Where(w => w.ID == weaponID).ToArray()[0].gameObject, transform.position, transform.rotation, transform);
+    weapon = newWeapon.GetComponent<WeaponClass>();
     weapon.bulletsInMag = weapon.magazineSize;
     weapon.fireTimeout = 0;
 
     uiController.UpdateWeaponUI(weapon);
     uiController.UpdateAmmoText(weapon.bulletsInMag, weapon.magazineSize);
 
-    shootingPoint.transform.localPosition = weapon.bulletSpawnPoint.localPosition;
+    playerVars.graphics.sprites.Add(newWeapon.GetComponentInChildren<SpriteRenderer>());
   }
 }

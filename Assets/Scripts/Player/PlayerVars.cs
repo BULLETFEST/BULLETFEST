@@ -30,4 +30,5 @@ public class PlayerVars : NetworkBehaviour
     name = PlayerPrefs.GetString("PlayerName", "Guest");
     weaponBehavior = GetComponentInChildren<WeaponBehavior>();
   }
+
 }

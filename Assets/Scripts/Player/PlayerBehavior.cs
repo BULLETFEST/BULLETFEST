@@ -8,13 +8,15 @@ public class PlayerBehavior : NetworkBehaviour
 {
   public float maxHealth = 10f;
 
-  [SyncVar]
+  [SyncVar(hook = nameof(OnDamageTaken))]
   public float health = 1f;
 
-  PlayerVars playerVars;
-  PlayerUI uiController;
-
-  WeaponBehavior weaponBehavior;
+  [HideInInspector]
+  public PlayerVars playerVars;
+  [HideInInspector]
+  public PlayerUI uiController;
+  [HideInInspector]
+  public WeaponBehavior weaponBehavior;
 
   bool shootKeyUp = true;
 
@@ -39,13 +41,11 @@ public class PlayerBehavior : NetworkBehaviour
   // Start is called before the first frame update
   void Start()
   {
-    health = maxHealth;
-
     playerVars = GetComponent<PlayerVars>();
     uiController = GetComponent<PlayerUI>();
-
     weaponBehavior = GetComponentInChildren<WeaponBehavior>();
-    weaponBehavior.owner = NetworkClient.connection;
+
+    health = maxHealth;
 
     uiController.uiHealthSlider.maxValue = maxHealth;
     uiController.uiHealthSlider.value = maxHealth;
@@ -58,7 +58,7 @@ public class PlayerBehavior : NetworkBehaviour
 
     if (Input.GetKeyDown(KeyCode.X)) TakeDamage(1, null);
 
-    if (Input.GetKey(KeyCode.Mouse0) && !playerVars.lockMovement) Server_Shoot();
+    if (Input.GetKey(KeyCode.Mouse0) && !playerVars.lockMovement) Shoot();
 
     if (Input.GetKeyUp(KeyCode.Mouse0)) ShootKeyUp();
 
@@ -72,13 +72,13 @@ public class PlayerBehavior : NetworkBehaviour
   [Command]
   void SwitchWeapon()
   {
-    TargetRpc_SwitchWeapon(connectionToClient, weaponToPickup.GetComponent<WeaponItem>().WeaponID);
+    TargetRpc_SwitchWeapon(weaponToPickup.GetComponent<WeaponItem>().WeaponID);
     weaponBehavior.SwitchWeapon(weaponToPickup.GetComponent<WeaponItem>().WeaponID);
     NetworkServer.Destroy(weaponToPickup);
   }
 
   [TargetRpc]
-  void TargetRpc_SwitchWeapon(NetworkConnection conn, string WeaponID)
+  void TargetRpc_SwitchWeapon(string WeaponID)
   {
     weaponBehavior.SwitchWeapon(WeaponID);
   }
@@ -86,63 +86,72 @@ public class PlayerBehavior : NetworkBehaviour
   [Command] void ShootKeyUp() => shootKeyUp = true;
 
   [Command]
-  void Server_Shoot()
+  void Shoot()
   {
+    if (playerVars.lockMovement) return;
+
+    WeaponClass weapon = playerVars.weaponBehavior.weapon;
+
     if (playerVars.isReloading)
     {
-      if (weaponBehavior.weapon.reloadType == WeaponClass.ReloadType.Shells &&
-          weaponBehavior.weapon.bulletsInMag > 0)
+      if (weapon.reloadType == WeaponClass.ReloadType.Shells &&
+          weapon.bulletsInMag > 0)
       {
         StopCoroutine(playerVars.reloadRoutine);
-        CancelReload(connectionToClient);
+        Target_CancelReload();
       }
     }
     else
     {
-      if (weaponBehavior.weapon.firingMode == WeaponClass.FireMode.Single && !shootKeyUp) return;
-      if (weaponBehavior.weapon.fireTimeout > NetworkTime.time) return;
-      Rpc_Shoot(weaponBehavior.weapon.ID, connectionToClient.identity.gameObject);
+      if (weapon.firingMode == WeaponClass.FireMode.Single && !shootKeyUp) return;
+      if (weapon.fireTimeout > NetworkTime.time) return;
 
-      weaponBehavior.weapon.bulletsInMag--;
-      weaponBehavior.weapon.fireTimeout = (float)NetworkTime.time + weaponBehavior.weapon.fireRate;
-      if (weaponBehavior.weapon.bulletsInMag <= 0 && !isServer)
+      weapon.bulletsInMag--;
+      weapon.fireTimeout = (float)NetworkTime.time + weapon.fireRate;
+
+      playerVars.weaponBehavior.Shoot(weapon.ID, connectionToClient);
+      if (weapon.bulletsInMag <= 0)
       {
-        playerVars.reloadRoutine = StartCoroutine(weaponBehavior.Reload());
+        playerVars.reloadRoutine = StartCoroutine(playerVars.weaponBehavior.Reload());
+        Target_Reload();
       }
-
-      PostFire(connectionToClient, weaponBehavior.weapon.bulletsInMag, weaponBehavior.weapon.magazineSize);
+      Target_UpdateUI(weapon.bulletsInMag);
       shootKeyUp = false;
     }
   }
 
   [TargetRpc]
-  void CancelReload(NetworkConnection conn)
+  void Target_UpdateUI(int bulletsInMag)
+  {
+    uiController.UpdateAmmoText(bulletsInMag, playerVars.weaponBehavior.weapon.magazineSize);
+  }
+
+  [TargetRpc]
+  void Target_Reload()
+  {
+    playerVars.reloadRoutine = StartCoroutine(playerVars.weaponBehavior.Reload());
+  }
+
+  [TargetRpc]
+  void Target_CancelReload()
   {
     StopCoroutine(playerVars.reloadRoutine);
+    playerVars.reloadRoutine = null;
+
     uiController.uiReloadCircle.enabled = false;
     playerVars.isReloading = false;
   }
 
-  [TargetRpc]
-  void PostFire(NetworkConnection conn, int bulletsInMag, int magazineSize)
-  {
-    if (bulletsInMag <= 0) playerVars.reloadRoutine = StartCoroutine(weaponBehavior.Reload());
-    uiController.UpdateAmmoText(bulletsInMag, magazineSize);
-  }
-
-  // Spawn Bullet on ALL clients
-  [ClientRpc]
-  void Rpc_Shoot(string weaponID, GameObject shooter) => weaponBehavior.Shoot(weaponID, shooter);
-
-  public void TakeDamage(float damage, NetworkConnection owner)
+  [Command(requiresAuthority = false)]
+  public void TakeDamage(float damage, GameObject owner)
   {
     health -= damage;
 
-    OnDamageTaken(health, owner);
-
-    StartCoroutine(UpdateHealthBar());
+    damageDealer = owner;
   }
 
+
+  // [TargetRpc]
   public IEnumerator UpdateHealthBar()
   {
     while (uiController.uiHealthSlider.value + 0.1 != health)
@@ -152,20 +161,27 @@ public class PlayerBehavior : NetworkBehaviour
     }
   }
 
-  public void OnDamageTaken(float health, NetworkConnection owner = null)
+  GameObject damageDealer = null;
+  public void OnDamageTaken(float oldHealth, float newHealth)
   {
+    StartCoroutine(UpdateHealthBar());
+
     if (health > 0) return;
     uiController.mainCanvas.enabled = false;
-    Server_Die(owner != null ? owner.identity.GetComponent<PlayerVars>().name : playerVars.uiName.text, playerVars.uiName.text);
+
+    Server_Die(damageDealer != null ? damageDealer.GetComponent<PlayerVars>().name : playerVars.uiName.text, playerVars.uiName.text);
   }
 
+  bool dead = false;
   [Command(requiresAuthority = false)]
   public void Server_Die(string killer, string killed)
   {
+    if (dead) return;
+
+    dead = true;
     playerVars.lockMovement = true;
 
     ClientRpc_Die(killer, killed);
-
     GameObject spawnedGravestone = Instantiate(gravestone, new Vector3(transform.position.x, transform.position.y + 50), Quaternion.Euler(0, 0, 0));
     NetworkServer.Spawn(spawnedGravestone);
   }
