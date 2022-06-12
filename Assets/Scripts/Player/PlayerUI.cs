@@ -15,6 +15,8 @@ public class PlayerUI : NetworkBehaviour
 
   public Canvas mainCanvas;
 
+  public Slider uiHealthSlider;
+
   void Start()
   {
     if (isLocalPlayer)

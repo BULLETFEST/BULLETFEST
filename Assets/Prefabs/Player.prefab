@@ -732,6 +732,7 @@ MonoBehaviour:
   arsenal:
   - {fileID: 3366149238512663894, guid: 0a317f4ae61eaee4e986cecaa30d5046, type: 3}
   - {fileID: 3366149238512663894, guid: 5782fa51db3b6c446bbd752762f84548, type: 3}
+  - {fileID: 3366149238512663894, guid: b0150a1c8ca1e994298ca8da3516d48a, type: 3}
   shootingPoint: {fileID: 3246237353762602563}
 --- !u!1 &4447784110684332225
 GameObject:
@@ -815,7 +816,7 @@ RectTransform:
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
+  m_AnchorMax: {x: 1, y: 1}
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: -10.742, y: -11.083}
   m_Pivot: {x: 0.5, y: 0.5}
@@ -1095,7 +1096,7 @@ MonoBehaviour:
     m_PressedTrigger: Pressed
     m_SelectedTrigger: Selected
     m_DisabledTrigger: Disabled
-  m_Interactable: 1
+  m_Interactable: 0
   m_TargetGraphic: {fileID: 0}
   m_FillRect: {fileID: 4649674366429682254}
   m_HandleRect: {fileID: 0}
@@ -1318,6 +1319,7 @@ MonoBehaviour:
   lockMovement: 0
   isReloading: 0
   graphics: {fileID: 315762542858786891}
+  weaponBehavior: {fileID: 0}
 --- !u!114 &2970595044478850307
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1388,6 +1390,7 @@ MonoBehaviour:
   uiGunAmmo: {fileID: 8635361156468214955}
   uiGunName: {fileID: 6423279638189728242}
   mainCanvas: {fileID: 2155596279205240348}
+  uiHealthSlider: {fileID: 8309237610138683349}
 --- !u!1 &6329801394635086981
 GameObject:
   m_ObjectHideFlags: 0
@@ -1541,7 +1544,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &6132567104040821938
 RectTransform:
   m_ObjectHideFlags: 0

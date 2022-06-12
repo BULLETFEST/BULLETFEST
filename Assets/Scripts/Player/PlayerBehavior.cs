@@ -46,6 +46,9 @@ public class PlayerBehavior : NetworkBehaviour
 
     weaponBehavior = GetComponentInChildren<WeaponBehavior>();
     weaponBehavior.owner = NetworkClient.connection;
+
+    uiController.uiHealthSlider.maxValue = maxHealth;
+    uiController.uiHealthSlider.value = maxHealth;
   }
 
   // Update is called once per frame
@@ -53,7 +56,7 @@ public class PlayerBehavior : NetworkBehaviour
   {
     if (!isLocalPlayer) return;
 
-    if (Input.GetKeyDown(KeyCode.X)) TakeDamage(10, null);
+    if (Input.GetKeyDown(KeyCode.X)) TakeDamage(1, null);
 
     if (Input.GetKey(KeyCode.Mouse0) && !playerVars.lockMovement) Server_Shoot();
 
@@ -102,7 +105,7 @@ public class PlayerBehavior : NetworkBehaviour
 
       weaponBehavior.weapon.bulletsInMag--;
       weaponBehavior.weapon.fireTimeout = (float)NetworkTime.time + weaponBehavior.weapon.fireRate;
-      if (weaponBehavior.weapon.bulletsInMag <= 0)
+      if (weaponBehavior.weapon.bulletsInMag <= 0 && !isServer)
       {
         playerVars.reloadRoutine = StartCoroutine(weaponBehavior.Reload());
       }
@@ -136,11 +139,23 @@ public class PlayerBehavior : NetworkBehaviour
     health -= damage;
 
     OnDamageTaken(health, owner);
+
+    StartCoroutine(UpdateHealthBar());
+  }
+
+  public IEnumerator UpdateHealthBar()
+  {
+    while (uiController.uiHealthSlider.value + 0.1 != health)
+    {
+      uiController.uiHealthSlider.value = Mathf.Lerp(uiController.uiHealthSlider.value, health, 3 * Time.deltaTime);
+      yield return null;
+    }
   }
 
   public void OnDamageTaken(float health, NetworkConnection owner = null)
   {
     if (health > 0) return;
+    uiController.mainCanvas.enabled = false;
     Server_Die(owner != null ? owner.identity.GetComponent<PlayerVars>().name : playerVars.uiName.text, playerVars.uiName.text);
   }
 

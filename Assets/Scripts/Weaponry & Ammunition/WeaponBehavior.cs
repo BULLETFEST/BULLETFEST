@@ -40,6 +40,23 @@ public class WeaponBehavior : MonoBehaviour
     playerVars.rb.AddForce(weapon.shotPushback * -transform.right, ForceMode2D.Impulse);
   }
 
+  public void Fire_Pellets(GameObject shooter)
+  {
+    for (int i = 0; i < weapon.pelletCount; i++)
+    {
+      GameObject spawnedBullet = Instantiate(weapon.bulletPrefab, shootingPoint.transform.position, Quaternion.Euler(0, 0, transform.rotation.eulerAngles.z + Random.Range(weapon.inaccuracyRange[0], weapon.inaccuracyRange[1])));
+
+      Physics2D.IgnoreCollision(spawnedBullet.GetComponent<Collider2D>(), shooter.GetComponent<Collider2D>());
+
+      spawnedBullet.GetComponent<Rigidbody2D>().velocity = weapon.bulletVelocity * spawnedBullet.transform.right;
+
+      spawnedBullet.GetComponent<Bullet>().owner = owner;
+      spawnedBullet.GetComponent<Bullet>().damage = weapon.damage;
+    }
+
+    playerVars.rb.AddForce(weapon.shotPushback * -transform.right, ForceMode2D.Impulse);
+  }
+
   public void Shoot(string weaponId, GameObject shooter)
   {
     WeaponClass equippedWeapon = arsenal.Where(w => w.ID == weaponId).ToArray()[0];
@@ -50,9 +67,11 @@ public class WeaponBehavior : MonoBehaviour
     switch (weaponType)
     {
       case "hdg":
-      case "stg":
       case "smg":
         Fire_Regular(shooter);
+        break;
+      case "stg":
+        Fire_Pellets(shooter);
         break;
       case "rpg":
         throw new System.NotImplementedException();

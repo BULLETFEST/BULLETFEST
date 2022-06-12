@@ -83,23 +83,22 @@ public class PlayerMovement : NetworkBehaviour
   [ClientRpc]
   void HandleMovement(GameObject playerObj, float x, float xRaw, Vector3 mousePosition)
   {
-    BoxCollider2D bc = playerObj.GetComponent<BoxCollider2D>();
-    Rigidbody2D rb = playerObj.GetComponent<Rigidbody2D>();
+    PlayerVars playerVars = playerObj.GetComponent<PlayerVars>();
 
-    if ((PlayersOnLeft(playerObj, bc) && xRaw == -1) || (PlayersOnRight(playerObj, bc) && xRaw == 1)) x = 0;
+    if ((PlayersOnLeft(playerObj, playerVars.bc) && xRaw == -1) || (PlayersOnRight(playerObj, playerVars.bc) && xRaw == 1)) x = 0;
 
-    rb.AddForce(new Vector2(x * Time.deltaTime * moveForce, 0), ForceMode2D.Impulse);
+    playerVars.rb.AddForce(new Vector2(x * Time.deltaTime * moveForce, 0), ForceMode2D.Impulse);
 
 
-    GameObject weapon = playerObj.GetComponentInChildren<WeaponBehavior>().gameObject;
+    GameObject weapon = playerVars.weaponBehavior.gameObject;
     Vector3 difference = Camera.main.ScreenToWorldPoint(mousePosition) - weapon.transform.position;
     difference.Normalize();
-    playerObj.GetComponent<PlayerVars>().graphics.transform.rotation = Quaternion.Euler(0, difference.x < 0 ? 180 : 0, 0);
+    playerVars.graphics.transform.rotation = Quaternion.Euler(0, difference.x < 0 ? 180 : 0, 0);
 
     float rotation_z = Mathf.Atan2(difference.y, difference.x) * Mathf.Rad2Deg;
-    playerObj.GetComponentInChildren<WeaponBehavior>().transform.rotation = Quaternion.Euler(0f, 0f, rotation_z);
+    playerVars.weaponBehavior.transform.rotation = Quaternion.Euler(0f, 0f, rotation_z);
 
-    LimitVelocity(xRaw, rb);
+    LimitVelocity(xRaw, playerVars.rb);
   }
 
   void LimitVelocity(float x, Rigidbody2D rb)
@@ -107,7 +106,7 @@ public class PlayerMovement : NetworkBehaviour
     // Add drag
     if (rb.velocity.x != 0) rb.velocity = new Vector2(rb.velocity.x * (1 - 0.2f), rb.velocity.y);
 
-    float speed = rb.velocity.x;
+    float speed = Mathf.Abs(rb.velocity.x);
     if (speed > maxSpeedX)
     {
       float brakeSpeed = speed - maxSpeedX;  // calculate the speed decrease

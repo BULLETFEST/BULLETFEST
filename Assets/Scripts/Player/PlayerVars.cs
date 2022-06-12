@@ -20,11 +20,14 @@ public class PlayerVars : NetworkBehaviour
 
   public SpriteGroup graphics;
 
+  public WeaponBehavior weaponBehavior;
+
   // Start is called before the first frame update
   void Start()
   {
     rb = GetComponent<Rigidbody2D>();
     bc = GetComponent<BoxCollider2D>();
     name = PlayerPrefs.GetString("PlayerName", "Guest");
+    weaponBehavior = GetComponentInChildren<WeaponBehavior>();
   }
 }
