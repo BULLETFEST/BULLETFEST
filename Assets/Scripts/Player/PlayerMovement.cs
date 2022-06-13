@@ -13,12 +13,15 @@ public class PlayerMovement : NetworkBehaviour
   #endregion
 
   [SyncVar]
-  float moveForce = 20;
+  [SerializeField]
+  float moveForce = 10f;
 
   [SyncVar]
+  [SerializeField]
   float jumpForce = 15;
 
   [SyncVar]
+  [SerializeField]
   float maxSpeedX = 10;
 
   PlayerVars playerVars;
@@ -26,6 +29,8 @@ public class PlayerMovement : NetworkBehaviour
   LayerMask playerLm;
 
   WeaponBehavior weaponBehavior;
+
+  CharacterController characterController;
 
   void Start()
   {
@@ -35,11 +40,13 @@ public class PlayerMovement : NetworkBehaviour
 
     weaponBehavior = GetComponentInChildren<WeaponBehavior>();
 
+    characterController = GetComponent<CharacterController>();
+
     if (isLocalPlayer)
     {
       // Due To Time.DeltaTime multiplication, speeds must be 
       // Multiplied by 100.
-      moveForce *= 100;
+      // moveForce *= 100;
       jumpForce *= 100;
     }
   }
@@ -92,36 +99,51 @@ public class PlayerMovement : NetworkBehaviour
     Rigidbody2D rb = playerObj.GetComponent<Rigidbody2D>();
     BoxCollider2D bc = playerObj.GetComponent<BoxCollider2D>();
 
-    if ((PlayersOnLeft(playerObj, bc) && xRaw == -1) || (PlayersOnRight(playerObj, bc) && xRaw == 1)) x = 0;
+    if ((PlayersOnLeft(playerObj, bc) && xRaw == -1) || (PlayersOnRight(playerObj, bc) && xRaw == 1)) xRaw = 0;
 
-    rb.AddForce(new Vector2(x * Time.deltaTime * moveForce, 0), ForceMode2D.Impulse);
+    if (xRaw != 0)
+    {
+
+      // Get Desired moving direction
+      float targetSpeed = moveForce * xRaw;
+
+      //Check difference between current speed and desired speed
+      float speedDiff = targetSpeed - Mathf.Clamp(rb.velocity.x, -moveForce, moveForce);
+
+      // Prevent negation of external forces
+      // I Lost my grasp on reality when thinking about this so it works..
+      // but I have no idea how.
+      // speedDiff = Mathf.Max(Mathf.Abs(speedDiff), 0) * xRaw;
 
 
+      rb.AddForce(new Vector2(speedDiff, 0), ForceMode2D.Impulse);
+    }
+
+    // Add drag
+    // https://forum.unity.com/threads/physics-drag-formula.252406/
+    rb.velocity = new Vector2(rb.velocity.x * (1 - Time.deltaTime * 50), rb.velocity.y);
 
     playerObj.GetComponent<PlayerVars>().graphics.transform.rotation = graphicsQuaternion;
 
-    // weapon.transform.localRotation = Quaternion.Euler((difference.x < 0 ? 180 : 0), 0f, (difference.x < 0 ? 2 : 1) * rotation_z);
     playerObj.GetComponentInChildren<WeaponBehavior>().transform.localRotation = gunQuaternion;
-
-    LimitVelocity(xRaw, rb);
   }
 
-  void LimitVelocity(float x, Rigidbody2D rb)
-  {
-    // Add drag
-    if (rb.velocity.x != 0) rb.velocity = new Vector2(rb.velocity.x * (1 - 0.2f), rb.velocity.y);
+  // void LimitVelocity(float x, Rigidbody2D rb)
+  // {
+  //   // Add drag
+  //   if (rb.velocity.x != 0) rb.velocity = new Vector2(rb.velocity.x * (1 - 0.2f), rb.velocity.y);
 
-    float speed = Mathf.Abs(rb.velocity.x);
-    if (speed > maxSpeedX)
-    {
-      float brakeSpeed = speed - maxSpeedX;  // calculate the speed decrease
+  //   float speed = Mathf.Abs(rb.velocity.x);
+  //   if (speed > maxSpeedX)
+  //   {
+  //     float brakeSpeed = speed - maxSpeedX;  // calculate the speed decrease
 
-      Vector3 normalisedVelocity = rb.velocity.normalized;
-      Vector3 brakeVelocity = normalisedVelocity * brakeSpeed;  // make the brake Vector3 value
+  //     Vector3 normalisedVelocity = rb.velocity.normalized;
+  //     Vector3 brakeVelocity = normalisedVelocity * brakeSpeed;  // make the brake Vector3 value
 
-      rb.AddForce(new Vector2(-brakeVelocity.x, 0), ForceMode2D.Impulse);
-    }
-  }
+  //     rb.AddForce(new Vector2(-brakeVelocity.x, 0), ForceMode2D.Impulse);
+  //   }
+  // }
 
   bool Grounded(GameObject player, BoxCollider2D bc)
   {

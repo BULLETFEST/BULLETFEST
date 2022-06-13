@@ -98,6 +98,8 @@ public class PlayerBehavior : NetworkBehaviour
           weapon.bulletsInMag > 0)
       {
         StopCoroutine(playerVars.reloadRoutine);
+        playerVars.isReloading = false;
+
         Target_CancelReload();
       }
     }
@@ -113,7 +115,7 @@ public class PlayerBehavior : NetworkBehaviour
       if (weapon.bulletsInMag <= 0)
       {
         playerVars.reloadRoutine = StartCoroutine(playerVars.weaponBehavior.Reload());
-        Target_Reload();
+        if (!isServer) Target_Reload();
       }
       Target_UpdateUI(weapon.bulletsInMag);
       shootKeyUp = false;
@@ -136,7 +138,6 @@ public class PlayerBehavior : NetworkBehaviour
   void Target_CancelReload()
   {
     StopCoroutine(playerVars.reloadRoutine);
-    playerVars.reloadRoutine = null;
 
     uiController.uiReloadCircle.enabled = false;
     playerVars.isReloading = false;

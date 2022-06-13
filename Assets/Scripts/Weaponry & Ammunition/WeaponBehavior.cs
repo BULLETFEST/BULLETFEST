@@ -23,7 +23,7 @@ public class WeaponBehavior : MonoBehaviour
     uiController.UpdateWeaponUI(weapon);
   }
 
-  public GameObject Fire_Regular(NetworkConnection shooter)
+  public void Fire_Regular(NetworkConnection shooter)
   {
     GameObject spawnedBullet = Instantiate(weapon.bulletPrefab, weapon.bulletSpawnPoint.transform.position, Quaternion.Euler(transform.rotation.eulerAngles.x, transform.rotation.eulerAngles.y, transform.rotation.eulerAngles.z + Random.Range(weapon.inaccuracyRange[0], weapon.inaccuracyRange[1])));
 
@@ -37,8 +37,6 @@ public class WeaponBehavior : MonoBehaviour
     playerVars.rb.AddForce(new Vector2(weapon.shotPushback * -spawnedBullet.transform.right.x, 0), ForceMode2D.Impulse);
 
     NetworkServer.Spawn(spawnedBullet);
-
-    return spawnedBullet;
   }
 
   public void Fire_Pellets(NetworkConnection shooter)
@@ -54,15 +52,14 @@ public class WeaponBehavior : MonoBehaviour
       spawnedBullet.GetComponent<Bullet>().owner = shooter;
       spawnedBullet.GetComponent<Bullet>().damage = weapon.damage;
 
-      playerVars.rb.AddForce(weapon.shotPushback * -transform.right, ForceMode2D.Impulse);
-
       NetworkServer.Spawn(spawnedBullet);
     }
 
-    playerVars.rb.AddForce(weapon.shotPushback * -transform.right, ForceMode2D.Impulse);
+    float playerVel = Mathf.Max(Mathf.Abs(playerVars.rb.velocity.x), 1);
+    playerVars.rb.AddForce(weapon.shotPushback * new Vector2(playerVel, playerVel) * -transform.right, ForceMode2D.Impulse);
   }
 
-  public GameObject Shoot(string weaponId, NetworkConnection shooter)
+  public void Shoot(string weaponId, NetworkConnection shooter)
   {
     WeaponClass equippedWeapon = arsenal.Where(w => w.ID == weaponId).ToArray()[0];
 
@@ -73,18 +70,14 @@ public class WeaponBehavior : MonoBehaviour
     {
       case "hdg":
       case "smg":
-        return Fire_Regular(shooter);
+        Fire_Regular(shooter);
+        break;
       case "stg":
         Fire_Pellets(shooter);
         break;
       case "rpg":
         throw new System.NotImplementedException();
     }
-    return null;
-    // if (!isReloading && currWeapon.bulletsInMag < currWeapon.magSize && (Input.GetKeyDown(Utilities.StringToKeyCode(keybinds["reload"])) || Input.GetKeyDown(Utilities.StringToKeyCode(keybinds["reload2"]))))
-    // {
-    //   reloadRoutine = StartCoroutine(Reload(currWeapon));
-    // }
   }
 
   public IEnumerator Reload()
@@ -92,7 +85,6 @@ public class WeaponBehavior : MonoBehaviour
     playerVars.isReloading = true;
 
     uiController.uiReloadCircle.enabled = true;
-
     if (weapon.reloadType == WeaponClass.ReloadType.Magazine)
     {
       yield return new WaitForSeconds(weapon.reloadTime);

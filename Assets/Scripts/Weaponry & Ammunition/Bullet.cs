@@ -27,9 +27,6 @@ public class Bullet : NetworkBehaviour
 
   private void OnCollisionEnter2D(Collision2D other)
   {
-    // Debug.Log(other.collider.gameObject.name);
-    // HandleCollision(other.collider.gameObject);
-
     if (other.gameObject.tag != "Player")
     {
       NetworkServer.Destroy(this.gameObject);
