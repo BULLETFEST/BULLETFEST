@@ -14,6 +14,7 @@ public class KillFeedItem : MonoBehaviour
   {
     StartCoroutine(FadeOut());
     canvasGroup = GetComponent<CanvasGroup>();
+
   }
 
   IEnumerator FadeOut()
@@ -24,6 +25,7 @@ public class KillFeedItem : MonoBehaviour
     {
       canvasGroup.alpha = Mathf.Lerp(canvasGroup.alpha, 0, fadeOutTime * Time.deltaTime);
       yield return null;
+
     }
 
     Destroy(gameObject);

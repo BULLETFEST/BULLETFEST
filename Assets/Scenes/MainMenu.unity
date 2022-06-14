@@ -1779,6 +1779,7 @@ MonoBehaviour:
   spawnPrefabs:
   - {fileID: 7740076768845922023, guid: bd0cfe2c8625b2c4daefea4409372304, type: 3}
   - {fileID: 6030231851616318269, guid: 57f25a84d55296a40bb69f685dc01911, type: 3}
+  - {fileID: 7200907496177310357, guid: 1e94cb2ec6b3e19439dfa832a7f1d308, type: 3}
 --- !u!4 &1752115996
 Transform:
   m_ObjectHideFlags: 0
@@ -2219,7 +2220,7 @@ Camera:
   m_Enabled: 1
   serializedVersion: 2
   m_ClearFlags: 1
-  m_BackGroundColor: {r: 0.19215687, g: 0.3019608, b: 0.4745098, a: 0}
+  m_BackGroundColor: {r: 0.14901961, g: 0.14901961, b: 0.14901961, a: 0}
   m_projectionMatrixMode: 1
   m_GateFitMode: 2
   m_FOVAxisMode: 0

@@ -15,6 +15,8 @@ public class PlayerUI : NetworkBehaviour
 
   public Canvas mainCanvas;
 
+  public CanvasGroup infoGroup;
+
   public Slider uiHealthSlider;
 
   void Start()

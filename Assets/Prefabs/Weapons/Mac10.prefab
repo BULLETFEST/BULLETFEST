@@ -166,11 +166,12 @@ MonoBehaviour:
   pelletCount: 0
   inaccuracyRange: f6ffffff0a000000
   reloadTime: 3
-  shotPushback: 20
+  shotPushback: 10
   range: 0
   damage: 1
   fireRate: 0.05
   bulletVelocity: 20
+  movementUnlockTime: 0.2
   weaponName: Mac-10
   ID: SMG_Mac10
   firingMode: 2

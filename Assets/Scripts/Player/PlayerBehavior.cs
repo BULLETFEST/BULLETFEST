@@ -39,7 +39,7 @@ public class PlayerBehavior : NetworkBehaviour
   }
 
   // Start is called before the first frame update
-  void Start()
+  void Awake()
   {
     playerVars = GetComponent<PlayerVars>();
     uiController = GetComponent<PlayerUI>();
@@ -58,7 +58,7 @@ public class PlayerBehavior : NetworkBehaviour
 
     if (Input.GetKeyDown(KeyCode.X)) TakeDamage(1, null);
 
-    if (Input.GetKey(KeyCode.Mouse0) && !playerVars.lockMovement) Shoot();
+    if (Input.GetKey(KeyCode.Mouse0) && !playerVars.lockShooting) Shoot(isServer);
 
     if (Input.GetKeyUp(KeyCode.Mouse0)) ShootKeyUp();
 
@@ -86,9 +86,12 @@ public class PlayerBehavior : NetworkBehaviour
   [Command] void ShootKeyUp() => shootKeyUp = true;
 
   [Command]
-  void Shoot()
+  void Shoot(bool _isServer)
   {
-    if (playerVars.lockMovement) return;
+    if (playerVars.lockShooting) return;
+
+    // bool _isServer = conn.identity.isServer;
+    // Debug.Log(_isServer);
 
     WeaponClass weapon = playerVars.weaponBehavior.weapon;
 
@@ -112,19 +115,28 @@ public class PlayerBehavior : NetworkBehaviour
       weapon.fireTimeout = (float)NetworkTime.time + weapon.fireRate;
 
       playerVars.weaponBehavior.Shoot(weapon.ID, connectionToClient);
+      Rpc_AddForce(gameObject);
+      playerVars.weaponBehavior.AddForce(gameObject);
       if (weapon.bulletsInMag <= 0)
       {
         playerVars.reloadRoutine = StartCoroutine(playerVars.weaponBehavior.Reload());
-        if (!isServer) Target_Reload();
+        if (!_isServer) Target_Reload();
       }
       Target_UpdateUI(weapon.bulletsInMag);
       shootKeyUp = false;
     }
   }
 
+  [ClientRpc]
+  void Rpc_AddForce(GameObject target)
+  {
+    playerVars.weaponBehavior.AddForce(target);
+  }
+
   [TargetRpc]
   void Target_UpdateUI(int bulletsInMag)
   {
+    playerVars.weaponBehavior.weapon.bulletsInMag = bulletsInMag;
     uiController.UpdateAmmoText(bulletsInMag, playerVars.weaponBehavior.weapon.magazineSize);
   }
 
@@ -137,7 +149,7 @@ public class PlayerBehavior : NetworkBehaviour
   [TargetRpc]
   void Target_CancelReload()
   {
-    StopCoroutine(playerVars.reloadRoutine);
+    if (playerVars.reloadRoutine != null) StopCoroutine(playerVars.reloadRoutine);
 
     uiController.uiReloadCircle.enabled = false;
     playerVars.isReloading = false;
@@ -168,7 +180,8 @@ public class PlayerBehavior : NetworkBehaviour
     StartCoroutine(UpdateHealthBar());
 
     if (health > 0) return;
-    uiController.mainCanvas.enabled = false;
+    // uiController.mainCanvas.enabled = false;
+    uiController.infoGroup.alpha = 0;
 
     Server_Die(damageDealer != null ? damageDealer.GetComponent<PlayerVars>().name : playerVars.uiName.text, playerVars.uiName.text);
   }
@@ -181,10 +194,21 @@ public class PlayerBehavior : NetworkBehaviour
 
     dead = true;
     playerVars.lockMovement = true;
+    playerVars.lockShooting = true;
+    playerVars.lockWeapon = true;
+
+
 
     ClientRpc_Die(killer, killed);
     GameObject spawnedGravestone = Instantiate(gravestone, new Vector3(transform.position.x, transform.position.y + 50), Quaternion.Euler(0, 0, 0));
     NetworkServer.Spawn(spawnedGravestone);
+    // print(playerVars.gameObject.name);
+    // Utilities.PrintArr(NetworkServer.spawned.Keys.ToArray());
+    // print();
+    // GameObject spawnedKillfeedItem = Instantiate(killfeedItem, Vector2.zero, Quaternion.Euler(0, 0, 0), NetworkServer.connections[0].identity.GetComponent<PlayerVars>().killfeed.transform);
+    // spawnedKillfeedItem.GetComponent<KillFeedItem>().killer.text = killer;
+    // spawnedKillfeedItem.GetComponent<KillFeedItem>().killed.text = killed;
+    // NetworkServer.Spawn(spawnedKillfeedItem);
   }
 
   [ClientRpc]
@@ -194,9 +218,23 @@ public class PlayerBehavior : NetworkBehaviour
     this.gameObject.GetComponent<BoxCollider2D>().enabled = false;
     this.gameObject.GetComponent<Rigidbody2D>().simulated = false;
 
-    GameObject spawnedKillfeedItem = Instantiate(killfeedItem, Vector3.zero, Quaternion.Euler(0, 0, 0), killfeed.transform);
+    foreach (var player in NetworkServer.connections)
+    {
+      // PlayerVars localVars = player.Value.identity.gameObject.GetComponent<PlayerVars>();
+      // GameObject spawnedKillfeedItem = Instantiate(killfeedItem, Vector3.zero, Quaternion.Euler(0, 0, 0), localVars.killfeed.transform);
+      // spawnedKillfeedItem.GetComponent<KillFeedItem>().killer.text = killer;
+      // spawnedKillfeedItem.GetComponent<KillFeedItem>().killed.text = killed;
+      UpdateKillfeed(player.Value, killer, killed);
+    }
+
+  }
+
+  [TargetRpc]
+  public void UpdateKillfeed(NetworkConnection conn, string killer, string killed)
+  {
+    PlayerVars localVars = conn.identity.gameObject.GetComponent<PlayerVars>();
+    GameObject spawnedKillfeedItem = Instantiate(killfeedItem, Vector3.zero, Quaternion.Euler(0, 0, 0), localVars.killfeed.transform);
     spawnedKillfeedItem.GetComponent<KillFeedItem>().killer.text = killer;
     spawnedKillfeedItem.GetComponent<KillFeedItem>().killed.text = killed;
-
   }
 }

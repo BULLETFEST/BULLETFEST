@@ -15,8 +15,14 @@ public class PlayerVars : NetworkBehaviour
 
   public Coroutine reloadRoutine { get; set; }
 
+  public Canvas publicCanvas;
+  public GameObject killfeed;
+
   [HideInInspector]
-  public bool lockMovement = false, isReloading = false;
+  public bool lockMovement = false,
+              lockShooting = false,
+              lockWeapon = false,
+              isReloading = false;
 
   public SpriteGroup graphics;
 

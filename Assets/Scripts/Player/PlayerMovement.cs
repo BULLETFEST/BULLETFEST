@@ -13,18 +13,15 @@ public class PlayerMovement : NetworkBehaviour
   #endregion
 
   [SyncVar]
-  [SerializeField]
   float moveForce = 10f;
 
   [SyncVar]
-  [SerializeField]
-  float jumpForce = 15;
+  float jumpForce = 1500;
 
   [SyncVar]
-  [SerializeField]
   float maxSpeedX = 10;
 
-  PlayerVars playerVars;
+  public PlayerVars playerVars;
 
   LayerMask playerLm;
 
@@ -32,7 +29,7 @@ public class PlayerMovement : NetworkBehaviour
 
   CharacterController characterController;
 
-  void Start()
+  void Awake()
   {
     playerVars = GetComponent<PlayerVars>();
 
@@ -41,21 +38,12 @@ public class PlayerMovement : NetworkBehaviour
     weaponBehavior = GetComponentInChildren<WeaponBehavior>();
 
     characterController = GetComponent<CharacterController>();
-
-    if (isLocalPlayer)
-    {
-      // Due To Time.DeltaTime multiplication, speeds must be 
-      // Multiplied by 100.
-      // moveForce *= 100;
-      jumpForce *= 100;
-    }
   }
 
 
   void Update()
   {
     if (!isLocalPlayer) return;
-    if (playerVars.lockMovement) return;
 
     float x = Input.GetAxis("Horizontal");
     float xRaw = Input.GetAxisRaw("Horizontal");
@@ -87,7 +75,11 @@ public class PlayerMovement : NetworkBehaviour
     GameObject playerObj = this.gameObject;
     x = Mathf.Clamp(x, -1, 1);
     xRaw = Mathf.Clamp(xRaw, -1, 1);
-
+    if (playerVars.lockMovement)
+    {
+      x = 0;
+      xRaw = 0;
+    }
 
 
     HandleMovement(playerObj, x, xRaw, graphicsQuaternion, gunQuaternion);
@@ -103,18 +95,11 @@ public class PlayerMovement : NetworkBehaviour
 
     if (xRaw != 0)
     {
-
       // Get Desired moving direction
       float targetSpeed = moveForce * xRaw;
 
       //Check difference between current speed and desired speed
       float speedDiff = targetSpeed - Mathf.Clamp(rb.velocity.x, -moveForce, moveForce);
-
-      // Prevent negation of external forces
-      // I Lost my grasp on reality when thinking about this so it works..
-      // but I have no idea how.
-      // speedDiff = Mathf.Max(Mathf.Abs(speedDiff), 0) * xRaw;
-
 
       rb.AddForce(new Vector2(speedDiff, 0), ForceMode2D.Impulse);
     }
@@ -122,6 +107,9 @@ public class PlayerMovement : NetworkBehaviour
     // Add drag
     // https://forum.unity.com/threads/physics-drag-formula.252406/
     rb.velocity = new Vector2(rb.velocity.x * (1 - Time.deltaTime * 50), rb.velocity.y);
+
+
+    if (playerVars.lockWeapon) return;
 
     playerObj.GetComponent<PlayerVars>().graphics.transform.rotation = graphicsQuaternion;
 

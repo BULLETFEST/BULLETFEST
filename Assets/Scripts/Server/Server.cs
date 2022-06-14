@@ -10,7 +10,11 @@ public class Server : NetworkBehaviour
   public override void OnStartAuthority()
   {
     base.OnStartAuthority();
-    if (!isServer) Destroy(gameObject.GetComponent<Server>());
+    if (!isServer)
+    {
+      // Destroy(GetComponent<PlayerVars>().publicCanvas.gameObject);
+      Destroy(GetComponent<Server>());
+    }
   }
 
   public override void OnStartClient()

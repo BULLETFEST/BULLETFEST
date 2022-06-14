@@ -25,6 +25,7 @@ public class Bullet : NetworkBehaviour
   [ServerCallback]
   void Start() => Server_DisableCollisionWith(owner.identity.gameObject);
 
+  [ServerCallback]
   private void OnCollisionEnter2D(Collision2D other)
   {
     if (other.gameObject.tag != "Player")
@@ -33,7 +34,8 @@ public class Bullet : NetworkBehaviour
       return;
     }
 
-    if (other.gameObject == owner.identity.gameObject) return;
+
+    // if (other.gameObject == owner.identity.gameObject) return;
 
     DealDamage(other.gameObject);
 

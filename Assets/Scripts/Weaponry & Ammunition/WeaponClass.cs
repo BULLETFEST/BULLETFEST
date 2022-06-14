@@ -32,6 +32,7 @@ public class WeaponClass : MonoBehaviour
   public float damage;
   public float fireRate;
   public float bulletVelocity;
+  public float movementUnlockTime;
 
   public string weaponName;
   public string ID;
@@ -44,6 +45,7 @@ public class WeaponClass : MonoBehaviour
   public Transform bulletSpawnPoint;
 
   public Sprite weaponSprite;
+
 
 
   // Copied over from DWAG2 Code

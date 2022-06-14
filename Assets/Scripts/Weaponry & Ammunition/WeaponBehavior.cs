@@ -23,42 +23,6 @@ public class WeaponBehavior : MonoBehaviour
     uiController.UpdateWeaponUI(weapon);
   }
 
-  public void Fire_Regular(NetworkConnection shooter)
-  {
-    GameObject spawnedBullet = Instantiate(weapon.bulletPrefab, weapon.bulletSpawnPoint.transform.position, Quaternion.Euler(transform.rotation.eulerAngles.x, transform.rotation.eulerAngles.y, transform.rotation.eulerAngles.z + Random.Range(weapon.inaccuracyRange[0], weapon.inaccuracyRange[1])));
-
-    Physics2D.IgnoreCollision(spawnedBullet.GetComponent<Collider2D>(), shooter.identity.gameObject.GetComponent<Collider2D>());
-
-    spawnedBullet.GetComponent<Rigidbody2D>().velocity = weapon.bulletVelocity * spawnedBullet.transform.right;
-
-    spawnedBullet.GetComponent<Bullet>().owner = shooter;
-    spawnedBullet.GetComponent<Bullet>().damage = weapon.damage;
-
-    playerVars.rb.AddForce(new Vector2(weapon.shotPushback * -spawnedBullet.transform.right.x, 0), ForceMode2D.Impulse);
-
-    NetworkServer.Spawn(spawnedBullet);
-  }
-
-  public void Fire_Pellets(NetworkConnection shooter)
-  {
-    for (int i = 0; i < weapon.pelletCount; i++)
-    {
-      GameObject spawnedBullet = Instantiate(weapon.bulletPrefab, weapon.bulletSpawnPoint.transform.position, Quaternion.Euler(transform.rotation.eulerAngles.x, transform.rotation.eulerAngles.y, transform.rotation.eulerAngles.z + Random.Range(weapon.inaccuracyRange[0], weapon.inaccuracyRange[1])));
-
-      Physics2D.IgnoreCollision(spawnedBullet.GetComponent<Collider2D>(), shooter.identity.gameObject.GetComponent<Collider2D>());
-
-      spawnedBullet.GetComponent<Rigidbody2D>().velocity = weapon.bulletVelocity * spawnedBullet.transform.right;
-
-      spawnedBullet.GetComponent<Bullet>().owner = shooter;
-      spawnedBullet.GetComponent<Bullet>().damage = weapon.damage;
-
-      NetworkServer.Spawn(spawnedBullet);
-    }
-
-    float playerVel = Mathf.Max(Mathf.Abs(playerVars.rb.velocity.x), 1);
-    playerVars.rb.AddForce(weapon.shotPushback * new Vector2(playerVel, playerVel) * -transform.right, ForceMode2D.Impulse);
-  }
-
   public void Shoot(string weaponId, NetworkConnection shooter)
   {
     WeaponClass equippedWeapon = arsenal.Where(w => w.ID == weaponId).ToArray()[0];
@@ -78,6 +42,47 @@ public class WeaponBehavior : MonoBehaviour
       case "rpg":
         throw new System.NotImplementedException();
     }
+
+
+  }
+
+  // Add recoil to the user
+  public void AddForce(GameObject target)
+  {
+    if (weapon.shotPushback == 0) return;
+    PlayerVars shooterVars = target.GetComponent<PlayerVars>();
+    shooterVars.lockMovement = true;
+    Vector2 vel = shooterVars.weaponBehavior.weapon.shotPushback * -shooterVars.weaponBehavior.transform.right;
+    shooterVars.rb.AddForce(new Vector2(vel.x, vel.y / 4), ForceMode2D.Impulse);
+    StartCoroutine(UnlockMovement(shooterVars.weaponBehavior.weapon.movementUnlockTime, shooterVars));
+  }
+
+  public void Fire_Regular(NetworkConnection shooter)
+  {
+    GameObject spawnedBullet = Instantiate(weapon.bulletPrefab, weapon.bulletSpawnPoint.transform.position, Quaternion.Euler(transform.rotation.eulerAngles.x, transform.rotation.eulerAngles.y, transform.rotation.eulerAngles.z + Random.Range(weapon.inaccuracyRange[0], weapon.inaccuracyRange[1])));
+
+    Physics2D.IgnoreCollision(spawnedBullet.GetComponent<Collider2D>(), shooter.identity.gameObject.GetComponent<Collider2D>());
+
+    spawnedBullet.GetComponent<Rigidbody2D>().velocity = weapon.bulletVelocity * spawnedBullet.transform.right;
+
+    spawnedBullet.GetComponent<Bullet>().owner = shooter;
+    spawnedBullet.GetComponent<Bullet>().damage = weapon.damage;
+
+    NetworkServer.Spawn(spawnedBullet);
+  }
+
+  public void Fire_Pellets(NetworkConnection shooter)
+  {
+    for (int i = 0; i < weapon.pelletCount; i++)
+    {
+      Fire_Regular(shooter);
+    }
+  }
+
+  IEnumerator UnlockMovement(float time, PlayerVars shooterVars)
+  {
+    yield return new WaitForSecondsRealtime(time);
+    shooterVars.lockMovement = false;
   }
 
   public IEnumerator Reload()
@@ -118,6 +123,7 @@ public class WeaponBehavior : MonoBehaviour
     uiController.UpdateWeaponUI(weapon);
     uiController.UpdateAmmoText(weapon.bulletsInMag, weapon.magazineSize);
 
+    playerVars.graphics.sprites.RemoveAt(1);
     playerVars.graphics.sprites.Add(newWeapon.GetComponentInChildren<SpriteRenderer>());
   }
 }
