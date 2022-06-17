@@ -48,12 +48,24 @@ public class PlayerMovement : NetworkBehaviour
     float x = Input.GetAxis("Horizontal");
     float xRaw = Input.GetAxisRaw("Horizontal");
 
-    GameObject weapon = GetComponentInChildren<WeaponBehavior>().gameObject;
-    Vector3 difference = Camera.main.ScreenToWorldPoint(Input.mousePosition) - weapon.transform.position;
-    difference.Normalize();
-    float rotation_z = Mathf.Atan2(difference.y, difference.x) * Mathf.Rad2Deg;
+    // GameObject weapon = GetComponentInChildren<WeaponBehavior>().gameObject;
+    // // Vector3 difference = Camera.main.ScreenToWorldPoint(Input.mousePosition) - weapon.transform.position;
+    // Vector3 difference = GetComponent<PlayerUI>().crosshair.transform.position - weapon.transform.position;
+    // difference.Normalize();
+    // float rotation_z = Mathf.Atan2(difference.y, difference.x) * Mathf.Rad2Deg;
 
-    ValidateMovement(x, xRaw, Quaternion.Euler(0, difference.x < 0 ? 180 : 0, 0), Quaternion.Euler(difference.x < 0 ? 180 : 0, difference.x < 0 ? 180 : 0, (difference.x < 0 ? -1 : 1) * rotation_z));
+    Vector3 mousePos = Input.mousePosition;
+    mousePos.z = 5.23f;
+
+    Vector3 objectPos = Camera.main.WorldToScreenPoint(transform.position);
+    mousePos.x -= objectPos.x;
+    mousePos.y -= objectPos.y;
+
+    float angle = Mathf.Atan2(mousePos.y, mousePos.x) * Mathf.Rad2Deg;
+    // GetComponentInChildren<WeaponBehavior>().transform.rotation = Quaternion.Euler(new Vector3(0, 0, angle));
+
+    // ValidateMovement(x, xRaw, Quaternion.Euler(0, 0, 0), Quaternion.Euler(0, 0, 0));
+    ValidateMovement(x, xRaw, Quaternion.Euler(0, mousePos.x < 0 ? 180 : 0, 0), Quaternion.Euler(mousePos.x < 0 ? 180 : 0, mousePos.x < 0 ? 180 : 0, (mousePos.x < 0 ? -1 : 1) * angle));
   }
 
   void FixedUpdate()

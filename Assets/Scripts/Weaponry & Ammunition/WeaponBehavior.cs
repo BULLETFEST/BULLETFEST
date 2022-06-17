@@ -68,6 +68,7 @@ public class WeaponBehavior : MonoBehaviour
     spawnedBullet.GetComponent<Bullet>().owner = shooter;
     spawnedBullet.GetComponent<Bullet>().damage = weapon.damage;
 
+    // Destroy(spawnedBullet, 0.3f);
     NetworkServer.Spawn(spawnedBullet);
   }
 

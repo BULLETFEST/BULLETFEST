@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using Mirror;
+using System.Linq;
 
 public class PlayerSpawnSystem : NetworkBehaviour
 {
@@ -15,24 +16,32 @@ public class PlayerSpawnSystem : NetworkBehaviour
     }
   }
 
-  void Start()
+  GameObject[] spawnPoints;
+
+  void Awake()
   {
-    // if (FindObjectsOfType<PlayerSpawnSystem>().Length > 1) NetworkServer.Destroy(gameObject);
+    spawnPoints = GameObject.FindGameObjectsWithTag("Spawnpoint");
   }
+
   public override void OnStartServer()
   {
     base.OnStartServer();
-    foreach (KeyValuePair<NetworkConnectionToClient, string> data in Room.players)
+    // foreach (KeyValuePair<NetworkConnectionToClient, string> data in Room.players)
+    for (int i = 0; i < Room.players.Count; i++)
     {
-      SpawnPlayer(data.Key, data.Value);
+      // SpawnPlayer(data.Key, data.Value);
+      GameObject playerInstance = Instantiate(NetworkManager.singleton.playerPrefab, spawnPoints[i].transform.position, Quaternion.Euler(0, 0, 0));
+      // playerInstance.GetComponent<PlayerVars>().uiName.text = displayName;
+      NetworkServer.Spawn(playerInstance, Room.players.ElementAt(i).Key);
+      NetworkServer.ReplacePlayerForConnection(Room.players.ElementAt(i).Key, playerInstance);
     }
   }
-  [Server]
-  public void SpawnPlayer(NetworkConnectionToClient conn, string displayName)
-  {
-    GameObject playerInstance = Instantiate(NetworkManager.singleton.playerPrefab, Vector3.zero, Quaternion.Euler(0, 0, 0));
-    // playerInstance.GetComponent<PlayerVars>().uiName.text = displayName;
-    NetworkServer.Spawn(playerInstance, conn);
-    NetworkServer.ReplacePlayerForConnection(conn, playerInstance);
-  }
+  // [Server]
+  // public void SpawnPlayer(NetworkConnectionToClient conn, string displayName, GameObject point)
+  // {
+  //   GameObject playerInstance = Instantiate(NetworkManager.singleton.playerPrefab, Vector3.zero, Quaternion.Euler(0, 0, 0));
+  //   // playerInstance.GetComponent<PlayerVars>().uiName.text = displayName;
+  //   NetworkServer.Spawn(playerInstance, conn);
+  //   NetworkServer.ReplacePlayerForConnection(conn, playerInstance);
+  // }
 }

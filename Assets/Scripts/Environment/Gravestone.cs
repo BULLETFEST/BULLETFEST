@@ -11,7 +11,7 @@ public class Gravestone : NetworkBehaviour
   [SyncVar]
   bool played = false;
 
-  private void OnCollisionEnter2D(Collision2D other)
+  public void Collided()
   {
     if (played) return;
 

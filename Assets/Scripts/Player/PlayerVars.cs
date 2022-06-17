@@ -40,6 +40,7 @@ public class PlayerVars : NetworkBehaviour
   public WeaponBehavior weaponBehavior;
 
   [SyncVar(hook = nameof(HandleUpdateDisplayName))]
+  [HideInInspector]
   public string displayName;
 
   // Start is called before the first frame update
@@ -48,7 +49,7 @@ public class PlayerVars : NetworkBehaviour
     rb = GetComponent<Rigidbody2D>();
     bc = GetComponent<BoxCollider2D>();
     // name = PlayerPrefs.GetString("PlayerName", "Guest");
-    weaponBehavior = GetComponentInChildren<WeaponBehavior>();
+    // weaponBehavior = GetComponentInChildren<WeaponBehavior>();
   }
 
   public override void OnStartAuthority()

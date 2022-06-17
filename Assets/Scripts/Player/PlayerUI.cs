@@ -19,10 +19,27 @@ public class PlayerUI : NetworkBehaviour
 
   public Slider uiHealthSlider;
 
+  public GameObject crosshair;
+
   void Start()
   {
-    if (isLocalPlayer)
-      mainCanvas.gameObject.SetActive(true);
+    if (!isLocalPlayer) return;
+
+    mainCanvas.gameObject.SetActive(true);
+    crosshair.SetActive(true);
+    Cursor.visible = false;
+  }
+
+  private void OnApplicationFocus(bool focusStatus)
+  {
+    Cursor.visible = !focusStatus;
+  }
+
+  void Update()
+  {
+    if (!isLocalPlayer) return;
+
+    crosshair.transform.position = (Vector2)Camera.main.ScreenToWorldPoint(Input.mousePosition);
   }
 
 

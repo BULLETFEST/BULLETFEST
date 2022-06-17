@@ -77,7 +77,7 @@ public class PlayerBehavior : NetworkBehaviour
     NetworkServer.Destroy(weaponToPickup);
   }
 
-  [TargetRpc]
+  [ClientRpc]
   void TargetRpc_SwitchWeapon(string WeaponID)
   {
     weaponBehavior.SwitchWeapon(WeaponID);
@@ -183,7 +183,7 @@ public class PlayerBehavior : NetworkBehaviour
     // uiController.mainCanvas.enabled = false;
     uiController.infoGroup.alpha = 0;
 
-    Server_Die(damageDealer != null ? damageDealer.GetComponent<PlayerVars>().name : playerVars.uiName.text, playerVars.uiName.text);
+    Server_Die(damageDealer != null ? damageDealer.GetComponent<PlayerVars>().displayName : playerVars.displayName, playerVars.displayName);
   }
 
   bool dead = false;
@@ -200,7 +200,8 @@ public class PlayerBehavior : NetworkBehaviour
 
 
     ClientRpc_Die(killer, killed);
-    GameObject spawnedGravestone = Instantiate(gravestone, new Vector3(transform.position.x, transform.position.y + 50), Quaternion.Euler(0, 0, 0));
+    GameObject spawnedGravestone = Instantiate(gravestone, new Vector2(transform.position.x,
+                                                          playerVars.bc.bounds.min.y + (gravestone.GetComponentInChildren<SpriteRenderer>().bounds.size.y / 2)), Quaternion.Euler(0, 0, 0));
     NetworkServer.Spawn(spawnedGravestone);
     // print(playerVars.gameObject.name);
     // Utilities.PrintArr(NetworkServer.spawned.Keys.ToArray());
@@ -209,6 +210,11 @@ public class PlayerBehavior : NetworkBehaviour
     // spawnedKillfeedItem.GetComponent<KillFeedItem>().killer.text = killer;
     // spawnedKillfeedItem.GetComponent<KillFeedItem>().killed.text = killed;
     // NetworkServer.Spawn(spawnedKillfeedItem);
+
+    foreach (var player in NetworkServer.connections)
+    {
+      UpdateKillfeed(player.Value, killer, killed);
+    }
   }
 
   [ClientRpc]
@@ -217,16 +223,6 @@ public class PlayerBehavior : NetworkBehaviour
     playerVars.graphics.DisableAll();
     this.gameObject.GetComponent<BoxCollider2D>().enabled = false;
     this.gameObject.GetComponent<Rigidbody2D>().simulated = false;
-
-    foreach (var player in NetworkServer.connections)
-    {
-      // PlayerVars localVars = player.Value.identity.gameObject.GetComponent<PlayerVars>();
-      // GameObject spawnedKillfeedItem = Instantiate(killfeedItem, Vector3.zero, Quaternion.Euler(0, 0, 0), localVars.killfeed.transform);
-      // spawnedKillfeedItem.GetComponent<KillFeedItem>().killer.text = killer;
-      // spawnedKillfeedItem.GetComponent<KillFeedItem>().killed.text = killed;
-      UpdateKillfeed(player.Value, killer, killed);
-    }
-
   }
 
   [TargetRpc]
