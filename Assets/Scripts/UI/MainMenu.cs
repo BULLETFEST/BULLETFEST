@@ -15,9 +15,9 @@ public class MainMenu : MonoBehaviour
 
   void Start()
   {
-    nm = FindObjectOfType<NetworkManager>();
-
-    addr = PlayerPrefs.GetString("Address", "localhost");
+    nm = FindObjectOfType<MyNetworkManager>();
+    PlayerPrefs.SetString("PlayerName", Random.Range(1000, 100000).ToString());
+    addr = PlayerPrefs.GetString("Address", "127.0.0.1");
     playerName = PlayerPrefs.GetString("PlayerName", "Guest");
 
 
@@ -30,16 +30,16 @@ public class MainMenu : MonoBehaviour
     }
 
 #if UNITY_EDITOR
-    if (ClonesManager.IsClone())
-    {
-      ChangeName("B");
-      Connect();
-    }
-    else
-    {
-      ChangeName("A");
-      Host();
-    }
+    // if (ClonesManager.IsClone())
+    // {
+    //   ChangeName("B");
+    //   Connect();
+    // }
+    // else
+    // {
+    //   ChangeName("A");
+    //   Host();
+    // }
 #endif
 
   }

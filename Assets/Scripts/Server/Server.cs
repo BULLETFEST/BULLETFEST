@@ -21,7 +21,7 @@ public class Server : NetworkBehaviour
   {
     base.OnStartClient();
 
-    Server_InitializePlayer(connectionToClient);
+    // Server_InitializePlayer(connectionToClient);
   }
 
   [Command(requiresAuthority = false)]
