@@ -34,6 +34,7 @@ public class WeaponBehavior : MonoBehaviour
     {
       case "hdg":
       case "smg":
+      case "lmg":
         Fire_Regular(shooter);
         break;
       case "stg":
@@ -126,5 +127,10 @@ public class WeaponBehavior : MonoBehaviour
 
     playerVars.graphics.sprites.RemoveAt(1);
     playerVars.graphics.sprites.Add(newWeapon.GetComponentInChildren<SpriteRenderer>());
+
+    if (playerVars.reloadRoutine != null) StopCoroutine(playerVars.reloadRoutine);
+
+    uiController.uiReloadCircle.enabled = false;
+    playerVars.isReloading = false;
   }
 }

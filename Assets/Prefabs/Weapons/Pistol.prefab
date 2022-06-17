@@ -85,8 +85,9 @@ MonoBehaviour:
   shotPushback: 0
   range: 0
   damage: 5
-  fireRate: 0.1
-  bulletVelocity: 20
+  fireRate: 7
+  bulletVelocity: 35
+  movementUnlockTime: 0
   weaponName: Pistol
   ID: HDG_Pistol
   firingMode: 0
@@ -94,8 +95,8 @@ MonoBehaviour:
   bulletPrefab: {fileID: 7740076768845922023, guid: bd0cfe2c8625b2c4daefea4409372304, type: 3}
   bulletSpawnPoint: {fileID: 5449872525946486571}
   weaponSprite: {fileID: 1275859677, guid: 426f6200e188d1241b9d9fcb1d9780f6, type: 3}
-  fireTimeout: 0
-  bulletsInMag: 0
+  fireTimeout: 187.58855
+  bulletsInMag: 6
 --- !u!1 &3309130001094873767
 GameObject:
   m_ObjectHideFlags: 0

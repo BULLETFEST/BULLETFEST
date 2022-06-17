@@ -24,7 +24,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2123235757600240088}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0.5, y: 0.225, z: 0}
+  m_LocalPosition: {x: 1.4, y: 0.07, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -56,8 +56,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2318460577565423013}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 0.01, y: 0.01, z: 0.01}
+  m_LocalPosition: {x: 0.3, y: 0, z: 0}
+  m_LocalScale: {x: 0.02, y: 0.02, z: 0.01}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 446163630103249763}
@@ -104,7 +104,7 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 1
-  m_Sprite: {fileID: -1454497904, guid: cce83fdaf70387641a662afe9fdffe74, type: 3}
+  m_Sprite: {fileID: -1035430623, guid: 45c1defb9b321b94ca6253261ce2492f, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -126,7 +126,7 @@ GameObject:
   - component: {fileID: 446163630103249763}
   - component: {fileID: 3366149238512663894}
   m_Layer: 31
-  m_Name: Mac10
+  m_Name: M249
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -161,23 +161,23 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 79cff5247a00f9440ba17186830d8908, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  magazineSize: 30
+  magazineSize: 100
   isShotgun: 0
   pelletCount: 0
-  inaccuracyRange: fbffffff05000000
-  reloadTime: 3
-  shotPushback: 2
+  inaccuracyRange: f9ffffff07000000
+  reloadTime: 1
+  shotPushback: 15
   range: 0
   damage: 1
-  fireRate: 20
-  bulletVelocity: 35
-  movementUnlockTime: 0.2
-  weaponName: Mac-10
-  ID: SMG_Mac10
+  fireRate: 35
+  bulletVelocity: 50
+  movementUnlockTime: 0.25
+  weaponName: M249
+  ID: LMG_M249
   firingMode: 2
   reloadType: 0
   bulletPrefab: {fileID: 7740076768845922023, guid: bd0cfe2c8625b2c4daefea4409372304, type: 3}
   bulletSpawnPoint: {fileID: 5449872525946486571}
-  weaponSprite: {fileID: -1454497904, guid: cce83fdaf70387641a662afe9fdffe74, type: 3}
-  fireTimeout: 134.44652
-  bulletsInMag: 0
+  weaponSprite: {fileID: -1035430623, guid: 45c1defb9b321b94ca6253261ce2492f, type: 3}
+  fireTimeout: 90.863235
+  bulletsInMag: 100

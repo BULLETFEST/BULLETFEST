@@ -81,6 +81,8 @@ public class PlayerBehavior : NetworkBehaviour
   void TargetRpc_SwitchWeapon(string WeaponID)
   {
     weaponBehavior.SwitchWeapon(WeaponID);
+
+    // if (playerVars.reloadRoutine != null) 
   }
 
   [Command] void ShootKeyUp() => shootKeyUp = true;
@@ -112,7 +114,7 @@ public class PlayerBehavior : NetworkBehaviour
       if (weapon.fireTimeout > NetworkTime.time) return;
 
       weapon.bulletsInMag--;
-      weapon.fireTimeout = (float)NetworkTime.time + weapon.fireRate;
+      weapon.fireTimeout = (float)NetworkTime.time + (1f / weapon.fireRate);
 
       playerVars.weaponBehavior.Shoot(weapon.ID, connectionToClient);
       Rpc_AddForce(gameObject);

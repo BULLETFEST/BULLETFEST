@@ -169,8 +169,8 @@ MonoBehaviour:
   shotPushback: 100
   range: 0
   damage: 2
-  fireRate: 0.05
-  bulletVelocity: 20
+  fireRate: 5
+  bulletVelocity: 50
   movementUnlockTime: 0.1
   weaponName: Double Barrel
   ID: STG_DoubleBarrel
@@ -179,5 +179,5 @@ MonoBehaviour:
   bulletPrefab: {fileID: 7740076768845922023, guid: bd0cfe2c8625b2c4daefea4409372304, type: 3}
   bulletSpawnPoint: {fileID: 5449872525946486571}
   weaponSprite: {fileID: 46198654, guid: 42f7f1a58f976a5409856172beec4300, type: 3}
-  fireTimeout: 17.043388
+  fireTimeout: 65.9566
   bulletsInMag: 2
