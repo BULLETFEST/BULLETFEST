@@ -12,7 +12,7 @@ public class MyNetworkManager : NetworkManager
   private GameObject playerCard;
   private GameObject playerCards;
 
-  public List<PlayerData> players { get; } = new List<PlayerData>();
+  public Dictionary<NetworkConnectionToClient, string> players { get; } = new Dictionary<NetworkConnectionToClient, string>();
 
   public override void Start()
   {
@@ -45,16 +45,27 @@ public class MyNetworkManager : NetworkManager
 
   public override void OnServerSceneChanged(string sceneName)
   {
-    base.OnServerSceneChanged(sceneName);
 
-    playerCards = GameObject.FindGameObjectWithTag("PlayerCards");
+    if (SceneManager.GetActiveScene().path == menu)
+      playerCards = GameObject.FindGameObjectWithTag("PlayerCards");
+    else
+    {
+      if (!FindObjectOfType<PlayerSpawnSystem>())
+      {
+        GameObject go = new GameObject("PlayerSpawner", typeof(PlayerSpawnSystem));
+        GameObject playerSpawnSystem = Instantiate(go);
+        Destroy(go);
+        NetworkServer.Spawn(playerSpawnSystem);
+      }
+    }
+
+    base.OnServerSceneChanged(sceneName);
   }
 
   public override void OnServerAddPlayer(NetworkConnectionToClient conn)
   {
     if (SceneManager.GetActiveScene().path == menu)
     {
-
       GameObject player = Instantiate(playerCard, Vector3.zero, Quaternion.Euler(0, 0, 0), playerCards.transform);
       player.GetComponent<PlayerCard>().DisplayNameUI.text = "Loading...";
       NetworkServer.AddPlayerForConnection(conn, player);
@@ -63,7 +74,7 @@ public class MyNetworkManager : NetworkManager
 
   public override void OnServerDisconnect(NetworkConnectionToClient conn)
   {
-    players.Remove(players.Where(x => x.netId == conn.connectionId).ToArray()[0]);
+    players.Remove(conn);
     base.OnServerDisconnect(conn);
   }
 
@@ -71,15 +82,15 @@ public class MyNetworkManager : NetworkManager
   {
     for (int i = players.Count - 1; i >= 0; i--)
     {
-      var conn = players[i].netId;
+      var conn = players.Keys.ToArray()[i];
       var gameplayerInstance = Instantiate(base.playerPrefab);
       // gameplayerInstance.SetDisplayName(RoomPlayers[i].DisplayName);
 
-      NetworkServer.Destroy(NetworkServer.connections[conn].identity.gameObject);
+      NetworkServer.Destroy(conn.identity.gameObject);
 
-      NetworkServer.ReplacePlayerForConnection(NetworkServer.connections[conn], gameplayerInstance.gameObject);
+      NetworkServer.ReplacePlayerForConnection(conn, gameplayerInstance.gameObject);
       // NetworkClient.Ready();
-      NetworkServer.SetClientReady(NetworkServer.connections[conn]);
+      NetworkServer.SetClientReady(conn);
     }
 
     base.ServerChangeScene(newSceneName);

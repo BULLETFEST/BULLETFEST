@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
 using Mirror;
+using System.Linq;
 
 public class PlayerCard : NetworkBehaviour
 {
@@ -36,15 +37,11 @@ public class PlayerCard : NetworkBehaviour
     // NetworkServer.SetClientReady(connectionToClient);
   }
 
-  [ServerCallback]
-  public override void OnStartClient()
-  {
-    Room.players.Add(new PlayerData()
-    {
-      displayName = displayName,
-      netId = connectionToClient.connectionId
-    });
-  }
+  // [ServerCallback]
+  // public override void OnStartClient()
+  // {
+
+  // }
 
   [Command]
   void UpdateDisplayName() => displayName = PlayerPrefs.GetString("PlayerName", "Guest");
@@ -52,6 +49,10 @@ public class PlayerCard : NetworkBehaviour
   void HandleUpdateName(string oldName, string newName)
   {
     DisplayNameUI.text = newName;
+
+    if (Room.players.ContainsKey(connectionToClient))
+      Room.players.Remove(connectionToClient);
+    Room.players.Add(connectionToClient, newName);
   }
 
   [ClientRpc]

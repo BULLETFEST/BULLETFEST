@@ -15,8 +15,8 @@ public class PlayerNetworking : NetworkBehaviour
 
     playerVars = GetComponent<PlayerVars>();
 
-    string playerName = PlayerPrefs.GetString("PlayerName", "Guest");
-    ClientRpc_InitializePlayer(playerName);
+    // string playerName = PlayerPrefs.GetString("PlayerName", "Guest");
+    // ClientRpc_InitializePlayer(playerName);
   }
 
   [ClientRpc]

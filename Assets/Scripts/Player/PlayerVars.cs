@@ -6,6 +6,17 @@ using Mirror;
 
 public class PlayerVars : NetworkBehaviour
 {
+  private MyNetworkManager room;
+  private MyNetworkManager Room
+  {
+    get
+    {
+      if (room != null) { return room; }
+      return room = NetworkManager.singleton as MyNetworkManager;
+    }
+  }
+
+
   public TextMeshProUGUI uiName;
 
   public Rigidbody2D rb { get; set; }
@@ -28,13 +39,35 @@ public class PlayerVars : NetworkBehaviour
 
   public WeaponBehavior weaponBehavior;
 
+  [SyncVar(hook = nameof(HandleUpdateDisplayName))]
+  public string displayName;
+
   // Start is called before the first frame update
   void Start()
   {
     rb = GetComponent<Rigidbody2D>();
     bc = GetComponent<BoxCollider2D>();
-    name = PlayerPrefs.GetString("PlayerName", "Guest");
+    // name = PlayerPrefs.GetString("PlayerName", "Guest");
     weaponBehavior = GetComponentInChildren<WeaponBehavior>();
   }
 
+  public override void OnStartAuthority()
+  {
+    base.OnStartAuthority();
+    UpdateDisplayName();
+  }
+
+  [Command]
+  void UpdateDisplayName() => displayName = Room.players[connectionToClient];
+
+  // [ServerCallback]
+  void HandleUpdateDisplayName(string oldName, string newName)
+  {
+    uiName.text = newName;
+
+    Rpc_UpdateDisplayName();
+  }
+
+  [ClientRpc]
+  void Rpc_UpdateDisplayName() => uiName.text = displayName;
 }
