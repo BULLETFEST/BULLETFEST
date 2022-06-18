@@ -165,13 +165,15 @@ MonoBehaviour:
   isShotgun: 0
   pelletCount: 0
   inaccuracyRange: f9ffffff07000000
-  reloadTime: 1
-  shotPushback: 15
+  reloadTime: 10
+  shotPushback: 30
   range: 0
   damage: 1
   fireRate: 35
   bulletVelocity: 50
   movementUnlockTime: 0.25
+  cameraShakeIntensity: 0.3
+  cameraShakeDuration: 0.05
   weaponName: M249
   ID: LMG_M249
   firingMode: 2

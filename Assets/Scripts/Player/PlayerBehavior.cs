@@ -118,7 +118,6 @@ public class PlayerBehavior : NetworkBehaviour
 
       playerVars.weaponBehavior.Shoot(weapon.ID, connectionToClient);
       Rpc_AddForce(gameObject);
-      playerVars.weaponBehavior.AddForce(gameObject);
       if (weapon.bulletsInMag <= 0)
       {
         playerVars.reloadRoutine = StartCoroutine(playerVars.weaponBehavior.Reload());
@@ -138,6 +137,8 @@ public class PlayerBehavior : NetworkBehaviour
   [TargetRpc]
   void Target_UpdateUI(int bulletsInMag)
   {
+    StartCoroutine(Camera.main.GetComponent<CameraShake>().Shake(playerVars.weaponBehavior.weapon.cameraShakeDuration,
+                                                                 playerVars.weaponBehavior.weapon.cameraShakeIntensity));
     playerVars.weaponBehavior.weapon.bulletsInMag = bulletsInMag;
     uiController.UpdateAmmoText(bulletsInMag, playerVars.weaponBehavior.weapon.magazineSize);
   }

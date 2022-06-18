@@ -5,9 +5,9 @@ using Mirror;
 
 public class CameraShake : NetworkBehaviour
 {
-  IEnumerator Shake(float duration, float magnitude)
+  public IEnumerator Shake(float duration, float magnitude)
   {
-    Vector2 origin = transform.localPosition;
+    Vector3 origin = transform.position;
 
     float elapsed = 0.0f;
 
@@ -16,16 +16,16 @@ public class CameraShake : NetworkBehaviour
       float x = Random.Range(-1f, 1f) * magnitude;
       float y = Random.Range(-1f, 1f) * magnitude;
 
-      transform.localPosition = new Vector2(x, y);
+      transform.position = new Vector3(x, y, -10);
 
       elapsed += Time.deltaTime;
 
       yield return null;
     }
 
-    transform.localPosition = origin;
+    transform.position = new Vector3(0, 0, -10);
   }
 
   [ClientRpc]
-  void ShakeAll(float duration, float magnitude) => Shake(duration, magnitude);
+  void ShakeAll(float duration, float magnitude) => StartCoroutine(Shake(duration, magnitude));
 }

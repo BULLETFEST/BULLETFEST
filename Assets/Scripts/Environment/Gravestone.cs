@@ -11,12 +11,19 @@ public class Gravestone : NetworkBehaviour
   [SyncVar]
   bool played = false;
 
+  [Command(requiresAuthority = false)]
   public void Collided()
   {
     if (played) return;
 
+    played = true;
+    Rpc_Collided();
+  }
+
+  [ClientRpc]
+  void Rpc_Collided()
+  {
     dirt.SetActive(true);
     particleSystem.Play();
-    played = true;
   }
 }

@@ -34,6 +34,9 @@ public class WeaponClass : MonoBehaviour
   public float bulletVelocity;
   public float movementUnlockTime;
 
+  public float cameraShakeIntensity,
+               cameraShakeDuration;
+
   public string weaponName;
   public string ID;
 

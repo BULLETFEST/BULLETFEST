@@ -52,6 +52,7 @@ public class WeaponBehavior : MonoBehaviour
   {
     if (weapon.shotPushback == 0) return;
     PlayerVars shooterVars = target.GetComponent<PlayerVars>();
+    shooterVars.rb.velocity = new Vector2(0, shooterVars.rb.velocity.y);
     shooterVars.lockMovement = true;
     Vector2 vel = shooterVars.weaponBehavior.weapon.shotPushback * -shooterVars.weaponBehavior.transform.right;
     shooterVars.rb.AddForce(new Vector2(vel.x, vel.y / 4), ForceMode2D.Impulse);
