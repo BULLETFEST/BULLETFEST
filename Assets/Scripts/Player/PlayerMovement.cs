@@ -12,15 +12,12 @@ public class PlayerMovement : NetworkBehaviour
 
   #endregion
 
-  [SyncVar]
-  [SerializeField]
-  float moveForce = 10f;
+  const float moveForce = 10f;
 
-  [SyncVar]
-  float jumpForce = 1500;
+  const float jumpForce = 1500;
 
-  [SyncVar]
-  float maxSpeedX = 10;
+  // [SyncVar]
+  // float maxSpeedX = 10;
 
   public PlayerVars playerVars;
 
@@ -30,7 +27,7 @@ public class PlayerMovement : NetworkBehaviour
 
   CharacterController characterController;
 
-  void Awake()
+  void Start()
   {
     playerVars = GetComponent<PlayerVars>();
 
@@ -85,7 +82,6 @@ public class PlayerMovement : NetworkBehaviour
   [Command]
   void ValidateMovement(float x, float xRaw, Quaternion graphicsQuaternion, Quaternion gunQuaternion)
   {
-    GameObject playerObj = this.gameObject;
     x = Mathf.Clamp(x, -1, 1);
     xRaw = Mathf.Clamp(xRaw, -1, 1);
     if (playerVars.lockMovement)
@@ -95,16 +91,15 @@ public class PlayerMovement : NetworkBehaviour
     }
 
 
-    HandleMovement(playerObj, x, xRaw, graphicsQuaternion, gunQuaternion);
+    HandleMovement(x, xRaw, graphicsQuaternion, gunQuaternion);
   }
 
   [ClientRpc]
-  void HandleMovement(GameObject playerObj, float x, float xRaw, Quaternion graphicsQuaternion, Quaternion gunQuaternion)
+  void HandleMovement(float x, float xRaw, Quaternion graphicsQuaternion, Quaternion gunQuaternion)
   {
-    Rigidbody2D rb = playerObj.GetComponent<Rigidbody2D>();
-    BoxCollider2D bc = playerObj.GetComponent<BoxCollider2D>();
+    if (playerVars == null) return;
 
-    if ((PlayersOnLeft(playerObj, bc) && xRaw == -1) || (PlayersOnRight(playerObj, bc) && xRaw == 1)) xRaw = 0;
+    if ((PlayersOnLeft(gameObject, playerVars.bc) && xRaw == -1) || (PlayersOnRight(gameObject, playerVars.bc) && xRaw == 1)) xRaw = 0;
 
     if (xRaw != 0)
     {
@@ -112,21 +107,22 @@ public class PlayerMovement : NetworkBehaviour
       float targetSpeed = moveForce * xRaw;
 
       //Check difference between current speed and desired speed
-      float speedDiff = targetSpeed - Mathf.Clamp(rb.velocity.x, -moveForce, moveForce);
+      float speedDiff = targetSpeed - Mathf.Clamp(playerVars.rb.velocity.x, -moveForce, moveForce);
 
-      rb.AddForce(new Vector2(speedDiff, 0), ForceMode2D.Impulse);
+      playerVars.rb.AddForce(new Vector2(speedDiff, 0), ForceMode2D.Impulse);
     }
 
     // Add drag
     // https://forum.unity.com/threads/physics-drag-formula.252406/
-    rb.velocity = new Vector2(rb.velocity.x * (1 - Time.deltaTime * 50), rb.velocity.y);
+    playerVars.rb.velocity = new Vector2(playerVars.rb.velocity.x * (1 - Time.deltaTime * 50), playerVars.rb.velocity.y);
+    // playerVars.rb.velocity = new Vector2(playerVars.rb.velocity.x * (0.8f), playerVars.rb.velocity.y);
 
 
     if (playerVars.lockWeapon) return;
 
-    playerObj.GetComponent<PlayerVars>().graphics.transform.rotation = graphicsQuaternion;
+    playerVars.graphics.transform.rotation = graphicsQuaternion;
 
-    playerObj.GetComponentInChildren<WeaponBehavior>().transform.localRotation = gunQuaternion;
+    playerVars.weaponBehavior.transform.localRotation = gunQuaternion;
   }
 
   // void LimitVelocity(float x, Rigidbody2D rb)
