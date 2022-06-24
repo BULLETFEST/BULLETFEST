@@ -4,15 +4,24 @@ using UnityEngine;
 using Mirror;
 using System.Linq;
 using UnityEngine.SceneManagement;
+using System.IO;
 
 public class MyNetworkManager : NetworkManager
 {
   [Scene][SerializeField] private string menu = string.Empty;
 
+  string[] playableScenes;
+
   private GameObject playerCard;
   private GameObject playerCards;
+  private GameObject LeaderboardItem;
 
-  public Dictionary<NetworkConnectionToClient, string> players { get; } = new Dictionary<NetworkConnectionToClient, string>();
+  [SerializeField]
+  private GameObject playerSpawnSystem;
+
+  public Dictionary<NetworkConnectionToClient, PlayerData> players { get; } = new Dictionary<NetworkConnectionToClient, PlayerData>();
+
+  public bool gameStarted = false;
 
   public override void Start()
   {
@@ -23,7 +32,12 @@ public class MyNetworkManager : NetworkManager
       NetworkClient.RegisterPrefab(prefab);
       if (prefab.name == "PlayerCard") playerCard = prefab;
     }
+
+    LeaderboardItem = (GameObject)Resources.Load("SpawnableNoNetId/LeaderboardItem");
+    NetworkClient.RegisterPrefab(LeaderboardItem);
   }
+
+  public System.Action PlayerUpdate;
 
   public bool isHost = false;
 
@@ -31,8 +45,6 @@ public class MyNetworkManager : NetworkManager
   {
     base.OnStartServer();
     isHost = true;
-
-    // NetworkServer.RegisterHandler<Dictionary<NetworkConnectionToClient, string>>(AddPlayer);
   }
 
   [Server]
@@ -45,21 +57,30 @@ public class MyNetworkManager : NetworkManager
 
   public override void OnServerSceneChanged(string sceneName)
   {
+    base.OnServerSceneChanged(sceneName);
 
     if (SceneManager.GetActiveScene().path == menu)
       playerCards = GameObject.FindGameObjectWithTag("PlayerCards");
-    else
+    else if (SceneManager.GetActiveScene().name != "End")
     {
       if (!FindObjectOfType<PlayerSpawnSystem>())
       {
-        GameObject go = new GameObject("PlayerSpawner", typeof(PlayerSpawnSystem));
-        GameObject playerSpawnSystem = Instantiate(go);
-        Destroy(go);
-        NetworkServer.Spawn(playerSpawnSystem);
+        // GameObject go = new GameObject("PlayerSpawner", typeof(PlayerSpawnSystem));
+        // Destroy(go);
+        GameObject go = Instantiate(playerSpawnSystem);
+        NetworkServer.Spawn(go);
       }
     }
-
-    base.OnServerSceneChanged(sceneName);
+    else
+    {
+      if (!FindObjectOfType<EndScreenUI>())
+      {
+        GameObject go = new GameObject("LeaderboardItemSpawner", typeof(EndScreenUI));
+        GameObject LeaderboardItemSpawner = Instantiate(go);
+        Destroy(go);
+        NetworkServer.Spawn(LeaderboardItemSpawner);
+      }
+    }
   }
 
   public override void OnServerAddPlayer(NetworkConnectionToClient conn)
@@ -75,30 +96,131 @@ public class MyNetworkManager : NetworkManager
   public override void OnServerDisconnect(NetworkConnectionToClient conn)
   {
     players.Remove(conn);
+
+    PlayerUpdate?.Invoke();
+
+    if (gameStarted)
+    {
+      deadPlayers--;
+      OnPlayerDie();
+    }
+
     base.OnServerDisconnect(conn);
+
+
   }
+
+
+  int deadPlayers = 0;
+
+  [Server]
+  public void OnPlayerDie()
+  {
+    deadPlayers++;
+    if (deadPlayers == NetworkServer.connections.Count - 1)
+    {
+      if (playableScenes.Length == 0)
+      {
+        gameStarted = false;
+        deadPlayers = 0;
+        ServerChangeScene("End");
+      }
+      else
+      {
+        deadPlayers = 0;
+        CycleMap();
+      }
+    }
+  }
+
+  [Server]
+  public void StartGame()
+  {
+    int sceneCount = SceneManager.sceneCountInBuildSettings;
+    List<string> _scenes = new();
+    for (int i = 0; i < sceneCount; i++)
+    {
+      string path = SceneUtility.GetScenePathByBuildIndex(i);
+      string dir = Path.GetDirectoryName(path);
+      string sName = Path.GetFileNameWithoutExtension(path);
+
+      if (dir.EndsWith("4Players") && players.Count <= 4) _scenes.Add(sName);
+      else if (dir.EndsWith("16Players") && players.Count <= 16) _scenes.Add(sName);
+    }
+
+    playableScenes = _scenes.ToArray();
+
+    gameStarted = true;
+
+    CycleMap();
+  }
+
+  public void CycleMap()
+  {
+    int chosenScene = Random.Range(0, playableScenes.Length);
+
+    string chosenSceneId = playableScenes[chosenScene];
+
+    List<string> _scenes = playableScenes.ToList();
+
+    _scenes.Remove(chosenSceneId);
+
+    playableScenes = _scenes.ToArray();
+
+    ServerChangeScene(chosenSceneId);
+  }
+
+
 
   public override void ServerChangeScene(string newSceneName)
   {
-    for (int i = players.Count - 1; i >= 0; i--)
-    {
-      var conn = players.Keys.ToArray()[i];
-      var gameplayerInstance = Instantiate(base.playerPrefab);
-      // gameplayerInstance.SetDisplayName(RoomPlayers[i].DisplayName);
+    // for (int i = players.Count - 1; i >= 0; i--)
+    // {
+    //   var conn = players.Keys.ToArray()[i];
+    //   var gameplayerInstance = Instantiate(base.playerPrefab);
+    //   // gameplayerInstance.SetDisplayName(RoomPlayers[i].DisplayName);
 
-      NetworkServer.Destroy(conn.identity.gameObject);
+    //   NetworkServer.Destroy(conn.identity.gameObject);
 
-      NetworkServer.ReplacePlayerForConnection(conn, gameplayerInstance.gameObject);
-      // NetworkClient.Ready();
-      NetworkServer.SetClientReady(conn);
-    }
+    //   NetworkServer.ReplacePlayerForConnection(conn, gameplayerInstance.gameObject);
+    //   NetworkServer.SetClientReady(conn);
+    // }
 
     base.ServerChangeScene(newSceneName);
+    // NetworkServer.SetClientReady();
+
+    // foreach (NetworkConnectionToClient conn in NetworkServer.connections.Values)
+    // {
+    //   NetworkServer.SetClientReady(conn);
+    // }
   }
 
   public override void OnStopServer()
   {
     players.Clear();
     base.OnStopServer();
+  }
+
+  public void Disconnect()
+  {
+    if (NetworkServer.active && NetworkClient.isConnected)
+    {
+      StopHost();
+    }
+    // stop client if client-only
+    else if (NetworkClient.isConnected)
+    {
+      StopClient();
+    }
+
+    // SceneManager.SetActiveScene(SceneManager.GetSceneByName("MainMenu"));
+    // stop server if server-only
+    // else if (NetworkServer.active)
+    // {
+    //   if (GUILayout.Button("Stop Server"))
+    //   {
+    //     manager.StopServer();
+    //   }
+    // }
   }
 }

@@ -8,6 +8,8 @@ TagManager:
   - PlayerCards
   - PlayerCard
   - Spawnpoint
+  - Leaderboard
+  - LeaderboardItem
   layers:
   - Default
   - TransparentFX

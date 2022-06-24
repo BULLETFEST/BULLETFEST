@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using Mirror;
-using ParrelSync;
+// using ParrelSync;
 public class MainMenu : MonoBehaviour
 {
   NetworkManager nm;
@@ -29,17 +29,19 @@ public class MainMenu : MonoBehaviour
       nm.StopClient();
     }
 
+    // Application.targetFrameRate = 60;
+
 #if UNITY_EDITOR
-    if (ClonesManager.IsClone())
-    {
-      ChangeName("B");
-      Connect();
-    }
-    else
-    {
-      ChangeName("A");
-      Host();
-    }
+    // if (ClonesManager.IsClone())
+    // {
+    //   ChangeName("B");
+    //   Connect();
+    // }
+    // else
+    // {
+    //   ChangeName("A");
+    //   Host();
+    // }
 #endif
 
   }

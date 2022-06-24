@@ -3,8 +3,9 @@ using System.Collections.Generic;
 using UnityEngine;
 using Mirror;
 using UnityEngine.UI;
+using System;
 
-public class LobbyUIManager : MonoBehaviour
+public class LobbyUIManager : NetworkBehaviour
 {
   private MyNetworkManager room;
   private MyNetworkManager Room
@@ -18,18 +19,38 @@ public class LobbyUIManager : MonoBehaviour
 
   public Button startButton;
 
-  void Start()
+  public void Start()
   {
-    if (!Room.isHost) startButton.interactable = false;
+    // base.OnStartLocalPlayer();
+
+    if (Room.isHost)
+    {
+      // startButton.interactable = true;
+      Room.PlayerUpdate += PlayerUpdate;
+      PlayerUpdate();
+    }
 
     startButton.onClick.AddListener(delegate { StartGame(); });
+
   }
 
   [Server]
   void StartGame()
   {
-    Room.ServerChangeScene("Game");
+    Room.StartGame();
+  }
 
+  public void PlayerUpdate()
+  {
+    // print("a");
+    // if (Room.players.Count < 2) startButton.interactable = false;
+    // else 
+    startButton.interactable = true;
+  }
+
+  private void OnDestroy()
+  {
+    Room.PlayerUpdate -= PlayerUpdate;
   }
 
 

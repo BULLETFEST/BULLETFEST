@@ -21,6 +21,7 @@ public class PlayerSpawnSystem : NetworkBehaviour
   void Awake()
   {
     spawnPoints = GameObject.FindGameObjectsWithTag("Spawnpoint");
+    print("h");
   }
 
   public override void OnStartServer()

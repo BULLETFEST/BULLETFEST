@@ -202,7 +202,7 @@ MonoBehaviour:
     m_PressedTrigger: Pressed
     m_SelectedTrigger: Selected
     m_DisabledTrigger: Disabled
-  m_Interactable: 1
+  m_Interactable: 0
   m_TargetGraphic: {fileID: 71817507}
   m_OnClick:
     m_PersistentCalls:
@@ -419,6 +419,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1131764260}
   - component: {fileID: 1131764261}
+  - component: {fileID: 1131764262}
   m_Layer: 0
   m_Name: LobbyUIManager
   m_TagString: Untagged
@@ -453,7 +454,26 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f7c030cd242b2974fa82f00cdf3b0f98, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  syncMode: 0
+  syncInterval: 0.1
   startButton: {fileID: 71817506}
+--- !u!114 &1131764262
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1131764259}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9b91ecbcc199f4492b9a91e820070131, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  sceneId: 985275693
+  serverOnly: 1
+  visible: 0
+  m_AssetId: 
+  hasSpawned: 0
 --- !u!1 &1303093676
 GameObject:
   m_ObjectHideFlags: 0

@@ -29,7 +29,6 @@ public class PlayerCard : NetworkBehaviour
 
     GameObject playerCards = GameObject.FindGameObjectWithTag("PlayerCards");
     GameObject[] _playerCards = GameObject.FindGameObjectsWithTag("PlayerCard");
-    print(_playerCards.Length);
     foreach (GameObject _playerCard in _playerCards)
       _playerCard.transform.parent = playerCards.transform;
 
@@ -50,9 +49,13 @@ public class PlayerCard : NetworkBehaviour
   {
     DisplayNameUI.text = newName;
 
+    // print(connectionToClient);
+
     if (Room.players.ContainsKey(connectionToClient))
       Room.players.Remove(connectionToClient);
-    Room.players.Add(connectionToClient, newName);
+    Room.players.Add(connectionToClient, new PlayerData(newName));
+
+    Room.PlayerUpdate?.Invoke();
   }
 
   [ClientRpc]

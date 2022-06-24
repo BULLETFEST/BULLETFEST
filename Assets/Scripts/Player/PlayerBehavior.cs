@@ -185,13 +185,13 @@ public class PlayerBehavior : NetworkBehaviour
     if (health > 0) return;
     // uiController.mainCanvas.enabled = false;
     uiController.infoGroup.alpha = 0;
-
-    Server_Die(damageDealer != null ? damageDealer.GetComponent<PlayerVars>().displayName : playerVars.displayName, playerVars.displayName);
+    Server_Die(damageDealer != null ? damageDealer : gameObject,
+               gameObject);
   }
 
   bool dead = false;
   [Command(requiresAuthority = false)]
-  public void Server_Die(string killer, string killed)
+  public void Server_Die(GameObject killer, GameObject killed)
   {
     if (dead) return;
 
@@ -200,24 +200,25 @@ public class PlayerBehavior : NetworkBehaviour
     playerVars.lockShooting = true;
     playerVars.lockWeapon = true;
 
+    NetworkConnectionToClient killerIdentity = killer.GetComponent<NetworkIdentity>().connectionToClient;
 
+    if (killer == killed) playerVars.Room.players[killerIdentity].kills--;
+    else playerVars.Room.players[killerIdentity].kills++;
 
-    ClientRpc_Die(killer, killed);
+    string killerName = killer.GetComponent<PlayerVars>().displayName;
+    string killedName = killed.GetComponent<PlayerVars>().displayName;
+
+    ClientRpc_Die(killerName, killedName);
     GameObject spawnedGravestone = Instantiate(gravestone, new Vector2(transform.position.x,
                                                           playerVars.bc.bounds.min.y + (gravestone.GetComponentInChildren<SpriteRenderer>().bounds.size.y / 2)), Quaternion.Euler(0, 0, 0));
     NetworkServer.Spawn(spawnedGravestone);
-    // print(playerVars.gameObject.name);
-    // Utilities.PrintArr(NetworkServer.spawned.Keys.ToArray());
-    // print();
-    // GameObject spawnedKillfeedItem = Instantiate(killfeedItem, Vector2.zero, Quaternion.Euler(0, 0, 0), NetworkServer.connections[0].identity.GetComponent<PlayerVars>().killfeed.transform);
-    // spawnedKillfeedItem.GetComponent<KillFeedItem>().killer.text = killer;
-    // spawnedKillfeedItem.GetComponent<KillFeedItem>().killed.text = killed;
-    // NetworkServer.Spawn(spawnedKillfeedItem);
 
     foreach (var player in NetworkServer.connections)
     {
-      UpdateKillfeed(player.Value, killer, killed);
+      UpdateKillfeed(player.Value, killerName, killedName);
     }
+
+    playerVars.Room.OnPlayerDie();
   }
 
   [ClientRpc]

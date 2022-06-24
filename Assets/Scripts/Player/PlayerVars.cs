@@ -7,7 +7,7 @@ using Mirror;
 public class PlayerVars : NetworkBehaviour
 {
   private MyNetworkManager room;
-  private MyNetworkManager Room
+  public MyNetworkManager Room
   {
     get
     {
@@ -39,8 +39,8 @@ public class PlayerVars : NetworkBehaviour
 
   public WeaponBehavior weaponBehavior;
 
+  // [HideInInspector]
   [SyncVar(hook = nameof(HandleUpdateDisplayName))]
-  [HideInInspector]
   public string displayName;
 
   // Start is called before the first frame update
@@ -59,7 +59,7 @@ public class PlayerVars : NetworkBehaviour
   }
 
   [Command]
-  void UpdateDisplayName() => displayName = Room.players[connectionToClient];
+  void UpdateDisplayName() => displayName = Room.players[connectionToClient].displayName;
 
   // [ServerCallback]
   void HandleUpdateDisplayName(string oldName, string newName)
@@ -70,5 +70,9 @@ public class PlayerVars : NetworkBehaviour
   }
 
   [ClientRpc]
-  void Rpc_UpdateDisplayName() => uiName.text = displayName;
+  void Rpc_UpdateDisplayName()
+  {
+    uiName.text = displayName;
+    name = displayName;
+  }
 }

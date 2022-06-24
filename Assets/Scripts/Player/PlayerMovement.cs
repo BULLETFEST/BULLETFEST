@@ -13,6 +13,7 @@ public class PlayerMovement : NetworkBehaviour
   #endregion
 
   [SyncVar]
+  [SerializeField]
   float moveForce = 10f;
 
   [SyncVar]
