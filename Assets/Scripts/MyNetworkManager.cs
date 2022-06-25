@@ -19,9 +19,13 @@ public class MyNetworkManager : NetworkManager
   [SerializeField]
   private GameObject playerSpawnSystem;
 
+  public GameObject winnerUI;
+
   public Dictionary<NetworkConnectionToClient, PlayerData> players { get; } = new Dictionary<NetworkConnectionToClient, PlayerData>();
 
   public bool gameStarted = false;
+
+  public NetworkConnectionToClient winner;
 
   public override void Start()
   {
@@ -119,17 +123,36 @@ public class MyNetworkManager : NetworkManager
     deadPlayers++;
     if (deadPlayers == NetworkServer.connections.Count - 1)
     {
-      if (playableScenes.Length == 0)
+      winner = GameObject.FindGameObjectsWithTag("Player").Where(x => x.activeInHierarchy).ToArray()[0].GetComponent<NetworkIdentity>().connectionToClient;
+
+      // FindObjectOfType<Server>().Cmd_SpawnWinnerCanvas();
+
+      PlayerVars winnerVars = winner.identity.GetComponent<PlayerVars>();
+
+      winnerVars.lockWeapon = true;
+      winnerVars.lockMovement = true;
+      winnerVars.lockShooting = true;
+
+      GameObject winnerUi = Instantiate(winnerUI);
+      // winnerUi.GetComponent<WinnerUI>().winnerText.text = $"{players[winner].displayName} won the round!";
+      NetworkServer.Spawn(winnerUi);
+
+      foreach (NetworkConnectionToClient conn in NetworkServer.connections.Values)
       {
-        gameStarted = false;
-        deadPlayers = 0;
-        ServerChangeScene("End");
+        FindObjectOfType<Server>().SetWinnerText(conn, $"{players[winner].displayName} won the round!");
       }
-      else
-      {
-        deadPlayers = 0;
-        CycleMap();
-      }
+
+      // if (playableScenes.Length == 0)
+      // {
+      //   gameStarted = false;
+      //   deadPlayers = 0;
+      //   ServerChangeScene("End");
+      // }
+      // else
+      // {
+      //   deadPlayers = 0;
+      //   CycleMap();
+      // }
     }
   }
 
@@ -155,8 +178,19 @@ public class MyNetworkManager : NetworkManager
     CycleMap();
   }
 
+  [Server]
   public void CycleMap()
   {
+
+    deadPlayers = 0;
+
+    if (playableScenes.Length == 0)
+    {
+      gameStarted = false;
+      ServerChangeScene("End");
+      return;
+    }
+
     int chosenScene = Random.Range(0, playableScenes.Length);
 
     string chosenSceneId = playableScenes[chosenScene];

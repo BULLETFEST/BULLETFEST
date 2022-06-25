@@ -21,6 +21,8 @@ public class PlayerUI : NetworkBehaviour
 
   public GameObject crosshair;
 
+  private PlayerVars playerVars;
+
   void Start()
   {
     if (!isLocalPlayer) return;
@@ -28,6 +30,8 @@ public class PlayerUI : NetworkBehaviour
     mainCanvas.gameObject.SetActive(true);
     crosshair.SetActive(true);
     Cursor.visible = false;
+
+    playerVars = GetComponent<PlayerVars>();
   }
 
   private void OnApplicationFocus(bool focusStatus)
@@ -38,6 +42,8 @@ public class PlayerUI : NetworkBehaviour
   void Update()
   {
     if (!isLocalPlayer) return;
+
+    crosshair.SetActive(!playerVars.lockWeapon);
 
     crosshair.transform.position = (Vector2)Camera.main.ScreenToWorldPoint(Input.mousePosition);
   }

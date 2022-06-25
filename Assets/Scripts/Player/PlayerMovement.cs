@@ -12,9 +12,15 @@ public class PlayerMovement : NetworkBehaviour
 
   #endregion
 
-  const float moveForce = 10f;
+  [SerializeField]
+  [SyncVar]
+  private float moveForce = 13f;
 
   const float jumpForce = 1500;
+
+  [SerializeField]
+  [SyncVar]
+  private float drag = 5f;
 
   // [SyncVar]
   // float maxSpeedX = 10;
@@ -39,18 +45,11 @@ public class PlayerMovement : NetworkBehaviour
   }
 
 
-  void Update()
+  private void LateUpdate()
   {
+
     if (!isLocalPlayer) return;
-
-    float x = Input.GetAxis("Horizontal");
-    float xRaw = Input.GetAxisRaw("Horizontal");
-
-    // GameObject weapon = GetComponentInChildren<WeaponBehavior>().gameObject;
-    // // Vector3 difference = Camera.main.ScreenToWorldPoint(Input.mousePosition) - weapon.transform.position;
-    // Vector3 difference = GetComponent<PlayerUI>().crosshair.transform.position - weapon.transform.position;
-    // difference.Normalize();
-    // float rotation_z = Mathf.Atan2(difference.y, difference.x) * Mathf.Rad2Deg;
+    if (!NetworkClient.ready) return;
 
     Vector3 mousePos = Input.mousePosition;
     mousePos.z = 5.23f;
@@ -60,10 +59,26 @@ public class PlayerMovement : NetworkBehaviour
     mousePos.y -= objectPos.y;
 
     float angle = Mathf.Atan2(mousePos.y, mousePos.x) * Mathf.Rad2Deg;
-    // GetComponentInChildren<WeaponBehavior>().transform.rotation = Quaternion.Euler(new Vector3(0, 0, angle));
 
-    // ValidateMovement(x, xRaw, Quaternion.Euler(0, 0, 0), Quaternion.Euler(0, 0, 0));
-    ValidateMovement(x, xRaw, Quaternion.Euler(0, mousePos.x < 0 ? 180 : 0, 0), Quaternion.Euler(mousePos.x < 0 ? 180 : 0, mousePos.x < 0 ? 180 : 0, (mousePos.x < 0 ? -1 : 1) * angle));
+    Cmd_UpdateGun(Quaternion.Euler(0, mousePos.x < 0 ? 180 : 0, 0), Quaternion.Euler(mousePos.x < 0 ? 180 : 0, mousePos.x < 0 ? 180 : 0, (mousePos.x < 0 ? -1 : 1) * angle));
+  }
+
+  [Command]
+  void Cmd_UpdateGun(Quaternion graphicsRotation, Quaternion gunRotation)
+  {
+    if (playerVars.lockWeapon) return;
+
+    Rpc_UpdateGun(graphicsRotation, gunRotation);
+  }
+
+  [ClientRpc]
+  void Rpc_UpdateGun(Quaternion graphicsRotation, Quaternion gunRotation)
+  {
+    if (playerVars == null) return;
+
+    playerVars.graphics.transform.rotation = graphicsRotation;
+
+    playerVars.weaponBehavior.transform.localRotation = gunRotation;
   }
 
   void FixedUpdate()
@@ -71,31 +86,31 @@ public class PlayerMovement : NetworkBehaviour
     if (!isLocalPlayer) return;
     if (playerVars.lockMovement) return;
 
+    float x = Input.GetAxis("Horizontal");
+    float xRaw = Input.GetAxisRaw("Horizontal");
 
     if (Input.GetKey(KeyCode.Space) && Grounded(gameObject, playerVars.bc))
     {
       playerVars.rb.AddForce(new Vector2(0, jumpForce));
     }
+
+    ValidateMovement(x, xRaw);
   }
 
 
   [Command]
-  void ValidateMovement(float x, float xRaw, Quaternion graphicsQuaternion, Quaternion gunQuaternion)
+  void ValidateMovement(float x, float xRaw)
   {
+    if (playerVars.lockMovement) return;
+
     x = Mathf.Clamp(x, -1, 1);
     xRaw = Mathf.Clamp(xRaw, -1, 1);
-    if (playerVars.lockMovement)
-    {
-      x = 0;
-      xRaw = 0;
-    }
 
-
-    HandleMovement(x, xRaw, graphicsQuaternion, gunQuaternion);
+    HandleMovement(x, xRaw);
   }
 
   [ClientRpc]
-  void HandleMovement(float x, float xRaw, Quaternion graphicsQuaternion, Quaternion gunQuaternion)
+  void HandleMovement(float x, float xRaw)
   {
     if (playerVars == null) return;
 
@@ -114,33 +129,8 @@ public class PlayerMovement : NetworkBehaviour
 
     // Add drag
     // https://forum.unity.com/threads/physics-drag-formula.252406/
-    playerVars.rb.velocity = new Vector2(playerVars.rb.velocity.x * (1 - Time.deltaTime * 50), playerVars.rb.velocity.y);
-    // playerVars.rb.velocity = new Vector2(playerVars.rb.velocity.x * (0.8f), playerVars.rb.velocity.y);
-
-
-    if (playerVars.lockWeapon) return;
-
-    playerVars.graphics.transform.rotation = graphicsQuaternion;
-
-    playerVars.weaponBehavior.transform.localRotation = gunQuaternion;
+    playerVars.rb.velocity = new Vector2(playerVars.rb.velocity.x * (1 - Time.fixedDeltaTime * drag), playerVars.rb.velocity.y);
   }
-
-  // void LimitVelocity(float x, Rigidbody2D rb)
-  // {
-  //   // Add drag
-  //   if (rb.velocity.x != 0) rb.velocity = new Vector2(rb.velocity.x * (1 - 0.2f), rb.velocity.y);
-
-  //   float speed = Mathf.Abs(rb.velocity.x);
-  //   if (speed > maxSpeedX)
-  //   {
-  //     float brakeSpeed = speed - maxSpeedX;  // calculate the speed decrease
-
-  //     Vector3 normalisedVelocity = rb.velocity.normalized;
-  //     Vector3 brakeVelocity = normalisedVelocity * brakeSpeed;  // make the brake Vector3 value
-
-  //     rb.AddForce(new Vector2(-brakeVelocity.x, 0), ForceMode2D.Impulse);
-  //   }
-  // }
 
   bool Grounded(GameObject player, BoxCollider2D bc)
   {

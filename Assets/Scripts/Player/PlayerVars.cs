@@ -30,6 +30,8 @@ public class PlayerVars : NetworkBehaviour
   public GameObject killfeed;
 
   [HideInInspector]
+
+  [SyncVar]
   public bool lockMovement = false,
               lockShooting = false,
               lockWeapon = false,

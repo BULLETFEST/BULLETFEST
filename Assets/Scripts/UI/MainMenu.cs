@@ -20,6 +20,8 @@ public class MainMenu : MonoBehaviour
     addr = PlayerPrefs.GetString("Address", "127.0.0.1");
     playerName = PlayerPrefs.GetString("PlayerName", "Guest");
 
+    Application.targetFrameRate = Screen.currentResolution.refreshRate;
+
 
     if (nm.isNetworkActive)
     {
@@ -28,8 +30,6 @@ public class MainMenu : MonoBehaviour
       nm.StopServer();
       nm.StopClient();
     }
-
-    // Application.targetFrameRate = 60;
 
 #if UNITY_EDITOR
     // if (ClonesManager.IsClone())
