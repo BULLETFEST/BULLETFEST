@@ -10,6 +10,7 @@ TagManager:
   - Spawnpoint
   - Leaderboard
   - LeaderboardItem
+  - Globals
   layers:
   - Default
   - TransparentFX
@@ -20,7 +21,7 @@ TagManager:
   - Environment/Floor
   - Environment/Gravestone
   - Ammo/Bullet
-  - 
+  - NoPostProcessing
   - 
   - 
   - 

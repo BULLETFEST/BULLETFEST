@@ -9,8 +9,10 @@ public class WinnerUI : NetworkBehaviour
 
   MyNetworkManager nm;
 
-  // private void Start()
-  // {
+  private void Start()
+  {
+    GetComponent<Canvas>().worldCamera = Camera.main;
+  }
   //   nm = GameObject.FindObjectOfType<MyNetworkManager>();
   // }
 

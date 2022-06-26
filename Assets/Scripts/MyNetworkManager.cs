@@ -5,6 +5,7 @@ using Mirror;
 using System.Linq;
 using UnityEngine.SceneManagement;
 using System.IO;
+using UnityEngine.Video;
 
 public class MyNetworkManager : NetworkManager
 {
@@ -69,10 +70,10 @@ public class MyNetworkManager : NetworkManager
     {
       if (!FindObjectOfType<PlayerSpawnSystem>())
       {
-        // GameObject go = new GameObject("PlayerSpawner", typeof(PlayerSpawnSystem));
-        // Destroy(go);
         GameObject go = Instantiate(playerSpawnSystem);
         NetworkServer.Spawn(go);
+
+
       }
     }
     else
@@ -125,8 +126,6 @@ public class MyNetworkManager : NetworkManager
     {
       winner = GameObject.FindGameObjectsWithTag("Player").Where(x => x.activeInHierarchy).ToArray()[0].GetComponent<NetworkIdentity>().connectionToClient;
 
-      // FindObjectOfType<Server>().Cmd_SpawnWinnerCanvas();
-
       PlayerVars winnerVars = winner.identity.GetComponent<PlayerVars>();
 
       winnerVars.lockWeapon = true;
@@ -134,25 +133,12 @@ public class MyNetworkManager : NetworkManager
       winnerVars.lockShooting = true;
 
       GameObject winnerUi = Instantiate(winnerUI);
-      // winnerUi.GetComponent<WinnerUI>().winnerText.text = $"{players[winner].displayName} won the round!";
       NetworkServer.Spawn(winnerUi);
 
       foreach (NetworkConnectionToClient conn in NetworkServer.connections.Values)
       {
         FindObjectOfType<Server>().SetWinnerText(conn, $"{players[winner].displayName} won the round!");
       }
-
-      // if (playableScenes.Length == 0)
-      // {
-      //   gameStarted = false;
-      //   deadPlayers = 0;
-      //   ServerChangeScene("End");
-      // }
-      // else
-      // {
-      //   deadPlayers = 0;
-      //   CycleMap();
-      // }
     }
   }
 
@@ -204,31 +190,6 @@ public class MyNetworkManager : NetworkManager
     ServerChangeScene(chosenSceneId);
   }
 
-
-
-  public override void ServerChangeScene(string newSceneName)
-  {
-    // for (int i = players.Count - 1; i >= 0; i--)
-    // {
-    //   var conn = players.Keys.ToArray()[i];
-    //   var gameplayerInstance = Instantiate(base.playerPrefab);
-    //   // gameplayerInstance.SetDisplayName(RoomPlayers[i].DisplayName);
-
-    //   NetworkServer.Destroy(conn.identity.gameObject);
-
-    //   NetworkServer.ReplacePlayerForConnection(conn, gameplayerInstance.gameObject);
-    //   NetworkServer.SetClientReady(conn);
-    // }
-
-    base.ServerChangeScene(newSceneName);
-    // NetworkServer.SetClientReady();
-
-    // foreach (NetworkConnectionToClient conn in NetworkServer.connections.Values)
-    // {
-    //   NetworkServer.SetClientReady(conn);
-    // }
-  }
-
   public override void OnStopServer()
   {
     players.Clear();
@@ -241,20 +202,9 @@ public class MyNetworkManager : NetworkManager
     {
       StopHost();
     }
-    // stop client if client-only
     else if (NetworkClient.isConnected)
     {
       StopClient();
     }
-
-    // SceneManager.SetActiveScene(SceneManager.GetSceneByName("MainMenu"));
-    // stop server if server-only
-    // else if (NetworkServer.active)
-    // {
-    //   if (GUILayout.Button("Stop Server"))
-    //   {
-    //     manager.StopServer();
-    //   }
-    // }
   }
 }
