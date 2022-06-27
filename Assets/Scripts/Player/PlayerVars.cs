@@ -24,8 +24,6 @@ public class PlayerVars : NetworkBehaviour
 
   public string playerName { get; set; }
 
-  public Coroutine reloadRoutine { get; set; }
-
   public Canvas publicCanvas;
   public GameObject killfeed;
 
@@ -34,8 +32,7 @@ public class PlayerVars : NetworkBehaviour
   [SyncVar]
   public bool lockMovement = false,
               lockShooting = false,
-              lockWeapon = false,
-              isReloading = false;
+              lockWeapon = false;
 
   public SpriteGroup graphics;
 

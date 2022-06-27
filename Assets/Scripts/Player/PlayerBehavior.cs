@@ -46,9 +46,6 @@ public class PlayerBehavior : NetworkBehaviour
     weaponBehavior = GetComponentInChildren<WeaponBehavior>();
 
     health = maxHealth;
-
-    uiController.uiHealthSlider.maxValue = maxHealth;
-    uiController.uiHealthSlider.value = maxHealth;
   }
 
   // Update is called once per frame
@@ -90,43 +87,23 @@ public class PlayerBehavior : NetworkBehaviour
   [Command]
   void Shoot(bool _isServer)
   {
-    if (playerVars.lockShooting) return;
-    if (playerVars.weaponBehavior.weapon == null) return;
-
-    // bool _isServer = conn.identity.isServer;
-    // Debug.Log(_isServer);
-
     WeaponClass weapon = playerVars.weaponBehavior.weapon;
 
-    if (playerVars.isReloading)
-    {
-      if (weapon.reloadType == WeaponClass.ReloadType.Shells &&
-          weapon.bulletsInMag > 0)
-      {
-        StopCoroutine(playerVars.reloadRoutine);
-        playerVars.isReloading = false;
+    if (playerVars.lockShooting) return;
+    if (playerVars.weaponBehavior.weapon == null) return;
+    if (weapon.firingMode == WeaponClass.FireMode.Single && !shootKeyUp) return;
+    if (weapon.fireTimeout > NetworkTime.time) return;
+    if (weapon.bulletsInMag <= 0) return;
 
-        Target_CancelReload();
-      }
-    }
-    else
-    {
-      if (weapon.firingMode == WeaponClass.FireMode.Single && !shootKeyUp) return;
-      if (weapon.fireTimeout > NetworkTime.time) return;
 
-      weapon.bulletsInMag--;
-      weapon.fireTimeout = (float)NetworkTime.time + (1f / weapon.fireRate);
 
-      playerVars.weaponBehavior.Shoot(weapon.ID, connectionToClient);
-      Rpc_AddForce(gameObject);
-      if (weapon.bulletsInMag <= 0)
-      {
-        playerVars.reloadRoutine = StartCoroutine(playerVars.weaponBehavior.Reload());
-        if (!_isServer) Target_Reload();
-      }
-      Target_UpdateUI(weapon.bulletsInMag);
-      shootKeyUp = false;
-    }
+    weapon.bulletsInMag--;
+    weapon.fireTimeout = (float)NetworkTime.time + (1f / weapon.fireRate);
+
+    playerVars.weaponBehavior.Shoot(weapon.ID, connectionToClient);
+    Rpc_AddForce(gameObject);
+    Target_UpdateUI(weapon.bulletsInMag);
+    shootKeyUp = false;
   }
 
   [ClientRpc]
@@ -141,22 +118,7 @@ public class PlayerBehavior : NetworkBehaviour
     StartCoroutine(Camera.main.GetComponent<CameraShake>().Shake(playerVars.weaponBehavior.weapon.cameraShakeDuration,
                                                                  playerVars.weaponBehavior.weapon.cameraShakeIntensity));
     playerVars.weaponBehavior.weapon.bulletsInMag = bulletsInMag;
-    uiController.UpdateAmmoText(bulletsInMag, playerVars.weaponBehavior.weapon.magazineSize);
-  }
-
-  [TargetRpc]
-  void Target_Reload()
-  {
-    playerVars.reloadRoutine = StartCoroutine(playerVars.weaponBehavior.Reload());
-  }
-
-  [TargetRpc]
-  void Target_CancelReload()
-  {
-    if (playerVars.reloadRoutine != null) StopCoroutine(playerVars.reloadRoutine);
-
-    uiController.uiReloadCircle.enabled = false;
-    playerVars.isReloading = false;
+    uiController.UpdateAmmoText(bulletsInMag);
   }
 
   [Command(requiresAuthority = false)]
@@ -167,25 +129,10 @@ public class PlayerBehavior : NetworkBehaviour
     damageDealer = owner;
   }
 
-
-  // [TargetRpc]
-  public IEnumerator UpdateHealthBar()
-  {
-    while (uiController.uiHealthSlider.value + 0.1 != health)
-    {
-      uiController.uiHealthSlider.value = Mathf.Lerp(uiController.uiHealthSlider.value, health, 3 * Time.deltaTime);
-      yield return null;
-    }
-  }
-
   GameObject damageDealer = null;
   public void OnDamageTaken(float oldHealth, float newHealth)
   {
-    StartCoroutine(UpdateHealthBar());
-
     if (health > 0) return;
-    // uiController.mainCanvas.enabled = false;
-    uiController.infoGroup.alpha = 0;
     Server_Die(damageDealer != null ? damageDealer : gameObject,
                gameObject);
   }

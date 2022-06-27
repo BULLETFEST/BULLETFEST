@@ -88,33 +88,6 @@ public class WeaponBehavior : MonoBehaviour
     shooterVars.lockMovement = false;
   }
 
-  public IEnumerator Reload()
-  {
-    playerVars.isReloading = true;
-
-    uiController.uiReloadCircle.enabled = true;
-    if (weapon.reloadType == WeaponClass.ReloadType.Magazine)
-    {
-      yield return new WaitForSeconds(weapon.reloadTime);
-      weapon.bulletsInMag = weapon.magazineSize;
-
-      uiController.UpdateAmmoText(weapon.bulletsInMag, weapon.magazineSize);
-    }
-    else
-    {
-      while (weapon.bulletsInMag < weapon.magazineSize)
-      {
-        yield return new WaitForSeconds(weapon.reloadTime);
-        weapon.bulletsInMag++;
-
-        uiController.UpdateAmmoText(weapon.bulletsInMag, weapon.magazineSize);
-      }
-    }
-
-    uiController.uiReloadCircle.enabled = false;
-    playerVars.isReloading = false;
-  }
-
   public void SwitchWeapon(string weaponID)
   {
     if (weapon != null) Destroy(weapon.gameObject);
@@ -123,15 +96,9 @@ public class WeaponBehavior : MonoBehaviour
     weapon.bulletsInMag = weapon.magazineSize;
     weapon.fireTimeout = 0;
 
-    uiController.UpdateWeaponUI(weapon);
-    uiController.UpdateAmmoText(weapon.bulletsInMag, weapon.magazineSize);
+    uiController.UpdateAmmoText(weapon.magazineSize);
 
     playerVars.graphics.sprites.RemoveAt(1);
     playerVars.graphics.sprites.Add(newWeapon.GetComponentInChildren<SpriteRenderer>());
-
-    if (playerVars.reloadRoutine != null) StopCoroutine(playerVars.reloadRoutine);
-
-    uiController.uiReloadCircle.enabled = false;
-    playerVars.isReloading = false;
   }
 }
