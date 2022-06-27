@@ -23,9 +23,9 @@ TagManager:
   - Environment/Gravestone
   - Ammo/Bullet
   - NoPostProcessing
-  - Environment/Ceiling
+  - Bounds/Ceiling
   - WeaponItem
-  - 
+  - Bounds/Walls
   - 
   - 
   - 
@@ -48,4 +48,7 @@ TagManager:
   m_SortingLayers:
   - name: Default
     uniqueID: 0
+    locked: 0
+  - name: Environment
+    uniqueID: 4088895677
     locked: 0

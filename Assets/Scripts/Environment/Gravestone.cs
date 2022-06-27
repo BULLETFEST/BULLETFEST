@@ -6,7 +6,7 @@ using Mirror;
 public class Gravestone : NetworkBehaviour
 {
   public GameObject dirt;
-  public ParticleSystem particleSystem;
+  public ParticleSystem ps;
 
   [SyncVar]
   bool played = false;
@@ -24,6 +24,6 @@ public class Gravestone : NetworkBehaviour
   void Rpc_Collided()
   {
     dirt.SetActive(true);
-    particleSystem.Play();
+    ps.Play();
   }
 }
