@@ -8,12 +8,17 @@ public class LeaderboardItem : NetworkBehaviour
 {
   public TextMeshProUGUI uiDisplayname;
   public TextMeshProUGUI uiKills;
+  public TextMeshProUGUI uiWins;
+
 
   [SyncVar(hook = nameof(HandleUpdateDisplayName))]
   [HideInInspector] public string displayName;
 
   [SyncVar(hook = nameof(HandleUpdateKills))]
   [HideInInspector] public string kills;
+
+  [SyncVar(hook = nameof(HandleUpdateWins))]
+  [HideInInspector] public string wins;
 
   private MyNetworkManager room;
   public MyNetworkManager Room
@@ -48,6 +53,7 @@ public class LeaderboardItem : NetworkBehaviour
   {
     displayName = Room.players[connectionToClient].displayName;
     kills = Room.players[connectionToClient].kills.ToString();
+    wins = Room.players[connectionToClient].wins.ToString();
   }
 
   void HandleUpdateDisplayName(string oldName, string newName)
@@ -74,7 +80,19 @@ public class LeaderboardItem : NetworkBehaviour
   void Rpc_UpdateKills()
   {
     uiKills.text = kills;
+  }
 
+  void HandleUpdateWins(string oldWins, string newWins)
+  {
+    uiWins.text = newWins;
+    Rpc_UpdateWins();
+    SortItems();
+  }
+
+  [ClientRpc]
+  void Rpc_UpdateWins()
+  {
+    uiWins.text = wins;
   }
 
   [Command]

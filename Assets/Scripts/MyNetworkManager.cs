@@ -126,6 +126,8 @@ public class MyNetworkManager : NetworkManager
     {
       winner = GameObject.FindGameObjectsWithTag("Player").Where(x => x.activeInHierarchy).ToArray()[0].GetComponent<NetworkIdentity>().connectionToClient;
 
+      players[winner].wins++;
+
       PlayerVars winnerVars = winner.identity.GetComponent<PlayerVars>();
 
       winnerVars.lockWeapon = true;
