@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 8683824508677763702}
   - component: {fileID: 5240681828942563628}
   - component: {fileID: 3649052536454209937}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: FloorCollision
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -189,11 +189,11 @@ Rigidbody2D:
   m_Mass: 1
   m_LinearDrag: 0
   m_AngularDrag: 0.05
-  m_GravityScale: 1
+  m_GravityScale: 5
   m_Material: {fileID: 0}
   m_Interpolate: 0
   m_SleepingMode: 1
-  m_CollisionDetection: 0
+  m_CollisionDetection: 1
   m_Constraints: 0
 --- !u!58 &1985893935
 CircleCollider2D:

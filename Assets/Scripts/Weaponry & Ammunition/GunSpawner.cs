@@ -1,0 +1,57 @@
+using System.Collections;
+using UnityEngine;
+using Mirror;
+
+public class GunSpawner : NetworkBehaviour
+{
+  GameObject[] weapons;
+
+  // const float spawnInterval = 8f;
+
+  // Percent chance (1.0f = 10%, 2.5f = 25%, etc)
+  const float spawnChance = 2.5f;
+
+  BoxCollider2D boxCollider2D;
+
+  readonly float[] spawnMinMax = new float[2];
+
+  bool firstRound = true;
+
+  void Start()
+  {
+    weapons = Resources.LoadAll<GameObject>("Spawnable/Weapons");
+    boxCollider2D = GetComponent<BoxCollider2D>();
+
+    float bcSize = boxCollider2D.bounds.extents.x;
+
+    spawnMinMax[0] = transform.position.x - bcSize;
+    spawnMinMax[1] = transform.position.x + bcSize;
+
+    StartCoroutine(SpawnWeapon());
+  }
+
+  [ServerCallback]
+  IEnumerator SpawnWeapon()
+  {
+    // while (true)
+    // {
+    float rndNum = float.Parse(Random.Range(0.0f, 10.0f).ToString().Substring(0, 3));
+
+    if (rndNum <= spawnChance || firstRound)
+    {
+      firstRound = false;
+      // if ()
+      GameObject spawnedGun = Instantiate(weapons[Random.Range(0, weapons.Length)],
+                                          new Vector2(Random.Range(spawnMinMax[0], spawnMinMax[1]), transform.position.y),
+                                          Quaternion.Euler(0, 0, Random.Range(0, 361)));
+
+      // spawnedGun.GetComponent<Rigidbody2D>().angularVelocity = 10.0f;
+      NetworkServer.Spawn(spawnedGun);
+    }
+
+    yield return new WaitForSecondsRealtime(1.3f);
+    // yield return new WaitForSecondsRealtime(spawnInterval);
+    StartCoroutine(SpawnWeapon());
+    // }
+  }
+}

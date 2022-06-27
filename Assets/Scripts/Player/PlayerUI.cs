@@ -63,6 +63,7 @@ public class PlayerUI : NetworkBehaviour
     uiGunPanel.rectTransform.sizeDelta = new Vector2(Mathf.Max(uiGunAmmo.GetRenderedValues(false).x + 67, uiGunName.GetRenderedValues(false).x + 50) + 25, 85);
     uiReloadCircle.rectTransform.anchoredPosition = new Vector2(uiGunAmmo.GetRenderedValues(false).x + 42, -21);
 
+    uiGunIcon.color = new Color(1, 1, 1, 1);
     uiGunIcon.sprite = weapon.weaponSprite;
     uiGunIcon.rectTransform.sizeDelta = new Vector2(weapon.weaponSprite.bounds.size.x / (weapon.weaponSprite.bounds.size.y / 160), 160);
   }

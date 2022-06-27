@@ -16,11 +16,11 @@ public class WeaponBehavior : MonoBehaviour
 
   void Start()
   {
-    weapon.bulletsInMag = weapon.magazineSize;
-    weapon.fireTimeout = 0;
+    // weapon.bulletsInMag = weapon.magazineSize;
+    // weapon.fireTimeout = 0;
 
-    uiController.UpdateAmmoText(weapon.bulletsInMag, weapon.magazineSize);
-    uiController.UpdateWeaponUI(weapon);
+    // uiController.UpdateAmmoText(weapon.bulletsInMag, weapon.magazineSize);
+    // uiController.UpdateWeaponUI(weapon);
   }
 
   public void Shoot(string weaponId, NetworkConnection shooter)
@@ -117,7 +117,7 @@ public class WeaponBehavior : MonoBehaviour
 
   public void SwitchWeapon(string weaponID)
   {
-    Destroy(weapon.gameObject);
+    if (weapon != null) Destroy(weapon.gameObject);
     GameObject newWeapon = Instantiate(arsenal.Where(w => w.ID == weaponID).ToArray()[0].gameObject, transform.position, transform.rotation, transform);
     weapon = newWeapon.GetComponent<WeaponClass>();
     weapon.bulletsInMag = weapon.magazineSize;

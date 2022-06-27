@@ -11,19 +11,20 @@ TagManager:
   - Leaderboard
   - LeaderboardItem
   - Globals
+  - GunSpawner
   layers:
   - Default
   - TransparentFX
   - Ignore Raycast
-  - 
+  - FloorCollider
   - Water
   - UI
   - Environment/Floor
   - Environment/Gravestone
   - Ammo/Bullet
   - NoPostProcessing
-  - 
-  - 
+  - Environment/Ceiling
+  - WeaponItem
   - 
   - 
   - 

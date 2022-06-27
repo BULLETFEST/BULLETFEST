@@ -91,6 +91,7 @@ public class PlayerBehavior : NetworkBehaviour
   void Shoot(bool _isServer)
   {
     if (playerVars.lockShooting) return;
+    if (playerVars.weaponBehavior.weapon == null) return;
 
     // bool _isServer = conn.identity.isServer;
     // Debug.Log(_isServer);
