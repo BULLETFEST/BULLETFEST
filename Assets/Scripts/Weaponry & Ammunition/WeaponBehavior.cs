@@ -98,7 +98,7 @@ public class WeaponBehavior : MonoBehaviour
 
     uiController.UpdateAmmoText(weapon.magazineSize);
 
-    playerVars.graphics.sprites.RemoveAt(1);
+    if (playerVars.graphics.sprites.Count > 1) playerVars.graphics.sprites.RemoveAt(1);
     playerVars.graphics.sprites.Add(newWeapon.GetComponentInChildren<SpriteRenderer>());
   }
 }

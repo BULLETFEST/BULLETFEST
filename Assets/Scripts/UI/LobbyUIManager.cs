@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using Mirror;
 using UnityEngine.UI;
-using System;
+using TMPro;
 
 public class LobbyUIManager : NetworkBehaviour
 {
@@ -18,6 +18,7 @@ public class LobbyUIManager : NetworkBehaviour
   }
 
   public Button startButton;
+  public TMP_Text roomCode;
 
   public void Start()
   {
@@ -29,6 +30,8 @@ public class LobbyUIManager : NetworkBehaviour
       Room.PlayerUpdate += PlayerUpdate;
       PlayerUpdate();
     }
+
+    roomCode.text = $"Room code: {Room.RoomCode}";
 
     startButton.onClick.AddListener(delegate { StartGame(); });
 

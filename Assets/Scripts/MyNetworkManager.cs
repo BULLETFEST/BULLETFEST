@@ -1,11 +1,9 @@
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using Mirror;
 using System.Linq;
 using UnityEngine.SceneManagement;
 using System.IO;
-using UnityEngine.Video;
 
 public class MyNetworkManager : NetworkManager
 {
@@ -28,6 +26,12 @@ public class MyNetworkManager : NetworkManager
 
   public NetworkConnectionToClient winner;
 
+  public System.Action PlayerUpdate;
+
+  public bool isHost = false;
+
+  public string RoomCode;
+
   public override void Start()
   {
     base.Start();
@@ -41,10 +45,6 @@ public class MyNetworkManager : NetworkManager
     LeaderboardItem = (GameObject)Resources.Load("SpawnableNoNetId/LeaderboardItem");
     NetworkClient.RegisterPrefab(LeaderboardItem);
   }
-
-  public System.Action PlayerUpdate;
-
-  public bool isHost = false;
 
   public override void OnStartServer()
   {
@@ -111,8 +111,6 @@ public class MyNetworkManager : NetworkManager
     }
 
     base.OnServerDisconnect(conn);
-
-
   }
 
 
