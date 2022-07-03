@@ -106,6 +106,7 @@ public class MyNetworkManager : NetworkManager
 
     if (gameStarted)
     {
+      if (players.Count == 1) playableScenes = new string[0];
       deadPlayers--;
       OnPlayerDie();
     }
