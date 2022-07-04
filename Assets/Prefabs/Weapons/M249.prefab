@@ -161,7 +161,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 79cff5247a00f9440ba17186830d8908, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  magazineSize: 100
+  magazineSize: 50
   isShotgun: 0
   pelletCount: 0
   inaccuracyRange: f9ffffff07000000

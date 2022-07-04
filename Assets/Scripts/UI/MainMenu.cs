@@ -108,7 +108,7 @@ public class MainMenu : MonoBehaviour
 
     if (toReturn) return;
 
-    nm.GetComponent<kcp2k.KcpTransport>().Port = ushort.Parse(port.text != "" ? port.text : "7777");
+    nm.GetComponent<kcp2k.KcpTransport>().Port = ushort.Parse(port.text != "" ? port.text : "7776");
 
     // In the context of hosting, code is equal to the
     // room code generated on the server.

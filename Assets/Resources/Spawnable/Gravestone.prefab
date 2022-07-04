@@ -5075,7 +5075,7 @@ MonoBehaviour:
   syncMode: 0
   syncInterval: 0.1
   dirt: {fileID: 6359972353198102039}
-  particleSystem: {fileID: 567696416882431275}
+  ps: {fileID: 567696416882431275}
 --- !u!95 &6082902899392149940
 Animator:
   serializedVersion: 4
