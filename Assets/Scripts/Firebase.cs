@@ -24,7 +24,7 @@ public class Firebase// : MonoBehaviour
   /// Attempt to host a game
   /// </summary>
   /// <returns>Bool: Room ID</returns>
-  public static Response HostGame()
+  public static async Task<Response> HostGame()
   {
     string ipAddress = webClient.DownloadString("http://ipinfo.io/ip");
 
@@ -35,13 +35,21 @@ public class Firebase// : MonoBehaviour
 
     // JsonUtility.FromJson<Dictionary<string, string>>();
 
-    byte[] res = webClient.UploadValues(testMode ? "http://localhost:3000/createLobby" : "https://JooBot.eliasval.repl.co/createLobby", "POST", data);
+    byte[] res = new byte[0];
+    try
+    {
+      res = await webClient.UploadValuesTaskAsync(testMode ? "http://localhost:3000/createLobby" : "https://JooBot.eliasval.repl.co/createLobby", "POST", data);
+    }
+    catch
+    {
+      Message.DisplayMessage("Failed to create host", "Client failed to connect to server!", TMPro.HorizontalAlignmentOptions.Center);
+    }
 
-    if (res == null) return new Response
+    if (res.Length == 0) return new Response
     {
       code = "",
       success = false,
-      message = "Something went wrong!"
+      message = "sErr"
     };
 
     string responseInString = Encoding.UTF8.GetString(res);
@@ -53,31 +61,35 @@ public class Firebase// : MonoBehaviour
     return response;
   }
 
-  public static Response JoinGame(string code)
+  public static async Task<Response> JoinGame(string code)
   {
-    Debug.Log(code);
     NameValueCollection data = new NameValueCollection();
 
     data["code"] = code;
 
     // JsonUtility.FromJson<Dictionary<string, string>>();
 
-    byte[] res = webClient.UploadValues(testMode ? "http://localhost:3000/joinLobby" : "https://JooBot.eliasval.repl.co/joinLobby", "POST", data);
 
-    if (res == null) return new Response
+    byte[] res = new byte[0];
+    try
+    {
+      res = await webClient.UploadValuesTaskAsync(new System.Uri(testMode ? "http://localhost:3000/joinLobby" : "https://JooBot.eliasval.repl.co/joinLobby"), "POST", data);
+    }
+    catch
+    {
+      Message.DisplayMessage("Failed to connect to game", "Client failed to connect to server!", TMPro.HorizontalAlignmentOptions.Center);
+    }
+
+    if (res.Length == 0) return new Response
     {
       code = "",
       success = false,
-      message = "Something went wrong!"
+      message = "sErr"
     };
 
     string responseInString = Encoding.UTF8.GetString(res);
 
     Response response = JsonUtility.FromJson<Response>(responseInString);
-
-    Debug.Log(response);
-    Debug.Log(responseInString);
-
 
     return response;
   }
@@ -85,7 +97,6 @@ public class Firebase// : MonoBehaviour
   public struct Response
   {
     public string code;
-    // JSON support in C# is... yeah... don't ask...
     public bool success;
     public string message;
   }

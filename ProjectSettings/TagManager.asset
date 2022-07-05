@@ -12,6 +12,7 @@ TagManager:
   - LeaderboardItem
   - Globals
   - GunSpawner
+  - Message
   layers:
   - Default
   - TransparentFX

@@ -7,6 +7,7 @@ using System.Net.Sockets;
 using TMPro;
 using UnityEngine.SceneManagement;
 using System.Text.RegularExpressions;
+using UnityEngine.UI;
 
 // using ParrelSync;
 public class MainMenu : MonoBehaviour
@@ -22,8 +23,8 @@ public class MainMenu : MonoBehaviour
   private string localIp;
 
   [Header("UI Elements")]
-  public GameObject ConnectPanel;
-  public GameObject HostPanel;
+  public Button connectBtn;
+  public Button hostBtn;
   public TMP_Text roundsDefault;
 
   [Header("Host UI Elements")]
@@ -65,17 +66,14 @@ public class MainMenu : MonoBehaviour
 
   }
 
-  public void Connect()
+  public async void Connect()
   {
+    connectBtn.interactable = false;
     PlayerPrefs.SetString("PlayerName", playerName);
 
     // In the context of joining, code is equal to the
     // host's IP.
-    Firebase.Response res = Firebase.JoinGame(code);
-
-    Debug.Log(res.success);
-    Debug.Log(res.message);
-
+    Firebase.Response res = await Firebase.JoinGame(code);
 
     if (res.success)
     {
@@ -83,12 +81,21 @@ public class MainMenu : MonoBehaviour
       // nm.networkAddress = res.code;
       nm.StartClient();
     }
+    else
+    {
+      if (res.message != "sErr")
+      {
+        Message.DisplayMessage("Something went wrong!", res.message, HorizontalAlignmentOptions.Center);
+      }
+    }
+    connectBtn.interactable = true;
   }
 
   public Regex numbers = new Regex(@"\D");
 
-  public void Host()
+  public async void Host()
   {
+    hostBtn.interactable = false;
     PlayerPrefs.SetString("PlayerName", playerName);
 
 
@@ -112,13 +119,21 @@ public class MainMenu : MonoBehaviour
 
     // In the context of hosting, code is equal to the
     // room code generated on the server.
-    Firebase.Response res = Firebase.HostGame();
+    Firebase.Response res = await Firebase.HostGame();
 
     if (res.success)
     {
       nm.RoomCode = res.code;
       nm.StartHost();
     }
+    else
+    {
+      if (res.message != "sErr")
+      {
+        Message.DisplayMessage("Something went wrong!", res.message, HorizontalAlignmentOptions.Center);
+      }
+    }
+    hostBtn.interactable = true;
   }
 
 

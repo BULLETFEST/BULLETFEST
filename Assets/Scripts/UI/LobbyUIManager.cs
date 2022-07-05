@@ -45,15 +45,22 @@ public class LobbyUIManager : NetworkBehaviour
 
   public void PlayerUpdate()
   {
-    // print("a");
-    // if (Room.players.Count < 2) startButton.interactable = false;
-    // else 
+#if !UNITY_EDITOR
+    print("a");
+    if (Room.players.Count < 2) startButton.interactable = false;
+    else
+#endif
     startButton.interactable = true;
   }
 
   private void OnDestroy()
   {
     Room.PlayerUpdate -= PlayerUpdate;
+  }
+
+  public void Quit()
+  {
+    room.Disconnect();
   }
 
 

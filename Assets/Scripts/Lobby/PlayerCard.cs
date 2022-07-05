@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
 using Mirror;
-using System.Linq;
+using UnityEngine.UI;
 
 public class PlayerCard : NetworkBehaviour
 {
@@ -11,6 +11,8 @@ public class PlayerCard : NetworkBehaviour
 
   [SyncVar(hook = nameof(HandleUpdateName))]
   public string displayName;
+
+  public Button kickBtn;
 
   private MyNetworkManager room;
   private MyNetworkManager Room
@@ -33,6 +35,7 @@ public class PlayerCard : NetworkBehaviour
       _playerCard.transform.parent = playerCards.transform;
 
     UpdateDisplayName();
+    // if (!room.isHost) OnPointerEnter();
     // NetworkServer.SetClientReady(connectionToClient);
   }
 
@@ -60,4 +63,22 @@ public class PlayerCard : NetworkBehaviour
 
   [ClientRpc]
   void Rpc_UpdateDisplayName() => DisplayNameUI.text = displayName;
+
+  // [Command]
+  // public void OnPointerEnter()
+  // {
+  //   kickBtn.gameObject.SetActive(true);
+  // }
+
+  [Server]
+  public void KickPlayer()
+  {
+    connectionToClient.Send(new Message.ServerMessge
+    {
+      titleText = "Disconnected",
+      contentText = "You've been kicked out of the game",
+      _alignment = 2,
+      disconnect = true
+    });
+  }
 }

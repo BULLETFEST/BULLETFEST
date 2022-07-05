@@ -44,6 +44,14 @@ public class MyNetworkManager : NetworkManager
 
     LeaderboardItem = (GameObject)Resources.Load("SpawnableNoNetId/LeaderboardItem");
     NetworkClient.RegisterPrefab(LeaderboardItem);
+
+    NetworkClient.RegisterHandler<Message.ServerMessge>(OnServerMessage);
+  }
+
+  void OnServerMessage(Message.ServerMessge msg)
+  {
+    Message.DisplayMessage(msg.titleText, msg.contentText, msg.alignment);
+    if (msg.disconnect) Disconnect();
   }
 
   public override void OnStartServer()
@@ -57,7 +65,30 @@ public class MyNetworkManager : NetworkManager
   {
     base.OnServerConnect(conn);
 
-    if (SceneManager.GetActiveScene().path != menu) conn.Disconnect();
+    if (NetworkServer.connections.Count >= 4)
+    {
+      conn.Send(new Message.ServerMessge
+      {
+        titleText = "Disconnected",
+        contentText = "Game is full",
+        _alignment = 2,
+        disconnect = true
+      });
+      // conn.Disconnect();
+      return;
+    }
+
+    if (SceneManager.GetActiveScene().path != menu)
+    {
+      conn.Send(new Message.ServerMessge
+      {
+        titleText = "Disconnected",
+        contentText = "Game has started",
+        _alignment = 2,
+        disconnect = true
+      });
+      // conn.Disconnect();
+    }
   }
 
   public override void OnServerSceneChanged(string sceneName)
@@ -94,24 +125,27 @@ public class MyNetworkManager : NetworkManager
     {
       GameObject player = Instantiate(playerCard, Vector3.zero, Quaternion.Euler(0, 0, 0), playerCards.transform);
       player.GetComponent<PlayerCard>().DisplayNameUI.text = "Loading...";
+      if (conn != NetworkServer.localConnection) player.GetComponent<PlayerCard>().kickBtn.gameObject.SetActive(true);
       NetworkServer.AddPlayerForConnection(conn, player);
     }
   }
 
   public override void OnServerDisconnect(NetworkConnectionToClient conn)
   {
-    players.Remove(conn);
-
-    PlayerUpdate?.Invoke();
-
-    if (gameStarted)
-    {
-      if (players.Count == 1) playableScenes = new string[0];
-      deadPlayers--;
-      OnPlayerDie();
-    }
-
     base.OnServerDisconnect(conn);
+    if (players.ContainsKey(conn))
+    {
+      players.Remove(conn);
+
+      PlayerUpdate?.Invoke();
+
+      if (gameStarted)
+      {
+        if (players.Count == 1) playableScenes = new string[0];
+        deadPlayers--;
+        OnPlayerDie();
+      }
+    }
   }
 
 
