@@ -22,6 +22,8 @@ public class PlayerMovement : NetworkBehaviour
   [SyncVar]
   private float drag = 5f;
 
+  bool doubleJumped;
+
   // [SyncVar]
   // float maxSpeedX = 10;
 
@@ -89,9 +91,29 @@ public class PlayerMovement : NetworkBehaviour
     float x = Input.GetAxis("Horizontal");
     float xRaw = Input.GetAxisRaw("Horizontal");
 
-    if (Input.GetKey(KeyCode.Space) && Grounded(gameObject, playerVars.bc))
+    bool grounded = Grounded(gameObject, playerVars.bc);
+
+    if (Input.GetKeyDown(KeyCode.Space) && (grounded || !doubleJumped))
     {
-      playerVars.rb.AddForce(new Vector2(0, jumpForce));
+      if (!grounded)
+      {
+        doubleJumped = true;
+        playerVars.rb.velocity = new Vector2(playerVars.rb.velocity.x, 0);
+        if (playerVars.rb.velocity.y > 0)
+        {
+          playerVars.rb.AddForce(new Vector2(0, jumpForce * 0.75f));
+        }
+        else
+        {
+          playerVars.rb.AddForce(new Vector2(0, jumpForce));
+        }
+      }
+      else playerVars.rb.AddForce(new Vector2(0, jumpForce));
+    }
+
+    if (doubleJumped && grounded)
+    {
+      doubleJumped = false;
     }
 
     ValidateMovement(x, xRaw);

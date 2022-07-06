@@ -13,6 +13,7 @@ TagManager:
   - Globals
   - GunSpawner
   - Message
+  - Spike
   layers:
   - Default
   - TransparentFX

@@ -14,19 +14,28 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/End.unity
     guid: 137d9ef1eb50c7549b7549ce54934c4a
-  - enabled: 1
+  - enabled: 0
     path: Assets/Scenes/4Players/World_1.unity
     guid: 2cda990e2423bbf4892e6590ba056729
-  - enabled: 1
+  - enabled: 0
     path: Assets/Scenes/4Players/World_2.unity
     guid: 768894901759eeb43900cbf6e253c9fb
-  - enabled: 1
+  - enabled: 0
     path: Assets/Scenes/4Players/World_3.unity
     guid: 4c9e83d576d436f4c951444e146c19e2
-  - enabled: 1
+  - enabled: 0
     path: Assets/Scenes/4Players/World_4.unity
     guid: f7d292644850799489b6fa04534df60d
-  - enabled: 1
+  - enabled: 0
     path: Assets/Scenes/4Players/World_5.unity
     guid: 92fc201a866eb8649b8951e55de6b06f
+  - enabled: 1
+    path: Assets/Scenes/4Players/World_6.unity
+    guid: 805349bb5d455ac4abc8f11a8bbdcd47
+  - enabled: 0
+    path: Assets/Scenes/4Players/World_7.unity
+    guid: 1b752f2aa03b3cb40872078d3c3a56c3
+  - enabled: 0
+    path: Assets/Scenes/4Players/World_8.unity
+    guid: 50183f9c72688e547974619778adbb43
   m_configObjects: {}
