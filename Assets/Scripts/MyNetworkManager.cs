@@ -32,6 +32,8 @@ public class MyNetworkManager : NetworkManager
 
   public string RoomCode;
 
+  public GameMode gameMode = 0;
+
   public override void Start()
   {
     base.Start();
@@ -102,6 +104,10 @@ public class MyNetworkManager : NetworkManager
       if (!FindObjectOfType<PlayerSpawnSystem>())
       {
         GameObject go = Instantiate(playerSpawnSystem);
+        if (gameMode == GameMode.Deathmatch)
+        {
+          go.GetComponent<PlayerSpawnSystem>().timeStamp = System.DateTime.UtcNow.AddMinutes(1);
+        }
         NetworkServer.Spawn(go);
 
 
@@ -143,7 +149,7 @@ public class MyNetworkManager : NetworkManager
       {
         if (players.Count == 1) playableScenes = new string[0];
         deadPlayers--;
-        OnPlayerDie();
+        OnPlayerDie(conn);
       }
     }
   }
@@ -152,28 +158,50 @@ public class MyNetworkManager : NetworkManager
   int deadPlayers = 0;
 
   [Server]
-  public void OnPlayerDie()
+  public void OnPlayerDie(NetworkConnectionToClient conn)
   {
-    deadPlayers++;
-    if (deadPlayers == NetworkServer.connections.Count - 1)
+    if (gameMode == GameMode.Rounds)
     {
-      winner = GameObject.FindGameObjectsWithTag("Player").Where(x => x.activeInHierarchy).ToArray()[0].GetComponent<NetworkIdentity>().connectionToClient;
-
-      players[winner].wins++;
-
-      PlayerVars winnerVars = winner.identity.GetComponent<PlayerVars>();
-
-      winnerVars.lockWeapon = true;
-      winnerVars.lockMovement = true;
-      winnerVars.lockShooting = true;
-
-      GameObject winnerUi = Instantiate(winnerUI);
-      NetworkServer.Spawn(winnerUi);
-
-      foreach (NetworkConnectionToClient conn in NetworkServer.connections.Values)
+      deadPlayers++;
+      if (deadPlayers == NetworkServer.connections.Count - 1)
       {
-        FindObjectOfType<Server>().SetWinnerText(conn, $"{players[winner].displayName} won the round!");
+        AnnounceWinner();
       }
+    }
+    else
+    {
+      StartCoroutine(FindObjectOfType<PlayerSpawnSystem>().Cmd_RespawnPlayer(conn));
+    }
+  }
+
+  [Server]
+  public void AnnounceWinner()
+  {
+    if (gameMode == 0)
+      winner = GameObject.FindGameObjectsWithTag("Player").Where(x => x.activeInHierarchy).ToArray()[0].GetComponent<NetworkIdentity>().connectionToClient;
+    else
+    {
+      // https://stackoverflow.com/a/1332/11420492
+      //winner = (from entry in players orderby entry.Value descending select entry).First().Key;
+
+      // https://stackoverflow.com/a/4157151/11420492
+      winner = players.OrderBy(x => x.Value.kills).ToList().Last().Key;
+    }
+
+    players[winner].wins++;
+
+    PlayerVars winnerVars = winner.identity.GetComponent<PlayerVars>();
+
+    winnerVars.lockWeapon = true;
+    winnerVars.lockMovement = true;
+    winnerVars.lockShooting = true;
+
+    GameObject winnerUi = Instantiate(winnerUI);
+    NetworkServer.Spawn(winnerUi);
+
+    foreach (NetworkConnectionToClient conn in NetworkServer.connections.Values)
+    {
+      FindObjectOfType<Server>().SetWinnerText(conn, $"{players[winner].displayName} won the round!");
     }
   }
 
@@ -205,7 +233,7 @@ public class MyNetworkManager : NetworkManager
 
     deadPlayers = 0;
 
-    if (playableScenes.Length == 0)
+    if (playableScenes.Length == 0 || gameMode == GameMode.Deathmatch)
     {
       gameStarted = false;
       ServerChangeScene("End");
@@ -241,5 +269,13 @@ public class MyNetworkManager : NetworkManager
     {
       StopClient();
     }
+  }
+
+
+
+  public enum GameMode
+  {
+    Rounds = 0,
+    Deathmatch = 1,
   }
 }

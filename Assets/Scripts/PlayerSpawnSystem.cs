@@ -19,6 +19,9 @@ public class PlayerSpawnSystem : NetworkBehaviour
 
   GameObject[] spawnPoints;
 
+  [SyncVar]
+  public System.DateTime timeStamp;
+
   void Awake()
   {
     spawnPoints = GameObject.FindGameObjectsWithTag("Spawnpoint");
@@ -32,9 +35,39 @@ public class PlayerSpawnSystem : NetworkBehaviour
       GameObject playerInstance = Instantiate(NetworkManager.singleton.playerPrefab, spawnPoints[i].transform.position, Quaternion.Euler(0, 0, 0));
       // playerInstance.GetComponent<PlayerVars>().uiName.text = displayName;
       // NetworkServer.Spawn(playerInstance, Room.players.ElementAt(i).Key);
+      // playerInstance.GetComponent<PlayerVars>().timeleft = timeStamp;
       NetworkServer.Spawn(playerInstance);
       NetworkServer.ReplacePlayerForConnection(Room.players.ElementAt(i).Key, playerInstance);
       NetworkServer.SetClientReady(Room.players.ElementAt(i).Key);
     }
+  }
+
+  [Server]
+  public IEnumerator Cmd_RespawnPlayer(NetworkConnection conn)
+  {
+    yield return new WaitForSecondsRealtime(5);
+
+    Rpc_RespawnPlayer(conn.identity.gameObject);
+    conn.identity.gameObject.GetComponent<PlayerBehavior>().health = 10;
+  }
+
+  [ClientRpc]
+  private void Rpc_RespawnPlayer(GameObject player)
+  {
+    player.transform.position = spawnPoints[Random.Range(0, spawnPoints.Length)].transform.position;
+    player.transform.position = new Vector2(player.transform.position.x, player.transform.position.y + 20);
+
+    PlayerBehavior pb = player.GetComponent<PlayerBehavior>();
+
+    pb.dead = false;
+    pb.playerVars.lockMovement = false;
+    pb.playerVars.lockShooting = false;
+    pb.playerVars.lockWeapon = false;
+
+    // pb.health = pb.maxHealth;
+
+    pb.playerVars.graphics.EnableAll();
+    player.GetComponent<BoxCollider2D>().enabled = true;
+    player.GetComponent<Rigidbody2D>().simulated = true;
   }
 }

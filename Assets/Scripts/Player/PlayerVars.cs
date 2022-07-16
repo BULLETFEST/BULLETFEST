@@ -16,6 +16,9 @@ public class PlayerVars : NetworkBehaviour
     }
   }
 
+  [SyncVar]
+  public System.DateTime timeleft;
+
 
   public TextMeshProUGUI uiName;
 

@@ -46,6 +46,14 @@ public class PlayerBehavior : NetworkBehaviour
     weaponBehavior = GetComponentInChildren<WeaponBehavior>();
 
     health = maxHealth;
+
+    FetchTime();
+  }
+
+  [Command]
+  void FetchTime()
+  {
+    playerVars.timeleft = FindObjectOfType<PlayerSpawnSystem>().timeStamp;
   }
 
   // Update is called once per frame
@@ -137,7 +145,7 @@ public class PlayerBehavior : NetworkBehaviour
                gameObject);
   }
 
-  bool dead = false;
+  public bool dead = false;
   [Command(requiresAuthority = false)]
   public void Server_Die(GameObject killer, GameObject killed)
   {
@@ -148,6 +156,10 @@ public class PlayerBehavior : NetworkBehaviour
     playerVars.lockShooting = true;
     playerVars.lockWeapon = true;
 
+    MyNetworkManager.GameMode gm = FindObjectOfType<MyNetworkManager>().gameMode;
+
+    if (gm == MyNetworkManager.GameMode.Deathmatch) playerVars.uiName.gameObject.SetActive(false);
+
     NetworkConnectionToClient killerIdentity = killer.GetComponent<NetworkIdentity>().connectionToClient;
 
     if (killer == killed) playerVars.Room.players[killerIdentity].kills--;
@@ -157,16 +169,20 @@ public class PlayerBehavior : NetworkBehaviour
     string killedName = killed.GetComponent<PlayerVars>().displayName;
 
     ClientRpc_Die(killerName, killedName);
-    GameObject spawnedGravestone = Instantiate(gravestone, new Vector2(transform.position.x,
-                                                          playerVars.bc.bounds.min.y + (gravestone.GetComponentInChildren<SpriteRenderer>().bounds.size.y / 2)), Quaternion.Euler(0, 0, 0));
-    NetworkServer.Spawn(spawnedGravestone);
+
+    if (gm != MyNetworkManager.GameMode.Deathmatch)
+    {
+      GameObject spawnedGravestone = Instantiate(gravestone, new Vector2(transform.position.x,
+                                                            playerVars.bc.bounds.min.y + (gravestone.GetComponentInChildren<SpriteRenderer>().bounds.size.y / 2)), Quaternion.Euler(0, 0, 0));
+      NetworkServer.Spawn(spawnedGravestone);
+    }
 
     foreach (var player in NetworkServer.connections)
     {
       UpdateKillfeed(player.Value, killerName, killedName);
     }
 
-    playerVars.Room.OnPlayerDie();
+    playerVars.Room.OnPlayerDie(connectionToClient);
   }
 
   [ClientRpc]

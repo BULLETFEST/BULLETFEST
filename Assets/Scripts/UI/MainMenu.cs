@@ -115,7 +115,7 @@ public class MainMenu : MonoBehaviour
 
     if (toReturn) return;
 
-    nm.GetComponent<kcp2k.KcpTransport>().Port = ushort.Parse(port.text != "" ? port.text : "7776");
+    nm.GetComponent<kcp2k.KcpTransport>().Port = ushort.Parse(port.text != "" ? port.text : "7777");
 
     // In the context of hosting, code is equal to the
     // room code generated on the server.
@@ -145,5 +145,19 @@ public class MainMenu : MonoBehaviour
   public void ChangeRoomCode(string newCode)
   {
     code = newCode;
+  }
+
+  public void ChangeGameMode(int option)
+  {
+    nm.gameMode = (MyNetworkManager.GameMode)option;
+
+    if (option == 1)
+    {
+      rounds.transform.parent.gameObject.SetActive(false);
+    }
+    else
+    {
+      rounds.transform.parent.gameObject.SetActive(true);
+    }
   }
 }
