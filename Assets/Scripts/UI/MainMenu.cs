@@ -8,6 +8,7 @@ using TMPro;
 using UnityEngine.SceneManagement;
 using System.Text.RegularExpressions;
 using UnityEngine.UI;
+using EpicTransport;
 
 // using ParrelSync;
 public class MainMenu : MonoBehaviour
@@ -21,6 +22,8 @@ public class MainMenu : MonoBehaviour
   public string playerName;
 
   private string localIp;
+
+  private EOSSDKComponent eos;
 
   [Header("UI Elements")]
   public Button connectBtn;
@@ -42,6 +45,7 @@ public class MainMenu : MonoBehaviour
       }
     }
 
+    eos = GetComponent<EOSSDKComponent>();
     nm = FindObjectOfType<MyNetworkManager>();
     playerName = PlayerPrefs.GetString("PlayerName", "Guest");
 
@@ -52,16 +56,18 @@ public class MainMenu : MonoBehaviour
     roundsDefault.text = $"Default: {SceneManager.sceneCountInBuildSettings - 3}";
 
 #if UNITY_EDITOR
-    // if (ClonesManager.IsClone())
-    // {
-    //   ChangeName("B");
-    //   Connect();
-    // }
-    // else
-    // {
-    //   ChangeName("A");
-    //   Host();
-    // }
+    eos.devAuthToolPort = 25565U;
+    eos.authInterfaceLogin = true;
+    eos.authInterfaceCredentialType = Epic.OnlineServices.Auth.LoginCredentialType.Developer;
+    eos.connectInterfaceCredentialType = Epic.OnlineServices.ExternalCredentialType.Epic;
+    if (ParrelSync.ClonesManager.IsClone())
+    {
+    }
+    else
+    {
+      ChangeName("A");
+      Host();
+    }
 #endif
 
   }
