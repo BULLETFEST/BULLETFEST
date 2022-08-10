@@ -1,0 +1,21 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2006c7a2843279e4598781ed39185dd0, type: 3}
+  m_Name: EosApiKey
+  m_EditorClassIdentifier: 
+  epicProductName: BULLETFEST
+  epicProductVersion: 1.0
+  epicProductId: d5bc296d98fe4480ba8ef36182b5f7da
+  epicSandboxId: 82c969e68dd942658489cefae8337072
+  epicDeploymentId: df671d1d08044f47a86e1eb89947f96f
+  epicClientId: xyza7891dYSN4GudJ057C0xxwoH730Cf
+  epicClientSecret: L+P6XoucQ6aSWyCgXzC1KE6vcD1mq7Ipf0+mnssJ66U

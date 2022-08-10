@@ -47,7 +47,7 @@ public class MainMenu : MonoBehaviour
 
     Application.targetFrameRate = Screen.currentResolution.refreshRate;
 
-    nm.networkAddress = localIp;
+    nm.networkAddress = EpicTransport.EOSSDKComponent.LocalUserProductIdString;//localIp;
 
     roundsDefault.text = $"Default: {SceneManager.sceneCountInBuildSettings - 3}";
 
@@ -78,7 +78,7 @@ public class MainMenu : MonoBehaviour
     if (res.success)
     {
       nm.RoomCode = code;
-      // nm.networkAddress = res.code;
+      nm.networkAddress = res.code;
       nm.StartClient();
     }
     else

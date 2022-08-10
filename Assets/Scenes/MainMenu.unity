@@ -159,7 +159,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 103.33335, y: -71.5}
+  m_AnchoredPosition: {x: 103.33334, y: -71.5}
   m_SizeDelta: {x: 156.6667, y: 43}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!1 &139807053
@@ -661,7 +661,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 103.33335, y: -187.5}
+  m_AnchoredPosition: {x: 103.33334, y: -187.5}
   m_SizeDelta: {x: 156.6667, y: 43}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!1 &451965302
@@ -4357,6 +4357,9 @@ GameObject:
   - component: {fileID: 1269168911}
   - component: {fileID: 1269168910}
   - component: {fileID: 1269168909}
+  - component: {fileID: 1269168912}
+  - component: {fileID: 1269168914}
+  - component: {fileID: 1269168913}
   m_Layer: 0
   m_Name: NetManager
   m_TagString: Untagged
@@ -4371,7 +4374,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1269168908}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 6b0fecffa3f624585964b0d0eb21b18e, type: 3}
   m_Name: 
@@ -4411,7 +4414,7 @@ MonoBehaviour:
   serverTickRate: 30
   offlineScene: Assets/Scenes/MainMenu.unity
   onlineScene: Assets/Scenes/Lobby.unity
-  transport: {fileID: 1269168909}
+  transport: {fileID: 1269168914}
   networkAddress: localhost
   maxConnections: 5
   authenticator: {fileID: 0}
@@ -4441,6 +4444,63 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 4
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1269168912
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1269168908}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 09c2b9adb023e6547aa45a0e8bf5fcfc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  apiKeys: {fileID: 11400000, guid: a5962dffe2e822a46b344b419e2894c9, type: 2}
+  authInterfaceLogin: 0
+  authInterfaceCredentialType: 4
+  devAuthToolPort: 7878
+  devAuthToolCredentialName: 
+  connectInterfaceCredentialType: 10
+  deviceModel: PC Windows 64bit
+  displayName: User
+  epicLoggerLevel: 200
+  collectPlayerMetrics: 1
+  checkForEpicLauncherAndRestart: 0
+  delayedInitialization: 0
+  platformTickIntervalInSeconds: 0
+  tickBudgetInMilliseconds: 0
+--- !u!114 &1269168913
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1269168908}
+  m_Enabled: 0
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: db5efa10489208a44a5e560cc56f93ed, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  AttributeKeys:
+  - lobby_name
+--- !u!114 &1269168914
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1269168908}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f5f2d307354f3ea49b3ea12e6763a9fe, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Channels: 0200000000000000
+  timeout: 25
+  maxFragments: 55
+  ignoreCachedMessagesAtStartUpInSeconds: 2
+  relayControl: 1
 --- !u!1 &1355091128
 GameObject:
   m_ObjectHideFlags: 0
@@ -4664,7 +4724,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 103.33335, y: -129.5}
+  m_AnchoredPosition: {x: 103.33334, y: -129.5}
   m_SizeDelta: {x: 156.6667, y: 43}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!1 &1421124320

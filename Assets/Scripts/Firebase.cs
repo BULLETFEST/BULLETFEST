@@ -26,11 +26,11 @@ public class Firebase// : MonoBehaviour
   /// <returns>Bool: Room ID</returns>
   public static async Task<Response> HostGame()
   {
-    string ipAddress = webClient.DownloadString("http://ipinfo.io/ip");
+    // string ipAddress = webClient.DownloadString("http://ipinfo.io/ip");
 
     NameValueCollection data = new NameValueCollection();
 
-    data["address"] = ipAddress;
+    data["address"] = EpicTransport.EOSSDKComponent.LocalUserProductIdString;//ipAddress;
     data["userId"] = SystemInfo.deviceUniqueIdentifier;
 
     // JsonUtility.FromJson<Dictionary<string, string>>();
