@@ -83,7 +83,7 @@ public class PlayerMovement : NetworkBehaviour
     playerVars.weaponBehavior.transform.localRotation = gunRotation;
   }
 
-  void FixedUpdate()
+  void Update()
   {
     if (!isLocalPlayer) return;
     if (playerVars.lockMovement) return;
@@ -161,7 +161,7 @@ public class PlayerMovement : NetworkBehaviour
     RaycastHit2D ray = Physics2D.BoxCast(
       player.transform.position,
       bc.bounds.size, 0, Vector2.down,
-      0.1f, groundLm);
+      0.25f, groundLm);
 
     return ray.collider != null;
   }

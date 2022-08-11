@@ -138,7 +138,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &12903187
 RectTransform:
   m_ObjectHideFlags: 0
@@ -426,7 +426,7 @@ MonoBehaviour:
   m_Value: 0
   m_Options:
     m_Options:
-    - m_Text: Rounds
+    - m_Text: Elimination
       m_Image: {fileID: 0}
     - m_Text: Deathmatch
       m_Image: {fileID: 0}
@@ -661,7 +661,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 103.33334, y: -187.5}
+  m_AnchoredPosition: {x: 103.33334, y: -129.5}
   m_SizeDelta: {x: 156.6667, y: 43}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!1 &451965302
@@ -2432,7 +2432,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Rounds
+  m_text: Elimination
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
@@ -4360,6 +4360,7 @@ GameObject:
   - component: {fileID: 1269168912}
   - component: {fileID: 1269168914}
   - component: {fileID: 1269168913}
+  - component: {fileID: 1269168915}
   m_Layer: 0
   m_Name: NetManager
   m_TagString: Untagged
@@ -4457,11 +4458,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   apiKeys: {fileID: 11400000, guid: a5962dffe2e822a46b344b419e2894c9, type: 2}
-  authInterfaceLogin: 1
-  authInterfaceCredentialType: 4
+  authInterfaceLogin: 0
+  authInterfaceCredentialType: 3
   devAuthToolPort: 25565
-  devAuthToolCredentialName: 
-  connectInterfaceCredentialType: 0
+  devAuthToolCredentialName: Alt
+  connectInterfaceCredentialType: 10
   deviceModel: PC Windows 64bit
   displayName: User
   epicLoggerLevel: 200
@@ -4501,6 +4502,18 @@ MonoBehaviour:
   maxFragments: 55
   ignoreCachedMessagesAtStartUpInSeconds: 2
   relayControl: 1
+--- !u!114 &1269168915
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1269168908}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cb62940793cd3b74a93cec85246cd7a6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1355091128
 GameObject:
   m_ObjectHideFlags: 0
@@ -4724,7 +4737,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 103.33334, y: -129.5}
+  m_AnchoredPosition: {x: 103.33334, y: -71.5}
   m_SizeDelta: {x: 156.6667, y: 43}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!1 &1421124320

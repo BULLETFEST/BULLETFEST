@@ -210,14 +210,22 @@ public class MyNetworkManager : NetworkManager
   {
     int sceneCount = SceneManager.sceneCountInBuildSettings;
     List<string> _scenes = new();
-    for (int i = 0; i < sceneCount; i++)
+    if (gameMode == GameMode.Rounds)
     {
-      string path = SceneUtility.GetScenePathByBuildIndex(i);
-      string dir = Path.GetDirectoryName(path);
-      string sName = Path.GetFileNameWithoutExtension(path);
+      for (int i = 0; i < sceneCount; i++)
+      {
+        string path = SceneUtility.GetScenePathByBuildIndex(i);
+        string dir = Path.GetDirectoryName(path);
+        string sName = Path.GetFileNameWithoutExtension(path);
 
-      if (dir.EndsWith("4Players") && players.Count <= 4) _scenes.Add(sName);
-      else if (dir.EndsWith("16Players") && players.Count <= 16) _scenes.Add(sName);
+        if (dir.EndsWith("4Players") && players.Count <= 4) _scenes.Add(sName);
+        else if (dir.EndsWith("16Players") && players.Count <= 16) _scenes.Add(sName);
+      }
+    }
+    else
+    {
+      int chosenMapIdx = Random.Range(3, sceneCount);
+      _scenes.Add(Path.GetFileNameWithoutExtension(SceneUtility.GetScenePathByBuildIndex(chosenMapIdx)));
     }
 
     playableScenes = _scenes.ToArray();
@@ -233,7 +241,7 @@ public class MyNetworkManager : NetworkManager
 
     deadPlayers = 0;
 
-    if (playableScenes.Length == 0 || gameMode == GameMode.Deathmatch)
+    if (playableScenes.Length == 0)// || gameMode == GameMode.Deathmatch)
     {
       gameStarted = false;
       ServerChangeScene("End");

@@ -4,6 +4,7 @@ using UnityEngine;
 using TMPro;
 using Mirror;
 using UnityEngine.UI;
+using System.Linq;
 
 public class PlayerCard : NetworkBehaviour
 {
@@ -28,15 +29,26 @@ public class PlayerCard : NetworkBehaviour
   {
     base.OnStartAuthority();
 
+    if (isServer)
+    {
+      NetworkServer.RegisterHandler<JoinNetworkMessage>(ReceiveName);
+      ReceiveName(connectionToClient, new JoinNetworkMessage { name = PlayerPrefs.GetString("PlayerName", "Guest"), card = gameObject });
+    }
+    else
+    {
+      NetworkClient.Send(new JoinNetworkMessage { name = PlayerPrefs.GetString("PlayerName", "Guest"), card = gameObject });
+    }
 
     GameObject playerCards = GameObject.FindGameObjectWithTag("PlayerCards");
     GameObject[] _playerCards = GameObject.FindGameObjectsWithTag("PlayerCard");
     foreach (GameObject _playerCard in _playerCards)
       _playerCard.transform.parent = playerCards.transform;
 
-    UpdateDisplayName();
+    // UpdateDisplayName();
     // if (!room.isHost) OnPointerEnter();
     // NetworkServer.SetClientReady(connectionToClient);
+
+    FetchNames(connectionToClient);
   }
 
   // [ServerCallback]
@@ -44,6 +56,25 @@ public class PlayerCard : NetworkBehaviour
   // {
 
   // }
+
+  [Command]
+  void FetchNames(NetworkConnectionToClient conn)
+  {
+    // Dictionary<GameObject, string> dict = new();
+    for (int i = 0; i < Room.players.Count; i++)
+    {
+      // dict[Room.players.ElementAt(i).Key.identity.gameObject] = Room.players.ElementAt(i).Value.displayName;
+      SetName(conn, Room.players.ElementAt(i).Key.identity.gameObject, Room.players.ElementAt(i).Value.displayName);
+    }
+
+    // return dict;
+  }
+
+  [TargetRpc]
+  void SetName(NetworkConnection conn, GameObject card, string dName)
+  {
+    card.GetComponent<PlayerCard>().DisplayNameUI.text = dName;
+  }
 
   [Command]
   void UpdateDisplayName() => displayName = PlayerPrefs.GetString("PlayerName", "Guest");
@@ -61,8 +92,14 @@ public class PlayerCard : NetworkBehaviour
     Room.PlayerUpdate?.Invoke();
   }
 
+  // [ClientRpc]
+  // void Rpc_UpdateDisplayName() => DisplayNameUI.text = displayName;
+
   [ClientRpc]
-  void Rpc_UpdateDisplayName() => DisplayNameUI.text = displayName;
+  void Rpc_UpdateDisplayName(string dName, GameObject card)
+  {
+    card.GetComponent<PlayerCard>().DisplayNameUI.text = dName;
+  }
 
   // [Command]
   // public void OnPointerEnter()
@@ -80,5 +117,23 @@ public class PlayerCard : NetworkBehaviour
       _alignment = 2,
       disconnect = true
     });
+  }
+
+  [Server]
+  public void ReceiveName(NetworkConnectionToClient conn, JoinNetworkMessage joinNetworkMessage)
+  {
+    Rpc_UpdateDisplayName(joinNetworkMessage.name, joinNetworkMessage.card);
+
+    if (Room.players.ContainsKey(connectionToClient))
+      Room.players.Remove(connectionToClient);
+    Room.players.Add(connectionToClient, new PlayerData(joinNetworkMessage.name));
+
+    Room.PlayerUpdate?.Invoke();
+  }
+
+  public struct JoinNetworkMessage : NetworkMessage
+  {
+    public string name;
+    public GameObject card;
   }
 }

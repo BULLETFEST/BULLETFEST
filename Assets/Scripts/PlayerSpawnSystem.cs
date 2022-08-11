@@ -45,6 +45,7 @@ public class PlayerSpawnSystem : NetworkBehaviour
   [Server]
   public IEnumerator Cmd_RespawnPlayer(NetworkConnection conn)
   {
+    Rpc_SetPlayerPosition(conn.identity.gameObject);
     yield return new WaitForSecondsRealtime(5);
 
     Rpc_RespawnPlayer(conn.identity.gameObject);
@@ -52,17 +53,23 @@ public class PlayerSpawnSystem : NetworkBehaviour
   }
 
   [ClientRpc]
-  private void Rpc_RespawnPlayer(GameObject player)
+  private void Rpc_SetPlayerPosition(GameObject player)
   {
     player.transform.position = spawnPoints[Random.Range(0, spawnPoints.Length)].transform.position;
     player.transform.position = new Vector2(player.transform.position.x, player.transform.position.y + 20);
+  }
 
+  [ClientRpc]
+  private void Rpc_RespawnPlayer(GameObject player)
+  {
     PlayerBehavior pb = player.GetComponent<PlayerBehavior>();
 
     pb.dead = false;
     pb.playerVars.lockMovement = false;
     pb.playerVars.lockShooting = false;
     pb.playerVars.lockWeapon = false;
+
+    pb.playerVars.uiName.gameObject.SetActive(true);
 
     // pb.health = pb.maxHealth;
 
