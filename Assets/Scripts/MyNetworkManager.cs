@@ -224,7 +224,7 @@ public class MyNetworkManager : NetworkManager
     }
     else
     {
-      int chosenMapIdx = Random.Range(3, sceneCount);
+      int chosenMapIdx = Random.Range(4, sceneCount);
       _scenes.Add(Path.GetFileNameWithoutExtension(SceneUtility.GetScenePathByBuildIndex(chosenMapIdx)));
     }
 
@@ -233,6 +233,11 @@ public class MyNetworkManager : NetworkManager
     gameStarted = true;
 
     CycleMap();
+
+    foreach (KeyValuePair<NetworkConnectionToClient, PlayerData> entry in players)
+    {
+      print(entry.Value.displayName);
+    }
   }
 
   [Server]
@@ -269,14 +274,8 @@ public class MyNetworkManager : NetworkManager
 
   public void Disconnect()
   {
-    if (NetworkServer.active && NetworkClient.isConnected)
-    {
-      StopHost();
-    }
-    else if (NetworkClient.isConnected)
-    {
-      StopClient();
-    }
+    StopHost();
+    StopClient();
   }
 
 

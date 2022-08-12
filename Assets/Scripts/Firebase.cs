@@ -14,11 +14,12 @@ public class Firebase// : MonoBehaviour
   private static WebClient webClient = new WebClient();
 
   // bool testMode;
-#if UNITY_EDITOR
-  static bool testMode = true;
-#else
   static bool testMode = false;
-#endif
+  // #if UNITY_EDITOR
+  //   static bool testMode = true;
+  // #else
+  //   static bool testMode = false;
+  // #endif
 
   /// <summary>
   /// Attempt to host a game

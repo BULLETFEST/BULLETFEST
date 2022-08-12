@@ -54,33 +54,6 @@ public class MainMenu : MonoBehaviour
     nm.networkAddress = EpicTransport.EOSSDKComponent.LocalUserProductIdString;//localIp;
 
     roundsDefault.text = $"Default: {SceneManager.sceneCountInBuildSettings - 3}";
-
-    // #if UNITY_EDITOR
-    //     // eos.delayedInitialization = true;
-    //     eos.devAuthToolPort = 25565U;
-    //     eos.authInterfaceLogin = true;
-    //     eos.authInterfaceCredentialType = Epic.OnlineServices.Auth.LoginCredentialType.Developer;
-    //     eos.connectInterfaceCredentialType = Epic.OnlineServices.ExternalCredentialType.Epic;
-    //     // if (ParrelSync.ClonesManager.IsClone())
-    //     // {
-    //     //   // Add line here that ends with //gitignore and sets eos.devAuthToolCredentialName to the credential you got 
-    //     //   // Tutorial in https://github.com/FakeByte/EpicOnlineTransport/tree/v1.5.0#testing-multiplayer-on-one-device
-    //     //   eos.devAuthToolCredentialName = "Main";
-    //     // }
-    //     // else
-    //     // {
-    //     //   // ChangeName("A");
-    //     //   // Host();
-    //     //   eos.devAuthToolCredentialName = "Alt";
-    //     // }
-    //     // EOSSDKComponent.Initialize();
-    // #else
-    //   eos.authInterfaceLogin = false;
-    //   eos.authInterfaceCredentialType = Epic.OnlineServices.Auth.LoginCredentialType.DeviceCode;
-    //   eos.connectInterfaceCredentialType = Epic.OnlineServices.ExternalCredentialType.DeviceidAccessToken;
-    // // #endif
-
-    //     EOSSDKComponent.Initialize();
   }
 
   public async void Connect()
@@ -176,5 +149,10 @@ public class MainMenu : MonoBehaviour
     {
       rounds.transform.parent.gameObject.SetActive(true);
     }
+  }
+
+  public void ChangeSceneToControls()
+  {
+    SceneManager.LoadScene("Controls");
   }
 }

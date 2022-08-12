@@ -29,45 +29,12 @@ public class PlayerCard : NetworkBehaviour
   {
     base.OnStartAuthority();
 
-    if (isServer)
-    {
-      NetworkServer.RegisterHandler<JoinNetworkMessage>(ReceiveName);
-      ReceiveName(connectionToClient, new JoinNetworkMessage { name = PlayerPrefs.GetString("PlayerName", "Guest"), card = gameObject });
-    }
-    else
-    {
-      NetworkClient.Send(new JoinNetworkMessage { name = PlayerPrefs.GetString("PlayerName", "Guest"), card = gameObject });
-    }
-
     GameObject playerCards = GameObject.FindGameObjectWithTag("PlayerCards");
     GameObject[] _playerCards = GameObject.FindGameObjectsWithTag("PlayerCard");
     foreach (GameObject _playerCard in _playerCards)
       _playerCard.transform.parent = playerCards.transform;
 
-    // UpdateDisplayName();
-    // if (!room.isHost) OnPointerEnter();
-    // NetworkServer.SetClientReady(connectionToClient);
-
-    FetchNames(connectionToClient);
-  }
-
-  // [ServerCallback]
-  // public override void OnStartClient()
-  // {
-
-  // }
-
-  [Command]
-  void FetchNames(NetworkConnectionToClient conn)
-  {
-    // Dictionary<GameObject, string> dict = new();
-    for (int i = 0; i < Room.players.Count; i++)
-    {
-      // dict[Room.players.ElementAt(i).Key.identity.gameObject] = Room.players.ElementAt(i).Value.displayName;
-      SetName(conn, Room.players.ElementAt(i).Key.identity.gameObject, Room.players.ElementAt(i).Value.displayName);
-    }
-
-    // return dict;
+    UpdateDisplayName(PlayerPrefs.GetString("PlayerName", "Guest"));
   }
 
   [TargetRpc]
@@ -77,7 +44,7 @@ public class PlayerCard : NetworkBehaviour
   }
 
   [Command]
-  void UpdateDisplayName() => displayName = PlayerPrefs.GetString("PlayerName", "Guest");
+  void UpdateDisplayName(string dName) => displayName = dName;
 
   void HandleUpdateName(string oldName, string newName)
   {
@@ -91,9 +58,6 @@ public class PlayerCard : NetworkBehaviour
 
     Room.PlayerUpdate?.Invoke();
   }
-
-  // [ClientRpc]
-  // void Rpc_UpdateDisplayName() => DisplayNameUI.text = displayName;
 
   [ClientRpc]
   void Rpc_UpdateDisplayName(string dName, GameObject card)

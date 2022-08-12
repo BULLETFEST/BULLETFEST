@@ -57,18 +57,21 @@ public class PlayerVars : NetworkBehaviour
   public override void OnStartAuthority()
   {
     base.OnStartAuthority();
-    UpdateDisplayName();
+    UpdateDisplayName(connectionToClient);
   }
 
   [Command]
-  void UpdateDisplayName() => displayName = Room.players[connectionToClient].displayName;
+  void UpdateDisplayName(NetworkConnectionToClient conn)
+  {
+    displayName = Room.players[conn].displayName;
+  }
 
   // [ServerCallback]
   void HandleUpdateDisplayName(string oldName, string newName)
   {
     uiName.text = newName;
 
-    Rpc_UpdateDisplayName();
+    // Rpc_UpdateDisplayName();
   }
 
   [ClientRpc]
