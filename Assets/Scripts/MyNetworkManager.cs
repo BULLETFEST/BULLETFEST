@@ -34,6 +34,10 @@ public class MyNetworkManager : NetworkManager
 
   public GameMode gameMode = 0;
 
+  public int rounds = 1;
+
+  public static int PlayableScenes = 11, menuScenes = 4;
+
   public override void Start()
   {
     base.Start();
@@ -178,7 +182,7 @@ public class MyNetworkManager : NetworkManager
   public void AnnounceWinner()
   {
     if (gameMode == 0)
-      winner = GameObject.FindGameObjectsWithTag("Player").Where(x => x.activeInHierarchy).ToArray()[0].GetComponent<NetworkIdentity>().connectionToClient;
+      winner = GameObject.FindGameObjectsWithTag("Player").Where(x => !x.GetComponent<PlayerBehavior>().dead).ToArray()[0].GetComponent<NetworkIdentity>().connectionToClient;
     else
     {
       // https://stackoverflow.com/a/1332/11420492
@@ -221,10 +225,16 @@ public class MyNetworkManager : NetworkManager
         if (dir.EndsWith("4Players") && players.Count <= 4) _scenes.Add(sName);
         else if (dir.EndsWith("16Players") && players.Count <= 16) _scenes.Add(sName);
       }
+
+      rounds = Mathf.Clamp(rounds, 1, PlayableScenes);
+      while (_scenes.Count > rounds)
+      {
+        _scenes.RemoveAt(Random.Range(0, _scenes.Count));
+      }
     }
     else
     {
-      int chosenMapIdx = Random.Range(4, sceneCount);
+      int chosenMapIdx = Random.Range(menuScenes, sceneCount);
       _scenes.Add(Path.GetFileNameWithoutExtension(SceneUtility.GetScenePathByBuildIndex(chosenMapIdx)));
     }
 

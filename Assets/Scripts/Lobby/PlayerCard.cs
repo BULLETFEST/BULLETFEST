@@ -37,11 +37,11 @@ public class PlayerCard : NetworkBehaviour
     UpdateDisplayName(PlayerPrefs.GetString("PlayerName", "Guest"));
   }
 
-  [TargetRpc]
-  void SetName(NetworkConnection conn, GameObject card, string dName)
-  {
-    card.GetComponent<PlayerCard>().DisplayNameUI.text = dName;
-  }
+  // [TargetRpc]
+  // void SetName(NetworkConnection conn, GameObject card, string dName)
+  // {
+  //   card.GetComponent<PlayerCard>().DisplayNameUI.text = dName;
+  // }
 
   [Command]
   void UpdateDisplayName(string dName) => displayName = dName;
@@ -59,11 +59,11 @@ public class PlayerCard : NetworkBehaviour
     Room.PlayerUpdate?.Invoke();
   }
 
-  [ClientRpc]
-  void Rpc_UpdateDisplayName(string dName, GameObject card)
-  {
-    card.GetComponent<PlayerCard>().DisplayNameUI.text = dName;
-  }
+  // [ClientRpc]
+  // void Rpc_UpdateDisplayName(string dName, GameObject card)
+  // {
+  //   card.GetComponent<PlayerCard>().DisplayNameUI.text = dName;
+  // }
 
   // [Command]
   // public void OnPointerEnter()
@@ -83,17 +83,17 @@ public class PlayerCard : NetworkBehaviour
     });
   }
 
-  [Server]
-  public void ReceiveName(NetworkConnectionToClient conn, JoinNetworkMessage joinNetworkMessage)
-  {
-    Rpc_UpdateDisplayName(joinNetworkMessage.name, joinNetworkMessage.card);
+  // [Server]
+  // public void ReceiveName(NetworkConnectionToClient conn, JoinNetworkMessage joinNetworkMessage)
+  // {
+  //   Rpc_UpdateDisplayName(joinNetworkMessage.name, joinNetworkMessage.card);
 
-    if (Room.players.ContainsKey(connectionToClient))
-      Room.players.Remove(connectionToClient);
-    Room.players.Add(connectionToClient, new PlayerData(joinNetworkMessage.name));
+  //   if (Room.players.ContainsKey(connectionToClient))
+  //     Room.players.Remove(connectionToClient);
+  //   Room.players.Add(connectionToClient, new PlayerData(joinNetworkMessage.name));
 
-    Room.PlayerUpdate?.Invoke();
-  }
+  //   Room.PlayerUpdate?.Invoke();
+  // }
 
   public struct JoinNetworkMessage : NetworkMessage
   {

@@ -18,7 +18,7 @@ public class CameraShake : NetworkBehaviour
 
       transform.position = new Vector3(x, y, -10);
 
-      elapsed += Time.deltaTime;
+      elapsed += Time.unscaledDeltaTime;
 
       yield return null;
     }

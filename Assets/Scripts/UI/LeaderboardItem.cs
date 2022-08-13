@@ -35,65 +35,81 @@ public class LeaderboardItem : NetworkBehaviour
   {
     transform.SetParent(GameObject.FindGameObjectWithTag("Leaderboard").transform);
     transform.localScale = Vector3.one;
-
-    NetworkClient.Ready();
+    Time.timeScale = 1;
+    // NetworkClient.Ready();
   }
 
-  public override void OnStartAuthority()
+  public override void OnStartClient()
   {
-    base.OnStartAuthority();
+    base.OnStartClient();
 
+    print("A");
 
-
-    UpdateStats();
+    UpdateStats(connectionToClient);
   }
 
   [Command]
-  void UpdateStats()
+  void UpdateStats(NetworkConnectionToClient conn)
   {
-    displayName = Room.players[connectionToClient].displayName;
-    kills = Room.players[connectionToClient].kills.ToString();
-    wins = Room.players[connectionToClient].wins.ToString();
+    displayName = Room.players[conn].displayName;
+    kills = Room.players[conn].kills.ToString();
+    wins = Room.players[conn].wins.ToString();
+
+    // Rpc_UpdateDisplayName(Room.players[conn].displayName);
+    // Rpc_UpdateKills(Room.players[conn].kills.ToString());
+    // Rpc_UpdateWins(Room.players[conn].wins.ToString());
+
+  }
+
+  [ClientRpc]
+  void Rpc_UpdateKills(string kills)
+  {
+    uiKills.text = kills;
+    print("AA");
+  }
+
+  [ClientRpc]
+  void Rpc_UpdateDisplayName(string displayName)
+  {
+    uiDisplayname.text = displayName;
+  }
+
+  [ClientRpc]
+  void Rpc_UpdateWins(string wins)
+  {
+    uiWins.text = wins;
   }
 
   void HandleUpdateDisplayName(string oldName, string newName)
   {
     uiDisplayname.text = newName;
-    Rpc_UpdateDisplayName();
-  }
 
-  [ClientRpc]
-  void Rpc_UpdateDisplayName()
-  {
-    uiDisplayname.text = displayName;
-  }
+    print("A");
 
+    // Rpc_UpdateDisplayName();
+  }
 
   void HandleUpdateKills(string oldKills, string newKills)
   {
     uiKills.text = newKills;
-    Rpc_UpdateKills();
-    SortItems();
-  }
 
-  [ClientRpc]
-  void Rpc_UpdateKills()
-  {
-    uiKills.text = kills;
+    print("A");
+
+    // Rpc_UpdateKills();
+    SortItems();
   }
 
   void HandleUpdateWins(string oldWins, string newWins)
   {
     uiWins.text = newWins;
-    Rpc_UpdateWins();
-    SortItems();
+    // Rpc_UpdateWins();
   }
 
-  [ClientRpc]
-  void Rpc_UpdateWins()
-  {
-    uiWins.text = wins;
-  }
+  // [ClientRpc]
+  // void Rpc_UpdateWins(string wins)
+  // {
+  //   uiWins.text = wins;
+  // }
 
   [Command]
   void SortItems()

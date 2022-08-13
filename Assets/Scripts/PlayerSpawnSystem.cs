@@ -24,6 +24,7 @@ public class PlayerSpawnSystem : NetworkBehaviour
 
   void Awake()
   {
+    Time.timeScale = 1;
     spawnPoints = GameObject.FindGameObjectsWithTag("Spawnpoint");
   }
 

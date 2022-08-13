@@ -53,7 +53,7 @@ public class MainMenu : MonoBehaviour
 
     nm.networkAddress = EpicTransport.EOSSDKComponent.LocalUserProductIdString;//localIp;
 
-    roundsDefault.text = $"Default: {SceneManager.sceneCountInBuildSettings - 3}";
+    roundsDefault.text = $"Default: {SceneManager.sceneCountInBuildSettings - MyNetworkManager.menuScenes}";
   }
 
   public async void Connect()
@@ -81,7 +81,7 @@ public class MainMenu : MonoBehaviour
     connectBtn.interactable = true;
   }
 
-  public Regex numbers = new Regex(@"\D");
+  public Regex nonNumbers = new Regex(@"\D");
 
   public async void Host()
   {
@@ -91,13 +91,13 @@ public class MainMenu : MonoBehaviour
 
     bool toReturn = false;
 
-    if (numbers.IsMatch(rounds.text))
+    if (nonNumbers.IsMatch(rounds.text))
     {
       rounds.text = "";
       toReturn = true;
     }
 
-    if (numbers.IsMatch(port.text))
+    if (nonNumbers.IsMatch(port.text))
     {
       port.text = "";
       toReturn = true;
@@ -114,6 +114,7 @@ public class MainMenu : MonoBehaviour
     if (res.success)
     {
       nm.RoomCode = res.code;
+      nm.rounds = int.Parse(rounds.text);
       nm.StartHost();
     }
     else
