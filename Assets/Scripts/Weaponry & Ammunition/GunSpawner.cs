@@ -9,7 +9,7 @@ public class GunSpawner : NetworkBehaviour
   // const float spawnInterval = 8f;
 
   // Percent chance (1.0f = 10%, 2.5f = 25%, etc)
-  const float spawnChance = 2.5f;
+  const float spawnChance = 4.5f;
 
   BoxCollider2D boxCollider2D;
 
@@ -37,7 +37,7 @@ public class GunSpawner : NetworkBehaviour
     // {
     float rndNum = float.Parse(Random.Range(0.0f, 10.0f).ToString().Substring(0, 3));
 
-    if (rndNum <= spawnChance || firstRound)
+    if (rndNum >= spawnChance || firstRound)
     {
       firstRound = false;
       // if ()

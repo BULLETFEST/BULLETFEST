@@ -1395,7 +1395,7 @@ MonoBehaviour:
   groundLm:
     serializedVersion: 2
     m_Bits: 2147487808
-  moveForce: 25
+  moveForce: 20
   drag: 20
   playerVars: {fileID: 0}
 --- !u!114 &2728089404972226145

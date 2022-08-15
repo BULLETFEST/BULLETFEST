@@ -18,8 +18,8 @@ public class MainMenu : MonoBehaviour
   [HideInInspector]
   public string code = "0000";
 
-  [HideInInspector]
-  public string playerName;
+  // [HideInInspector]
+  // public string playerName;
 
   private string localIp;
 
@@ -31,8 +31,10 @@ public class MainMenu : MonoBehaviour
   public TMP_Text roundsDefault;
 
   [Header("Host UI Elements")]
-  public TMP_InputField port;
+  // public TMP_InputField port;
   public TMP_InputField rounds;
+  public TMP_InputField playerName;
+  public TMP_Dropdown deathmatchTime;
 
   void Start()
   {
@@ -47,7 +49,7 @@ public class MainMenu : MonoBehaviour
 
     eos = GetComponent<EOSSDKComponent>();
     nm = FindObjectOfType<MyNetworkManager>();
-    playerName = PlayerPrefs.GetString("PlayerName", "Guest");
+    playerName.text = PlayerPrefs.GetString("PlayerName", "");
 
     Application.targetFrameRate = Screen.currentResolution.refreshRate;
 
@@ -59,7 +61,7 @@ public class MainMenu : MonoBehaviour
   public async void Connect()
   {
     connectBtn.interactable = false;
-    PlayerPrefs.SetString("PlayerName", playerName);
+    PlayerPrefs.SetString("PlayerName", playerName.text);
 
     // In the context of joining, code is equal to the
     // host's IP.
@@ -86,7 +88,7 @@ public class MainMenu : MonoBehaviour
   public async void Host()
   {
     hostBtn.interactable = false;
-    PlayerPrefs.SetString("PlayerName", playerName);
+    PlayerPrefs.SetString("PlayerName", playerName.text);
 
 
     bool toReturn = false;
@@ -97,15 +99,7 @@ public class MainMenu : MonoBehaviour
       toReturn = true;
     }
 
-    if (nonNumbers.IsMatch(port.text))
-    {
-      port.text = "";
-      toReturn = true;
-    }
-
     if (toReturn) return;
-
-    nm.GetComponent<kcp2k.KcpTransport>().Port = ushort.Parse(port.text != "" ? port.text : "7777");
 
     // In the context of hosting, code is equal to the
     // room code generated on the server.
@@ -114,7 +108,12 @@ public class MainMenu : MonoBehaviour
     if (res.success)
     {
       nm.RoomCode = res.code;
-      nm.rounds = int.Parse(rounds.text);
+      // nm.rounds = int.Parse(rounds.text == "" ? "11" : rounds.text);
+      if (int.TryParse(rounds.text, out int rnds))
+      {
+        nm.rounds = rnds;
+      }
+      else nm.rounds = 11;
       nm.StartHost();
     }
     else
@@ -125,12 +124,6 @@ public class MainMenu : MonoBehaviour
       }
     }
     hostBtn.interactable = true;
-  }
-
-
-  public void ChangeName(string newPlayerName)
-  {
-    playerName = newPlayerName;
   }
 
   public void ChangeRoomCode(string newCode)
@@ -145,10 +138,47 @@ public class MainMenu : MonoBehaviour
     if (option == 1)
     {
       rounds.transform.parent.gameObject.SetActive(false);
+      deathmatchTime.transform.parent.gameObject.SetActive(true);
     }
     else
     {
       rounds.transform.parent.gameObject.SetActive(true);
+      deathmatchTime.transform.parent.gameObject.SetActive(false);
+    }
+  }
+
+  public void ChangeDeathmatchTime(int option)
+  {
+    switch (option)
+    {
+      case 0:
+      default:
+        nm.deathmatchLength = 1;
+        break;
+      case 1:
+        nm.deathmatchLength = 1.5f;
+        break;
+      case 2:
+        nm.deathmatchLength = 2;
+        break;
+      case 3:
+        nm.deathmatchLength = 2.5f;
+        break;
+      case 4:
+        nm.deathmatchLength = 3;
+        break;
+      case 5:
+        nm.deathmatchLength = 3.5f;
+        break;
+      case 6:
+        nm.deathmatchLength = 4;
+        break;
+      case 7:
+        nm.deathmatchLength = 4.5f;
+        break;
+      case 8:
+        nm.deathmatchLength = 5;
+        break;
     }
   }
 

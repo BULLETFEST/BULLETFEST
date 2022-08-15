@@ -37,20 +37,6 @@ public class PlayerUI : NetworkBehaviour
     Cursor.visible = !focusStatus;
   }
 
-  IEnumerator UpdateTime()
-  {
-    TimeSpan timeSpan = new TimeSpan(0, 5, 0);
-    while (timeSpan.TotalSeconds >= 0)
-    {
-      timeSpan = playerVars.timeleft.Subtract(DateTime.UtcNow);//FindObjectOfType<PlayerSpawnSystem>().timeStamp.Subtract(DateTime.Now);
-      // int secondsLeft = (int)timeSpan.Minutes;
-      // uiTimeLeft.text = $"{Mathf.Floor(secondsLeft / 60)}:{Mathf.Floor(secondsLeft / Mathf.Floor(secondsLeft / 60))}";
-      uiTimeLeft.text = $"{timeSpan.Minutes}:{timeSpan.Seconds}";
-
-      yield return new WaitForSeconds(1);
-    }
-  }
-
   void Update()
   {
     if (!isLocalPlayer) return;

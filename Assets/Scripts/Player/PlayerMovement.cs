@@ -91,7 +91,9 @@ public class PlayerMovement : NetworkBehaviour
     float x = Input.GetAxis("Horizontal");
     float xRaw = Input.GetAxisRaw("Horizontal");
 
-    bool grounded = Grounded(gameObject, playerVars.bc);
+    bool grounded = false;
+    if (playerVars.bc != null)
+      grounded = Grounded(gameObject, playerVars.bc);
 
     if (Input.GetKeyDown(KeyCode.Space) && (grounded || !doubleJumped))
     {

@@ -77,9 +77,12 @@ public class PlayerBehavior : NetworkBehaviour
   [Command]
   void SwitchWeapon()
   {
-    TargetRpc_SwitchWeapon(weaponToPickup.GetComponent<WeaponItem>().WeaponID);
-    weaponBehavior.SwitchWeapon(weaponToPickup.GetComponent<WeaponItem>().WeaponID);
-    NetworkServer.Destroy(weaponToPickup);
+    if (weaponToPickup != null)
+    {
+      TargetRpc_SwitchWeapon(weaponToPickup.GetComponent<WeaponItem>().WeaponID);
+      weaponBehavior.SwitchWeapon(weaponToPickup.GetComponent<WeaponItem>().WeaponID);
+      NetworkServer.Destroy(weaponToPickup);
+    }
   }
 
   [ClientRpc]

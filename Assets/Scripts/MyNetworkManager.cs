@@ -22,6 +22,8 @@ public class MyNetworkManager : NetworkManager
 
   public Dictionary<NetworkConnectionToClient, PlayerData> players { get; } = new Dictionary<NetworkConnectionToClient, PlayerData>();
 
+  public NetworkConnectionToClient[] sortedPlayerList = new NetworkConnectionToClient[4];
+
   public bool gameStarted = false;
 
   public NetworkConnectionToClient winner;
@@ -35,6 +37,8 @@ public class MyNetworkManager : NetworkManager
   public GameMode gameMode = 0;
 
   public int rounds = 1;
+
+  public float deathmatchLength = 1;
 
   public static int PlayableScenes = 11, menuScenes = 4;
 
@@ -71,7 +75,7 @@ public class MyNetworkManager : NetworkManager
   {
     base.OnServerConnect(conn);
 
-    if (NetworkServer.connections.Count >= 4)
+    if (NetworkServer.connections.Count >= 5)
     {
       conn.Send(new Message.ServerMessge
       {
@@ -110,7 +114,7 @@ public class MyNetworkManager : NetworkManager
         GameObject go = Instantiate(playerSpawnSystem);
         if (gameMode == GameMode.Deathmatch)
         {
-          go.GetComponent<PlayerSpawnSystem>().timeStamp = System.DateTime.UtcNow.AddMinutes(1);
+          go.GetComponent<PlayerSpawnSystem>().timeStamp = System.DateTime.UtcNow.AddMinutes(deathmatchLength);
         }
         NetworkServer.Spawn(go);
 
@@ -136,6 +140,7 @@ public class MyNetworkManager : NetworkManager
       GameObject player = Instantiate(playerCard, Vector3.zero, Quaternion.Euler(0, 0, 0), playerCards.transform);
       player.GetComponent<PlayerCard>().DisplayNameUI.text = "Loading...";
       if (conn != NetworkServer.localConnection) player.GetComponent<PlayerCard>().kickBtn.gameObject.SetActive(true);
+      NetworkServer.Spawn(player, conn);
       NetworkServer.AddPlayerForConnection(conn, player);
     }
   }
@@ -259,6 +264,15 @@ public class MyNetworkManager : NetworkManager
     if (playableScenes.Length == 0)// || gameMode == GameMode.Deathmatch)
     {
       gameStarted = false;
+      List<KeyValuePair<NetworkConnectionToClient, PlayerData>> temp = players.ToList();
+
+      temp.Sort(delegate (KeyValuePair<NetworkConnectionToClient, PlayerData> a, KeyValuePair<NetworkConnectionToClient, PlayerData> b)
+      {
+        return -a.Value.kills.CompareTo(b.Value.kills);
+      });
+
+      sortedPlayerList = temp.ToDictionary(x => x.Key, x => x.Value).Keys.ToArray();
+
       ServerChangeScene("End");
       return;
     }

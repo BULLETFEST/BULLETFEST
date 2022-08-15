@@ -32,7 +32,7 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/4Players/World_5.unity
     guid: 92fc201a866eb8649b8951e55de6b06f
-  - enabled: 1
+  - enabled: 0
     path: Assets/Scenes/4Players/World_6.unity
     guid: 805349bb5d455ac4abc8f11a8bbdcd47
   - enabled: 1

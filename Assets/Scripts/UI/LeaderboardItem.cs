@@ -43,8 +43,6 @@ public class LeaderboardItem : NetworkBehaviour
   {
     base.OnStartClient();
 
-    print("A");
-
     UpdateStats(connectionToClient);
   }
 
@@ -55,92 +53,27 @@ public class LeaderboardItem : NetworkBehaviour
     kills = Room.players[conn].kills.ToString();
     wins = Room.players[conn].wins.ToString();
 
-    // Rpc_UpdateDisplayName(Room.players[conn].displayName);
-    // Rpc_UpdateKills(Room.players[conn].kills.ToString());
-    // Rpc_UpdateWins(Room.players[conn].wins.ToString());
-
+    ChangeItemIndex(conn.identity.gameObject, System.Array.IndexOf(Room.sortedPlayerList, conn));
   }
 
   [ClientRpc]
-  void Rpc_UpdateKills(string kills)
+  void ChangeItemIndex(GameObject owner, int index)
   {
-    uiKills.text = kills;
-    print("AA");
-  }
-
-  [ClientRpc]
-  void Rpc_UpdateDisplayName(string displayName)
-  {
-    uiDisplayname.text = displayName;
-  }
-
-  [ClientRpc]
-  void Rpc_UpdateWins(string wins)
-  {
-    uiWins.text = wins;
+    owner.transform.SetSiblingIndex(index + 1);
   }
 
   void HandleUpdateDisplayName(string oldName, string newName)
   {
     uiDisplayname.text = newName;
-
-    print("A");
-
-    // Rpc_UpdateDisplayName();
   }
 
   void HandleUpdateKills(string oldKills, string newKills)
   {
     uiKills.text = newKills;
-
-    print("A");
-
-    // Rpc_UpdateKills();
-    SortItems();
   }
 
   void HandleUpdateWins(string oldWins, string newWins)
   {
     uiWins.text = newWins;
-    // Rpc_UpdateWins();
-  }
-
-  // [ClientRpc]
-  // void Rpc_UpdateWins(string wins)
-  // {
-  //   uiWins.text = wins;
-  // }
-
-  [Command]
-  void SortItems()
-  {
-    GameObject[] items = GameObject.FindGameObjectsWithTag("LeaderboardItem");
-    int[] goKills = new int[items.Length];
-
-    for (int i = 0; i < items.Length; i++)
-    {
-      goKills[i] = int.Parse(items[i].GetComponent<LeaderboardItem>().kills);
-    }
-
-    int[] dictKeys = goKills;
-    System.Array.Sort(dictKeys);
-
-    Rpc_SortItems(items, goKills, dictKeys);
-  }
-
-  [ClientRpc]
-  void Rpc_SortItems(GameObject[] go, int[] goKills, int[] dictKeys)
-  {
-    Dictionary<int, GameObject> dict = new();
-
-    foreach (GameObject g in go)
-    {
-      dict.Add(goKills[System.Array.IndexOf(go, g)], g);
-    }
-
-    for (int i = 0; i < dictKeys.Length; i++)
-    {
-      dict[dictKeys[i]].transform.SetSiblingIndex(i + 1);
-    }
   }
 }

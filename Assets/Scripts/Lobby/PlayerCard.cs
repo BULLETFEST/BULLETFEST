@@ -48,6 +48,7 @@ public class PlayerCard : NetworkBehaviour
 
   void HandleUpdateName(string oldName, string newName)
   {
+    if (newName.Length > 16) newName = newName.Substring(0, 16);
     DisplayNameUI.text = newName;
 
     // print(connectionToClient);

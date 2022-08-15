@@ -166,7 +166,7 @@ MonoBehaviour:
   pelletCount: 0
   inaccuracyRange: f9ffffff07000000
   reloadTime: 10
-  shotPushback: 30
+  shotPushback: 20
   range: 0
   damage: 1
   fireRate: 35
