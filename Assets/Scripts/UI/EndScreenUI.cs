@@ -48,16 +48,16 @@ public class EndScreenUI : NetworkBehaviour
 
       playAgain.onClick.AddListener(delegate
       {
-        // Room.
         Room.ServerChangeScene("Lobby");
-
+        FindObjectOfType<AudioSystem>().PlaySound("Select");
       });
     }
     else Destroy(playAgain);
-
-    // exit.onClick.AddListener(delegate { Room.Disconnect(); });
-
   }
 
-  public void Exit() => Room.Disconnect();
+  public void Exit()
+  {
+    Room.Disconnect();
+    FindObjectOfType<AudioSystem>().PlaySound("Select");
+  }
 }

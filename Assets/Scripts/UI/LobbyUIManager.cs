@@ -30,12 +30,12 @@ public class LobbyUIManager : NetworkBehaviour
   void StartGame()
   {
     Room.StartGame();
+    FindObjectOfType<AudioSystem>().PlaySound("Select");
   }
 
   public void PlayerUpdate()
   {
 #if !UNITY_EDITOR
-    print("a");
     if (Room.players.Count < 2) startButton.interactable = false;
     else
 #endif
@@ -50,5 +50,6 @@ public class LobbyUIManager : NetworkBehaviour
   public void Quit()
   {
     Room.Disconnect();
+    FindObjectOfType<AudioSystem>().PlaySound("Select");
   }
 }

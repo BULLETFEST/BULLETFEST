@@ -29,6 +29,8 @@ public class PlayerVars : NetworkBehaviour
 
   public WeaponBehavior weaponBehavior;
 
+  public AudioSystem audioSystem;
+
   // [HideInInspector]
   [SyncVar(hook = nameof(HandleUpdateDisplayName))]
   public string displayName;
@@ -40,6 +42,8 @@ public class PlayerVars : NetworkBehaviour
     bc = GetComponent<BoxCollider2D>();
     // name = PlayerPrefs.GetString("PlayerName", "Guest");
     // weaponBehavior = GetComponentInChildren<WeaponBehavior>();
+
+    audioSystem = FindObjectOfType<AudioSystem>();
   }
 
   public override void OnStartAuthority()

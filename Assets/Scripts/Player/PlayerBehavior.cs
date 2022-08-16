@@ -118,6 +118,7 @@ public class PlayerBehavior : NetworkBehaviour
   void Rpc_AddForce(GameObject target)
   {
     playerVars.weaponBehavior.AddForce(target);
+    playerVars.audioSystem.PlaySound("Shoot");
   }
 
   [TargetRpc]

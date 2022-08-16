@@ -102,13 +102,19 @@ public class PlayerMovement : NetworkBehaviour
         if (playerVars.rb.velocity.y > 0)
         {
           playerVars.rb.AddForce(new Vector2(0, jumpForce * 0.75f));
+          playerVars.audioSystem.PlaySound("Jump");
         }
         else
         {
           playerVars.rb.AddForce(new Vector2(0, jumpForce));
+          playerVars.audioSystem.PlaySound("Jump");
         }
       }
-      else playerVars.rb.AddForce(new Vector2(0, jumpForce));
+      else
+      {
+        playerVars.rb.AddForce(new Vector2(0, jumpForce));
+        playerVars.audioSystem.PlaySound("Jump");
+      }
     }
 
     if (doubleJumped && grounded)
@@ -154,6 +160,8 @@ public class PlayerMovement : NetworkBehaviour
     // Add drag
     // https://forum.unity.com/threads/physics-drag-formula.252406/
     playerVars.rb.velocity = new Vector2(playerVars.rb.velocity.x * (1 - Time.fixedDeltaTime * drag), playerVars.rb.velocity.y);
+
+    // playerVars.audioSystem.transform.position = gameObject.transform.position;
   }
 
   bool Grounded(GameObject player, BoxCollider2D bc)
