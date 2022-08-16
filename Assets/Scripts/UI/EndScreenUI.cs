@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using Mirror;
 using System.Linq;
@@ -10,19 +8,13 @@ public class EndScreenUI : NetworkBehaviour
   GameObject leaderboard;
   GameObject leaderboardItem;
 
-  private MyNetworkManager room;
-  public MyNetworkManager Room
-  {
-    get
-    {
-      if (room != null) { return room; }
-      return room = NetworkManager.singleton as MyNetworkManager;
-    }
-  }
+  MyNetworkManager Room;
 
   // Start is called before the first frame update
   void Awake()
   {
+    Room = MyNetworkManager.instance;
+
     leaderboard = GameObject.FindGameObjectWithTag("Leaderboard");
     leaderboardItem = (GameObject)Resources.Load("SpawnableNoNetId/LeaderboardItem");
 

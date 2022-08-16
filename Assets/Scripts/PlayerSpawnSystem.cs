@@ -1,22 +1,10 @@
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using Mirror;
 using System.Linq;
-using UnityEngine.Video;
 
 public class PlayerSpawnSystem : NetworkBehaviour
 {
-  MyNetworkManager room;
-  MyNetworkManager Room
-  {
-    get
-    {
-      if (room != null) { return room; }
-      return room = NetworkManager.singleton as MyNetworkManager;
-    }
-  }
-
   GameObject[] spawnPoints;
 
   [SyncVar]
@@ -31,15 +19,15 @@ public class PlayerSpawnSystem : NetworkBehaviour
   public override void OnStartServer()
   {
     base.OnStartServer();
-    for (int i = 0; i < Room.players.Count; i++)
+    for (int i = 0; i < MyNetworkManager.instance.players.Count; i++)
     {
       GameObject playerInstance = Instantiate(NetworkManager.singleton.playerPrefab, spawnPoints[i].transform.position, Quaternion.Euler(0, 0, 0));
       // playerInstance.GetComponent<PlayerVars>().uiName.text = displayName;
       // NetworkServer.Spawn(playerInstance, Room.players.ElementAt(i).Key);
       // playerInstance.GetComponent<PlayerVars>().timeleft = timeStamp;
       NetworkServer.Spawn(playerInstance);
-      NetworkServer.ReplacePlayerForConnection(Room.players.ElementAt(i).Key, playerInstance);
-      NetworkServer.SetClientReady(Room.players.ElementAt(i).Key);
+      NetworkServer.ReplacePlayerForConnection(MyNetworkManager.instance.players.ElementAt(i).Key, playerInstance);
+      NetworkServer.SetClientReady(MyNetworkManager.instance.players.ElementAt(i).Key);
     }
   }
 

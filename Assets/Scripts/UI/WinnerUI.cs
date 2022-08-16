@@ -1,5 +1,4 @@
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using Mirror;
 using TMPro;
@@ -14,8 +13,6 @@ public class WinnerUI : NetworkBehaviour
     GetComponent<Canvas>().worldCamera = Camera.main;
     Time.timeScale = 0;
   }
-  //   nm = GameObject.FindObjectOfType<MyNetworkManager>();
-  // }
 
   public void AnimationOver()
   {

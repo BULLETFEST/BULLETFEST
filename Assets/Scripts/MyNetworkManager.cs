@@ -1,22 +1,24 @@
+using System.IO;
+using System.Linq;
 using System.Collections.Generic;
 using UnityEngine;
-using Mirror;
-using System.Linq;
 using UnityEngine.SceneManagement;
-using System.IO;
+using Mirror;
 
 public class MyNetworkManager : NetworkManager
 {
+  public static MyNetworkManager instance = null;
+
   [Scene][SerializeField] private string menu = string.Empty;
 
   string[] playableScenes;
 
-  private GameObject playerCard;
+  public GameObject playerCard;
   private GameObject playerCards;
   private GameObject LeaderboardItem;
 
   [SerializeField]
-  private GameObject playerSpawnSystem;
+  private GameObject playerSpawnSystem, cardSpawnSystem;
 
   public GameObject winnerUI;
 
@@ -29,6 +31,7 @@ public class MyNetworkManager : NetworkManager
   public NetworkConnectionToClient winner;
 
   public System.Action PlayerUpdate;
+  public System.Action<NetworkConnectionToClient> PlayerConnect;
 
   public bool isHost = false;
 
@@ -44,7 +47,10 @@ public class MyNetworkManager : NetworkManager
 
   public override void Start()
   {
-    base.Start();
+    if (instance == null)
+      instance = this;
+    else if (instance != this)
+      Destroy(gameObject);
 
     foreach (GameObject prefab in Resources.LoadAll<GameObject>("Spawnable"))
     {
@@ -54,6 +60,7 @@ public class MyNetworkManager : NetworkManager
 
     LeaderboardItem = (GameObject)Resources.Load("SpawnableNoNetId/LeaderboardItem");
     NetworkClient.RegisterPrefab(LeaderboardItem);
+    NetworkClient.RegisterPrefab(cardSpawnSystem);
 
     NetworkClient.RegisterHandler<Message.ServerMessge>(OnServerMessage);
   }
@@ -84,7 +91,7 @@ public class MyNetworkManager : NetworkManager
         _alignment = 2,
         disconnect = true
       });
-      // conn.Disconnect();
+      conn.Disconnect();
       return;
     }
 
@@ -97,17 +104,20 @@ public class MyNetworkManager : NetworkManager
         _alignment = 2,
         disconnect = true
       });
-      // conn.Disconnect();
+      conn.Disconnect();
+      return;
     }
+
+    PlayerConnect?.Invoke(conn);
+
+
   }
 
   public override void OnServerSceneChanged(string sceneName)
   {
     base.OnServerSceneChanged(sceneName);
 
-    if (SceneManager.GetActiveScene().path == menu)
-      playerCards = GameObject.FindGameObjectWithTag("PlayerCards");
-    else if (SceneManager.GetActiveScene().name != "End")
+    if (SceneManager.GetActiveScene().buildIndex > 3)
     {
       if (!FindObjectOfType<PlayerSpawnSystem>())
       {
@@ -120,28 +130,6 @@ public class MyNetworkManager : NetworkManager
 
 
       }
-    }
-    else
-    {
-      if (!FindObjectOfType<EndScreenUI>())
-      {
-        GameObject go = new GameObject("LeaderboardItemSpawner", typeof(EndScreenUI));
-        GameObject LeaderboardItemSpawner = Instantiate(go);
-        Destroy(go);
-        NetworkServer.Spawn(LeaderboardItemSpawner);
-      }
-    }
-  }
-
-  public override void OnServerAddPlayer(NetworkConnectionToClient conn)
-  {
-    if (SceneManager.GetActiveScene().path == menu)
-    {
-      GameObject player = Instantiate(playerCard, Vector3.zero, Quaternion.Euler(0, 0, 0), playerCards.transform);
-      player.GetComponent<PlayerCard>().DisplayNameUI.text = "Loading...";
-      if (conn != NetworkServer.localConnection) player.GetComponent<PlayerCard>().kickBtn.gameObject.SetActive(true);
-      NetworkServer.Spawn(player, conn);
-      NetworkServer.AddPlayerForConnection(conn, player);
     }
   }
 

@@ -1,9 +1,7 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
 using Mirror;
-using System.Linq;
+
 public class LeaderboardItem : NetworkBehaviour
 {
   public TextMeshProUGUI uiDisplayname;
@@ -20,23 +18,11 @@ public class LeaderboardItem : NetworkBehaviour
   [SyncVar(hook = nameof(HandleUpdateWins))]
   [HideInInspector] public string wins;
 
-  private MyNetworkManager room;
-  public MyNetworkManager Room
-  {
-    get
-    {
-      if (room != null) { return room; }
-      return room = NetworkManager.singleton as MyNetworkManager;
-    }
-  }
-
-
   private void Start()
   {
     transform.SetParent(GameObject.FindGameObjectWithTag("Leaderboard").transform);
     transform.localScale = Vector3.one;
     Time.timeScale = 1;
-    // NetworkClient.Ready();
   }
 
   public override void OnStartClient()
@@ -49,11 +35,11 @@ public class LeaderboardItem : NetworkBehaviour
   [Command]
   void UpdateStats(NetworkConnectionToClient conn)
   {
-    displayName = Room.players[conn].displayName;
-    kills = Room.players[conn].kills.ToString();
-    wins = Room.players[conn].wins.ToString();
+    displayName = MyNetworkManager.instance.players[conn].displayName;
+    kills = MyNetworkManager.instance.players[conn].kills.ToString();
+    wins = MyNetworkManager.instance.players[conn].wins.ToString();
 
-    ChangeItemIndex(conn.identity.gameObject, System.Array.IndexOf(Room.sortedPlayerList, conn));
+    ChangeItemIndex(conn.identity.gameObject, System.Array.IndexOf(MyNetworkManager.instance.sortedPlayerList, conn));
   }
 
   [ClientRpc]

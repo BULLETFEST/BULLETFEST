@@ -1,21 +1,9 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
 using Mirror;
 
 public class PlayerVars : NetworkBehaviour
 {
-  private MyNetworkManager room;
-  public MyNetworkManager Room
-  {
-    get
-    {
-      if (room != null) { return room; }
-      return room = NetworkManager.singleton as MyNetworkManager;
-    }
-  }
-
   [SyncVar]
   public System.DateTime timeleft;
 
@@ -63,7 +51,7 @@ public class PlayerVars : NetworkBehaviour
   [Command]
   void UpdateDisplayName(NetworkConnectionToClient conn)
   {
-    displayName = Room.players[conn].displayName;
+    displayName = MyNetworkManager.instance.players[conn].displayName;
   }
 
   // [ServerCallback]

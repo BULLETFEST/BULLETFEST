@@ -1,28 +1,17 @@
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
 using Mirror;
 using UnityEngine.UI;
 using TMPro;
 
 public class LobbyUIManager : NetworkBehaviour
 {
-  private MyNetworkManager room;
-  private MyNetworkManager Room
-  {
-    get
-    {
-      if (room != null) { return room; }
-      return room = NetworkManager.singleton as MyNetworkManager;
-    }
-  }
-
   public Button startButton;
   public TMP_Text roomCode;
 
-  public void Start()
+  MyNetworkManager Room;
+
+  void Start()
   {
-    // base.OnStartLocalPlayer();
+    Room = MyNetworkManager.instance;
 
     if (Room.isHost)
     {
@@ -60,8 +49,6 @@ public class LobbyUIManager : NetworkBehaviour
 
   public void Quit()
   {
-    room.Disconnect();
+    Room.Disconnect();
   }
-
-
 }

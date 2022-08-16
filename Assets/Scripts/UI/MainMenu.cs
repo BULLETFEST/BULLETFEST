@@ -1,13 +1,10 @@
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
-using Mirror;
 using System.Net;
 using System.Net.Sockets;
-using TMPro;
-using UnityEngine.SceneManagement;
 using System.Text.RegularExpressions;
+using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.SceneManagement;
+using TMPro;
 using EpicTransport;
 
 // using ParrelSync;
@@ -79,8 +76,8 @@ public class MainMenu : MonoBehaviour
       {
         Message.DisplayMessage("Something went wrong!", res.message, HorizontalAlignmentOptions.Center);
       }
+      connectBtn.interactable = true;
     }
-    connectBtn.interactable = true;
   }
 
   public Regex nonNumbers = new Regex(@"\D");
@@ -122,8 +119,8 @@ public class MainMenu : MonoBehaviour
       {
         Message.DisplayMessage("Something went wrong!", res.message, HorizontalAlignmentOptions.Center);
       }
+      hostBtn.interactable = true;
     }
-    hostBtn.interactable = true;
   }
 
   public void ChangeRoomCode(string newCode)

@@ -197,7 +197,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 103.33335, y: -187.5}
+  m_AnchoredPosition: {x: 103.33334, y: -187.5}
   m_SizeDelta: {x: 156.6667, y: 43}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!1 &139807053
@@ -5375,12 +5375,14 @@ MonoBehaviour:
   networkAddress: localhost
   maxConnections: 5
   authenticator: {fileID: 0}
-  playerPrefab: {fileID: 5449998184297253465, guid: 11ab8712550f3cf4f80acdecd8357203, type: 3}
-  autoCreatePlayer: 1
+  playerPrefab: {fileID: 5680213155770074307, guid: a4428ec01498508499990f377ea98ac9, type: 3}
+  autoCreatePlayer: 0
   playerSpawnMethod: 0
   spawnPrefabs: []
   menu: Assets/Scenes/Lobby.unity
+  playerCard: {fileID: 0}
   playerSpawnSystem: {fileID: 4884974567067367211, guid: eb13bd46980ae664896b09b867e63736, type: 3}
+  cardSpawnSystem: {fileID: 4884974567067367211, guid: e54e23a1823313a4e88975b12925ddab, type: 3}
   winnerUI: {fileID: 851980100229403897, guid: d14c3c1291aaad94baf59dd68bc9675f, type: 3}
   gameStarted: 0
   isHost: 0

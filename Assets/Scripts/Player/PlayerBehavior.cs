@@ -1,8 +1,5 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using Mirror;
-using System.Linq;
 
 public class PlayerBehavior : NetworkBehaviour
 {
@@ -165,8 +162,8 @@ public class PlayerBehavior : NetworkBehaviour
 
     NetworkConnectionToClient killerIdentity = killer.GetComponent<NetworkIdentity>().connectionToClient;
 
-    if (killer == killed) playerVars.Room.players[killerIdentity].kills--;
-    else playerVars.Room.players[killerIdentity].kills++;
+    if (killer == killed) MyNetworkManager.instance.players[killerIdentity].kills--;
+    else MyNetworkManager.instance.players[killerIdentity].kills++;
 
     string killerName = killer.GetComponent<PlayerVars>().displayName;
     string killedName = killed.GetComponent<PlayerVars>().displayName;
@@ -185,7 +182,7 @@ public class PlayerBehavior : NetworkBehaviour
       UpdateKillfeed(player.Value, killerName, killedName);
     }
 
-    playerVars.Room.OnPlayerDie(connectionToClient);
+    MyNetworkManager.instance.OnPlayerDie(connectionToClient);
   }
 
   [ClientRpc]
