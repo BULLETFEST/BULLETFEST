@@ -15,28 +15,38 @@ public class PlayerCard : NetworkBehaviour
   public override void OnStartAuthority()
   {
     base.OnStartAuthority();
-
-    GameObject playerCards = GameObject.FindGameObjectWithTag("PlayerCards");
-    GameObject[] _playerCards = GameObject.FindGameObjectsWithTag("PlayerCard");
-    foreach (GameObject _playerCard in _playerCards)
-      _playerCard.transform.parent = playerCards.transform;
+    OnPlayerJoin();
 
     UpdateDisplayName(PlayerPrefs.GetString("PlayerName", "Guest"));
   }
 
-  [Command]
-  void UpdateDisplayName(string dName) => displayName = dName;
-
-  void HandleUpdateName(string oldName, string newName)
+  public void OnPlayerJoin()
   {
-    if (newName.Length > 16) newName = newName.Substring(0, 16);
-    DisplayNameUI.text = newName;
+    GameObject playerCards = GameObject.FindGameObjectWithTag("PlayerCards");
+    GameObject[] _playerCards = GameObject.FindGameObjectsWithTag("PlayerCard");
+    foreach (GameObject _playerCard in _playerCards)
+      _playerCard.transform.SetParent(playerCards.transform);
+  }
+
+  [Command]
+  void UpdateDisplayName(string dName)
+  {
+    if (dName.Length > 16) dName = dName.Substring(0, 16);
+
 
     if (MyNetworkManager.instance.players.ContainsKey(connectionToClient))
       MyNetworkManager.instance.players.Remove(connectionToClient);
-    MyNetworkManager.instance.players.Add(connectionToClient, new PlayerData(newName));
+    MyNetworkManager.instance.players.Add(connectionToClient, new PlayerData(dName));
 
     MyNetworkManager.instance.PlayerUpdate?.Invoke();
+
+    displayName = dName;
+  }
+
+
+  void HandleUpdateName(string oldName, string newName)
+  {
+    DisplayNameUI.text = newName;
   }
 
   [Server]

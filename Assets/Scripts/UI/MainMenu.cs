@@ -26,6 +26,7 @@ public class MainMenu : MonoBehaviour
   public Button connectBtn;
   public Button hostBtn;
   public TMP_Text roundsDefault;
+  public TMP_Text buildNumber;
 
   [Header("Host UI Elements")]
   // public TMP_InputField port;
@@ -35,6 +36,8 @@ public class MainMenu : MonoBehaviour
 
   void Start()
   {
+    buildNumber.text = "Build " + Application.version;
+
     IPHostEntry host = Dns.GetHostEntry(Dns.GetHostName());
     foreach (IPAddress ip in host.AddressList)
     {

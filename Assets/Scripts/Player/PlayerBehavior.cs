@@ -58,7 +58,7 @@ public class PlayerBehavior : NetworkBehaviour
   {
     if (!isLocalPlayer) return;
 
-    if (Input.GetKeyDown(KeyCode.X)) TakeDamage(1, null);
+    // if (Input.GetKeyDown(KeyCode.X)) TakeDamage(1, null);
 
     if (Input.GetKey(KeyCode.Mouse0) && !playerVars.lockShooting) Shoot(isServer);
 
@@ -133,10 +133,15 @@ public class PlayerBehavior : NetworkBehaviour
   [Command(requiresAuthority = false)]
   public void TakeDamage(float damage, GameObject owner)
   {
+    damageDealer = owner;
+
     health -= damage;
 
-    damageDealer = owner;
+    PlayHitSound(connectionToClient);
   }
+
+  [TargetRpc]
+  void PlayHitSound(NetworkConnection conn) => playerVars.audioSystem.PlaySound("Hit");
 
   GameObject damageDealer = null;
   public void OnDamageTaken(float oldHealth, float newHealth)

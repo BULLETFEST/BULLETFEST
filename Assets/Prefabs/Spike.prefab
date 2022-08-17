@@ -10,7 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 2776132325265719212}
   - component: {fileID: 2776132325265719215}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Isometric Diamond
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -96,7 +96,7 @@ GameObject:
   - component: {fileID: 2776132325429602332}
   - component: {fileID: 2776132325429602335}
   - component: {fileID: 5927572859738113646}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Spike
   m_TagString: Spike
   m_Icon: {fileID: 0}
@@ -192,7 +192,7 @@ GameObject:
   m_Component:
   - component: {fileID: 2776132325437808838}
   - component: {fileID: 2776132325437808841}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Isometric Diamond (3)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -276,7 +276,7 @@ GameObject:
   m_Component:
   - component: {fileID: 2776132325517269957}
   - component: {fileID: 2776132325517269956}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Square
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -360,7 +360,7 @@ GameObject:
   m_Component:
   - component: {fileID: 2776132325743345576}
   - component: {fileID: 2776132325743345579}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Isometric Diamond (1)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -444,7 +444,7 @@ GameObject:
   m_Component:
   - component: {fileID: 2776132326041967158}
   - component: {fileID: 2776132326041967161}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Isometric Diamond (2)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -528,7 +528,7 @@ GameObject:
   m_Component:
   - component: {fileID: 2776132326174040511}
   - component: {fileID: 2776132326174040510}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Isometric Diamond (4)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -612,7 +612,7 @@ GameObject:
   m_Component:
   - component: {fileID: 2776132326609782176}
   - component: {fileID: 2776132326609782179}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Isometric Diamond (5)
   m_TagString: Untagged
   m_Icon: {fileID: 0}

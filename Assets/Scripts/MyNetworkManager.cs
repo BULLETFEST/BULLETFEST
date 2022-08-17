@@ -18,7 +18,7 @@ public class MyNetworkManager : NetworkManager
   private GameObject LeaderboardItem;
 
   [SerializeField]
-  private GameObject playerSpawnSystem, cardSpawnSystem;
+  private GameObject playerSpawnSystem;
 
   public GameObject winnerUI;
 
@@ -47,6 +47,8 @@ public class MyNetworkManager : NetworkManager
 
   public override void Start()
   {
+
+    print(menu);
     if (instance == null)
       instance = this;
     else if (instance != this)
@@ -60,7 +62,6 @@ public class MyNetworkManager : NetworkManager
 
     LeaderboardItem = (GameObject)Resources.Load("SpawnableNoNetId/LeaderboardItem");
     NetworkClient.RegisterPrefab(LeaderboardItem);
-    NetworkClient.RegisterPrefab(cardSpawnSystem);
 
     NetworkClient.RegisterHandler<Message.ServerMessge>(OnServerMessage);
   }
@@ -113,6 +114,24 @@ public class MyNetworkManager : NetworkManager
 
   }
 
+  // public override void OnServerAddPlayer(NetworkConnectionToClient conn)
+  // {
+  //   base.OnServerAddPlayer(conn);
+
+  //   if (SceneManager.GetActiveScene().path == menu)
+  //   {
+  //     if (!playerCards) playerCards = GameObject.FindGameObjectWithTag("PlayerCards");
+
+  //     // FindObjectOfType<PlayerCardSpawner>().SpawnCard(conn);
+  //     GameObject player = Instantiate(MyNetworkManager.instance.playerCard, Vector3.zero, Quaternion.Euler(0, 0, 0), playerCards.transform);
+  //     player.GetComponent<PlayerCard>().DisplayNameUI.text = "Loading...";
+  //     if (conn != NetworkServer.localConnection) player.GetComponent<PlayerCard>().kickBtn.gameObject.SetActive(true);
+  //     NetworkServer.Spawn(player, conn);
+  //     NetworkServer.AddPlayerForConnection(conn, player);
+  //     NetworkServer.SetClientReady(conn);
+  //   }
+  // }
+
   public override void OnServerSceneChanged(string sceneName)
   {
     base.OnServerSceneChanged(sceneName);
@@ -127,8 +146,6 @@ public class MyNetworkManager : NetworkManager
           go.GetComponent<PlayerSpawnSystem>().timeStamp = System.DateTime.UtcNow.AddMinutes(deathmatchLength);
         }
         NetworkServer.Spawn(go);
-
-
       }
     }
   }
@@ -286,6 +303,7 @@ public class MyNetworkManager : NetworkManager
 
   public void Disconnect()
   {
+    FindObjectOfType<EpicTransport.EosTransport>().Shutdown();
     StopHost();
     StopClient();
   }

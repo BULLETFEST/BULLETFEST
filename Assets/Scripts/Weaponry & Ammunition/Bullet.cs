@@ -1,5 +1,6 @@
 using UnityEngine;
 using Mirror;
+using System.Collections;
 
 public class Bullet : NetworkBehaviour
 {
@@ -21,7 +22,17 @@ public class Bullet : NetworkBehaviour
   int passedThrough = 0;
 
   [ServerCallback]
-  void Start() => Server_DisableCollisionWith(owner.identity.gameObject);
+  void Start()
+  {
+    Server_DisableCollisionWith(owner.identity.gameObject);
+    StartCoroutine(DestroySelf());
+  }
+
+  IEnumerator DestroySelf()
+  {
+    yield return new WaitForSeconds(5f);
+    NetworkServer.Destroy(gameObject);
+  }
 
   [ServerCallback]
   private void OnCollisionEnter2D(Collision2D other)
