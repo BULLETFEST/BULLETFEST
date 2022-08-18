@@ -185,5 +185,6 @@ public class MainMenu : MonoBehaviour
   public void ChangeSceneToSettings()
   {
     SceneManager.LoadScene("Settings", LoadSceneMode.Additive);
+    SaveSystem.IsSettingsOpen = true;
   }
 }

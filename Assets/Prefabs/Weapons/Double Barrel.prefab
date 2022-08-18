@@ -168,7 +168,7 @@ MonoBehaviour:
   reloadTime: 1
   shotPushback: 85
   range: 0
-  damage: 2
+  damage: 1.5
   fireRate: 5
   bulletVelocity: 50
   movementUnlockTime: 0.1

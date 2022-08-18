@@ -16,7 +16,7 @@ public class EndScreenUI : NetworkBehaviour
     Room = MyNetworkManager.instance;
 
     leaderboard = GameObject.FindGameObjectWithTag("Leaderboard");
-    leaderboardItem = (GameObject)Resources.Load("SpawnableNoNetId/LeaderboardItem");
+    leaderboardItem = (GameObject)Resources.Load("Spawnable/LeaderboardItem");
 
     Cursor.visible = true;
 

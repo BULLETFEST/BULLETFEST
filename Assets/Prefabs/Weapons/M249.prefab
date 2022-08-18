@@ -166,10 +166,10 @@ MonoBehaviour:
   pelletCount: 0
   inaccuracyRange: f9ffffff07000000
   reloadTime: 10
-  shotPushback: 20
+  shotPushback: 25
   range: 0
-  damage: 1
-  fireRate: 35
+  damage: 2
+  fireRate: 30
   bulletVelocity: 50
   movementUnlockTime: 0.25
   cameraShakeIntensity: 0.3

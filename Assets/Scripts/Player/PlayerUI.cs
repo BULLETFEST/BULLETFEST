@@ -39,7 +39,7 @@ public class PlayerUI : NetworkBehaviour
   {
     if (!isLocalPlayer) return;
 
-    Cursor.visible = !focusState || SaveSystem.IsSettingsOpen;
+    Cursor.visible = !focusState && SaveSystem.IsSettingsOpen;
 
     crosshair.SetActive(!playerVars.lockWeapon);
 

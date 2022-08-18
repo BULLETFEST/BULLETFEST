@@ -84,9 +84,9 @@ MonoBehaviour:
   reloadTime: 3
   shotPushback: 0
   range: 0
-  damage: 5
+  damage: 1.5
   fireRate: 7
-  bulletVelocity: 35
+  bulletVelocity: 50
   movementUnlockTime: 0
   cameraShakeIntensity: 0
   cameraShakeDuration: 0
