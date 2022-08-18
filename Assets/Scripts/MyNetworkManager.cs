@@ -13,8 +13,6 @@ public class MyNetworkManager : NetworkManager
 
   string[] playableScenes;
 
-  public GameObject playerCard;
-  private GameObject playerCards;
   private GameObject LeaderboardItem;
 
   [SerializeField]
@@ -43,7 +41,7 @@ public class MyNetworkManager : NetworkManager
 
   public float deathmatchLength = 1;
 
-  public static int PlayableScenes = 11, menuScenes = 4;
+  public static int PlayableScenes = 10, menuScenes = 5;
 
   public override void Start()
   {
@@ -57,11 +55,8 @@ public class MyNetworkManager : NetworkManager
     foreach (GameObject prefab in Resources.LoadAll<GameObject>("Spawnable"))
     {
       NetworkClient.RegisterPrefab(prefab);
-      if (prefab.name == "PlayerCard") playerCard = prefab;
+      if (prefab.name == "LeaderboardItem") LeaderboardItem = prefab;
     }
-
-    LeaderboardItem = (GameObject)Resources.Load("SpawnableNoNetId/LeaderboardItem");
-    NetworkClient.RegisterPrefab(LeaderboardItem);
 
     NetworkClient.RegisterHandler<Message.ServerMessge>(OnServerMessage);
   }
@@ -136,7 +131,7 @@ public class MyNetworkManager : NetworkManager
   {
     base.OnServerSceneChanged(sceneName);
 
-    if (SceneManager.GetActiveScene().buildIndex > 3)
+    if (SceneManager.GetActiveScene().buildIndex > menuScenes - 1)
     {
       if (!FindObjectOfType<PlayerSpawnSystem>())
       {
@@ -244,7 +239,7 @@ public class MyNetworkManager : NetworkManager
     }
     else
     {
-      int chosenMapIdx = Random.Range(menuScenes, sceneCount);
+      int chosenMapIdx = Random.Range(menuScenes - 1, sceneCount);
       _scenes.Add(Path.GetFileNameWithoutExtension(SceneUtility.GetScenePathByBuildIndex(chosenMapIdx)));
     }
 
@@ -303,7 +298,6 @@ public class MyNetworkManager : NetworkManager
 
   public void Disconnect()
   {
-    FindObjectOfType<EpicTransport.EosTransport>().Shutdown();
     StopHost();
     StopClient();
   }

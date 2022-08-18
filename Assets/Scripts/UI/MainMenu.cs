@@ -182,8 +182,8 @@ public class MainMenu : MonoBehaviour
     }
   }
 
-  public void ChangeSceneToControls()
+  public void ChangeSceneToSettings()
   {
-    SceneManager.LoadScene("Controls");
+    SceneManager.LoadScene("Settings", LoadSceneMode.Additive);
   }
 }

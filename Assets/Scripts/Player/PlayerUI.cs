@@ -9,10 +9,11 @@ public class PlayerUI : NetworkBehaviour
 
   public Canvas mainCanvas;
 
-
   public GameObject crosshair;
 
   private PlayerVars playerVars;
+
+  bool focusState;
 
   void Start()
   {
@@ -28,14 +29,17 @@ public class PlayerUI : NetworkBehaviour
     // StartCoroutine(UpdateTime());
   }
 
-  private void OnApplicationFocus(bool focusStatus)
+  private void OnApplicationFocus(bool _focusState)
   {
-    Cursor.visible = !focusStatus;
+    // Cursor.visible = !focusStatus || SaveSystem.IsSettingsOpen;
+    focusState = _focusState;
   }
 
   void Update()
   {
     if (!isLocalPlayer) return;
+
+    Cursor.visible = !focusState || SaveSystem.IsSettingsOpen;
 
     crosshair.SetActive(!playerVars.lockWeapon);
 

@@ -86,14 +86,18 @@ public class PlayerMovement : NetworkBehaviour
     if (!isLocalPlayer) return;
     if (playerVars.lockMovement) return;
 
-    float x = Input.GetAxis("Horizontal");
-    float xRaw = Input.GetAxisRaw("Horizontal");
+    int xRaw = 0;
+    if (Utilities.GetKeybind("lft") && Utilities.GetKeybind("rgt")) xRaw = 0;
+    else if (Utilities.GetKeybind("lft")) xRaw = -1;
+    else if (Utilities.GetKeybind("rgt")) xRaw = 1;
+
+    if (SaveSystem.saveData.settings.invertControls) xRaw *= -1;
 
     bool grounded = false;
     if (playerVars.bc != null)
       grounded = Grounded(gameObject, playerVars.bc);
 
-    if (Input.GetKeyDown(KeyCode.Space) && (grounded || !doubleJumped))
+    if (Utilities.GetKeybindDown("jump") && (grounded || !doubleJumped))
     {
       if (!grounded)
       {
@@ -122,25 +126,24 @@ public class PlayerMovement : NetworkBehaviour
       doubleJumped = false;
     }
 
-    ValidateMovement(x, xRaw);
+    ValidateMovement(xRaw);
   }
 
 
   [Command]
-  void ValidateMovement(float x, float xRaw)
+  void ValidateMovement(float xRaw)
   {
     if (playerVars.lockMovement) return;
 
     if (transform.position.y <= -15) GetComponent<PlayerBehavior>().TakeDamage(9999999, null);
 
-    x = Mathf.Clamp(x, -1, 1);
     xRaw = Mathf.Clamp(xRaw, -1, 1);
 
-    HandleMovement(x, xRaw);
+    HandleMovement(xRaw);
   }
 
   [ClientRpc]
-  void HandleMovement(float x, float xRaw)
+  void HandleMovement(float xRaw)
   {
     if (playerVars == null) return;
 

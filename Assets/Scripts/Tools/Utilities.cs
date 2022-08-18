@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
@@ -24,5 +25,28 @@ public class Utilities : MonoBehaviour
     }
     res += " }";
     print(res);
+  }
+
+  public static KeyCode StringToKeyCode(string key)
+  {
+    return (KeyCode)Enum.Parse(typeof(KeyCode), key);
+  }
+
+  public static bool GetKeybind(string key)
+  {
+    if (!SaveSystem.saveData.settings.keybinds.ContainsKey(key)) return false;
+    return Input.GetKey(StringToKeyCode(SaveSystem.saveData.settings.keybinds[key])) || Input.GetKey(StringToKeyCode(SaveSystem.saveData.settings.keybinds[key + "2"]));
+  }
+
+  public static bool GetKeybindDown(string key)
+  {
+    if (!SaveSystem.saveData.settings.keybinds.ContainsKey(key)) return false;
+    return Input.GetKeyDown(StringToKeyCode(SaveSystem.saveData.settings.keybinds[key])) || Input.GetKeyDown(StringToKeyCode(SaveSystem.saveData.settings.keybinds[key + "2"]));
+  }
+
+  public static bool GetKeybindUp(string key)
+  {
+    if (!SaveSystem.saveData.settings.keybinds.ContainsKey(key)) return false;
+    return Input.GetKeyUp(StringToKeyCode(SaveSystem.saveData.settings.keybinds[key])) || Input.GetKeyUp(StringToKeyCode(SaveSystem.saveData.settings.keybinds[key + "2"]));
   }
 }

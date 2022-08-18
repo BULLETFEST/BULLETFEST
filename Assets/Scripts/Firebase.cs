@@ -36,7 +36,7 @@ public class Firebase// : MonoBehaviour
     byte[] res = new byte[0];
     try
     {
-      res = await webClient.UploadValuesTaskAsync(testMode ? "http://localhost:3000/createLobby" : "https://BULLETFEST.eliasval.repl.co/createLobby", "POST", data);
+      res = await webClient.UploadValuesTaskAsync(testMode ? "http://localhost:3000/createLobby" : "https://JooBot.eliasval.repl.co/createLobby", "POST", data);
     }
     catch
     {
@@ -71,7 +71,7 @@ public class Firebase// : MonoBehaviour
     byte[] res = new byte[0];
     try
     {
-      res = await webClient.UploadValuesTaskAsync(new System.Uri(testMode ? "http://localhost:3000/joinLobby" : "https://BULLETFEST.eliasval.repl.co/joinLobby"), "POST", data);
+      res = await webClient.UploadValuesTaskAsync(new System.Uri(testMode ? "http://localhost:3000/joinLobby" : "https://JooBot.eliasval.repl.co/joinLobby"), "POST", data);
     }
     catch
     {

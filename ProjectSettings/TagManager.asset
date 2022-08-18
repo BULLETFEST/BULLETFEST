@@ -15,6 +15,10 @@ TagManager:
   - Message
   - Spike
   - Audio
+  - HostCard
+  - PauseUI
+  - SaveData
+  - EventSystem
   layers:
   - Default
   - TransparentFX

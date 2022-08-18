@@ -1,5 +1,6 @@
 using UnityEngine;
 using Mirror;
+using UnityEngine.SceneManagement;
 
 public class PlayerBehavior : NetworkBehaviour
 {
@@ -58,13 +59,13 @@ public class PlayerBehavior : NetworkBehaviour
   {
     if (!isLocalPlayer) return;
 
-    // if (Input.GetKeyDown(KeyCode.X)) TakeDamage(1, null);
+    if (SaveSystem.IsSettingsOpen) return;
 
-    if (Input.GetKey(KeyCode.Mouse0) && !playerVars.lockShooting) Shoot(isServer);
+    if (Utilities.GetKeybind("fire") && !playerVars.lockShooting) Shoot(isServer);
 
-    if (Input.GetKeyUp(KeyCode.Mouse0)) ShootKeyUp();
+    if (Utilities.GetKeybindUp("fire")) ShootKeyUp();
 
-    if (Input.GetKeyDown(KeyCode.E) && weaponToPickup != null)
+    if (Utilities.GetKeybind("weaponPickup") && weaponToPickup != null)
     {
       SwitchWeapon();
       weaponToPickup = null;

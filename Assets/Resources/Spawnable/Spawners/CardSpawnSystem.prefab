@@ -64,3 +64,5 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   syncMode: 0
   syncInterval: 0.1
+  clientLobbyItem: {fileID: 2755971262720494536, guid: b0a06f307f1d1cd40b51b8069c3aabbf, type: 3}
+  hostLobbyItem: {fileID: 5230887944169726515, guid: 5f9a01de4331f434e80eadaf1632f5c7, type: 3}

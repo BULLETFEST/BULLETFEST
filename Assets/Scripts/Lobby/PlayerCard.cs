@@ -5,7 +5,7 @@ using UnityEngine.UI;
 
 public class PlayerCard : NetworkBehaviour
 {
-  public TextMeshProUGUI DisplayNameUI;
+  public TMP_Text DisplayNameUI;
 
   [SyncVar(hook = nameof(HandleUpdateName))]
   public string displayName;
@@ -26,6 +26,11 @@ public class PlayerCard : NetworkBehaviour
     GameObject[] _playerCards = GameObject.FindGameObjectsWithTag("PlayerCard");
     foreach (GameObject _playerCard in _playerCards)
       _playerCard.transform.SetParent(playerCards.transform);
+
+    GameObject.FindGameObjectWithTag("HostCard").transform.SetParent(playerCards.transform.parent, false);
+    GameObject.FindGameObjectWithTag("HostCard").GetComponent<RectTransform>().anchoredPosition = Vector2.zero;
+
+
   }
 
   [Command]
