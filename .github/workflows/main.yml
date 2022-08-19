@@ -14,8 +14,8 @@ jobs:
   buildForAllSupportedPlatforms:
     name: Build for ${{ matrix.targetPlatform }}
     runs-on: ubuntu-latest
-    outputs:
-      version: ${{ steps.getVersion.outputs.version }}
+    #outputs:
+    #  version: ${{ steps.getVersion.outputs.version }}
     #  strategy:
     #    fail-fast: false
     #    matrix:
@@ -38,11 +38,19 @@ jobs:
           lfs: true
       - name: Get Build Version
         run: |
-          echo "{LC_TEST}={$(cat ./ProjectSettings/ProjectSettings.asset | grep bundleVersion | sed -n -e 's/^.*bundleVersion: //p' )}" >> $GITHUB_ENV
+          touch projectVer.txt
+          echo $(cat ./ProjectSettings/ProjectSettings.asset | grep bundleVersion | sed -n -e 's/^.*bundleVersion: //p' ) > projectVer.txt
 
-      - id: getVersion
-        run: echo "::set-output name=version::${{env.LC_TEST}}"
-        #| sed -n -e "s/^.*bundleVersion: //p" )'
+      - uses: actions/upload-artifact@v2
+        with:
+          name: projectVer
+          path: projectVer.txt
+      #run: |
+      #  echo "{LC_TEST}={$(cat ./ProjectSettings/ProjectSettings.asset | grep bundleVersion | sed -n -e 's/^.*bundleVersion: //p' )}" >> $GITHUB_ENV
+
+      ##- id: getVersion
+      #  run: echo "::set-output name=version::${{env.LC_TEST}}"
+      #| sed -n -e "s/^.*bundleVersion: //p" )'
   #    - uses: actions/cache@v2
   #      with:
   #        path: Library
@@ -80,8 +88,11 @@ jobs:
     runs-on: ubuntu-latest
     needs: buildForAllSupportedPlatforms
     steps:
-      - name: Notify server of new build
-        run: echo ${{ needs.buildForAllSupportedPlatforms.outputs.version }}
+      - uses: actions/download-artifact@v2
+        with:
+          name: projectVer
+
+      - run: echo $(cat projectVer.txt)
         #run: echo ${{ env.LC_TEST }}
         #env:
         #  DISCORD_WEBHOOK: ${{ secrets.DEV_DISCORD_WEBHOOK }}
