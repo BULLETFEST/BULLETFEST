@@ -50,6 +50,7 @@ jobs:
           targetPlatform: ${{ matrix.targetPlatform }}
           allowDirtyBuild: true
           buildName: BULLETFEST_${{ matrix.targetPlatform }}
+          versioning: None
 
       - name: Delete Sensitive files & Create archive
         run: |
