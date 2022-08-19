@@ -28,6 +28,10 @@ jobs:
           #- Android # Build an Android .apk standalone app.
           #- WebGL # WebGL.
     steps:
+      - name: Packages
+        run: |
+          sudo apt-get update
+          sudo apt-get install zip
       - uses: actions/checkout@v2
         with:
           fetch-depth: 0
@@ -50,22 +54,25 @@ jobs:
       #- run: 'echo $(ls -a ./build/${{ matrix.targetPlatform }})'
       - run: 'rm -rf $(./build/${{ matrix.targetPlatform }}/BULLETFEST_BurstDebugInformation_DoNotShip)'
 
+      - name: Create archive
+        run: zip -r BULLETFEST_${{ matrix.targetPlatform }}.zip ./build/${{ matrix.targetPlatform }}
       #- id: echoBuildIndex
       #  run: echo "::set-output name=target::${{ matrix.targetPlatform }}"
       #- uses: actions/upload-artifact@v2
       #  with:
       #    name: Build-${{ matrix.targetPlatform }}
       #    path: build/${{ matrix.targetPlatform }}
-      - name: Compress Build
-        uses: thedoctor0/zip-release@main
-        with:
-          type: 'zip'
-          filename: 'BULLETFEST_${{ matrix.targetPlatform }}.zip'
-          path: 'build/${{ matrix.targetPlatform }}'
+      #- name: Compress Build
+      #  uses: thedoctor0/zip-release@main
+      #  with:
+      #    type: 'zip'
+      #    filename: 'BULLETFEST_${{ matrix.targetPlatform }}.zip'
+      #    path: 'build/${{ matrix.targetPlatform }}'
+      - run: echo $(ls -a)
       - name: Upload to google drive
         uses: adityak74/google-drive-upload-git-action@main
         with:
           credentials: ${{ secrets.DRIVE_CREDENTIALS }}
           filename: 'BULLETFEST_${{ matrix.targetPlatform }}.zip'
-          overwrite: true
+          #overwrite: true
           folderId: ${{ secrets.DRIVE_FOLDER_ID }}
