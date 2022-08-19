@@ -60,7 +60,7 @@ jobs:
       - name: Delete Sensitive files & Create archive
         run: |
           cd ./build/${{ matrix.targetPlatform }}
-          rm -rf ./*_BurstDebugInformation_DoNotShip
+          sudo rm -rf ./*_BurstDebugInformation_DoNotShip
           zip -r ../../BULLETFEST_${{ matrix.targetPlatform }}.zip *
           cd ../..
       #- id: echoBuildIndex
