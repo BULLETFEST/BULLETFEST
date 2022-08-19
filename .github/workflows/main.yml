@@ -74,9 +74,13 @@ jobs:
       #    overwrite: true
       #    folderId: ${{ secrets.DRIVE_FOLDER_ID }}
       ##- uses: ludeeus/action-push@0.0.1
-      #- uses: ad-m/github-push-action@v0.6.0
-      #  with:
-      #    github_token: ${{ secrets.GITHUB_TOKEN }}
+      - if: ${{ matrix.targetVersion == StandaloneWindows64 }}
+        name: Push to dev
+        uses: github-actions-x/commit@v2.9
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          push-branch: dev
+          commit-message: 'Updated Version Number'
   NotifyDiscord:
     name: Send Discord Notification
     runs-on: ubuntu-latest
@@ -97,7 +101,8 @@ jobs:
           args: |
             ```A new build has been spotted!```
 
-            Version `${{ env.ver }}`
+            `v${{ env.ver }}`
+
             Downloads:
             Linux: <https://drive.google.com/file/d/1rbJa1nVah6mPJ7R5nyyMFGKCw6hGE5jP/view?usp=sharing>
             Windows: <https://drive.google.com/file/d/1XGsgIlPbgAfFbKJdavXmo9kvYYV1-TMS/view?usp=sharing>
