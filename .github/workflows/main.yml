@@ -1,5 +1,3 @@
-# This is a basic workflow to help you get started with Actions
-
 name: UnityBuild
 
 # Controls when the workflow will run
@@ -13,79 +11,64 @@ on:
 
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
-  #buildForAllSupportedPlatforms:
-  #  name: Build for ${{ matrix.targetPlatform }}
-  #  runs-on: ubuntu-latest
-  #  strategy:
-  #    fail-fast: false
-  #    matrix:
-  #      targetPlatform:
-  #        #- StandaloneOSX # Build a macOS standalone (Intel 64-bit).
-  #        #- StandaloneWindows # Build a Windows standalone.
-  #        - StandaloneWindows64 # Build a Windows 64-bit standalone.
-  #        - StandaloneLinux64 # Build a Linux 64-bit standalone.
-  #        #- iOS # Build an iOS player.
-  #        #- Android # Build an Android .apk standalone app.
-  #        #- WebGL # WebGL.
-  #  steps:
-  #    - name: Packages
-  #      run: |
-  #        sudo apt-get update
-  #        sudo apt-get install zip
-  #    - uses: actions/checkout@v2
-  #      with:
-  #        fetch-depth: 0
-  #        lfs: true
-  #    - uses: actions/cache@v2
-  #      with:
-  #        path: Library
-  #        key: Library-BULLETFEST-${{ matrix.targetPlatform }}
-  #        restore-keys: |
-  #          Library-BULLETFEST-
-  #          Library-
-  #    - uses: game-ci/unity-builder@v2
-  #      env:
-  #        UNITY_SERIAL: ${{ secrets.UNITY_SERIAL }}
-  #        UNITY_EMAIL: ${{ secrets.UNITY_EMAIL }}
-  #        UNITY_PASSWORD: ${{ secrets.UNITY_PASSWORD }}
-  #      with:
-  #        targetPlatform: ${{ matrix.targetPlatform }}
-  #        allowDirtyBuild: true
-  #        buildName: BULLETFEST_${{ matrix.targetPlatform }}
-  #    #- run: 'echo $(ls -a ./build/${{ matrix.targetPlatform }})'
-  #
-  #    #- name: 'Delete sensitive file'
-  #    #  run: rm -rf $(./build/${{ matrix.targetPlatform }}/BULLETFEST_${{ matrix.targetPlatform }}_BurstDebugInformation_DoNotShip)
-  #
-  #    - name: Delete Sensitive files & Create archive
-  #      run: |
-  #        cd ./build/${{ matrix.targetPlatform }}
-  #        sudo rm -rf ./*_BurstDebugInformation_DoNotShip
-  #        zip -r ../../BULLETFEST_${{ matrix.targetPlatform }}.zip *
-  #        cd ../..
-  #    #- id: echoBuildIndex
-  #    #  run: echo "::set-output name=target::${{ matrix.targetPlatform }}"
-  #    #- uses: actions/upload-artifact@v2
-  #    #  with:
-  #    #    name: Build-${{ matrix.targetPlatform }}
-  #    #    path: build/${{ matrix.targetPlatform }}
-  #    #- name: Compress Build
-  #    #  uses: thedoctor0/zip-release@main
-  #    #  with:
-  #    #    type: 'zip'
-  #    #    filename: 'BULLETFEST_${{ matrix.targetPlatform }}.zip'
-  #    #    path: 'build/${{ matrix.targetPlatform }}'
-  #    - name: Upload to google drive
-  #      uses: adityak74/google-drive-upload-git-action@main
-  #      with:
-  #        credentials: ${{ secrets.DRIVE_CREDENTIALS }}
-  #        filename: 'BULLETFEST_${{ matrix.targetPlatform }}.zip'
-  #        overwrite: true
-  #        folderId: ${{ secrets.DRIVE_FOLDER_ID }}
+  buildForAllSupportedPlatforms:
+    name: Build for ${{ matrix.targetPlatform }}
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        targetPlatform:
+          #- StandaloneOSX # Build a macOS standalone (Intel 64-bit).
+          #- StandaloneWindows # Build a Windows standalone.
+          - StandaloneWindows64 # Build a Windows 64-bit standalone.
+          - StandaloneLinux64 # Build a Linux 64-bit standalone.
+          #- iOS # Build an iOS player.
+          #- Android # Build an Android .apk standalone app.
+          #- WebGL # WebGL.
+    steps:
+      - name: Packages
+        run: |
+          sudo apt-get update
+          sudo apt-get install zip
+      - uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+          lfs: true
+      - uses: actions/cache@v2
+        with:
+          path: Library
+          key: Library-BULLETFEST-${{ matrix.targetPlatform }}
+          restore-keys: |
+            Library-BULLETFEST-
+            Library-
+      - uses: game-ci/unity-builder@v2
+        env:
+          UNITY_SERIAL: ${{ secrets.UNITY_SERIAL }}
+          UNITY_EMAIL: ${{ secrets.UNITY_EMAIL }}
+          UNITY_PASSWORD: ${{ secrets.UNITY_PASSWORD }}
+        with:
+          targetPlatform: ${{ matrix.targetPlatform }}
+          allowDirtyBuild: true
+          buildName: BULLETFEST_${{ matrix.targetPlatform }}
+
+      - name: Delete Sensitive files & Create archive
+        run: |
+          cd ./build/${{ matrix.targetPlatform }}
+          sudo rm -rf ./*_BurstDebugInformation_DoNotShip
+          zip -r ../../BULLETFEST_${{ matrix.targetPlatform }}.zip *
+          cd ../..
+
+      - name: Upload to google drive
+        uses: adityak74/google-drive-upload-git-action@main
+        with:
+          credentials: ${{ secrets.DRIVE_CREDENTIALS }}
+          filename: 'BULLETFEST_${{ matrix.targetPlatform }}.zip'
+          overwrite: true
+          folderId: ${{ secrets.DRIVE_FOLDER_ID }}
   notifyDiscord:
     name: Send Discord Notification
     runs-on: ubuntu-latest
-    #needs: buildForAllSupportedPlatforms
+    needs: buildForAllSupportedPlatforms
     steps:
       - name: Notify server of new build
         env:
@@ -94,7 +77,6 @@ jobs:
           DISCORD_AVATAR: 'https://cdn.discordapp.com/icons/990696460477665311/b7b41f470d1ad5e791cd72dc3bbe58b4.png?size=256'
         uses: Ilshidur/action-discord@master
         with:
-          #color: '#000000'
           args: |
             ```A new build has been spotted!```
 
