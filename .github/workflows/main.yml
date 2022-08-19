@@ -14,17 +14,17 @@ jobs:
   buildForAllSupportedPlatforms:
     name: Build for ${{ matrix.targetPlatform }}
     runs-on: ubuntu-latest
-    strategy:
-      fail-fast: false
-      matrix:
-        targetPlatform:
-          #- StandaloneOSX # Build a macOS standalone (Intel 64-bit).
-          #- StandaloneWindows # Build a Windows standalone.
-          - StandaloneWindows64 # Build a Windows 64-bit standalone.
-          - StandaloneLinux64 # Build a Linux 64-bit standalone.
-          #- iOS # Build an iOS player.
-          #- Android # Build an Android .apk standalone app.
-          #- WebGL # WebGL.
+    #  strategy:
+    #    fail-fast: false
+    #    matrix:
+    #      targetPlatform:
+    #        #- StandaloneOSX # Build a macOS standalone (Intel 64-bit).
+    #        #- StandaloneWindows # Build a Windows standalone.
+    #        - StandaloneWindows64 # Build a Windows 64-bit standalone.
+    #        - StandaloneLinux64 # Build a Linux 64-bit standalone.
+    #        #- iOS # Build an iOS player.
+    #        #- Android # Build an Android .apk standalone app.
+    #        #- WebGL # WebGL.
     steps:
       - name: Packages
         run: |
@@ -34,53 +34,54 @@ jobs:
         with:
           fetch-depth: 0
           lfs: true
-      - uses: actions/cache@v2
-        with:
-          path: Library
-          key: Library-BULLETFEST-${{ matrix.targetPlatform }}
-          restore-keys: |
-            Library-BULLETFEST-
-            Library-
-      - uses: game-ci/unity-builder@v2
-        env:
-          UNITY_SERIAL: ${{ secrets.UNITY_SERIAL }}
-          UNITY_EMAIL: ${{ secrets.UNITY_EMAIL }}
-          UNITY_PASSWORD: ${{ secrets.UNITY_PASSWORD }}
-        with:
-          targetPlatform: ${{ matrix.targetPlatform }}
-          allowDirtyBuild: true
-          buildName: BULLETFEST_${{ matrix.targetPlatform }}
-          versioning: None
+  #    - uses: actions/cache@v2
+  #      with:
+  #        path: Library
+  #        key: Library-BULLETFEST-${{ matrix.targetPlatform }}
+  #        restore-keys: |
+  #          Library-BULLETFEST-
+  #          Library-
+  #    - uses: game-ci/unity-builder@v2
+  #      env:
+  #        UNITY_SERIAL: ${{ secrets.UNITY_SERIAL }}
+  #        UNITY_EMAIL: ${{ secrets.UNITY_EMAIL }}
+  #        UNITY_PASSWORD: ${{ secrets.UNITY_PASSWORD }}
+  #      with:
+  #        targetPlatform: ${{ matrix.targetPlatform }}
+  #        allowDirtyBuild: true
+  #        buildName: BULLETFEST_${{ matrix.targetPlatform }}
+  #        versioning: None
 
-      - name: Delete Sensitive files & Create archive
-        run: |
-          cd ./build/${{ matrix.targetPlatform }}
-          sudo rm -rf ./*_BurstDebugInformation_DoNotShip
-          zip -r ../../BULLETFEST_${{ matrix.targetPlatform }}.zip *
-          cd ../..
+  #    - name: Delete Sensitive files & Create archive
+  #      run: |
+  #        cd ./build/${{ matrix.targetPlatform }}
+  #        sudo rm -rf ./*_BurstDebugInformation_DoNotShip
+  #        zip -r ../../BULLETFEST_${{ matrix.targetPlatform }}.zip *
+  #        cd ../..
 
-      - name: Upload to google drive
-        uses: adityak74/google-drive-upload-git-action@main
-        with:
-          credentials: ${{ secrets.DRIVE_CREDENTIALS }}
-          filename: 'BULLETFEST_${{ matrix.targetPlatform }}.zip'
-          overwrite: true
-          folderId: ${{ secrets.DRIVE_FOLDER_ID }}
+  #    - name: Upload to google drive
+  #      uses: adityak74/google-drive-upload-git-action@main
+  #      with:
+  #        credentials: ${{ secrets.DRIVE_CREDENTIALS }}
+  #        filename: 'BULLETFEST_${{ matrix.targetPlatform }}.zip'
+  #        overwrite: true
+  #        folderId: ${{ secrets.DRIVE_FOLDER_ID }}
   notifyDiscord:
     name: Send Discord Notification
     runs-on: ubuntu-latest
     needs: buildForAllSupportedPlatforms
     steps:
       - name: Notify server of new build
-        env:
-          DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK }}
-          DISCORD_USERNAME: 'BULLETFEST'
-          DISCORD_AVATAR: 'https://cdn.discordapp.com/icons/990696460477665311/b7b41f470d1ad5e791cd72dc3bbe58b4.png?size=256'
-        uses: Ilshidur/action-discord@master
-        with:
-          args: |
-            ```A new build has been spotted!```
-
-            Downloads:
-            Linux: <https://drive.google.com/file/d/1rbJa1nVah6mPJ7R5nyyMFGKCw6hGE5jP/view?usp=sharing>
-            Windows: <https://drive.google.com/file/d/1XGsgIlPbgAfFbKJdavXmo9kvYYV1-TMS/view?usp=sharing>
+        run: echo $(ls -a)
+        #env:
+        #  DISCORD_WEBHOOK: ${{ secrets.DEV_DISCORD_WEBHOOK }}
+        #  DISCORD_USERNAME: 'BULLETFEST'
+        #  DISCORD_AVATAR: 'https://cdn.discordapp.com/icons/990696460477665311/b7b41f470d1ad5e791cd72dc3bbe58b4.png?size=256'
+        #uses: Ilshidur/action-discord@master
+        #with:
+        #  args: |
+        #    ```A new build has been spotted!```
+#
+#    Downloads:
+#    Linux: <https://drive.google.com/file/d/1rbJa1nVah6mPJ7R5nyyMFGKCw6hGE5jP/view?usp=sharing>
+#    Windows: <https://drive.google.com/file/d/1XGsgIlPbgAfFbKJdavXmo9kvYYV1-TMS/view?usp=sharing>
