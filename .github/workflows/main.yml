@@ -9,6 +9,8 @@ on:
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
 
+env:
+  TEST: 'A'
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
   buildForAllSupportedPlatforms:
@@ -26,14 +28,15 @@ jobs:
     #        #- Android # Build an Android .apk standalone app.
     #        #- WebGL # WebGL.
     steps:
-      - name: Packages
-        run: |
-          sudo apt-get update
-          sudo apt-get install zip
-      - uses: actions/checkout@v2
-        with:
-          fetch-depth: 0
-          lfs: true
+      - run: env.A = "HELLO!"
+      #- name: Packages
+      #  run: |
+      #    sudo apt-get update
+      #    sudo apt-get install zip
+      #- uses: actions/checkout@v2
+      #  with:
+      #    fetch-depth: 0
+      #    lfs: true
   #    - uses: actions/cache@v2
   #      with:
   #        path: Library
@@ -72,7 +75,7 @@ jobs:
     needs: buildForAllSupportedPlatforms
     steps:
       - name: Notify server of new build
-        run: echo $(ls -a)
+        run: echo ${{ env.A }}
         #env:
         #  DISCORD_WEBHOOK: ${{ secrets.DEV_DISCORD_WEBHOOK }}
         #  DISCORD_USERNAME: 'BULLETFEST'
