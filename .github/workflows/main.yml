@@ -27,16 +27,16 @@ jobs:
     #        #- Android # Build an Android .apk standalone app.
     #        #- WebGL # WebGL.
     steps:
-      - id: getVersion
-        run: echo '::set-output name=version::$(cat ProjectSettings.asset | grep bundleVersion | sed -n -e "s/^.*bundleVersion: //p" )'
       #- name: Packages
       #  run: |
       #    sudo apt-get update
       #    sudo apt-get install zip
-      #- uses: actions/checkout@v2
-      #  with:
-      #    fetch-depth: 0
-      #    lfs: true
+      - uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+          lfs: true
+      - id: getVersion
+        run: echo '::set-output name=version::$(cat ProjectSettings.asset | grep bundleVersion | sed -n -e "s/^.*bundleVersion: //p" )'
   #    - uses: actions/cache@v2
   #      with:
   #        path: Library
