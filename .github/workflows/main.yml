@@ -6,7 +6,7 @@ name: UnityBuild
 on:
   # Triggers the workflow on push or pull request events but only for the "main" branch
   push:
-    branches: [ "main" ]
+    branches: ['main']
 
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
@@ -45,8 +45,9 @@ jobs:
         with:
           targetPlatform: ${{ matrix.targetPlatform }}
           allowDirtyBuild: true
-      - run: "echo $(ls -a ./build/${{ matrix.targetPlatform }})"
+      #- run: 'echo $(ls -a ./build/${{ matrix.targetPlatform }})'
+      - run: 'rm -rf $(./build/${{ matrix.targetPlatform }}/BULLETFEST_BurstDebugInformation_DoNotShip)'
       - uses: actions/upload-artifact@v2
         with:
           name: Build-${{ matrix.targetPlatform }}
-          path: .build/${{ matrix.targetPlatform }}
+          path: build/${{ matrix.targetPlatform }}
