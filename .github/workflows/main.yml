@@ -14,17 +14,17 @@ jobs:
   buildForAllSupportedPlatforms:
     name: Build for ${{ matrix.targetPlatform }}
     runs-on: ubuntu-latest
-    strategy:
-      fail-fast: false
-      matrix:
-        targetPlatform:
-          #- StandaloneOSX # Build a macOS standalone (Intel 64-bit).
-          #- StandaloneWindows # Build a Windows standalone.
-          - StandaloneWindows64 # Build a Windows 64-bit standalone.
-          - StandaloneLinux64 # Build a Linux 64-bit standalone.
-          #- iOS # Build an iOS player.
-          #- Android # Build an Android .apk standalone app.
-          #- WebGL # WebGL.
+    #strategy:
+    #  fail-fast: false
+    #  matrix:
+    #    targetPlatform:
+    #      #- StandaloneOSX # Build a macOS standalone (Intel 64-bit).
+    #      #- StandaloneWindows # Build a Windows standalone.
+    #      - StandaloneWindows64 # Build a Windows 64-bit standalone.
+    #      - StandaloneLinux64 # Build a Linux 64-bit standalone.
+    #      #- iOS # Build an iOS player.
+    #      #- Android # Build an Android .apk standalone app.
+    #      #- WebGL # WebGL.
     steps:
       - name: Packages
         run: |
@@ -43,40 +43,40 @@ jobs:
         with:
           name: projectVer
           path: projectVer.txt
-      - uses: actions/cache@v2
-        with:
-          path: Library
-          key: Library-BULLETFEST-${{ matrix.targetPlatform }}
-          restore-keys: |
-            Library-BULLETFEST-
-            Library-
-      - uses: game-ci/unity-builder@v2
-        env:
-          UNITY_SERIAL: ${{ secrets.UNITY_SERIAL }}
-          UNITY_EMAIL: ${{ secrets.UNITY_EMAIL }}
-          UNITY_PASSWORD: ${{ secrets.UNITY_PASSWORD }}
-        with:
-          targetPlatform: ${{ matrix.targetPlatform }}
-          allowDirtyBuild: true
-          buildName: BULLETFEST_${{ matrix.targetPlatform }}
-          versioning: None
-      - name: Delete Sensitive files & Create archive
-        run: |
-          cd ./build/${{ matrix.targetPlatform }}
-          sudo rm -rf ./*_BurstDebugInformation_DoNotShip
-          zip -r ../../BULLETFEST_${{ matrix.targetPlatform }}.zip *
-          cd ../..
-      - name: Upload to google drive
-        uses: adityak74/google-drive-upload-git-action@main
-        with:
-          credentials: ${{ secrets.DRIVE_CREDENTIALS }}
-          filename: 'BULLETFEST_${{ matrix.targetPlatform }}.zip'
-          overwrite: true
-          folderId: ${{ secrets.DRIVE_FOLDER_ID }}
-      #- uses: ludeeus/action-push@0.0.1
-      - uses: ad-m/github-push-action@v0.6.0
-        with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
+      #- uses: actions/cache@v2
+      #  with:
+      #    path: Library
+      #    key: Library-BULLETFEST-${{ matrix.targetPlatform }}
+      #    restore-keys: |
+      #      Library-BULLETFEST-
+      #      Library-
+      #- uses: game-ci/unity-builder@v2
+      #  env:
+      #    UNITY_SERIAL: ${{ secrets.UNITY_SERIAL }}
+      #    UNITY_EMAIL: ${{ secrets.UNITY_EMAIL }}
+      #    UNITY_PASSWORD: ${{ secrets.UNITY_PASSWORD }}
+      #  with:
+      #    targetPlatform: ${{ matrix.targetPlatform }}
+      #    allowDirtyBuild: true
+      #    buildName: BULLETFEST_${{ matrix.targetPlatform }}
+      #    versioning: None
+      #- name: Delete Sensitive files & Create archive
+      #  run: |
+      #    cd ./build/${{ matrix.targetPlatform }}
+      #    sudo rm -rf ./*_BurstDebugInformation_DoNotShip
+      #    zip -r ../../BULLETFEST_${{ matrix.targetPlatform }}.zip *
+      #    cd ../..
+      #- name: Upload to google drive
+      #  uses: adityak74/google-drive-upload-git-action@main
+      #  with:
+      #    credentials: ${{ secrets.DRIVE_CREDENTIALS }}
+      #    filename: 'BULLETFEST_${{ matrix.targetPlatform }}.zip'
+      #    overwrite: true
+      #    folderId: ${{ secrets.DRIVE_FOLDER_ID }}
+      ##- uses: ludeeus/action-push@0.0.1
+      #- uses: ad-m/github-push-action@v0.6.0
+      #  with:
+      #    github_token: ${{ secrets.GITHUB_TOKEN }}
   NotifyDiscord:
     name: Send Discord Notification
     runs-on: ubuntu-latest
@@ -95,7 +95,7 @@ jobs:
           args: |
             ```A new build has been spotted!```
 
-            Version `${cat projectVer.txt}`
+            Version `{{cat projectVer.txt}}`
             Downloads:
             Linux: <https://drive.google.com/file/d/1rbJa1nVah6mPJ7R5nyyMFGKCw6hGE5jP/view?usp=sharing>
             Windows: <https://drive.google.com/file/d/1XGsgIlPbgAfFbKJdavXmo9kvYYV1-TMS/view?usp=sharing>
