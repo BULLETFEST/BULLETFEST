@@ -23,15 +23,30 @@ jobs:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - name: git-checkout
         uses: actions/checkout@v3
+        with:
+          lfts: true
       
       - name: git-cache
         uses: actions/cache@v3.0.7
+        with:
+          path: Library
+          key: Library-${{ hashFiles('Assets/**', 'Packages/**', 'ProjectSettings/**') }}
+          restore-keys: |
+            Library-
       
       - name: Unity - Runner
         uses: game-ci/unity-test-runner@v2.0.3
+        env:
+          UNITY_LICENSE: ${{ secrets.UNITY_LICENSE }}
+        with:
+          githubToken: ${{ secrets.GITHUB_TOKEN }}
         
       - name: Unity - Builder
         uses: game-ci/unity-builder@v2.1.0
+        env:
+          UNITY_LICENSE: ${{ secrets.UNITY_LICENSE }}
+          UNITY_EMAIL: ${{ secrets.UNITY_EMAIL }}
+          UNITY_PASSWORD: ${{ secrets.UNITY_PASSWORD }}
         with:
           buildsPath: "./build"
           
