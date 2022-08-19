@@ -49,6 +49,9 @@ jobs:
         with:
           targetPlatform: StandaloneWindows64
           allowDirtyBuild: true
+          
+      - run: "echo $(ls -a)"
+      - run: "echo $(ls -a ./build)"
 
       # Output
       - uses: actions/upload-artifact@v2
