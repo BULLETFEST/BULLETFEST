@@ -51,11 +51,18 @@ jobs:
         with:
           targetPlatform: ${{ matrix.targetPlatform }}
           allowDirtyBuild: true
+          buildName: BULLETFEST_${{ matrix.targetPlatform }}
       #- run: 'echo $(ls -a ./build/${{ matrix.targetPlatform }})'
-      - run: 'rm -rf $(./build/${{ matrix.targetPlatform }}/${{ matrix.targetPlatform }}_BULLETFEST_BurstDebugInformation_DoNotShip)'
 
-      - name: Create archive
-        run: zip -r BULLETFEST_${{ matrix.targetPlatform }}.zip ./build/${{ matrix.targetPlatform }}/*
+      #- name: 'Delete sensitive file'
+      #  run: rm -rf $(./build/${{ matrix.targetPlatform }}/BULLETFEST_${{ matrix.targetPlatform }}_BurstDebugInformation_DoNotShip)
+
+      - name: Delete Sensitive files & Create archive
+        run: |
+        cd ./build/BULLETFEST_${{ matrix.targetPlatform }}
+        rm -rf ./*_BurstDebugInformation_DoNotShip
+        zip -r ../../BULLETFEST_${{ matrix.targetPlatform }}.zip *
+        cd ../..
       #- id: echoBuildIndex
       #  run: echo "::set-output name=target::${{ matrix.targetPlatform }}"
       #- uses: actions/upload-artifact@v2
