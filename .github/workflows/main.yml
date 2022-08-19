@@ -14,7 +14,8 @@ jobs:
   buildForAllSupportedPlatforms:
     name: Build for ${{ matrix.targetPlatform }}
     runs-on: ubuntu-latest
-    outputs: ${{ steps.getVersion.outputs.version }}
+    outputs:
+      version: ${{ steps.getVersion.outputs.version }}
     #  strategy:
     #    fail-fast: false
     #    matrix:
