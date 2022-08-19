@@ -43,7 +43,7 @@ jobs:
         with:
           targetPlatform: ${{ matrix.targetPlatform }}
           allowDirtyBuild: true
-      - run: "echo $(ls -a ./build/${{ matrix.targetPlatform }}"
+      - run: "echo $(ls -a ./build/${{ matrix.targetPlatform }})"
       - uses: actions/upload-artifact@v2
         with:
           name: Build-${{ matrix.targetPlatform }}
