@@ -90,14 +90,14 @@ jobs:
       - name: Notify server of new build
         env:
           DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK }}
+          DISCORD_USERNAME: 'BULLETFEST'
+          DISCORD_AVATAR: 'https://cdn.discordapp.com/icons/990696460477665311/b7b41f470d1ad5e791cd72dc3bbe58b4.png?size=256'
         uses: Ilshidur/action-discord@master
         with:
-          DISCORD_USERNAME: 'BULLETFEST'
-          color: '#000000'
-          DISCORD_AVATAR: 'https://cdn.discordapp.com/icons/990696460477665311/b7b41f470d1ad5e791cd72dc3bbe58b4.png?size=256'
+          #color: '#000000'
           args: |
-            A new build has been spotted!
+            ```A new build has been spotted!```
 
-            Download:
-              Linux: https://drive.google.com/file/d/1rbJa1nVah6mPJ7R5nyyMFGKCw6hGE5jP/view?usp=sharing
-              Windows: https://drive.google.com/file/d/1XGsgIlPbgAfFbKJdavXmo9kvYYV1-TMS/view?usp=sharing'
+            Downloads:
+            Linux: <https://drive.google.com/file/d/1rbJa1nVah6mPJ7R5nyyMFGKCw6hGE5jP/view?usp=sharing>
+            Windows: <https://drive.google.com/file/d/1XGsgIlPbgAfFbKJdavXmo9kvYYV1-TMS/view?usp=sharing>
