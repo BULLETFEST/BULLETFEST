@@ -73,7 +73,10 @@ jobs:
           filename: 'BULLETFEST_${{ matrix.targetPlatform }}.zip'
           overwrite: true
           folderId: ${{ secrets.DRIVE_FOLDER_ID }}
-      - uses: ludeeus/action-push@0.0.1
+      #- uses: ludeeus/action-push@0.0.1
+      - uses: ad-m/github-push-action@v0.6.0
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
   NotifyDiscord:
     name: Send Discord Notification
     runs-on: ubuntu-latest
