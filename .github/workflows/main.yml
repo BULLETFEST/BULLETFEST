@@ -56,7 +56,7 @@ jobs:
         with:
           type: 'zip'
           filename: 'BULLETFEST_${{ matrix.targetPlatform }}.zip'
-          path: 'build/${{ matrix.targetPlatform }}.zip'
+          path: 'build/${{ matrix.targetPlatform }}'
       - name: Upload to google drive
         uses: adityak74/google-drive-upload-git-action@main
         with:
