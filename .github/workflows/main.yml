@@ -27,6 +27,8 @@ jobs:
           #- iOS # Build an iOS player.
           #- Android # Build an Android .apk standalone app.
           #- WebGL # WebGL.
+    outputs:
+      buildTarget: ${{ steps.echoBuildIndex.outputs.target }}
     steps:
       - uses: actions/checkout@v2
         with:
@@ -47,10 +49,16 @@ jobs:
           allowDirtyBuild: true
       #- run: 'echo $(ls -a ./build/${{ matrix.targetPlatform }})'
       - run: 'rm -rf $(./build/${{ matrix.targetPlatform }}/BULLETFEST_BurstDebugInformation_DoNotShip)'
+
+      - id: echoBuildIndex
+        run: echo "::set-output name=target::${{ matrix.targetPlatform }}"
       #- uses: actions/upload-artifact@v2
       #  with:
       #    name: Build-${{ matrix.targetPlatform }}
       #    path: build/${{ matrix.targetPlatform }}
+  CompressAndUpload:
+    needs: buildForAllSupportedPlatforms
+    steps:
       - name: Compress Build
         uses: thedoctor0/zip-release@main
         with:
