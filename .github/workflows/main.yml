@@ -93,7 +93,7 @@ jobs:
         run: echo "ver=$(cat projectVer.txt)" >> $GITHUB_ENV
       - uses: Ilshidur/action-discord@master
         env:
-          DISCORD_WEBHOOK: ${{ secrets.DEV_DISCORD_WEBHOOK }}
+          DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK }}
           DISCORD_USERNAME: 'BULLETFEST'
           DISCORD_AVATAR: 'https://cdn.discordapp.com/icons/990696460477665311/b7b41f470d1ad5e791cd72dc3bbe58b4.png?size=256'
         with:
