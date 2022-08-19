@@ -37,7 +37,9 @@ jobs:
           fetch-depth: 0
           lfs: true
       - id: getVersion
-        run: echo '::set-output name=version::${{ cat ProjectSettings.asset | grep bundleVersion }}'
+        run: |
+          echo '::echo::on'
+          echo '::set-output name=version::$(cat ProjectSettings.asset | grep bundleVersion)'
         #| sed -n -e "s/^.*bundleVersion: //p" )'
   #    - uses: actions/cache@v2
   #      with:
