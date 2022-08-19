@@ -8,6 +8,8 @@ public class LeaderboardItem : NetworkBehaviour
   public TextMeshProUGUI uiKills;
   public TextMeshProUGUI uiWins;
 
+  [SyncVar(hook = nameof(UpdateRichPresence))]
+  int place;
 
   [SyncVar(hook = nameof(HandleUpdateDisplayName))]
   [HideInInspector] public string displayName;
@@ -39,7 +41,16 @@ public class LeaderboardItem : NetworkBehaviour
     kills = MyNetworkManager.instance.players[conn].kills.ToString();
     wins = MyNetworkManager.instance.players[conn].wins.ToString();
 
-    ChangeItemIndex(conn.identity.gameObject, System.Array.IndexOf(MyNetworkManager.instance.sortedPlayerList, conn));
+    place = System.Array.IndexOf(MyNetworkManager.instance.sortedPlayerList, conn);
+    ChangeItemIndex(conn.identity.gameObject, place);
+  }
+
+  void UpdateRichPresence(int oldValue, int newValue)
+  {
+    DiscordController.UpdateActivity(new Discord.Activity
+    {
+      State = $"Finished in {newValue}{(newValue == 1 ? "st" : place == 2 ? "nd" : "rd")} out of {NetworkServer.connections.Count}"
+    });
   }
 
   [ClientRpc]

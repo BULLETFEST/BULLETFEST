@@ -48,6 +48,22 @@ public class PlayerBehavior : NetworkBehaviour
     FetchTime();
   }
 
+  public override void OnStartAuthority()
+  {
+    base.OnStartAuthority();
+
+    DiscordController.UpdateActivity(new Discord.Activity
+    {
+      State = "In a game",
+      Party = {
+        Size =  {
+          MaxSize = 4,
+          CurrentSize = NetworkServer.connections.Count
+        }
+      }
+    });
+  }
+
   [Command]
   void FetchTime()
   {

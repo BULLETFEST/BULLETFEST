@@ -239,7 +239,7 @@ public class MyNetworkManager : NetworkManager
     }
     else
     {
-      int chosenMapIdx = Random.Range(menuScenes - 1, sceneCount);
+      int chosenMapIdx = Random.Range(menuScenes, sceneCount);
       _scenes.Add(Path.GetFileNameWithoutExtension(SceneUtility.GetScenePathByBuildIndex(chosenMapIdx)));
     }
 

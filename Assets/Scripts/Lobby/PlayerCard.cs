@@ -30,7 +30,20 @@ public class PlayerCard : NetworkBehaviour
     GameObject.FindGameObjectWithTag("HostCard").transform.SetParent(playerCards.transform.parent, false);
     GameObject.FindGameObjectWithTag("HostCard").GetComponent<RectTransform>().anchoredPosition = Vector2.zero;
 
-
+    DiscordController.UpdateActivity(new Discord.Activity
+    {
+      State = "In a lobby",
+      Secrets = {
+        Join = (isServer ? EpicTransport.EOSSDKComponent.LocalUserProductIdString : MyNetworkManager.instance.networkAddress),
+      },
+      Party = {
+        Size = {
+          MaxSize = 4,
+          CurrentSize = NetworkServer.connections.Count,
+        },
+        Id = DiscordController.now.ToUnixTimeMilliseconds().ToString(),
+      }
+    });
   }
 
   [Command]
