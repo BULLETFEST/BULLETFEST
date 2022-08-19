@@ -14,17 +14,17 @@ jobs:
   buildForAllSupportedPlatforms:
     name: Build for ${{ matrix.targetPlatform }}
     runs-on: ubuntu-latest
-    #strategy:
-    #  fail-fast: false
-    #  matrix:
-    #    targetPlatform:
-    #      #- StandaloneOSX # Build a macOS standalone (Intel 64-bit).
-    #      #- StandaloneWindows # Build a Windows standalone.
-    #      - StandaloneWindows64 # Build a Windows 64-bit standalone.
-    #      - StandaloneLinux64 # Build a Linux 64-bit standalone.
-    #      #- iOS # Build an iOS player.
-    #      #- Android # Build an Android .apk standalone app.
-    #      #- WebGL # WebGL.
+    strategy:
+      fail-fast: false
+      matrix:
+        targetPlatform:
+          #- StandaloneOSX # Build a macOS standalone (Intel 64-bit).
+          #- StandaloneWindows # Build a Windows standalone.
+          - StandaloneWindows64 # Build a Windows 64-bit standalone.
+          - StandaloneLinux64 # Build a Linux 64-bit standalone.
+          #- iOS # Build an iOS player.
+          #- Android # Build an Android .apk standalone app.
+          #- WebGL # WebGL.
     steps:
       - name: Packages
         run: |
@@ -74,7 +74,7 @@ jobs:
       #    overwrite: true
       #    folderId: ${{ secrets.DRIVE_FOLDER_ID }}
       ##- uses: ludeeus/action-push@0.0.1
-      - if: ${{ matrix.targetVersion == StandaloneWindows64 }}
+      - if: ${{ matrix.targetVersion == 'StandaloneWindows64' }}
         name: Push to dev
         uses: github-actions-x/commit@v2.9
         with:
