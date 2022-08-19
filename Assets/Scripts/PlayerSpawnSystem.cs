@@ -21,14 +21,22 @@ public class PlayerSpawnSystem : NetworkBehaviour
     base.OnStartServer();
     for (int i = 0; i < MyNetworkManager.instance.players.Count; i++)
     {
+      NetworkConnectionToClient conn = MyNetworkManager.instance.players.ElementAt(i).Key;
       GameObject playerInstance = Instantiate(NetworkManager.singleton.playerPrefab, spawnPoints[i].transform.position, Quaternion.Euler(0, 0, 0));
       // playerInstance.GetComponent<PlayerVars>().uiName.text = displayName;
       // NetworkServer.Spawn(playerInstance, Room.players.ElementAt(i).Key);
       // playerInstance.GetComponent<PlayerVars>().timeleft = timeStamp;
       NetworkServer.Spawn(playerInstance);
-      NetworkServer.ReplacePlayerForConnection(MyNetworkManager.instance.players.ElementAt(i).Key, playerInstance);
-      NetworkServer.SetClientReady(MyNetworkManager.instance.players.ElementAt(i).Key);
+      NetworkServer.ReplacePlayerForConnection(conn, playerInstance);
+      NetworkServer.SetClientReady(conn);
+      //if (conn == MyNetworkManager.instance.lastRoundWinner) EnableCrown(playerInstance);//playerInstance.GetComponent<PlayerVars>().crown.SetActive(true);
     }
+  }
+
+  [ClientRpc]
+  void EnableCrown(GameObject player)
+  {
+    player.GetComponent<PlayerVars>().crown.SetActive(true);
   }
 
   [Server]

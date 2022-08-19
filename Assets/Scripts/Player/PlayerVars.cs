@@ -7,7 +7,6 @@ public class PlayerVars : NetworkBehaviour
   [SyncVar]
   public System.DateTime timeleft;
 
-
   public TextMeshProUGUI uiName;
 
   public Rigidbody2D rb { get; set; }
@@ -16,7 +15,9 @@ public class PlayerVars : NetworkBehaviour
   public string playerName { get; set; }
 
   public Canvas publicCanvas;
-  public GameObject killfeed;
+
+  public GameObject killfeed,
+                    crown;
 
   [HideInInspector]
 
