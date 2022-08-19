@@ -74,7 +74,7 @@ jobs:
       #    overwrite: true
       #    folderId: ${{ secrets.DRIVE_FOLDER_ID }}
       ##- uses: ludeeus/action-push@0.0.1
-      - if: ${{ matrix.targetVersion == 'StandaloneWindows64' }}
+      - if: ${{ matrix.targetPlatform == 'StandaloneWindows64' }}
         name: Push to dev
         uses: github-actions-x/commit@v2.9
         with:
