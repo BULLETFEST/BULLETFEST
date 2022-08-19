@@ -57,6 +57,7 @@ jobs:
       #    name: Build-${{ matrix.targetPlatform }}
       #    path: build/${{ matrix.targetPlatform }}
   CompressAndUpload:
+    runs-on: ubuntu-latest
     needs: buildForAllSupportedPlatforms
     steps:
       - name: Compress Build
