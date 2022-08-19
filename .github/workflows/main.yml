@@ -38,8 +38,9 @@ jobs:
           lfs: true
       - id: getVersion
         run: |
-          echo '::echo::on'
-          echo '::set-output name=version::$(cat ProjectSettings.asset | grep bundleVersion)'
+          echo "{LC_TEST}={$(cat ProjectSettings.asset | grep bundleVersion)}" >> $GITHUB_ENV
+
+      - run: echo ${{env.LC_TEST}}
         #| sed -n -e "s/^.*bundleVersion: //p" )'
   #    - uses: actions/cache@v2
   #      with:
