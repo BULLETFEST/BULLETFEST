@@ -95,7 +95,7 @@ jobs:
           args: |
             ```A new build has been spotted!```
 
-            Version `{{cat projectVer.txt}}`
+            Version `$(cat projectVer.txt)`
             Downloads:
             Linux: <https://drive.google.com/file/d/1rbJa1nVah6mPJ7R5nyyMFGKCw6hGE5jP/view?usp=sharing>
             Windows: <https://drive.google.com/file/d/1XGsgIlPbgAfFbKJdavXmo9kvYYV1-TMS/view?usp=sharing>
