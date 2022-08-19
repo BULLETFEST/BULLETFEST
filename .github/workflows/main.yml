@@ -59,7 +59,7 @@ jobs:
 
       - name: Delete Sensitive files & Create archive
         run: |
-          cd ./build/BULLETFEST_${{ matrix.targetPlatform }}
+          cd ./build/${{ matrix.targetPlatform }}
           rm -rf ./*_BurstDebugInformation_DoNotShip
           zip -r ../../BULLETFEST_${{ matrix.targetPlatform }}.zip *
           cd ../..
