@@ -59,10 +59,10 @@ jobs:
 
       - name: Delete Sensitive files & Create archive
         run: |
-        cd ./build/BULLETFEST_${{ matrix.targetPlatform }}
-        rm -rf ./*_BurstDebugInformation_DoNotShip
-        zip -r ../../BULLETFEST_${{ matrix.targetPlatform }}.zip *
-        cd ../..
+          cd ./build/BULLETFEST_${{ matrix.targetPlatform }}
+          rm -rf ./*_BurstDebugInformation_DoNotShip
+          zip -r ../../BULLETFEST_${{ matrix.targetPlatform }}.zip *
+          cd ../..
       #- id: echoBuildIndex
       #  run: echo "::set-output name=target::${{ matrix.targetPlatform }}"
       #- uses: actions/upload-artifact@v2
