@@ -257,7 +257,7 @@ GameObject:
   - component: {fileID: 471902395}
   m_Layer: 5
   m_Name: Clients
-  m_TagString: PlayerCards
+  m_TagString: LobbyPlayerContainer
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -279,8 +279,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 0}
-  m_AnchoredPosition: {x: -33.546, y: 134.00009}
-  m_SizeDelta: {x: -67.097, y: 268}
+  m_AnchoredPosition: {x: 0.0012817383, y: 134.00009}
+  m_SizeDelta: {x: -0.0024414, y: 268}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &471902395
 MonoBehaviour:
@@ -295,8 +295,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Padding:
-    m_Left: 20
-    m_Right: 75
+    m_Left: 0
+    m_Right: 0
     m_Top: 0
     m_Bottom: 0
   m_ChildAlignment: 8
@@ -304,8 +304,8 @@ MonoBehaviour:
   m_StartAxis: 1
   m_CellSize: {x: 75, y: 150}
   m_Spacing: {x: 150, y: 5}
-  m_Constraint: 0
-  m_ConstraintCount: 2
+  m_Constraint: 2
+  m_ConstraintCount: 1
 --- !u!1 &581182461
 GameObject:
   m_ObjectHideFlags: 0
@@ -974,11 +974,11 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 4884974567067367209, guid: e54e23a1823313a4e88975b12925ddab, type: 3}
       propertyPath: sceneId
-      value: 2960800667
+      value: 4194551319
       objectReference: {fileID: 0}
     - target: {fileID: 4884974567067367211, guid: e54e23a1823313a4e88975b12925ddab, type: 3}
       propertyPath: m_Name
-      value: CardSpawnSystem
+      value: LobbyPlayerSpawner
       objectReference: {fileID: 0}
     - target: {fileID: 4884974567067367214, guid: e54e23a1823313a4e88975b12925ddab, type: 3}
       propertyPath: m_RootOrder
@@ -1271,6 +1271,6 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -33.547424, y: 0}
+  m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 645, y: 268.38}
   m_Pivot: {x: 0.5, y: 0.5}

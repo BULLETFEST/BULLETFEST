@@ -3,7 +3,7 @@ using TMPro;
 using Mirror;
 using UnityEngine.UI;
 
-public class PlayerCard : NetworkBehaviour
+public class LobbyPlayer : NetworkBehaviour
 {
   public TMP_Text DisplayNameUI;
 
@@ -11,6 +11,8 @@ public class PlayerCard : NetworkBehaviour
   public string displayName;
 
   public Button kickBtn;
+
+  public Image crown;
 
   public override void OnStartAuthority()
   {
@@ -22,13 +24,19 @@ public class PlayerCard : NetworkBehaviour
 
   public void OnPlayerJoin()
   {
-    GameObject playerCards = GameObject.FindGameObjectWithTag("PlayerCards");
-    GameObject[] _playerCards = GameObject.FindGameObjectsWithTag("PlayerCard");
-    foreach (GameObject _playerCard in _playerCards)
-      _playerCard.transform.SetParent(playerCards.transform);
+    GameObject lobbyPlayersContainer = GameObject.FindGameObjectWithTag("LobbyPlayerContainer");
+    GameObject[] lobbyPlayers = GameObject.FindGameObjectsWithTag("LobbyPlayer");
+    for (int i = 0; i < lobbyPlayers.Length; i++)
+    {
+      lobbyPlayers[i].transform.SetParent(lobbyPlayersContainer.transform);
+      if (i == 0)
+      {
+        RectTransform rt = lobbyPlayers[i].GetComponent<LobbyPlayer>().DisplayNameUI.GetComponent<RectTransform>();
+        rt.anchoredPosition = new Vector3(0, 111, rt.localPosition.z);
 
-    GameObject.FindGameObjectWithTag("HostCard").transform.SetParent(playerCards.transform.parent, false);
-    GameObject.FindGameObjectWithTag("HostCard").GetComponent<RectTransform>().anchoredPosition = Vector2.zero;
+        lobbyPlayers[i].GetComponent<LobbyPlayer>().crown.gameObject.SetActive(true);
+      }
+    }
 
     DiscordController.UpdateActivity(new Discord.Activity
     {

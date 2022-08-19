@@ -12,8 +12,16 @@ public class DiscordController : MonoBehaviour
   public static ActivityManager activityManager;
   public static DateTimeOffset now;
 
+#if UNITY_EDITOR
+  bool debugMode = true;
+#else
+  bool debugMode = false;
+#endif
+
   void Start()
   {
+    if (debugMode) return;
+
     discord = new Discord.Discord(1009938773137694800, (System.UInt64)Discord.CreateFlags.NoRequireDiscord);
     activityManager = discord.GetActivityManager();
 

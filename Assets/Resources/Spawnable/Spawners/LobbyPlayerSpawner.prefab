@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 4884974567067367209}
   - component: {fileID: 1266719673945758639}
   m_Layer: 0
-  m_Name: CardSpawnSystem
+  m_Name: LobbyPlayerSpawner
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -64,5 +64,4 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   syncMode: 0
   syncInterval: 0.1
-  clientLobbyItem: {fileID: 2755971262720494536, guid: b0a06f307f1d1cd40b51b8069c3aabbf, type: 3}
-  hostLobbyItem: {fileID: 5230887944169726515, guid: 5f9a01de4331f434e80eadaf1632f5c7, type: 3}
+  lobbyPlayer: {fileID: 2755971262720494536, guid: b0a06f307f1d1cd40b51b8069c3aabbf, type: 3}

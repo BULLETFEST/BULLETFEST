@@ -183,11 +183,18 @@ public class MyNetworkManager : NetworkManager
     }
   }
 
+  public NetworkConnection lastRoundWinner = null;
+
   [Server]
   public void AnnounceWinner()
   {
-    if (gameMode == 0)
+    // If all players have left, choose host to be the winner
+    if (NetworkServer.connections.Count == 1)
+      winner = NetworkServer.connections[0];
+    // If gamemode is elimination, choose last player alive
+    else if (gameMode == 0)
       winner = GameObject.FindGameObjectsWithTag("Player").Where(x => !x.GetComponent<PlayerBehavior>().dead).ToArray()[0].GetComponent<NetworkIdentity>().connectionToClient;
+    // If gamemode is deathmatch, choose player with most kills
     else
     {
       // https://stackoverflow.com/a/1332/11420492
@@ -207,6 +214,8 @@ public class MyNetworkManager : NetworkManager
 
     GameObject winnerUi = Instantiate(winnerUI);
     NetworkServer.Spawn(winnerUi);
+
+    lastRoundWinner = winner;
 
     foreach (NetworkConnectionToClient conn in NetworkServer.connections.Values)
     {
@@ -258,7 +267,6 @@ public class MyNetworkManager : NetworkManager
   [Server]
   public void CycleMap()
   {
-
     deadPlayers = 0;
 
     if (playableScenes.Length == 0)// || gameMode == GameMode.Deathmatch)

@@ -5,8 +5,6 @@ TagManager:
   serializedVersion: 2
   tags:
   - WeaponItem
-  - PlayerCards
-  - PlayerCard
   - Spawnpoint
   - Leaderboard
   - LeaderboardItem
@@ -19,6 +17,8 @@ TagManager:
   - PauseUI
   - SaveData
   - EventSystem
+  - LobbyPlayer
+  - LobbyPlayerContainer
   layers:
   - Default
   - TransparentFX
