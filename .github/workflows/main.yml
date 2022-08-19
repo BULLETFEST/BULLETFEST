@@ -35,8 +35,10 @@ jobs:
       - uses: actions/cache@v2
         with:
           path: Library
-          key: Library-${{ matrix.targetPlatform }}
-          restore-keys: Library-
+          key: Library-BULLETFEST-${{ matrix.targetPlatform }}
+          restore-keys: |
+            Library-BULLETFEST-
+            Library-
       - uses: game-ci/unity-builder@v2
         env:
           UNITY_SERIAL: ${{ secrets.UNITY_SERIAL }}
@@ -54,17 +56,6 @@ jobs:
       #  with:
       #    name: Build-${{ matrix.targetPlatform }}
       #    path: build/${{ matrix.targetPlatform }}
-  CompressAndUpload:
-    runs-on: ubuntu-latest
-    needs: buildForAllSupportedPlatforms
-    name: Compress and upload ${{ matrix.targetPlaform }} build
-    strategy:
-      fail-fast: false
-      matrix:
-        targetPlatform:
-          - StandaloneWindows64 # Build a Windows 64-bit standalone.
-          - StandaloneLinux64 # Build a Linux 64-bit standalone.
-    steps:
       - name: Compress Build
         uses: thedoctor0/zip-release@main
         with:
