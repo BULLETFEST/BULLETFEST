@@ -36,11 +36,12 @@ jobs:
         with:
           fetch-depth: 0
           lfs: true
-      - id: getVersion
+      - name: Get Build Version
         run: |
           echo "{LC_TEST}={$(cat ./ProjectSettings/ProjectSettings.asset | grep bundleVersion | sed -n -e 's/^.*bundleVersion: //p' )}" >> $GITHUB_ENV
 
-      - run: echo ${{env.LC_TEST}}
+      - id: getVersion
+        run: echo "::set-output name=version::${{env.LC_TEST}}"
         #| sed -n -e "s/^.*bundleVersion: //p" )'
   #    - uses: actions/cache@v2
   #      with:
@@ -80,8 +81,8 @@ jobs:
     needs: buildForAllSupportedPlatforms
     steps:
       - name: Notify server of new build
-        #run: echo ${{ needs.buildForAllSupportedPlatforms.outputs.version }}
-        run: echo ${{ env.LC_TEST }}
+        run: echo ${{ needs.buildForAllSupportedPlatforms.outputs.version }}
+        #run: echo ${{ env.LC_TEST }}
         #env:
         #  DISCORD_WEBHOOK: ${{ secrets.DEV_DISCORD_WEBHOOK }}
         #  DISCORD_USERNAME: 'BULLETFEST'
