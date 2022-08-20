@@ -29,7 +29,7 @@ jobs:
       - name: Packages
         run: |
           sudo apt-get update
-          sudo apt-get install zip
+          sudo apt-get install rar
       - uses: actions/checkout@v2
         with:
           fetch-depth: 0
@@ -64,13 +64,13 @@ jobs:
         run: |
           cd ./build/${{ matrix.targetPlatform }}
           sudo rm -rf ./*_BurstDebugInformation_DoNotShip
-          zip -r ../../BULLETFEST_${{ matrix.targetPlatform }}.zip *
+          rar a ../../BULLETFEST_${{ matrix.targetPlatform }} *
           cd ../..
       - name: Upload to google drive
         uses: adityak74/google-drive-upload-git-action@main
         with:
           credentials: ${{ secrets.DRIVE_CREDENTIALS }}
-          filename: 'BULLETFEST_${{ matrix.targetPlatform }}.zip'
+          filename: 'BULLETFEST_${{ matrix.targetPlatform }}.rar'
           overwrite: true
           folderId: ${{ secrets.DRIVE_FOLDER_ID }}
       - if: ${{ matrix.targetPlatform == 'StandaloneWindows64' }}
