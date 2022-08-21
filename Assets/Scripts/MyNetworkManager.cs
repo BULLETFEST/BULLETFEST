@@ -147,7 +147,8 @@ public class MyNetworkManager : NetworkManager
 
   public override void OnServerDisconnect(NetworkConnectionToClient conn)
   {
-    base.OnServerDisconnect(conn);
+    if (SceneManager.GetActiveScene().name != "End") base.OnServerDisconnect(conn);
+
     if (players.ContainsKey(conn))
     {
       players.Remove(conn);
@@ -169,7 +170,8 @@ public class MyNetworkManager : NetworkManager
   [Server]
   public void OnPlayerDie(NetworkConnectionToClient conn)
   {
-    if (gameMode == GameMode.Rounds)
+    if (NetworkServer.connections.Count == 1) AnnounceWinner();
+    else if (gameMode == GameMode.Rounds)
     {
       deadPlayers++;
       if (deadPlayers == NetworkServer.connections.Count - 1)
@@ -183,14 +185,12 @@ public class MyNetworkManager : NetworkManager
     }
   }
 
-  public NetworkConnection lastRoundWinner = null;
-
   [Server]
   public void AnnounceWinner()
   {
     // If all players have left, choose host to be the winner
-    if (NetworkServer.connections.Count == 1)
-      winner = NetworkServer.connections[0];
+    if (players.Count == 1)
+      winner = players.ElementAt(0).Key;
     // If gamemode is elimination, choose last player alive
     else if (gameMode == 0)
       winner = GameObject.FindGameObjectsWithTag("Player").Where(x => !x.GetComponent<PlayerBehavior>().dead).ToArray()[0].GetComponent<NetworkIdentity>().connectionToClient;
@@ -215,7 +215,9 @@ public class MyNetworkManager : NetworkManager
     GameObject winnerUi = Instantiate(winnerUI);
     NetworkServer.Spawn(winnerUi);
 
-    lastRoundWinner = winner;
+    winnerUI.GetComponent<WinnerUI>().winnerText.text = $"{players[winner].displayName} won the round";
+
+    if (players.Count <= 1) return;
 
     foreach (NetworkConnectionToClient conn in NetworkServer.connections.Values)
     {
@@ -226,6 +228,8 @@ public class MyNetworkManager : NetworkManager
   [Server]
   public void StartGame()
   {
+    winner = null;
+
     int sceneCount = SceneManager.sceneCountInBuildSettings;
     List<string> _scenes = new();
     if (gameMode == GameMode.Rounds)
@@ -257,11 +261,6 @@ public class MyNetworkManager : NetworkManager
     gameStarted = true;
 
     CycleMap();
-
-    foreach (KeyValuePair<NetworkConnectionToClient, PlayerData> entry in players)
-    {
-      print(entry.Value.displayName);
-    }
   }
 
   [Server]
@@ -306,8 +305,14 @@ public class MyNetworkManager : NetworkManager
 
   public void Disconnect()
   {
-    StopHost();
-    StopClient();
+    // StopHost();
+    // StopClient();
+
+    GetComponent<EpicTransport.EosTransport>().ClientDisconnect();
+    GetComponent<EpicTransport.EosTransport>().ServerStop();
+
+    // GetComponent<EpicTransport.Client>().Disconnect();
+
   }
 
 

@@ -19,6 +19,8 @@ public class PlayerSpawnSystem : NetworkBehaviour
   public override void OnStartServer()
   {
     base.OnStartServer();
+
+    GameObject winningPlayer = null;
     for (int i = 0; i < MyNetworkManager.instance.players.Count; i++)
     {
       NetworkConnectionToClient conn = MyNetworkManager.instance.players.ElementAt(i).Key;
@@ -29,8 +31,9 @@ public class PlayerSpawnSystem : NetworkBehaviour
       NetworkServer.Spawn(playerInstance);
       NetworkServer.ReplacePlayerForConnection(conn, playerInstance);
       NetworkServer.SetClientReady(conn);
-      //if (conn == MyNetworkManager.instance.lastRoundWinner) EnableCrown(playerInstance);//playerInstance.GetComponent<PlayerVars>().crown.SetActive(true);
+      if (conn == MyNetworkManager.instance.winner) winningPlayer = playerInstance; //playerInstance.GetComponent<PlayerVars>().crown.SetActive(true);
     }
+    if (winningPlayer != null) EnableCrown(winningPlayer);
   }
 
   [ClientRpc]
