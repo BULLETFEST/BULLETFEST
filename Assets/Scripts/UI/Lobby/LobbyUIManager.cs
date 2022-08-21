@@ -4,7 +4,8 @@ using TMPro;
 
 public class LobbyUIManager : NetworkBehaviour
 {
-  public Button startButton;
+  public Button startButton, settingsButton;
+  public TMP_Dropdown rounds, deathmatchTime;
   public TMP_Text roomCode;
 
   MyNetworkManager Room;
@@ -19,6 +20,12 @@ public class LobbyUIManager : NetworkBehaviour
       Room.PlayerUpdate += PlayerUpdate;
       PlayerUpdate();
     }
+    else
+    {
+      startButton.gameObject.SetActive(false);
+      settingsButton.gameObject.SetActive(false);
+    }
+
 
     roomCode.text = $"Room code: {Room.RoomCode}";
 
@@ -51,5 +58,63 @@ public class LobbyUIManager : NetworkBehaviour
   {
     Room.Disconnect();
     FindObjectOfType<AudioSystem>().PlaySound("Select");
+  }
+
+  MyNetworkManager nm = MyNetworkManager.instance;
+
+  public void ChangeGameMode(int option)
+  {
+    nm.gameMode = (MyNetworkManager.GameMode)option;
+
+    if (option == 1)
+    {
+      rounds.transform.parent.gameObject.SetActive(false);
+      deathmatchTime.transform.parent.gameObject.SetActive(true);
+    }
+    else
+    {
+      rounds.transform.parent.gameObject.SetActive(true);
+      deathmatchTime.transform.parent.gameObject.SetActive(false);
+    }
+  }
+
+  public void ChangeRoundCount(string count)
+  {
+    nm.rounds = int.Parse(count);
+  }
+
+  public void ChangeDeathmatchTime(int option)
+  {
+    switch (option)
+    {
+      case 0:
+      default:
+        nm.deathmatchLength = 1;
+        break;
+      case 1:
+        nm.deathmatchLength = 1.5f;
+        break;
+      case 2:
+        nm.deathmatchLength = 2;
+        break;
+      case 3:
+        nm.deathmatchLength = 2.5f;
+        break;
+      case 4:
+        nm.deathmatchLength = 3;
+        break;
+      case 5:
+        nm.deathmatchLength = 3.5f;
+        break;
+      case 6:
+        nm.deathmatchLength = 4;
+        break;
+      case 7:
+        nm.deathmatchLength = 4.5f;
+        break;
+      case 8:
+        nm.deathmatchLength = 5;
+        break;
+    }
   }
 }

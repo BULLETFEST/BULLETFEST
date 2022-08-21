@@ -37,16 +37,15 @@ public class MyNetworkManager : NetworkManager
 
   public GameMode gameMode = 0;
 
-  public int rounds = 1;
 
   public float deathmatchLength = 1;
 
   public static int PlayableScenes = 10, menuScenes = 5;
 
+  public int rounds = PlayableScenes;
+
   public override void Start()
   {
-
-    print(menu);
     if (instance == null)
       instance = this;
     else if (instance != this)

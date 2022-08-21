@@ -126,62 +126,6 @@ public class MainMenu : MonoBehaviour
     }
   }
 
-  public void ChangeRoomCode(string newCode)
-  {
-    code = newCode;
-  }
-
-  public void ChangeGameMode(int option)
-  {
-    nm.gameMode = (MyNetworkManager.GameMode)option;
-
-    if (option == 1)
-    {
-      rounds.transform.parent.gameObject.SetActive(false);
-      deathmatchTime.transform.parent.gameObject.SetActive(true);
-    }
-    else
-    {
-      rounds.transform.parent.gameObject.SetActive(true);
-      deathmatchTime.transform.parent.gameObject.SetActive(false);
-    }
-  }
-
-  public void ChangeDeathmatchTime(int option)
-  {
-    switch (option)
-    {
-      case 0:
-      default:
-        nm.deathmatchLength = 1;
-        break;
-      case 1:
-        nm.deathmatchLength = 1.5f;
-        break;
-      case 2:
-        nm.deathmatchLength = 2;
-        break;
-      case 3:
-        nm.deathmatchLength = 2.5f;
-        break;
-      case 4:
-        nm.deathmatchLength = 3;
-        break;
-      case 5:
-        nm.deathmatchLength = 3.5f;
-        break;
-      case 6:
-        nm.deathmatchLength = 4;
-        break;
-      case 7:
-        nm.deathmatchLength = 4.5f;
-        break;
-      case 8:
-        nm.deathmatchLength = 5;
-        break;
-    }
-  }
-
   public void ChangeSceneToSettings()
   {
     SceneManager.LoadScene("Settings", LoadSceneMode.Additive);
