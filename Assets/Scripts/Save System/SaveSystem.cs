@@ -60,12 +60,23 @@ public class SaveSystem : MonoBehaviour
     {
       if (!IsSettingsOpen)
       {
+        if (Utilities.FindWithTag("SettingsBlocker", out GameObject gameObject))
+        {
+          if (gameObject.activeSelf)
+          {
+            gameObject.SetActive(false);
+            return;
+          }
+        }
         SceneManager.LoadSceneAsync("Settings", LoadSceneMode.Additive);
         IsSettingsOpen = true;
+
         //Cursor.visible = true;
       }
       else
       {
+        if (FindObjectOfType<SettingsUI>().waitingForKey) return;
+
         SaveSystem.SavePlayer(new SaveDataStructure(SaveSystem.saveData.settings));
         SceneManager.UnloadSceneAsync("Settings");
         IsSettingsOpen = false;

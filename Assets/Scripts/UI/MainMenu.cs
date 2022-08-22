@@ -34,6 +34,8 @@ public class MainMenu : MonoBehaviour
   public TMP_InputField playerName;
   public TMP_Dropdown deathmatchTime;
 
+  bool isConnecting = false;
+
   void Start()
   {
     buildNumber.text = "Build " + Application.version;
@@ -54,12 +56,13 @@ public class MainMenu : MonoBehaviour
     Application.targetFrameRate = Screen.currentResolution.refreshRate;
 
     nm.networkAddress = EpicTransport.EOSSDKComponent.LocalUserProductIdString;//localIp;
-
-    roundsDefault.text = $"Default: {SceneManager.sceneCountInBuildSettings - MyNetworkManager.menuScenes}";
   }
 
   public async void Connect()
   {
+    if (isConnecting) return;
+
+    isConnecting = true;
     connectBtn.interactable = false;
     PlayerPrefs.SetString("PlayerName", playerName.text);
 
@@ -80,6 +83,7 @@ public class MainMenu : MonoBehaviour
         Message.DisplayMessage("Something went wrong!", res.message, HorizontalAlignmentOptions.Center);
       }
       connectBtn.interactable = true;
+      isConnecting = false;
     }
   }
 
@@ -130,5 +134,15 @@ public class MainMenu : MonoBehaviour
   {
     SceneManager.LoadScene("Settings", LoadSceneMode.Additive);
     SaveSystem.IsSettingsOpen = true;
+  }
+
+  public void ChangeRoomCode(string newCode)
+  {
+    code = newCode;
+  }
+
+  public void PrintOnSubmit()
+  {
+    print("A");
   }
 }

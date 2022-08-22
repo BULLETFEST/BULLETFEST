@@ -1334,7 +1334,7 @@ Rigidbody2D:
   m_Mass: 1
   m_LinearDrag: 0
   m_AngularDrag: 0
-  m_GravityScale: 10
+  m_GravityScale: 6.5
   m_Material: {fileID: 6200000, guid: 3da728d3f41ffd44e99cc71284cae8ce, type: 2}
   m_Interpolate: 0
   m_SleepingMode: 1
@@ -1482,8 +1482,9 @@ MonoBehaviour:
   groundLm:
     serializedVersion: 2
     m_Bits: 2147487808
-  moveForce: 20
-  drag: 20
+  moveForce: 17.5
+  drag: 17.5
+  jumpForce: 1150
   playerVars: {fileID: 0}
 --- !u!114 &2728089404972226145
 MonoBehaviour:

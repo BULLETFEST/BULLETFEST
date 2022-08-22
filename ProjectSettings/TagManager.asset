@@ -19,6 +19,7 @@ TagManager:
   - EventSystem
   - LobbyPlayer
   - LobbyPlayerContainer
+  - SettingsBlocker
   layers:
   - Default
   - TransparentFX

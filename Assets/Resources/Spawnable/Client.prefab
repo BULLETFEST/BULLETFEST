@@ -13,6 +13,7 @@ GameObject:
   - component: {fileID: 5108620123758224205}
   - component: {fileID: 5784148227655367704}
   - component: {fileID: 97786969960219526}
+  - component: {fileID: 1960331476403587061}
   m_Layer: 5
   m_Name: Client
   m_TagString: LobbyPlayer
@@ -116,6 +117,20 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
+--- !u!114 &1960331476403587061
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2755971262720494536}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 86710e43de46f6f4bac7c8e50813a599, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_AspectMode: 1
+  m_AspectRatio: 0.5
 --- !u!1 &3718216184367248224
 GameObject:
   m_ObjectHideFlags: 0

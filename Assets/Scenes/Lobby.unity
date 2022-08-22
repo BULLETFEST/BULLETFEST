@@ -1337,7 +1337,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Settings
+  m_text: Game Settings
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
@@ -1364,8 +1364,8 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 42
-  m_fontSizeBase: 42
+  m_fontSize: 36
+  m_fontSizeBase: 36
   m_fontWeight: 400
   m_enableAutoSizing: 0
   m_fontSizeMin: 18
@@ -2065,7 +2065,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 471902394}
-  - component: {fileID: 471902395}
+  - component: {fileID: 471902396}
   m_Layer: 5
   m_Name: Clients
   m_TagString: LobbyPlayerContainer
@@ -2088,12 +2088,12 @@ RectTransform:
   m_Father: {fileID: 2002552793}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0.5}
-  m_AnchorMax: {x: 1, y: 0.5}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 1, y: 1}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 0, y: 472.5}
+  m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
---- !u!114 &471902395
+--- !u!114 &471902396
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -2111,10 +2111,10 @@ MonoBehaviour:
     m_Top: 0
     m_Bottom: 0
   m_ChildAlignment: 5
-  m_StartCorner: 3
+  m_StartCorner: 1
   m_StartAxis: 1
-  m_CellSize: {x: 75, y: 150}
-  m_Spacing: {x: 150, y: 5}
+  m_CellSize: {x: 100, y: 200}
+  m_Spacing: {x: 175, y: 5}
   m_Constraint: 2
   m_ConstraintCount: 1
 --- !u!1 &566539066
@@ -3783,9 +3783,10 @@ MonoBehaviour:
   syncInterval: 0.1
   startButton: {fileID: 71817506}
   settingsButton: {fileID: 1305030459}
-  rounds: {fileID: 0}
-  deathmatchTime: {fileID: 0}
+  deathmatchTime: {fileID: 1628363437}
+  rounds: {fileID: 1107704484}
   roomCode: {fileID: 1300212530}
+  roundsDefault: {fileID: 364570161}
 --- !u!114 &1131764262
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -6280,7 +6281,7 @@ GameObject:
   - component: {fileID: 1920669806}
   m_Layer: 5
   m_Name: Settings
-  m_TagString: Untagged
+  m_TagString: SettingsBlocker
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0

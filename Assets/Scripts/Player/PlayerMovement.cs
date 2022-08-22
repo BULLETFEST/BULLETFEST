@@ -12,13 +12,9 @@ public class PlayerMovement : NetworkBehaviour
 
   [SerializeField]
   [SyncVar]
-  private float moveForce = 13f;
-
-  const float jumpForce = 1500;
-
-  [SerializeField]
-  [SyncVar]
-  private float drag = 5f;
+  private float moveForce = 13f,
+                drag = 5f,
+                jumpForce = 1500f;
 
   bool doubleJumped;
 

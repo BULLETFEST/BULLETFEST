@@ -49,4 +49,29 @@ public class Utilities : MonoBehaviour
     if (!SaveSystem.saveData.settings.keybinds.ContainsKey(key)) return false;
     return Input.GetKeyUp(StringToKeyCode(SaveSystem.saveData.settings.keybinds[key])) || Input.GetKeyUp(StringToKeyCode(SaveSystem.saveData.settings.keybinds[key + "2"]));
   }
+
+  public static string AddSpacesToString(string text)
+  {
+    List<char> textList = text.ToCharArray().ToList();
+    string output = "";
+    for (int i = 0; i < textList.Count; i++)
+    {
+      char character = textList[i];
+      if ((Char.IsUpper(character) || Char.IsNumber(character)) && i > 0)
+      {
+        output += $" {character}";
+      }
+      else
+      {
+        output += character;
+      }
+    }
+    return output;
+  }
+
+  public static bool FindWithTag(string tag, out GameObject gameObject)
+  {
+    gameObject = GameObject.FindGameObjectWithTag(tag);
+    return gameObject != null;
+  }
 }

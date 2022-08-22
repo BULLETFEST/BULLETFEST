@@ -4,9 +4,9 @@ using Mirror;
 
 public class LeaderboardItem : NetworkBehaviour
 {
-  public TextMeshProUGUI uiDisplayname;
-  public TextMeshProUGUI uiKills;
-  public TextMeshProUGUI uiWins;
+  public TMP_Text uiDisplayname;
+  public TMP_Text uiKills;
+  public TMP_Text uiWins;
 
   [SyncVar(hook = nameof(UpdateRichPresence))]
   int place;

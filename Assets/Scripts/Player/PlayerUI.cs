@@ -4,8 +4,8 @@ using Mirror;
 
 public class PlayerUI : NetworkBehaviour
 {
-  public TextMeshProUGUI uiGunAmmo;
-  public TextMeshProUGUI uiTimeLeft;
+  public TMP_Text uiGunAmmo;
+  public TMP_Text uiTimeLeft;
 
   public Canvas mainCanvas;
 

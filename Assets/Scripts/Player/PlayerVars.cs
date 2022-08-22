@@ -7,7 +7,7 @@ public class PlayerVars : NetworkBehaviour
   [SyncVar]
   public System.DateTime timeleft;
 
-  public TextMeshProUGUI uiName;
+  public TMP_Text uiName;
 
   public Rigidbody2D rb { get; set; }
   public BoxCollider2D bc { get; set; }

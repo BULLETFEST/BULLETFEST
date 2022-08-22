@@ -3,7 +3,7 @@ using UnityEngine;
 using TMPro;
 public class KillFeedItem : MonoBehaviour
 {
-  public TextMeshProUGUI killer, killed;
+  public TMP_Text killer, killed;
 
   public float fadeOutTime, fadeOutDelay, fadeAmount;
 

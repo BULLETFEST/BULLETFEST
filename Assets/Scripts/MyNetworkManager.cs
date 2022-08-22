@@ -304,14 +304,8 @@ public class MyNetworkManager : NetworkManager
 
   public void Disconnect()
   {
-    // StopHost();
-    // StopClient();
-
-    GetComponent<EpicTransport.EosTransport>().ClientDisconnect();
-    GetComponent<EpicTransport.EosTransport>().ServerStop();
-
-    // GetComponent<EpicTransport.Client>().Disconnect();
-
+    StopHost();
+    StopClient();
   }
 
 

@@ -5,8 +5,9 @@ using TMPro;
 public class LobbyUIManager : NetworkBehaviour
 {
   public Button startButton, settingsButton;
-  public TMP_Dropdown rounds, deathmatchTime;
-  public TMP_Text roomCode;
+  public TMP_Dropdown deathmatchTime;
+  public TMP_InputField rounds;
+  public TMP_Text roomCode, roundsDefault;
 
   MyNetworkManager Room;
 
@@ -29,8 +30,9 @@ public class LobbyUIManager : NetworkBehaviour
 
     roomCode.text = $"Room code: {Room.RoomCode}";
 
-    startButton.onClick.AddListener(delegate { StartGame(); });
+    roundsDefault.text = $"Default: {MyNetworkManager.PlayableScenes}";
 
+    startButton.onClick.AddListener(delegate { StartGame(); });
   }
 
   [Server]

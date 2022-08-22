@@ -22,7 +22,7 @@ public class SettingsUI : MonoBehaviour
   [Header("Prefabs")]
   public GameObject fpsCounter;
 
-  bool waitingForKey;
+  public bool waitingForKey;
   Canvas thisCanvas;
   List<string> resolutionsList = new List<string>();
 
@@ -37,8 +37,6 @@ public class SettingsUI : MonoBehaviour
       if (resolutionsList.IndexOf($"{res.width}x{res.height}") < 0) resolutionsList.Add($"{res.width}x{res.height}");
     }
     resolutionDropdown.AddOptions(resolutionsList);
-
-
 
     // Load saved settings UI
     // fpsToggle.isOn = settings.fpsCounter;
@@ -61,10 +59,6 @@ public class SettingsUI : MonoBehaviour
       resolutionDropdown.interactable = false;
     }
 
-
-
-
-
     resolutionDropdown.onValueChanged.AddListener(delegate
     {
       DropdownResolution(resolutionDropdown.value);
@@ -80,15 +74,15 @@ public class SettingsUI : MonoBehaviour
     Dictionary<string, string> binds = SaveSystem.saveData.settings.keybinds;
     for (int i = 0, bindIdx = 0; i < keybindsObjects.Length; i++, bindIdx++)
     {
-      keybindsObjects[i].transform.GetChild(1).GetComponentInChildren<TextMeshProUGUI>().text = AddSpacesToString(binds.ElementAt(bindIdx).Value);
+      keybindsObjects[i].transform.GetChild(1).GetComponentInChildren<TMP_Text>().text = Utilities.AddSpacesToString(binds.ElementAt(bindIdx).Value);
       if (binds.Count > bindIdx + 1 && binds.ElementAt(bindIdx + 1).Key.EndsWith("2"))
       {
         bindIdx++;
-        keybindsObjects[i].transform.GetChild(2).GetComponentInChildren<TextMeshProUGUI>().text = AddSpacesToString(binds.ElementAt(bindIdx).Value);
+        keybindsObjects[i].transform.GetChild(2).GetComponentInChildren<TMP_Text>().text = Utilities.AddSpacesToString(binds.ElementAt(bindIdx).Value);
       }
       else
       {
-        keybindsObjects[i].transform.GetChild(2).GetComponentInChildren<TextMeshProUGUI>().text = "None";
+        keybindsObjects[i].transform.GetChild(2).GetComponentInChildren<TMP_Text>().text = "None";
       }
     }
   }
@@ -181,29 +175,6 @@ public class SettingsUI : MonoBehaviour
 
     UpdateBindUI();
   }
-
-  string AddSpacesToString(string text)
-  {
-    List<char> textList = text.ToCharArray().ToList();
-    string output = "";
-    for (int i = 0; i < textList.Count; i++)
-    {
-      char character = textList[i];
-      if ((Char.IsUpper(character) || Char.IsNumber(character)) && i > 0)
-      {
-        output += $" {character}";
-      }
-      else
-      {
-        output += character;
-      }
-    }
-    return output;
-  }
-
-
-
-
 
   /* TOOGLE FUNCTIONS , ETC */
 

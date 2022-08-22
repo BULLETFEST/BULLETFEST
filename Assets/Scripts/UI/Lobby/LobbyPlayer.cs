@@ -29,6 +29,8 @@ public class LobbyPlayer : NetworkBehaviour
     for (int i = 0; i < lobbyPlayers.Length; i++)
     {
       lobbyPlayers[i].transform.SetParent(lobbyPlayersContainer.transform);
+      lobbyPlayers[i].transform.localScale = Vector3.one;
+
       if (i == 0)
       {
         RectTransform rt = lobbyPlayers[i].GetComponent<LobbyPlayer>().DisplayNameUI.GetComponent<RectTransform>();
