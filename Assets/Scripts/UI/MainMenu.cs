@@ -132,17 +132,13 @@ public class MainMenu : MonoBehaviour
 
   public void ChangeSceneToSettings()
   {
-    SceneManager.LoadScene("Settings", LoadSceneMode.Additive);
+    // SceneManager.LoadScene("Settings", LoadSceneMode.Additive);
+    SaveSystem.settingsUI.GetComponent<Canvas>().enabled = true;
     SaveSystem.IsSettingsOpen = true;
   }
 
   public void ChangeRoomCode(string newCode)
   {
     code = newCode;
-  }
-
-  public void PrintOnSubmit()
-  {
-    print("A");
   }
 }

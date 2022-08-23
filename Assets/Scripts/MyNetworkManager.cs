@@ -37,12 +37,13 @@ public class MyNetworkManager : NetworkManager
 
   public GameMode gameMode = 0;
 
-
   public float deathmatchLength = 1;
 
-  public static int PlayableScenes = 10, menuScenes = 5;
+  public static int PlayableScenes = 10, menuScenes = 4;
 
   public int rounds = PlayableScenes;
+
+  public int chosenMap = 0;
 
   public override void Start()
   {
@@ -251,8 +252,12 @@ public class MyNetworkManager : NetworkManager
     }
     else
     {
-      int chosenMapIdx = Random.Range(menuScenes, sceneCount);
-      _scenes.Add(Path.GetFileNameWithoutExtension(SceneUtility.GetScenePathByBuildIndex(chosenMapIdx)));
+      if (chosenMap == 0)
+      {
+        int chosenMapIdx = Random.Range(menuScenes, sceneCount);
+        _scenes.Add(Path.GetFileNameWithoutExtension(SceneUtility.GetScenePathByBuildIndex(chosenMapIdx)));
+      }
+      _scenes.Add(Path.GetFileNameWithoutExtension(SceneUtility.GetScenePathByBuildIndex(chosenMap - 1 + menuScenes)));
     }
 
     playableScenes = _scenes.ToArray();

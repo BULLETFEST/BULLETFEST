@@ -1,11 +1,13 @@
 using Mirror;
 using UnityEngine.UI;
 using TMPro;
+using UnityEngine.SceneManagement;
+using System.Collections.Generic;
 
 public class LobbyUIManager : NetworkBehaviour
 {
   public Button startButton, settingsButton;
-  public TMP_Dropdown deathmatchTime;
+  public TMP_Dropdown deathmatchTime, maps;
   public TMP_InputField rounds;
   public TMP_Text roomCode, roundsDefault;
 
@@ -33,6 +35,16 @@ public class LobbyUIManager : NetworkBehaviour
     roundsDefault.text = $"Default: {MyNetworkManager.PlayableScenes}";
 
     startButton.onClick.AddListener(delegate { StartGame(); });
+
+    List<string> mapNames = new();
+
+    for (int i = MyNetworkManager.menuScenes; i < SceneManager.sceneCountInBuildSettings; i++)
+    {
+      mapNames.Add(System.IO.Path.GetFileNameWithoutExtension(SceneUtility.GetScenePathByBuildIndex(i)).Replace("_", " "));
+    }
+    maps.AddOptions(mapNames);
+
+    maps.onValueChanged.AddListener(delegate { SelectMap(maps.value); });
   }
 
   [Server]
@@ -72,11 +84,13 @@ public class LobbyUIManager : NetworkBehaviour
     {
       rounds.transform.parent.gameObject.SetActive(false);
       deathmatchTime.transform.parent.gameObject.SetActive(true);
+      maps.transform.parent.gameObject.SetActive(true);
     }
     else
     {
       rounds.transform.parent.gameObject.SetActive(true);
       deathmatchTime.transform.parent.gameObject.SetActive(false);
+      maps.transform.parent.gameObject.SetActive(false);
     }
   }
 
@@ -118,5 +132,10 @@ public class LobbyUIManager : NetworkBehaviour
         nm.deathmatchLength = 5;
         break;
     }
+  }
+
+  public void SelectMap(int map)
+  {
+    nm.chosenMap = map;
   }
 }

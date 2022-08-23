@@ -5,6 +5,8 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
+using UnityEngine.Audio;
+using UnityEngine.SceneManagement;
 
 public class SettingsUI : MonoBehaviour
 {
@@ -18,6 +20,9 @@ public class SettingsUI : MonoBehaviour
   public Toggle fpsToggle, invertControlsToggle;
   public TMP_InputField targetFpsField;
   public TMP_Dropdown screenModeDropdown, resolutionDropdown;
+  public Slider sfxVolume;
+
+  public AudioMixer sfx;
 
   [Header("Prefabs")]
   public GameObject fpsCounter;
@@ -26,7 +31,7 @@ public class SettingsUI : MonoBehaviour
   Canvas thisCanvas;
   List<string> resolutionsList = new List<string>();
 
-  private void Awake()
+  void Awake()
   {
     thisCanvas = GetComponent<Canvas>();
     SettingsClass settings = SaveSystem.saveData.settings;
@@ -67,6 +72,11 @@ public class SettingsUI : MonoBehaviour
     UpdateBindUI();
 
     if (settings.fpsCounter) Instantiate(fpsCounter);
+  }
+
+  void Start()
+  {
+    sfxVolume.value = SaveSystem.saveData.settings.sfxVolume;
   }
 
   private void UpdateBindUI()
@@ -236,5 +246,11 @@ public class SettingsUI : MonoBehaviour
     string[] chosenRes = resolutionsList[value].Split('x');
     Screen.SetResolution(int.Parse(chosenRes[0]), int.Parse(chosenRes[1]), (FullScreenMode)SaveSystem.saveData.settings.screenMode);
     SaveSystem.saveData.settings.resolution = value;
+  }
+
+  public void ChangeSFXVolume(float v)
+  {
+    sfx.SetFloat("SFX_Vol", v);
+    SaveSystem.saveData.settings.sfxVolume = v;
   }
 }

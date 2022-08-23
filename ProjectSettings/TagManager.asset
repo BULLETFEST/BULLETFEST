@@ -14,12 +14,12 @@ TagManager:
   - Spike
   - Audio
   - HostCard
-  - PauseUI
   - SaveData
   - EventSystem
   - LobbyPlayer
   - LobbyPlayerContainer
   - SettingsBlocker
+  - SettingsUI
   layers:
   - Default
   - TransparentFX

@@ -52,7 +52,11 @@ public class SaveSystem : MonoBehaviour
         }
       }
     }
+
+    settingsUI = FindObjectOfType<SettingsUI>();
   }
+
+  public static SettingsUI settingsUI;
 
   void Update()
   {
@@ -68,17 +72,20 @@ public class SaveSystem : MonoBehaviour
             return;
           }
         }
-        SceneManager.LoadSceneAsync("Settings", LoadSceneMode.Additive);
+        // SceneManager.LoadSceneAsync("Settings", LoadSceneMode.Additive);
+
+        settingsUI.GetComponent<Canvas>().enabled = true;
         IsSettingsOpen = true;
 
         //Cursor.visible = true;
       }
       else
       {
-        if (FindObjectOfType<SettingsUI>().waitingForKey) return;
+        if (settingsUI.waitingForKey) return;
 
         SaveSystem.SavePlayer(new SaveDataStructure(SaveSystem.saveData.settings));
-        SceneManager.UnloadSceneAsync("Settings");
+        // SceneManager.UnloadSceneAsync("Settings");
+        settingsUI.GetComponent<Canvas>().enabled = false;
         IsSettingsOpen = false;
         //if (SceneManager.GetActiveScene().buildIndex > MyNetworkManager.menuScenes - 1) Cursor.visible = false;
 
