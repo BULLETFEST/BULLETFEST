@@ -26,7 +26,7 @@ jobs:
           #- Android # Build an Android .apk standalone app.
           #- WebGL # WebGL.
     outputs:
-      version: ${{ steps.buildGame.outputs.buildVersion }}
+      version: ${{ steps.bGameout.outputs.version }}
     steps:
       - name: Packages
         run: |
@@ -65,7 +65,8 @@ jobs:
           #buildsPath: build_${{ matrix.targetPlatform }}
           versioning: None
           customParameters: -CompressWithLz4HC
-      # - run:
+      - run: echo "::set-output name=version::${{ steps.buildGame.outputs.buildVersion }}"
+        id: bGameout
       - name: Delete Sensitive files & Create archive
         run: |
           cd ./build/${{ matrix.targetPlatform }}
