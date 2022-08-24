@@ -42,10 +42,6 @@ jobs:
         with:
           name: projectVer
           path: projectVer.txt
-      - uses: actions/upload-artifact@v2
-        with:
-          name: patchnotes
-          path: patchnotes.txt
       - uses: actions/cache@v2
         with:
           path: Library
@@ -93,9 +89,6 @@ jobs:
       - uses: actions/download-artifact@v2
         with:
           name: projectVer
-      - uses: actions/download-artifact@v2
-        with:
-          name: patchnotes
 
       - name: Set Environment Variables
         run: |
@@ -111,10 +104,6 @@ jobs:
             ```A new build has been spotted!```
 
             `v${{ env.ver }}`
-
-            ```
-              ${{ env.patchnotes }}
-            ```
 
             Downloads:
             Linux: <https://drive.google.com/file/d/1rbJa1nVah6mPJ7R5nyyMFGKCw6hGE5jP/view?usp=sharing>
