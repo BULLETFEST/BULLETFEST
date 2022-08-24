@@ -25,8 +25,6 @@ jobs:
           #- iOS # Build an iOS player.
           #- Android # Build an Android .apk standalone app.
           #- WebGL # WebGL.
-    outputs:
-      version: ${{ steps.bGameout.outputs.version }}
     steps:
       - name: Packages
         run: |
@@ -40,11 +38,14 @@ jobs:
         run: |
           touch projectVer.txt
           echo $(cat ./ProjectSettings/ProjectSettings.asset | grep bundleVersion | sed -n -e 's/^.*bundleVersion: //p' ) > projectVer.txt
-
       - uses: actions/upload-artifact@v2
         with:
           name: projectVer
           path: projectVer.txt
+      - uses: actions/upload-artifact@v2
+        with:
+          name: patchnotes
+          path: patchnotes.txt
       - uses: actions/cache@v2
         with:
           path: Library
@@ -53,7 +54,6 @@ jobs:
             Library-BULLETFEST-
             Library-
       - uses: game-ci/unity-builder@v2
-        id: buildGame
         env:
           UNITY_SERIAL: ${{ secrets.UNITY_SERIAL }}
           UNITY_EMAIL: ${{ secrets.UNITY_EMAIL }}
@@ -65,8 +65,6 @@ jobs:
           #buildsPath: build_${{ matrix.targetPlatform }}
           versioning: None
           customParameters: -CompressWithLz4HC
-      - run: echo "::set-output name=version::${{ steps.buildGame.outputs.buildVersion }}"
-        id: bGameout
       - name: Delete Sensitive files & Create archive
         run: |
           cd ./build/${{ matrix.targetPlatform }}
@@ -80,13 +78,13 @@ jobs:
           filename: 'BULLETFEST_${{ matrix.targetPlatform }}.7z'
           overwrite: true
           folderId: ${{ secrets.DRIVE_FOLDER_ID }}
-      - if: ${{ matrix.targetPlatform == 'StandaloneWindows64' }}
-        name: Push to dev
-        uses: github-actions-x/commit@v2.9
-        with:
-          github-token: ${{ secrets.GITHUB_TOKEN }}
-          push-branch: dev
-          commit-message: 'Updated Version Number'
+      # - if: ${{ matrix.targetPlatform == 'StandaloneWindows64' }}
+      # name: Push to dev
+      # uses: github-actions-x/commit@v2.9
+      # with:
+      #   github-token: ${{ secrets.GITHUB_TOKEN }}
+      #   push-branch: dev
+      #   commit-message: 'Updated Version Number'
   NotifyDiscord:
     name: Send Discord Notification
     runs-on: ubuntu-latest
@@ -95,9 +93,14 @@ jobs:
       - uses: actions/download-artifact@v2
         with:
           name: projectVer
+      - uses: actions/download-artifact@v2
+        with:
+          name: patchnotes
 
-      - name: Set Environment Variable
-        run: echo "ver=$(cat projectVer.txt)" >> $GITHUB_ENV
+      - name: Set Environment Variables
+        run: |
+          echo "ver=$(cat projectVer.txt)" >> $GITHUB_ENV 
+          echo "patchnotes=$(cat patchnotes.txt)" >> $GITHUB_ENV
       - uses: Ilshidur/action-discord@master
         env:
           DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK }}
@@ -107,7 +110,11 @@ jobs:
           args: |
             ```A new build has been spotted!```
 
-            `v${{ needs.buildForAllSupportedPlatforms.outputs.version }}`
+            `v${{ env.ver }}`
+
+            ```
+              ${{ env.patchnotes }}
+            ```
 
             Downloads:
             Linux: <https://drive.google.com/file/d/1rbJa1nVah6mPJ7R5nyyMFGKCw6hGE5jP/view?usp=sharing>

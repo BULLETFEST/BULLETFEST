@@ -202,21 +202,21 @@ public class PlayerBehavior : NetworkBehaviour
 
     ClientRpc_Die(killerName, killedName);
 
-    // if (gm != MyNetworkManager.GameMode.Deathmatch)
-    // {
-    // GameObject spawnedGravestone = Instantiate(gravestone, new Vector2(transform.position.x,
-    //                                                       playerVars.bc.bounds.min.y + (gravestone.GetComponentInChildren<SpriteRenderer>().bounds.size.y / 2)), Quaternion.Euler(0, 0, 0));
-    // NetworkServer.Spawn(spawnedGravestone);
-    LayerMask lm = 1 << 6;
-    lm |= 1 << 12;
-
-    RaycastHit2D hit = playerVars.playerMovement.Grounded(gameObject, playerVars.bc, lm, 999999f);
-    if (hit.collider != null)
+    if (gm != MyNetworkManager.GameMode.Deathmatch)
     {
-      GameObject spawnedGravestone = Instantiate(gravestone, new Vector2(hit.point.x, hit.point.y + (gravestone.GetComponentInChildren<SpriteRenderer>().bounds.size.y / 2)), Quaternion.Euler(0, 0, 0));
-      NetworkServer.Spawn(spawnedGravestone);
+      // GameObject spawnedGravestone = Instantiate(gravestone, new Vector2(transform.position.x,
+      //                                                       playerVars.bc.bounds.min.y + (gravestone.GetComponentInChildren<SpriteRenderer>().bounds.size.y / 2)), Quaternion.Euler(0, 0, 0));
+      // NetworkServer.Spawn(spawnedGravestone);
+      LayerMask lm = 1 << 6;
+      lm |= 1 << 12;
+
+      RaycastHit2D hit = playerVars.playerMovement.Grounded(gameObject, playerVars.bc, lm, 999999f);
+      if (hit.collider != null)
+      {
+        GameObject spawnedGravestone = Instantiate(gravestone, new Vector2(hit.point.x, hit.point.y + (gravestone.GetComponentInChildren<SpriteRenderer>().bounds.size.y / 2)), Quaternion.Euler(0, 0, 0));
+        NetworkServer.Spawn(spawnedGravestone);
+      }
     }
-    // }
 
     foreach (var player in NetworkServer.connections)
     {
