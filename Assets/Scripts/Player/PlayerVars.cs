@@ -19,8 +19,8 @@ public class PlayerVars : NetworkBehaviour
   public GameObject killfeed,
                     crown;
 
-  [HideInInspector]
 
+  [HideInInspector]
   [SyncVar]
   public bool lockMovement = false,
               lockShooting = false,
@@ -32,6 +32,8 @@ public class PlayerVars : NetworkBehaviour
 
   public AudioSystem audioSystem;
 
+  [HideInInspector] public PlayerMovement playerMovement;
+
   // [HideInInspector]
   [SyncVar(hook = nameof(HandleUpdateDisplayName))]
   public string displayName;
@@ -41,6 +43,8 @@ public class PlayerVars : NetworkBehaviour
   {
     rb = GetComponent<Rigidbody2D>();
     bc = GetComponent<BoxCollider2D>();
+    playerMovement = GetComponent<PlayerMovement>();
+
     // name = PlayerPrefs.GetString("PlayerName", "Guest");
     // weaponBehavior = GetComponentInChildren<WeaponBehavior>();
 

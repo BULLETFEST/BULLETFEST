@@ -257,7 +257,7 @@ public class MyNetworkManager : NetworkManager
         int chosenMapIdx = Random.Range(menuScenes, sceneCount);
         _scenes.Add(Path.GetFileNameWithoutExtension(SceneUtility.GetScenePathByBuildIndex(chosenMapIdx)));
       }
-      _scenes.Add(Path.GetFileNameWithoutExtension(SceneUtility.GetScenePathByBuildIndex(chosenMap - 1 + menuScenes)));
+      else _scenes.Add(Path.GetFileNameWithoutExtension(SceneUtility.GetScenePathByBuildIndex(chosenMap - 1 + menuScenes)));
     }
 
     playableScenes = _scenes.ToArray();
@@ -312,8 +312,6 @@ public class MyNetworkManager : NetworkManager
     StopHost();
     StopClient();
   }
-
-
 
   public enum GameMode
   {

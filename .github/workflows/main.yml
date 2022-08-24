@@ -25,6 +25,8 @@ jobs:
           #- iOS # Build an iOS player.
           #- Android # Build an Android .apk standalone app.
           #- WebGL # WebGL.
+    outputs:
+      version: ${{ steps.buildGame.outputs.buildVersion }}
     steps:
       - name: Packages
         run: |
@@ -51,6 +53,7 @@ jobs:
             Library-BULLETFEST-
             Library-
       - uses: game-ci/unity-builder@v2
+        id: buildGame
         env:
           UNITY_SERIAL: ${{ secrets.UNITY_SERIAL }}
           UNITY_EMAIL: ${{ secrets.UNITY_EMAIL }}
@@ -62,6 +65,7 @@ jobs:
           #buildsPath: build_${{ matrix.targetPlatform }}
           versioning: None
           customParameters: -CompressWithLz4HC
+      # - run:
       - name: Delete Sensitive files & Create archive
         run: |
           cd ./build/${{ matrix.targetPlatform }}
@@ -102,7 +106,7 @@ jobs:
           args: |
             ```A new build has been spotted!```
 
-            `v${{ env.ver }}`
+            `v${{ needs.buildForAllSupportedPlatforms.outputs.version }}`
 
             Downloads:
             Linux: <https://drive.google.com/file/d/1rbJa1nVah6mPJ7R5nyyMFGKCw6hGE5jP/view?usp=sharing>

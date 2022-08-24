@@ -357,7 +357,7 @@ MonoBehaviour:
   syncMode: 0
   syncInterval: 0.1
   clientAuthority: 0
-  animator: {fileID: 0}
+  animator: {fileID: 851980100229403889}
 --- !u!95 &851980100229403889
 Animator:
   serializedVersion: 4

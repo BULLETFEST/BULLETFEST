@@ -82,6 +82,8 @@ public class PlayerMovement : NetworkBehaviour
     if (!isLocalPlayer) return;
     if (playerVars.lockMovement) return;
 
+    if (Input.GetKeyDown(KeyCode.X)) GetComponent<PlayerBehavior>().TakeDamage(5f, null);
+
     int xRaw = 0;
     if (Utilities.GetKeybind("lft") && Utilities.GetKeybind("rgt")) xRaw = 0;
     else if (Utilities.GetKeybind("lft")) xRaw = -1;
@@ -91,7 +93,7 @@ public class PlayerMovement : NetworkBehaviour
 
     bool grounded = false;
     if (playerVars.bc != null)
-      grounded = Grounded(gameObject, playerVars.bc);
+      grounded = Grounded(gameObject, playerVars.bc).collider != null;
 
     if (Utilities.GetKeybindDown("jump") && (grounded || !doubleJumped))
     {
@@ -163,14 +165,20 @@ public class PlayerMovement : NetworkBehaviour
     // playerVars.audioSystem.transform.position = gameObject.transform.position;
   }
 
-  bool Grounded(GameObject player, BoxCollider2D bc)
+  public RaycastHit2D Grounded(GameObject player, BoxCollider2D bc, float distance = 0.25f)
   {
-    RaycastHit2D ray = Physics2D.BoxCast(
+    return Physics2D.BoxCast(
       player.transform.position,
       bc.bounds.size, 0, Vector2.down,
-      0.25f, groundLm);
+      distance, groundLm);
+  }
 
-    return ray.collider != null;
+  public RaycastHit2D Grounded(GameObject player, BoxCollider2D bc, LayerMask lm, float distance = 0.25f)
+  {
+    return Physics2D.BoxCast(
+      player.transform.position,
+      bc.bounds.size, 0, Vector2.down,
+      distance, lm);
   }
 
   bool PlayersOnRight(GameObject player, BoxCollider2D bc)

@@ -22,20 +22,6 @@ public class PlayerBehavior : NetworkBehaviour
 
   public GameObject gravestone, killfeed, killfeedItem;
 
-  private void OnTriggerEnter2D(Collider2D other)
-  {
-    if (other.gameObject.tag != "WeaponItem") return;
-
-    weaponToPickup = other.gameObject;
-  }
-
-  private void OnTriggerExit2D(Collider2D other)
-  {
-    if (other.gameObject.tag != "WeaponItem") return;
-
-    weaponToPickup = null;
-  }
-
   // Start is called before the first frame update
   void Awake()
   {
@@ -77,15 +63,38 @@ public class PlayerBehavior : NetworkBehaviour
 
     if (SaveSystem.IsSettingsOpen) return;
 
+    weaponToPickup = FindClosestGun();
+
     if (Utilities.GetKeybind("fire") && !playerVars.lockShooting) Shoot(isServer);
 
     if (Utilities.GetKeybindUp("fire")) ShootKeyUp();
 
-    if (Utilities.GetKeybind("weaponPickup") && weaponToPickup != null)
+    if (Utilities.GetKeybindDown("weaponPickup") && weaponToPickup != null)
     {
       SwitchWeapon();
       weaponToPickup = null;
     }
+  }
+
+  GameObject FindClosestGun()
+  {
+    GameObject[] pickableGuns;
+    pickableGuns = GameObject.FindGameObjectsWithTag("WeaponItem");
+    GameObject closest = null;
+    float distance = Mathf.Infinity;
+    Vector3 position = transform.position;
+    foreach (GameObject go in pickableGuns)
+    {
+      Vector3 diff = go.transform.position - position;
+      float curDistance = diff.sqrMagnitude;
+      if (curDistance < distance)
+      {
+        //if pickable can be inserted here ~Toast
+        closest = go;
+        distance = curDistance;
+      }
+    }
+    return distance < 5 ? closest : null;
   }
 
   [Command]
@@ -193,12 +202,21 @@ public class PlayerBehavior : NetworkBehaviour
 
     ClientRpc_Die(killerName, killedName);
 
-    if (gm != MyNetworkManager.GameMode.Deathmatch)
+    // if (gm != MyNetworkManager.GameMode.Deathmatch)
+    // {
+    // GameObject spawnedGravestone = Instantiate(gravestone, new Vector2(transform.position.x,
+    //                                                       playerVars.bc.bounds.min.y + (gravestone.GetComponentInChildren<SpriteRenderer>().bounds.size.y / 2)), Quaternion.Euler(0, 0, 0));
+    // NetworkServer.Spawn(spawnedGravestone);
+    LayerMask lm = 1 << 6;
+    lm |= 1 << 12;
+
+    RaycastHit2D hit = playerVars.playerMovement.Grounded(gameObject, playerVars.bc, lm, 999999f);
+    if (hit.collider != null)
     {
-      GameObject spawnedGravestone = Instantiate(gravestone, new Vector2(transform.position.x,
-                                                            playerVars.bc.bounds.min.y + (gravestone.GetComponentInChildren<SpriteRenderer>().bounds.size.y / 2)), Quaternion.Euler(0, 0, 0));
+      GameObject spawnedGravestone = Instantiate(gravestone, new Vector2(hit.point.x, hit.point.y + (gravestone.GetComponentInChildren<SpriteRenderer>().bounds.size.y / 2)), Quaternion.Euler(0, 0, 0));
       NetworkServer.Spawn(spawnedGravestone);
     }
+    // }
 
     foreach (var player in NetworkServer.connections)
     {

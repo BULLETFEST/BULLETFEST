@@ -60,3 +60,6 @@ TagManager:
   - name: Environment
     uniqueID: 4088895677
     locked: 0
+  - name: Settings
+    uniqueID: 2859514599
+    locked: 0

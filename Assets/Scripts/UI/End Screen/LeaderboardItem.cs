@@ -56,7 +56,8 @@ public class LeaderboardItem : NetworkBehaviour
   [ClientRpc]
   void ChangeItemIndex(GameObject owner, int index)
   {
-    owner.transform.SetSiblingIndex(index + 1);
+    print(index);
+    owner.transform.SetSiblingIndex(Mathf.Max(0, index) + 1);
   }
 
   void HandleUpdateDisplayName(string oldName, string newName)
