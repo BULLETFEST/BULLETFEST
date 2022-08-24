@@ -1,0 +1,8 @@
+• Reworked the weapon pick-up system
+• Reworked the grave spawning system
+
+Bug Fixes:
+• BF0017 - Bullets sometimes pass through walls
+• BF0018 - Scoreboard sometimes shows the wrong order
+• BF0021 - Dropdowns in settings not showing up
+• BF0022 - choosing deathmatch sometimes instantly puts you in the end screen
