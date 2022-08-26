@@ -34,14 +34,7 @@ jobs:
         with:
           fetch-depth: 0
           lfs: true
-      - name: Get Build Version
-        run: |
-          touch projectVer.txt
-          echo $(cat ./ProjectSettings/ProjectSettings.asset | grep bundleVersion | sed -n -e 's/^.*bundleVersion: //p' ) > projectVer.txt
-      - uses: actions/upload-artifact@v2
-        with:
-          name: projectVer
-          path: projectVer.txt
+
       - uses: actions/cache@v2
         with:
           path: Library
@@ -49,6 +42,7 @@ jobs:
           restore-keys: |
             Library-BULLETFEST-
             Library-
+
       - uses: game-ci/unity-builder@v2
         env:
           UNITY_SERIAL: ${{ secrets.UNITY_SERIAL }}
@@ -61,12 +55,23 @@ jobs:
           #buildsPath: build_${{ matrix.targetPlatform }}
           versioning: None
           customParameters: -CompressWithLz4HC
+
+      - name: Get Build Version
+        run: |
+          touch projectVer.txt
+          echo $(cat ./ProjectSettings/ProjectSettings.asset | grep bundleVersion | sed -n -e 's/^.*bundleVersion: //p' ) > projectVer.txt
+      - uses: actions/upload-artifact@v2
+        with:
+          name: projectVer
+          path: projectVer.txt
+
       - name: Delete Sensitive files & Create archive
         run: |
           cd ./build/${{ matrix.targetPlatform }}
           sudo rm -rf ./*_DoNotShip
           7z a -t7z -m0=lzma -mx=9 -mfb=64 -md=32m -ms=on ../../BULLETFEST_${{ matrix.targetPlatform }}.7z *
           cd ../..
+
       - name: Upload to google drive
         uses: adityak74/google-drive-upload-git-action@main
         with:
