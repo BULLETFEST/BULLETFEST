@@ -34,7 +34,7 @@ public class LobbyPlayer : NetworkBehaviour
       if (i == 0)
       {
         RectTransform rt = lobbyPlayers[i].GetComponent<LobbyPlayer>().DisplayNameUI.GetComponent<RectTransform>();
-        rt.anchoredPosition = new Vector3(0, 111, rt.localPosition.z);
+        rt.anchoredPosition = new Vector3(0, 90, rt.localPosition.z);
 
         lobbyPlayers[i].GetComponent<LobbyPlayer>().crown.gameObject.SetActive(true);
       }

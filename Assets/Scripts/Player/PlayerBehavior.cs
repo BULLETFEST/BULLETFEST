@@ -94,7 +94,8 @@ public class PlayerBehavior : NetworkBehaviour
         distance = curDistance;
       }
     }
-    return distance < 5 ? closest : null;
+
+    return distance <= 6.5f ? closest : null;
   }
 
   [Command]

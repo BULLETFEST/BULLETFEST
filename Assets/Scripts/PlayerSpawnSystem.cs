@@ -40,6 +40,7 @@ public class PlayerSpawnSystem : NetworkBehaviour
   void EnableCrown(GameObject player)
   {
     player.GetComponent<PlayerVars>().crown.SetActive(true);
+    player.GetComponent<PlayerVars>().uiName.transform.localPosition = new Vector3(0, 2, 0);
   }
 
   [Server]
