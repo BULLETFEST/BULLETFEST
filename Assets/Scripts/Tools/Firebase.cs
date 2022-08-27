@@ -3,20 +3,21 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Collections.Specialized;
 using UnityEngine;
+using System.Collections;
 
-public class Firebase// : MonoBehaviour
+public class Firebase : MonoBehaviour
 {
   // private static readonly HttpClient client = new HttpClient();
 
   private static WebClient webClient = new WebClient();
 
   // bool testMode;
-  static bool testMode = false;
-  // #if UNITY_EDITOR
-  //   static bool testMode = true;
-  // #else
-  //   static bool testMode = false;
-  // #endif
+  // static bool testMode = false;
+#if UNITY_EDITOR
+  static bool testMode = true;
+#else
+    static bool testMode = false;
+#endif
 
   /// <summary>
   /// Attempt to host a game
@@ -90,6 +91,15 @@ public class Firebase// : MonoBehaviour
     Response response = JsonUtility.FromJson<Response>(responseInString);
 
     return response;
+  }
+
+  public static void KeepAlive(string code)
+  {
+    NameValueCollection data = new NameValueCollection();
+
+    data["code"] = code;
+
+    webClient.UploadValuesTaskAsync(new System.Uri(testMode ? "http://localhost:3000/keepLobbyAlive" : "https://JooBot.eliasval.repl.co/keepLobbyAlive"), "POST", data);
   }
 
   public struct Response

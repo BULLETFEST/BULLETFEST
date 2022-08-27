@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using Mirror;
+using System.Collections;
 
 public class MyNetworkManager : NetworkManager
 {
@@ -71,6 +72,20 @@ public class MyNetworkManager : NetworkManager
   {
     base.OnStartServer();
     isHost = true;
+    StartCoroutine(keepAlive());
+  }
+
+  IEnumerator keepAlive()
+  {
+    try
+    {
+      Firebase.KeepAlive(RoomCode);
+    }
+    catch { }
+
+    yield return new WaitForSecondsRealtime(5f);
+
+    StartCoroutine(keepAlive());
   }
 
   [Server]
