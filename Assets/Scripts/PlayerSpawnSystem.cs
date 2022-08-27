@@ -57,7 +57,7 @@ public class PlayerSpawnSystem : NetworkBehaviour
   private void Rpc_SetPlayerPosition(GameObject player)
   {
     player.transform.position = spawnPoints[Random.Range(0, spawnPoints.Length)].transform.position;
-    player.transform.position = new Vector2(player.transform.position.x, player.transform.position.y + 20);
+    // player.transform.position = new Vector2(player.transform.position.x, player.transform.position.y + 20);
   }
 
   [ClientRpc]
@@ -75,6 +75,7 @@ public class PlayerSpawnSystem : NetworkBehaviour
     // pb.health = pb.maxHealth;
 
     pb.playerVars.graphics.EnableAll();
+    pb.playerVars.uiName.gameObject.SetActive(true);
     player.GetComponent<BoxCollider2D>().enabled = true;
     player.GetComponent<Rigidbody2D>().simulated = true;
   }

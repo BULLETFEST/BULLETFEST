@@ -39,7 +39,7 @@ public class MyNetworkManager : NetworkManager
 
   public float deathmatchLength = 1;
 
-  public static int PlayableScenes = 10, menuScenes = 4;
+  public static int PlayableScenes = 13, menuScenes = 4;
 
   public int rounds = PlayableScenes;
 

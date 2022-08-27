@@ -71,7 +71,7 @@ public class PlayerBehavior : NetworkBehaviour
 
     if (Utilities.GetKeybindDown("weaponPickup") && weaponToPickup != null)
     {
-      SwitchWeapon();
+      SwitchWeapon(weaponToPickup);
       weaponToPickup = null;
     }
   }
@@ -99,13 +99,13 @@ public class PlayerBehavior : NetworkBehaviour
   }
 
   [Command]
-  void SwitchWeapon()
+  void SwitchWeapon(GameObject weapon)
   {
-    if (weaponToPickup != null)
+    if (weapon != null && !playerVars.lockMovement)
     {
-      TargetRpc_SwitchWeapon(weaponToPickup.GetComponent<WeaponItem>().WeaponID);
-      weaponBehavior.SwitchWeapon(weaponToPickup.GetComponent<WeaponItem>().WeaponID);
-      NetworkServer.Destroy(weaponToPickup);
+      TargetRpc_SwitchWeapon(weapon.GetComponent<WeaponItem>().WeaponID);
+      weaponBehavior.SwitchWeapon(weapon.GetComponent<WeaponItem>().WeaponID);
+      NetworkServer.Destroy(weapon);
     }
   }
 
@@ -231,6 +231,7 @@ public class PlayerBehavior : NetworkBehaviour
   public void ClientRpc_Die(string killer, string killed)
   {
     playerVars.graphics.DisableAll();
+    playerVars.uiName.gameObject.SetActive(false);
     this.gameObject.GetComponent<BoxCollider2D>().enabled = false;
     this.gameObject.GetComponent<Rigidbody2D>().simulated = false;
   }

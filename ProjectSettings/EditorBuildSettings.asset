@@ -35,7 +35,7 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/4Players/World_5.unity
     guid: 92fc201a866eb8649b8951e55de6b06f
-  - enabled: 0
+  - enabled: 1
     path: Assets/Scenes/4Players/World_6.unity
     guid: 805349bb5d455ac4abc8f11a8bbdcd47
   - enabled: 1
@@ -53,4 +53,10 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/4Players/World_11.unity
     guid: 4f3c51f68dea6074292669325c599504
+  - enabled: 1
+    path: Assets/Scenes/4Players/World_12.unity
+    guid: 141de05aef2ab0443b05d342a14b101c
+  - enabled: 1
+    path: Assets/Scenes/4Players/World_13.unity
+    guid: b44a9c5010ff71c4087f608ad16e23b4
   m_configObjects: {}
