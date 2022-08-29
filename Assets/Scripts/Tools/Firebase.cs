@@ -31,15 +31,19 @@ public class Firebase// : MonoBehaviour
     data["address"] = EpicTransport.EOSSDKComponent.LocalUserProductIdString;//ipAddress;
     data["userId"] = SystemInfo.deviceUniqueIdentifier;
 
+    // https://stackoverflow.com/a/4148390
+    webClient.Headers["User-Agent"] = "Mozilla/4.0 (compatible; MSIE 8.0; Windows NT 6.1; WOW64; Trident/4.0; SLCC2; .NET CLR 2.0.50727; .NET CLR 3.5.30729; .NET CLR 3.0.30729; Media Center PC 6.0; MDDC)";
+
     // JsonUtility.FromJson<Dictionary<string, string>>();
 
     byte[] res = new byte[0];
     try
     {
-      res = await webClient.UploadValuesTaskAsync(testMode ? "http://localhost:3000/createLobby" : "https://JooBot.eliasval.repl.co/createLobby", "POST", data);
+      res = await webClient.UploadValuesTaskAsync("https://joobot.glitch.me/createLobby", "POST", data);
     }
     catch
     {
+      // Debug.Log(ex.Message);
       Message.DisplayMessage("Failed to create host", "Client failed to connect to server!", TMPro.HorizontalAlignmentOptions.Center);
     }
 
@@ -65,13 +69,16 @@ public class Firebase// : MonoBehaviour
 
     data["code"] = code;
 
+    // https://stackoverflow.com/a/4148390
+    webClient.Headers["User-Agent"] = "Mozilla/4.0 (compatible; MSIE 8.0; Windows NT 6.1; WOW64; Trident/4.0; SLCC2; .NET CLR 2.0.50727; .NET CLR 3.5.30729; .NET CLR 3.0.30729; Media Center PC 6.0; MDDC)";
+
     // JsonUtility.FromJson<Dictionary<string, string>>();
 
 
     byte[] res = new byte[0];
     try
     {
-      res = await webClient.UploadValuesTaskAsync(new System.Uri(testMode ? "http://localhost:3000/joinLobby" : "https://JooBot.eliasval.repl.co/joinLobby"), "POST", data);
+      res = await webClient.UploadValuesTaskAsync(new System.Uri(testMode ? "http://localhost:3000/joinLobby" : "https://joobot.glitch.me/joinLobby"), "POST", data);
     }
     catch
     {
