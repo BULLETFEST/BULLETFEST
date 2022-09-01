@@ -84,4 +84,14 @@ public class Utilities : MonoBehaviour
 
     return n;
   }
+
+  public static bool AnimatorStateDonePlaying(Animator anim)
+  {
+    return anim.GetCurrentAnimatorStateInfo(0).normalizedTime < 1;
+  }
+
+  public static bool AnimatorStateDonePlaying(Animator anim, string stateName)
+  {
+    return AnimatorStateDonePlaying(anim, stateName) && anim.GetCurrentAnimatorStateInfo(0).IsName(stateName);
+  }
 }
