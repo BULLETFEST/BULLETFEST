@@ -43,7 +43,9 @@ public class GunSpawner : NetworkBehaviour
       // if ()
       GameObject spawnedGun = Instantiate(weapons[Random.Range(0, weapons.Length)],
                                           new Vector2(Random.Range(spawnMinMax[0], spawnMinMax[1]), transform.position.y),
-                                          Quaternion.Euler(0, 0, Random.Range(0, 361)));
+                                          Quaternion.Euler(0, 0, 0));
+
+      spawnedGun.GetComponent<Rigidbody2D>().AddTorque(Random.Range(0, 1) == 0 ? Random.Range(-20f, -80f) : Random.Range(20f, 80f));
 
       // spawnedGun.GetComponent<Rigidbody2D>().angularVelocity = 10.0f;
       NetworkServer.Spawn(spawnedGun);

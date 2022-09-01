@@ -164,7 +164,9 @@ MonoBehaviour:
   magazineSize: 50
   isShotgun: 0
   pelletCount: 0
-  inaccuracyRange: f9ffffff07000000
+  inaccuracyRange:
+  - -7.5
+  - 7.5
   reloadTime: 10
   shotPushback: 17.5
   range: 0
@@ -181,5 +183,7 @@ MonoBehaviour:
   bulletPrefab: {fileID: 7740076768845922023, guid: bd0cfe2c8625b2c4daefea4409372304, type: 3}
   bulletSpawnPoint: {fileID: 5449872525946486571}
   weaponSprite: {fileID: -1035430623, guid: 45c1defb9b321b94ca6253261ce2492f, type: 3}
+  projectileTorque: 0
+  shootSound: Shoot
   fireTimeout: 90.863235
   bulletsInMag: 100

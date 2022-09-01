@@ -13,6 +13,7 @@ GameObject:
   - component: {fileID: 7404280238385030759}
   - component: {fileID: 6373425966094550918}
   - component: {fileID: 1476529294261727574}
+  - component: {fileID: 804274459}
   m_Layer: 6
   m_Name: Circle
   m_TagString: Untagged
@@ -152,6 +153,41 @@ FixedJoint2D:
   m_ConnectedAnchor: {x: 0.5, y: 0}
   m_DampingRatio: 0
   m_Frequency: 0
+--- !u!114 &804274459
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7404280238385030752}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7db70e0ea77f5ac47a8f4565a9406397, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_ShadowGroup: 0
+  m_ComponentVersion: 1
+  m_HasRenderer: 1
+  m_UseRendererSilhouette: 1
+  m_CastsShadows: 1
+  m_SelfShadows: 1
+  m_ApplyToSortingLayers: 00000000bd98b7f3e7ba70aa
+  m_ShapePath:
+  - {x: -0.018184185, y: -0.5047233, z: 0}
+  - {x: -0.24988317, y: -0.43439245, z: 0}
+  - {x: -0.45772552, y: -0.2832346, z: 0}
+  - {x: -0.509686, y: 0.009634018, z: 0}
+  - {x: -0.41969728, y: 0.28271055, z: 0}
+  - {x: -0.24988317, y: 0.44893658, z: 0}
+  - {x: 0.0040130615, y: 0.49055266, z: 0}
+  - {x: 0.30278754, y: 0.43948925, z: 0}
+  - {x: 0.4775641, y: 0.13717341, z: 0}
+  - {x: 0.48228765, y: -0.1320765, z: 0}
+  - {x: 0.4055264, y: -0.29688168, z: 0}
+  - {x: 0.2649982, y: -0.439116, z: 0}
+  m_ShapePathHash: 1657520117
+  m_Mesh: {fileID: 0}
+  m_InstanceId: 108164
 --- !u!1 &7404280238987514606
 GameObject:
   m_ObjectHideFlags: 0
@@ -165,6 +201,7 @@ GameObject:
   - component: {fileID: 7404280238987514594}
   - component: {fileID: 7404280238987514595}
   - component: {fileID: 7404280238987514604}
+  - component: {fileID: 804274461}
   m_Layer: 6
   m_Name: Square
   m_TagString: Untagged
@@ -301,7 +338,7 @@ HingeJoint2D:
   m_BreakTorque: Infinity
   m_AutoConfigureConnectedAnchor: 1
   m_Anchor: {x: 0.5, y: 0}
-  m_ConnectedAnchor: {x: 19.5, y: 2.5}
+  m_ConnectedAnchor: {x: 0, y: 0}
   m_UseMotor: 1
   m_Motor:
     m_MotorSpeed: 50
@@ -310,6 +347,33 @@ HingeJoint2D:
   m_AngleLimits:
     m_LowerAngle: -90
     m_UpperAngle: 0
+--- !u!114 &804274461
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7404280238987514606}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7db70e0ea77f5ac47a8f4565a9406397, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_ShadowGroup: 0
+  m_ComponentVersion: 1
+  m_HasRenderer: 1
+  m_UseRendererSilhouette: 1
+  m_CastsShadows: 1
+  m_SelfShadows: 1
+  m_ApplyToSortingLayers: 00000000bd98b7f3e7ba70aa
+  m_ShapePath:
+  - {x: -0.5, y: -0.5, z: 0}
+  - {x: -0.5, y: 0.49999976, z: 0}
+  - {x: 0.5, y: 0.49999976, z: 0}
+  - {x: 0.5, y: -0.5, z: 0}
+  m_ShapePathHash: 0
+  m_Mesh: {fileID: 0}
+  m_InstanceId: 108166
 --- !u!1 &7404280239472669096
 GameObject:
   m_ObjectHideFlags: 0

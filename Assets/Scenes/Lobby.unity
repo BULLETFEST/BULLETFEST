@@ -5813,7 +5813,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 1131764261}
         m_TargetAssemblyTypeName: LobbyUIManager, Assembly-CSharp
-        m_MethodName: ChangeDeathmatchTime
+        m_MethodName: SelectMap
         m_Mode: 0
         m_Arguments:
           m_ObjectArgument: {fileID: 0}

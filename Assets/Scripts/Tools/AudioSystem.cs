@@ -26,11 +26,19 @@ public class AudioSystem : MonoBehaviour
     if (clips.ContainsKey(name))
     {
       source.clip = clips[name];
+      source.pitch = Random.Range(0.9f, 1.1f);
       source.Play();
     }
     else
     {
       Debug.LogWarning("This sound does not exist!");
     }
+  }
+
+  public void PlaySound(AudioClip sound)
+  {
+    source.clip = sound;
+    source.pitch = Random.Range(0.9f, 1.1f);
+    source.Play();
   }
 }

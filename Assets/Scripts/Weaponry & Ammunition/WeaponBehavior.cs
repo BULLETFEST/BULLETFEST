@@ -34,6 +34,7 @@ public class WeaponBehavior : MonoBehaviour
       case "hdg":
       case "smg":
       case "lmg":
+      case "snr":
         Fire_Regular(shooter);
         break;
       case "stg":
@@ -54,7 +55,7 @@ public class WeaponBehavior : MonoBehaviour
     shooterVars.rb.velocity = new Vector2(0, shooterVars.rb.velocity.y);
     shooterVars.lockMovement = true;
     Vector2 vel = shooterVars.weaponBehavior.weapon.shotPushback * -shooterVars.weaponBehavior.transform.right;
-    shooterVars.rb.AddForce(new Vector2(vel.x, vel.y / 2.55f), ForceMode2D.Impulse);
+    shooterVars.rb.AddForce(new Vector2(vel.x * 1.75f, vel.y / 1.55f), ForceMode2D.Impulse);
     StartCoroutine(UnlockMovement(shooterVars.weaponBehavior.weapon.movementUnlockTime, shooterVars));
   }
 
@@ -65,9 +66,11 @@ public class WeaponBehavior : MonoBehaviour
     Physics2D.IgnoreCollision(spawnedBullet.GetComponent<Collider2D>(), shooter.identity.gameObject.GetComponent<Collider2D>());
 
     spawnedBullet.GetComponent<Rigidbody2D>().velocity = weapon.bulletVelocity * spawnedBullet.transform.right;
+    spawnedBullet.GetComponent<Rigidbody2D>().AddTorque(weapon.projectileTorque);
 
     spawnedBullet.GetComponent<Bullet>().owner = shooter;
     spawnedBullet.GetComponent<Bullet>().damage = weapon.damage;
+
 
     // Destroy(spawnedBullet, 0.3f);
     NetworkServer.Spawn(spawnedBullet);

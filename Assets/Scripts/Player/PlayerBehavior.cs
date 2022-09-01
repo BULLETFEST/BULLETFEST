@@ -65,7 +65,7 @@ public class PlayerBehavior : NetworkBehaviour
 
     weaponToPickup = FindClosestGun();
 
-    if (Utilities.GetKeybind("fire") && !playerVars.lockShooting) Shoot(isServer);
+    if (Utilities.GetKeybind("fire") && !playerVars.lockShooting) Shoot();
 
     if (Utilities.GetKeybindUp("fire")) ShootKeyUp();
 
@@ -120,7 +120,7 @@ public class PlayerBehavior : NetworkBehaviour
   [Command] void ShootKeyUp() => shootKeyUp = true;
 
   [Command]
-  void Shoot(bool _isServer)
+  void Shoot()
   {
     WeaponClass weapon = playerVars.weaponBehavior.weapon;
 
@@ -136,16 +136,17 @@ public class PlayerBehavior : NetworkBehaviour
     weapon.fireTimeout = (float)NetworkTime.time + (1f / weapon.fireRate);
 
     playerVars.weaponBehavior.Shoot(weapon.ID, connectionToClient);
-    Rpc_AddForce(gameObject);
+    Rpc_AddForce(gameObject, weapon.shootSound);
     Target_UpdateUI(weapon.bulletsInMag);
     shootKeyUp = false;
   }
 
   [ClientRpc]
-  void Rpc_AddForce(GameObject target)
+  void Rpc_AddForce(GameObject target, string shootSound)
   {
     playerVars.weaponBehavior.AddForce(target);
-    playerVars.audioSystem.PlaySound("Shoot");
+    if (shootSound != "")
+      playerVars.audioSystem.PlaySound(shootSound);
   }
 
   [TargetRpc]

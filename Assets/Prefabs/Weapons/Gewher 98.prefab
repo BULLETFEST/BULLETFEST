@@ -24,7 +24,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2123235757600240088}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0.65, y: 0.125, z: 0}
+  m_LocalPosition: {x: 0.825, y: 0.125, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -57,7 +57,7 @@ Transform:
   m_GameObject: {fileID: 2318460577565423013}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 0.01, y: 0.01, z: 0.01}
+  m_LocalScale: {x: 1.75, y: 1.75, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 446163630103249763}
@@ -104,7 +104,7 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 1
-  m_Sprite: {fileID: 46198654, guid: 42f7f1a58f976a5409856172beec4300, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 6a7be8b3718fdd14da67780753ef1d45, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -126,7 +126,7 @@ GameObject:
   - component: {fileID: 446163630103249763}
   - component: {fileID: 3366149238512663894}
   m_Layer: 31
-  m_Name: Double Barrel
+  m_Name: Gewher 98
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -161,29 +161,29 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 79cff5247a00f9440ba17186830d8908, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  magazineSize: 4
-  isShotgun: 1
-  pelletCount: 5
+  magazineSize: 5
+  isShotgun: 0
+  pelletCount: 0
   inaccuracyRange:
-  - -5
-  - 5
-  reloadTime: 1
+  - -0.25
+  - 0.25
+  reloadTime: 10
   shotPushback: 40
   range: 0
-  damage: 1.5
-  fireRate: 5
-  bulletVelocity: 50
-  movementUnlockTime: 0.1
-  cameraShakeIntensity: 0.25
-  cameraShakeDuration: 0.05
-  weaponName: Double Barrel
-  ID: STG_DoubleBarrel
+  damage: 4.5
+  fireRate: 1.75
+  bulletVelocity: 100
+  movementUnlockTime: 0.3
+  cameraShakeIntensity: 1.5
+  cameraShakeDuration: 0.15
+  weaponName: Gewher 98
+  ID: SNR_GEWHER98
   firingMode: 0
-  reloadType: 1
+  reloadType: 0
   bulletPrefab: {fileID: 7740076768845922023, guid: bd0cfe2c8625b2c4daefea4409372304, type: 3}
   bulletSpawnPoint: {fileID: 5449872525946486571}
-  weaponSprite: {fileID: 46198654, guid: 42f7f1a58f976a5409856172beec4300, type: 3}
+  weaponSprite: {fileID: 21300000, guid: 6a7be8b3718fdd14da67780753ef1d45, type: 3}
   projectileTorque: 0
   shootSound: Shoot
-  fireTimeout: 65.9566
-  bulletsInMag: 2
+  fireTimeout: 90.863235
+  bulletsInMag: 100

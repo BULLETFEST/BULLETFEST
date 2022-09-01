@@ -22,7 +22,7 @@ public class WeaponClass : MonoBehaviour
   [DrawIf("isShotgun", true)]
   public int pelletCount;
 
-  public int[] inaccuracyRange = new int[] { 0, 0 };
+  public float[] inaccuracyRange = new float[] { 0, 0 };
 
   public float reloadTime;
   public float shotPushback;
@@ -46,6 +46,10 @@ public class WeaponClass : MonoBehaviour
   public Transform bulletSpawnPoint;
 
   public Sprite weaponSprite;
+
+  public float projectileTorque;
+
+  public string shootSound = "Shoot";
 
 
 
