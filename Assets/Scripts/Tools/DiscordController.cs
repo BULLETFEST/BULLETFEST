@@ -13,6 +13,8 @@ public class DiscordController : MonoBehaviour
   public static DateTimeOffset now;
   public static LobbyManager lobbyManager;
 
+  public static ulong lobbyId = 0;
+
 #if UNITY_EDITOR
   bool debugMode = true;
 #else
@@ -50,6 +52,14 @@ public class DiscordController : MonoBehaviour
       MyNetworkManager.instance.networkAddress = secret[0];
       MyNetworkManager.instance.RoomCode = secret[1];
       MyNetworkManager.instance.StartClient();
+
+      lobbyManager.ConnectLobbyWithActivitySecret(_secret, (Discord.Result result, ref Discord.Lobby lobby) =>
+      {
+        if (result == Discord.Result.Ok)
+        {
+          lobbyId = (ulong)lobby.Id;
+        }
+      });
     };
 
     activityManager.OnActivityInvite += (ActivityActionType Type, ref Discord.User user, ref Discord.Activity activity2) =>

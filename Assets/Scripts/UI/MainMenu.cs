@@ -106,7 +106,11 @@ public class MainMenu : MonoBehaviour
     {
       nm.RoomCode = res.code;
       // nm.rounds = int.Parse(rounds.text == "" ? "11" : rounds.text);
-
+      var txn = DiscordController.lobbyManager.GetLobbyCreateTransaction();
+      DiscordController.lobbyManager.CreateLobby(txn, (Discord.Result res, ref Discord.Lobby lobby) =>
+      {
+        DiscordController.lobbyId = (ulong)lobby.Id;
+      });
       nm.StartHost();
     }
     else
