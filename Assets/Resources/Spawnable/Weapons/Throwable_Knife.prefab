@@ -250,4 +250,4 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   syncMode: 0
   syncInterval: 0.1
-  WeaponID: STG_Knife
+  WeaponID: HDG_Knife

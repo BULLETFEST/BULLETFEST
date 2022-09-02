@@ -43,7 +43,7 @@ public class Spring : NetworkBehaviour
 
   void AddForce()
   {
-    target.GetComponent<Rigidbody2D>().AddForce(2500f * Vector2.up);
+    target.GetComponent<Rigidbody2D>().velocity = 40f * Vector2.up;
   }
 
   void Update()

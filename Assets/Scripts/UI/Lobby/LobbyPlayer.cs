@@ -22,6 +22,13 @@ public class LobbyPlayer : NetworkBehaviour
     UpdateDisplayName(PlayerPrefs.GetString("PlayerName", "Guest"));
   }
 
+  Color[] colors = new Color[] {
+    new Color(0.5882353f, 0.1137255f, 0.04313726f), // 961D0B
+    new Color(0.0993236f, 0.4487756f, 0.6792453f), // 1972AD
+    new Color(0.1027946f, 0.6226415f, 0.1877513f), // 1A9F30
+    new Color(0.6235294f, 0.6018561f, 0.1019608f), // 9F991A
+  };
+
   public void OnPlayerJoin()
   {
     GameObject lobbyPlayersContainer = GameObject.FindGameObjectWithTag("LobbyPlayerContainer");
@@ -30,8 +37,9 @@ public class LobbyPlayer : NetworkBehaviour
     {
       lobbyPlayers[i].transform.SetParent(lobbyPlayersContainer.transform);
       lobbyPlayers[i].transform.localScale = Vector3.one;
+      lobbyPlayers[i].GetComponent<Image>().color = colors[i];
 
-      if (i == 0)
+      if (lobbyPlayers[i].GetComponent<NetworkIdentity>().netId == 0)
       {
         RectTransform rt = lobbyPlayers[i].GetComponent<LobbyPlayer>().DisplayNameUI.GetComponent<RectTransform>();
         rt.anchoredPosition = new Vector3(0, 90, rt.localPosition.z);
@@ -44,7 +52,7 @@ public class LobbyPlayer : NetworkBehaviour
     {
       State = "In a lobby",
       Secrets = {
-        Join = (isServer ? EpicTransport.EOSSDKComponent.LocalUserProductIdString : MyNetworkManager.instance.networkAddress),
+        Join = (isServer ? EpicTransport.EOSSDKComponent.LocalUserProductIdString : MyNetworkManager.instance.networkAddress) + "|||" + MyNetworkManager.instance.RoomCode,
       },
       Party = {
         Size = {

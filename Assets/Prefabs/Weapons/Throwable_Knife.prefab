@@ -77,29 +77,29 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 79cff5247a00f9440ba17186830d8908, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  magazineSize: 1
-  isShotgun: 1
+  magazineSize: 4
+  isShotgun: 0
   pelletCount: 3
   inaccuracyRange:
-  - -15
-  - 15
+  - 0
+  - 0
   reloadTime: 3
   shotPushback: 0
   range: 0
-  damage: 3.5
+  damage: 3
   fireRate: 10
-  bulletVelocity: 20
+  bulletVelocity: 25
   movementUnlockTime: 0
   cameraShakeIntensity: 0
   cameraShakeDuration: 0
   weaponName: Throwable Knife
-  ID: STG_Knife
+  ID: HDG_Knife
   firingMode: 0
   reloadType: 0
   bulletPrefab: {fileID: 7740076768845922023, guid: 73f26281e002da648b0c3e5ff4e3ae01, type: 3}
   bulletSpawnPoint: {fileID: 5449872525946486571}
   weaponSprite: {fileID: 21300000, guid: 6166addf3a99b184889a9fd76270b98d, type: 3}
-  projectileTorque: 20
+  projectileTorque: 45
   shootSound: 
   fireTimeout: 187.58855
   bulletsInMag: 6

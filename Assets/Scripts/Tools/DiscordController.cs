@@ -11,6 +11,7 @@ public class DiscordController : MonoBehaviour
 
   public static ActivityManager activityManager;
   public static DateTimeOffset now;
+  public static LobbyManager lobbyManager;
 
 #if UNITY_EDITOR
   bool debugMode = true;
@@ -24,6 +25,7 @@ public class DiscordController : MonoBehaviour
 
     discord = new Discord.Discord(1009938773137694800, (System.UInt64)Discord.CreateFlags.NoRequireDiscord);
     activityManager = discord.GetActivityManager();
+    lobbyManager = discord.GetLobbyManager();
 
     now = DateTimeOffset.UtcNow;
 
@@ -42,10 +44,20 @@ public class DiscordController : MonoBehaviour
       if (newScene.name == "MainMenu") UpdateActivity(activity);
     };
 
-    activityManager.OnActivityJoin += secret =>
+    activityManager.OnActivityJoin += _secret =>
     {
-      MyNetworkManager.instance.networkAddress = secret;
+      string[] secret = _secret.Split("|||");
+      MyNetworkManager.instance.networkAddress = secret[0];
+      MyNetworkManager.instance.RoomCode = secret[1];
       MyNetworkManager.instance.StartClient();
+    };
+
+    activityManager.OnActivityInvite += (ActivityActionType Type, ref Discord.User user, ref Discord.Activity activity2) =>
+    {
+      if (Type != ActivityActionType.Join) return;
+      if (activity2.ApplicationId != 1009938773137694800) return;
+
+      Message.DisplayMessage("Invite received!", "Received invite from " + user.Username);
     };
   }
 

@@ -1312,6 +1312,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   sprites:
   - {fileID: 1595183072194170867}
+  - {fileID: 7311746630297105336}
 --- !u!1 &5072419529470926513
 GameObject:
   m_ObjectHideFlags: 0

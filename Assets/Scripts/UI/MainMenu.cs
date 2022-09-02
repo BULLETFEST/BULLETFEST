@@ -24,20 +24,17 @@ public class MainMenu : MonoBehaviour
 
   [Header("UI Elements")]
   public Button connectBtn;
+  public Button joinBtn;
   public Button hostBtn;
-  public TMP_Text roundsDefault;
   public TMP_Text buildNumber;
-
-  [Header("Host UI Elements")]
-  // public TMP_InputField port;
-  public TMP_InputField rounds;
   public TMP_InputField playerName;
-  public TMP_Dropdown deathmatchTime;
 
   bool isConnecting = false;
 
   void Start()
   {
+    EOSSDKComponent.Initialize();
+
     buildNumber.text = "Build " + Application.version;
 
     IPHostEntry host = Dns.GetHostEntry(Dns.GetHostName());
@@ -56,6 +53,13 @@ public class MainMenu : MonoBehaviour
     Application.targetFrameRate = Screen.currentResolution.refreshRate;
 
     nm.networkAddress = EpicTransport.EOSSDKComponent.LocalUserProductIdString;//localIp;
+  }
+
+  private void Update()
+  {
+    joinBtn.interactable = EOSSDKComponent.Initialized;
+    hostBtn.interactable = EOSSDKComponent.Initialized;
+
   }
 
   public async void Connect()
@@ -94,17 +98,6 @@ public class MainMenu : MonoBehaviour
     hostBtn.interactable = false;
     PlayerPrefs.SetString("PlayerName", playerName.text);
 
-
-    bool toReturn = false;
-
-    if (nonNumbers.IsMatch(rounds.text))
-    {
-      rounds.text = "";
-      toReturn = true;
-    }
-
-    if (toReturn) return;
-
     // In the context of hosting, code is equal to the
     // room code generated on the server.
     Firebase.Response res = await Firebase.HostGame();
@@ -113,11 +106,7 @@ public class MainMenu : MonoBehaviour
     {
       nm.RoomCode = res.code;
       // nm.rounds = int.Parse(rounds.text == "" ? "11" : rounds.text);
-      if (int.TryParse(rounds.text, out int rnds))
-      {
-        nm.rounds = rnds;
-      }
-      else nm.rounds = 11;
+
       nm.StartHost();
     }
     else

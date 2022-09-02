@@ -10,6 +10,13 @@ public class PlayerSpawnSystem : NetworkBehaviour
   [SyncVar]
   public System.DateTime timeStamp;
 
+  Color[] colors = new Color[] {
+    new Color(0.5882353f, 0.1137255f, 0.04313726f), // 961D0B
+    new Color(0.0993236f, 0.4487756f, 0.6792453f), // 1972AD
+    new Color(0.1027946f, 0.6226415f, 0.1877513f), // 1A9F30
+    new Color(0.6235294f, 0.6018561f, 0.1019608f), // 9F991A
+  };
+
   void Awake()
   {
     Time.timeScale = 1;
@@ -33,6 +40,13 @@ public class PlayerSpawnSystem : NetworkBehaviour
       NetworkServer.SetClientReady(conn);
       if (conn == MyNetworkManager.instance.winner) winningPlayer = playerInstance; //playerInstance.GetComponent<PlayerVars>().crown.SetActive(true);
     }
+
+    for (int i = 0; i < MyNetworkManager.instance.players.Count; i++)
+    {
+      NetworkConnectionToClient conn = MyNetworkManager.instance.players.ElementAt(i).Key;
+      Rpc_SetPlayerColor(conn.identity.gameObject, i);
+    }
+
     if (winningPlayer != null) EnableCrown(winningPlayer);
   }
 
@@ -54,9 +68,16 @@ public class PlayerSpawnSystem : NetworkBehaviour
   }
 
   [ClientRpc]
+  private void Rpc_SetPlayerColor(GameObject player, int idx)
+  {
+    player.GetComponent<PlayerVars>().graphics.sprites[0].color = colors[idx];
+  }
+
+  [ClientRpc]
   private void Rpc_SetPlayerPosition(GameObject player)
   {
     player.transform.position = spawnPoints[Random.Range(0, spawnPoints.Length)].transform.position;
+    player.GetComponent<Rigidbody2D>().velocity = Vector2.zero;
     // player.transform.position = new Vector2(player.transform.position.x, player.transform.position.y + 20);
   }
 
@@ -69,6 +90,8 @@ public class PlayerSpawnSystem : NetworkBehaviour
     pb.playerVars.lockMovement = false;
     pb.playerVars.lockShooting = false;
     pb.playerVars.lockWeapon = false;
+
+    pb.playerVars.rb.velocity = Vector2.zero;
 
     pb.playerVars.uiName.gameObject.SetActive(true);
 

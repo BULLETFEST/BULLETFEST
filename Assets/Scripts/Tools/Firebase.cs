@@ -12,12 +12,12 @@ public class Firebase : MonoBehaviour
   private static WebClient webClient = new WebClient();
 
   // bool testMode;
-  // static bool testMode = false;
-#if UNITY_EDITOR
-  static bool testMode = true;
-#else
-    static bool testMode = false;
-#endif
+  static bool testMode = false;
+  // #if UNITY_EDITOR
+  //   static bool testMode = true;
+  // #else
+  //     static bool testMode = false;
+  // #endif
 
   /// <summary>
   /// Attempt to host a game
@@ -81,8 +81,9 @@ public class Firebase : MonoBehaviour
     {
       res = await webClient.UploadValuesTaskAsync(new System.Uri(testMode ? "http://localhost:3000/joinLobby" : "https://joobot.glitch.me/joinLobby"), "POST", data);
     }
-    catch
+    catch (System.Exception ex)
     {
+      Debug.LogError(ex.Message);
       Message.DisplayMessage("Failed to connect to game", "Client failed to connect to server!", TMPro.HorizontalAlignmentOptions.Center);
     }
 
