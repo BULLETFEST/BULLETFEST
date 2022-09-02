@@ -12,18 +12,20 @@ public class LobbyPlayerSpawner : NetworkBehaviour
 
     for (int i = 0; i < NetworkServer.connections.Count; i++)
     {
-      SpawnCard(NetworkServer.connections.ElementAt(i).Value);
+      SpawnLobbyPlayer(NetworkServer.connections.ElementAt(i).Value);
     }
 
-    MyNetworkManager.instance.PlayerConnect += SpawnCard;
+    MyNetworkManager.instance.PlayerConnect += SpawnLobbyPlayer;
+    MyNetworkManager.instance.PlayerDisconnect += delegate (NetworkConnectionToClient conn) { CallPlayerDisconnect(); };
   }
 
   private void OnDestroy()
   {
-    MyNetworkManager.instance.PlayerConnect -= SpawnCard;
+    MyNetworkManager.instance.PlayerConnect -= SpawnLobbyPlayer;
+    MyNetworkManager.instance.PlayerDisconnect -= delegate (NetworkConnectionToClient conn) { CallPlayerDisconnect(); };
   }
 
-  public void SpawnCard(NetworkConnectionToClient conn)
+  public void SpawnLobbyPlayer(NetworkConnectionToClient conn)
   {
     GameObject player = Instantiate(lobbyPlayer, Vector3.zero, Quaternion.Euler(0, 0, 0));
 
@@ -37,6 +39,15 @@ public class LobbyPlayerSpawner : NetworkBehaviour
     NetworkServer.SetClientReady(conn);
 
     CallPlayerJoined();
+  }
+
+  [ClientRpc]
+  public void CallPlayerDisconnect()
+  {
+    foreach (GameObject card in GameObject.FindGameObjectsWithTag("LobbyPlayer"))
+    {
+      card.GetComponent<LobbyPlayer>().OnPlayerDisconnect();
+    }
   }
 
   [ClientRpc]

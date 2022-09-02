@@ -75,6 +75,12 @@ public class Utilities : MonoBehaviour
     return gameObject != null;
   }
 
+  public static bool FindWithType<T>(out T gameObject) where T : Component
+  {
+    gameObject = GameObject.FindObjectOfType<T>();
+    return gameObject != null;
+  }
+
   // <3 codemonkey
   public static float GetAngleFromVectorFloat(Vector3 dir)
   {

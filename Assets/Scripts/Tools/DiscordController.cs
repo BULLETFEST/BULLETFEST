@@ -11,12 +11,16 @@ public class DiscordController : MonoBehaviour
 
   public static ActivityManager activityManager;
   public static DateTimeOffset now;
-  public static LobbyManager lobbyManager;
+  public static RelationshipManager relationshipManager;
 
-  public static ulong lobbyId = 0;
+  public static string partyId;
+
+  public static Dictionary<ulong, Relationship> relationships = new();
+
+  public readonly static ulong applicationId = 1009938773137694800U;
 
 #if UNITY_EDITOR
-  bool debugMode = true;
+  bool debugMode = false;
 #else
   bool debugMode = false;
 #endif
@@ -25,9 +29,9 @@ public class DiscordController : MonoBehaviour
   {
     if (debugMode) return;
 
-    discord = new Discord.Discord(1009938773137694800, (System.UInt64)Discord.CreateFlags.NoRequireDiscord);
+    discord = new Discord.Discord((long)applicationId, (System.UInt64)Discord.CreateFlags.NoRequireDiscord);
     activityManager = discord.GetActivityManager();
-    lobbyManager = discord.GetLobbyManager();
+    relationshipManager = discord.GetRelationshipManager();
 
     now = DateTimeOffset.UtcNow;
 
@@ -51,38 +55,89 @@ public class DiscordController : MonoBehaviour
       string[] secret = _secret.Split("|||");
       MyNetworkManager.instance.networkAddress = secret[0];
       MyNetworkManager.instance.RoomCode = secret[1];
-      MyNetworkManager.instance.StartClient();
+      partyId = secret[2];
 
-      lobbyManager.ConnectLobbyWithActivitySecret(_secret, (Discord.Result result, ref Discord.Lobby lobby) =>
-      {
-        if (result == Discord.Result.Ok)
-        {
-          lobbyId = (ulong)lobby.Id;
-        }
-      });
+      MyNetworkManager.instance.StartClient();
     };
 
     activityManager.OnActivityInvite += (ActivityActionType Type, ref Discord.User user, ref Discord.Activity activity2) =>
     {
       if (Type != ActivityActionType.Join) return;
-      if (activity2.ApplicationId != 1009938773137694800) return;
+      if (activity2.ApplicationId != (long)applicationId) return;
 
       Message.DisplayMessage("Invite received!", "Received invite from " + user.Username);
+    };
+
+    relationshipManager.OnRefresh += () =>
+    {
+      relationshipManager.Filter((ref Relationship relationship) =>
+      {
+        // Filter users to ones that are online on BULLETFEST
+        return relationship.Type == RelationshipType.Friend;// && relationship.Presence.Activity.ApplicationId == 1009938773137694800;
+      });
+
+      for (var i = 0; i < relationshipManager.Count(); i++)
+      {
+        // Get an individual relationship from the list
+        Relationship relationship = relationshipManager.GetAt((uint)i);
+
+        relationships[(ulong)relationship.User.Id] = relationship;
+      }
+
+      if (Utilities.FindWithType<Friendlist>(out Friendlist friendslist))
+      {
+        friendslist.UpdateList();
+      }
+    };
+
+    // Update the matching user in dict
+    relationshipManager.OnRelationshipUpdate += (ref Discord.Relationship relationship) =>
+    {
+      relationships[(ulong)relationship.User.Id] = relationship;
+
+      if (Utilities.FindWithType<Friendlist>(out Friendlist friendslist))
+      {
+        friendslist.UpdateList();
+      }
     };
   }
 
   void Update()
   {
-    if (discord != null) discord.RunCallbacks();
+    if (discord != null)
+    {
+      discord.RunCallbacks();
+
+      if (Input.GetKeyDown(KeyCode.X))
+      {
+        activityManager.AcceptInvite(332567411620577280, (res) =>
+        {
+          print(res);
+        });
+      }
+    }
   }
 
   public static void UpdateActivity(Discord.Activity activity)
   {
     activity.Timestamps.Start = now.ToUnixTimeMilliseconds();
-    activity.Assets.LargeImage = "Unity";
+    activity.Assets.LargeImage = "unity";
     activity.Assets.LargeText = "BULLETFEST | ALPHA";
+    activity.ApplicationId = (long)applicationId;
+    activity.Instance = true;
+
     if (discord != null)
-      activityManager.UpdateActivity(activity, (res) => { });
+      activityManager.UpdateActivity(activity, (res) =>
+      {
+        if (res != Result.Ok) print(res);
+        else
+        {
+          print(JsonUtility.ToJson(activity, true));
+          print(JsonUtility.ToJson(activity.Party, true));
+          print(JsonUtility.ToJson(activity.Party.Size, true));
+          print(JsonUtility.ToJson(activity.Secrets, true));
+        }
+      });
   }
 
   private void OnApplicationQuit()

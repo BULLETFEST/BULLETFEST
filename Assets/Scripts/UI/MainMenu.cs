@@ -30,11 +30,10 @@ public class MainMenu : MonoBehaviour
   public TMP_InputField playerName;
 
   bool isConnecting = false;
+  bool isHosting = false;
 
   void Start()
   {
-    EOSSDKComponent.Initialize();
-
     buildNumber.text = "Build " + Application.version;
 
     IPHostEntry host = Dns.GetHostEntry(Dns.GetHostName());
@@ -53,12 +52,14 @@ public class MainMenu : MonoBehaviour
     Application.targetFrameRate = Screen.currentResolution.refreshRate;
 
     nm.networkAddress = EpicTransport.EOSSDKComponent.LocalUserProductIdString;//localIp;
+
+    EOSSDKComponent.Initialize();
   }
 
   private void Update()
   {
-    joinBtn.interactable = EOSSDKComponent.Initialized;
-    hostBtn.interactable = EOSSDKComponent.Initialized;
+    joinBtn.interactable = EOSSDKComponent.Initialized && !isConnecting;
+    hostBtn.interactable = EOSSDKComponent.Initialized && !isHosting;
 
   }
 
@@ -95,7 +96,9 @@ public class MainMenu : MonoBehaviour
 
   public async void Host()
   {
-    hostBtn.interactable = false;
+    if (isHosting) return;
+
+    isHosting = true;
     PlayerPrefs.SetString("PlayerName", playerName.text);
 
     // In the context of hosting, code is equal to the
@@ -106,11 +109,7 @@ public class MainMenu : MonoBehaviour
     {
       nm.RoomCode = res.code;
       // nm.rounds = int.Parse(rounds.text == "" ? "11" : rounds.text);
-      var txn = DiscordController.lobbyManager.GetLobbyCreateTransaction();
-      DiscordController.lobbyManager.CreateLobby(txn, (Discord.Result res, ref Discord.Lobby lobby) =>
-      {
-        DiscordController.lobbyId = (ulong)lobby.Id;
-      });
+      DiscordController.partyId = DiscordController.now.ToUnixTimeMilliseconds().ToString();
       nm.StartHost();
     }
     else
@@ -119,7 +118,7 @@ public class MainMenu : MonoBehaviour
       {
         Message.DisplayMessage("Something went wrong!", res.message, HorizontalAlignmentOptions.Center);
       }
-      hostBtn.interactable = true;
+      isHosting = false;
     }
   }
 

@@ -30,7 +30,7 @@ public class MyNetworkManager : NetworkManager
   public NetworkConnectionToClient winner;
 
   public System.Action PlayerUpdate;
-  public System.Action<NetworkConnectionToClient> PlayerConnect;
+  public System.Action<NetworkConnectionToClient> PlayerConnect, PlayerDisconnect;
 
   public bool isHost = false;
 
@@ -177,6 +177,8 @@ public class MyNetworkManager : NetworkManager
         OnPlayerDie(conn);
       }
     }
+
+    PlayerDisconnect?.Invoke(conn);
   }
 
 

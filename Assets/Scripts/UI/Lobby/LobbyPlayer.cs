@@ -52,17 +52,36 @@ public class LobbyPlayer : NetworkBehaviour
     {
       State = "In a lobby",
       Secrets = {
-        Join = (isServer ? EpicTransport.EOSSDKComponent.LocalUserProductIdString : MyNetworkManager.instance.networkAddress) + "|||" + MyNetworkManager.instance.RoomCode,
+        Join = (isServer ? EpicTransport.EOSSDKComponent.LocalUserProductIdString : MyNetworkManager.instance.networkAddress) + "|||" + MyNetworkManager.instance.RoomCode + "|||" + DiscordController.partyId,
       },
       Party = {
         Size = {
           MaxSize = 4,
-          CurrentSize = NetworkServer.connections.Count,
+          CurrentSize = lobbyPlayers.Length,
         },
-        Id = DiscordController.now.ToUnixTimeMilliseconds().ToString(),
+        Id = DiscordController.partyId//DiscordController.now.ToUnixTimeMilliseconds().ToString(),
       }
     });
   }
+
+  public void OnPlayerDisconnect()
+  {
+    DiscordController.UpdateActivity(new Discord.Activity
+    {
+      State = "In a lobby",
+      Secrets = {
+        Join = (isServer ? EpicTransport.EOSSDKComponent.LocalUserProductIdString : MyNetworkManager.instance.networkAddress) + "|||" + MyNetworkManager.instance.RoomCode + "|||" + DiscordController.partyId,
+      },
+      Party = {
+        Size = {
+          MaxSize = 4,
+          CurrentSize = GameObject.FindGameObjectsWithTag("LobbyPlayer").Length,
+        },
+        Id = DiscordController.partyId//DiscordController.now.ToUnixTimeMilliseconds().ToString(),
+      }
+    });
+  }
+
 
   [Command]
   void UpdateDisplayName(string dName)
