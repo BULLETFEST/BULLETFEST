@@ -10,7 +10,6 @@ public class Friendlist : MonoBehaviour
 
   public void UpdateList()
   {
-    print(friendsContainer.transform.childCount);
     foreach (Transform child in friendsContainer.transform)
     {
       Destroy(child.gameObject);
@@ -23,7 +22,8 @@ public class Friendlist : MonoBehaviour
       friend.transform.localScale = Vector3.one;
 
       friend.GetComponent<FriendlistItem>().username.text = relationship.Value.User.Username;
-      print(JsonUtility.ToJson(relationship.Value.Presence.Activity, true));
+      // print(JsonUtility.ToJson(relationship.Value.Presence.Activity, true));
+      // print(relationship.Value.Presence..Activity);
 
       friend.GetComponent<FriendlistItem>().status.text = relationship.Value.Presence.Activity.ApplicationId == (long)DiscordController.applicationId ? "Online" : "Offline";
     }

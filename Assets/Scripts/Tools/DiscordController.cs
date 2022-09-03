@@ -52,6 +52,7 @@ public class DiscordController : MonoBehaviour
 
     activityManager.OnActivityJoin += _secret =>
     {
+      if (Mirror.NetworkClient.isConnected || Mirror.NetworkServer.active) return;
       string[] secret = _secret.Split("|||");
       MyNetworkManager.instance.networkAddress = secret[0];
       MyNetworkManager.instance.RoomCode = secret[1];
@@ -107,14 +108,6 @@ public class DiscordController : MonoBehaviour
     if (discord != null)
     {
       discord.RunCallbacks();
-
-      if (Input.GetKeyDown(KeyCode.X))
-      {
-        activityManager.AcceptInvite(332567411620577280, (res) =>
-        {
-          print(res);
-        });
-      }
     }
   }
 
@@ -130,13 +123,13 @@ public class DiscordController : MonoBehaviour
       activityManager.UpdateActivity(activity, (res) =>
       {
         if (res != Result.Ok) print(res);
-        else
-        {
-          print(JsonUtility.ToJson(activity, true));
-          print(JsonUtility.ToJson(activity.Party, true));
-          print(JsonUtility.ToJson(activity.Party.Size, true));
-          print(JsonUtility.ToJson(activity.Secrets, true));
-        }
+        // else
+        // {
+        //   // print(JsonUtility.ToJson(activity, true));
+        //   // print(JsonUtility.ToJson(activity.Party, true));
+        //   // print(JsonUtility.ToJson(activity.Party.Size, true));
+        //   // print(JsonUtility.ToJson(activity.Secrets, true));
+        // }
       });
   }
 
