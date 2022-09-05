@@ -40,11 +40,10 @@ public class Firebase : MonoBehaviour
     byte[] res = new byte[0];
     try
     {
-      res = await webClient.UploadValuesTaskAsync("https://joobot.glitch.me/createLobby", "POST", data);
+      res = await webClient.UploadValuesTaskAsync(testMode ? "http://localhost:3000/createLobby" : "https://joobot.glitch.me/createLobby", "POST", data);
     }
     catch
     {
-      // Debug.Log(ex.Message);
       Message.DisplayMessage("Failed to create host", "Client failed to connect to server!", TMPro.HorizontalAlignmentOptions.Center);
     }
 
@@ -101,14 +100,75 @@ public class Firebase : MonoBehaviour
     return response;
   }
 
-  public static void KeepAlive(string code)
+  public static void KeepAlive()
   {
     NameValueCollection data = new NameValueCollection();
 
-    data["code"] = code;
+    data["userId"] = SystemInfo.deviceUniqueIdentifier;
     webClient.Headers["User-Agent"] = "Mozilla/4.0 (compatible; MSIE 8.0; Windows NT 6.1; WOW64; Trident/4.0; SLCC2; .NET CLR 2.0.50727; .NET CLR 3.5.30729; .NET CLR 3.0.30729; Media Center PC 6.0; MDDC)";
 
-    webClient.UploadValuesTaskAsync(new System.Uri(testMode ? "http://localhost:3000/keepLobbyAlive" : "https://joobot.glitch.me/keepLobbyAlive"), "POST", data);
+    try
+    {
+      webClient.UploadValuesTaskAsync(new System.Uri(testMode ? "http://localhost:3000/keepLobbyAlive" : "https://joobot.glitch.me/keepLobbyAlive"), "POST", data);
+    }
+    catch { }
+  }
+
+  public static async Task<Match[]> getLobbies()
+  {
+    // https://stackoverflow.com/a/4148390
+    webClient.Headers["User-Agent"] = "Mozilla/4.0 (compatible; MSIE 8.0; Windows NT 6.1; WOW64; Trident/4.0; SLCC2; .NET CLR 2.0.50727; .NET CLR 3.5.30729; .NET CLR 3.0.30729; Media Center PC 6.0; MDDC)";
+
+    byte[] res = new byte[0];
+    try
+    {
+      res = await webClient.UploadValuesTaskAsync(new System.Uri(testMode ? "http://localhost:3000/getLobbies" : "https://joobot.glitch.me/getLobbies"), "POST", new NameValueCollection());
+    }
+    catch (System.Exception ex)
+    {
+      Debug.LogError(ex.Message);
+      Message.DisplayMessage("Failed to connect to game", "Client failed to connect to server!", TMPro.HorizontalAlignmentOptions.Center);
+    }
+
+    if (res.Length == 0) return new Match[0];
+
+    string responseInString = Encoding.UTF8.GetString(res);
+
+    GetLobbiesResponse response = JsonUtility.FromJson<GetLobbiesResponse>(responseInString);
+
+    return response.matches;
+  }
+
+  public static void UpdateLobby(int playerCount, string gameMode, string type)
+  {
+    NameValueCollection data = new NameValueCollection();
+
+    webClient.Headers["User-Agent"] = "Mozilla/4.0 (compatible; MSIE 8.0; Windows NT 6.1; WOW64; Trident/4.0; SLCC2; .NET CLR 2.0.50727; .NET CLR 3.5.30729; .NET CLR 3.0.30729; Media Center PC 6.0; MDDC)";
+
+    data["gameMode"] = gameMode;
+    data["playerCount"] = playerCount.ToString();
+    data["userId"] = SystemInfo.deviceUniqueIdentifier;
+    data["type"] = type;
+
+    try
+    {
+      webClient.UploadValuesTaskAsync(new System.Uri(testMode ? "http://localhost:3000/updateLobby" : "https://joobot.glitch.me/updateLobby"), "POST", data);
+    }
+    catch { }
+  }
+
+  public static void CloseLobby()
+  {
+    NameValueCollection data = new NameValueCollection();
+
+    data["userId"] = SystemInfo.deviceUniqueIdentifier;
+    webClient.Headers["User-Agent"] = "Mozilla/4.0 (compatible; MSIE 8.0; Windows NT 6.1; WOW64; Trident/4.0; SLCC2; .NET CLR 2.0.50727; .NET CLR 3.5.30729; .NET CLR 3.0.30729; Media Center PC 6.0; MDDC)";
+
+    try
+    {
+      webClient.UploadValuesTaskAsync(new System.Uri(testMode ? "http://localhost:3000/closeLobby" : "https://joobot.glitch.me/closeLobby"), "POST", data);
+    }
+    catch { }
   }
 
   public struct Response
@@ -116,5 +176,25 @@ public class Firebase : MonoBehaviour
     public string code;
     public bool success;
     public string message;
+  }
+
+  [System.Serializable]
+  public class GetLobbiesResponse
+  {
+    public Match[] matches;
+    public bool success;
+  }
+
+  [System.Serializable]
+  public class Match
+  {
+    public string code;
+    public string gameMode;
+    public string playerCount;
+
+    public override string ToString()
+    {
+      return $"Code: {code}; Mode: {gameMode}; Players: {playerCount}";
+    }
   }
 }

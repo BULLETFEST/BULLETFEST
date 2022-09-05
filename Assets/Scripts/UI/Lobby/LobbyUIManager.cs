@@ -92,6 +92,16 @@ public class LobbyUIManager : NetworkBehaviour
       deathmatchTime.transform.parent.gameObject.SetActive(false);
       maps.transform.parent.gameObject.SetActive(false);
     }
+
+    Firebase.UpdateLobby(NetworkServer.connections.Count, nm.gameMode.ToString(), nm.privacyType.ToString().ToLower());
+  }
+
+  public void TogglePrivate(bool option)
+  {
+    if (option) nm.privacyType = MyNetworkManager.PrivacyType.Private;
+    else nm.privacyType = MyNetworkManager.PrivacyType.Public;
+
+    Firebase.UpdateLobby(NetworkServer.connections.Count, nm.gameMode.ToString(), nm.privacyType.ToString().ToLower());
   }
 
   public void ChangeRoundCount(string count)

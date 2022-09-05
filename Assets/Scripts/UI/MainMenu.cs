@@ -26,8 +26,13 @@ public class MainMenu : MonoBehaviour
   public Button connectBtn;
   public Button joinBtn;
   public Button hostBtn;
+  public Button refreshBtn;
+  public Button serverBrowserBtn;
   public TMP_Text buildNumber;
   public TMP_InputField playerName;
+  public GameObject serverBrowser, serversContainer;
+
+  public GameObject gameCard;
 
   bool isConnecting = false;
   bool isHosting = false;
@@ -60,7 +65,7 @@ public class MainMenu : MonoBehaviour
   {
     joinBtn.interactable = EOSSDKComponent.Initialized && !isConnecting;
     hostBtn.interactable = EOSSDKComponent.Initialized && !isHosting;
-
+    serverBrowserBtn.interactable = EOSSDKComponent.Initialized;
   }
 
   public async void Connect()
@@ -132,5 +137,43 @@ public class MainMenu : MonoBehaviour
   public void ChangeRoomCode(string newCode)
   {
     code = newCode;
+  }
+
+  public async void UpdateServerBrowser()
+  {
+    refreshBtn.interactable = false;
+    refreshBtn.GetComponentInChildren<TMP_Text>().text = "Refreshing...";
+    refreshBtn.GetComponentInChildren<TMP_Text>().fontStyle = FontStyles.Italic;
+    serverBrowser.SetActive(true);
+
+
+    Firebase.Match[] matches = await Firebase.getLobbies();
+
+    foreach (Transform child in serversContainer.transform)
+    {
+      Destroy(child.gameObject);
+    }
+
+    foreach (Firebase.Match match in matches)
+    {
+      GameObject card = Instantiate(gameCard, Vector3.zero, Quaternion.Euler(0, 0, 0), serversContainer.transform);
+
+      GameCard gameCardUi = card.GetComponent<GameCard>();
+
+      gameCardUi.playerCount.text = match.playerCount + "/4";
+      gameCardUi.code.text = match.code;
+      gameCardUi.gameMode.text = match.gameMode;
+
+      card.GetComponent<Button>().onClick.AddListener(delegate
+      {
+        code = match.code;
+        Connect();
+        FindObjectOfType<AudioSystem>().PlaySound("Select");
+      });
+    }
+
+    refreshBtn.GetComponentInChildren<TMP_Text>().text = "Refresh";
+    refreshBtn.GetComponentInChildren<TMP_Text>().fontStyle = FontStyles.Normal;
+    refreshBtn.interactable = true;
   }
 }

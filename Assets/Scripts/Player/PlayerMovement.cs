@@ -133,7 +133,7 @@ public class PlayerMovement : NetworkBehaviour
   {
     if (playerVars.lockMovement) return;
 
-    if (transform.position.y <= -15) GetComponent<PlayerBehavior>().TakeDamage(9999999, null);
+    if (transform.position.y <= -15 || transform.position.y >= 25) GetComponent<PlayerBehavior>().TakeDamage(9999999, null);
 
     xRaw = Mathf.Clamp(xRaw, -1, 1);
 

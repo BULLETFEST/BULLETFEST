@@ -88,7 +88,7 @@ MonoBehaviour:
   range: 0
   damage: 3
   fireRate: 10
-  bulletVelocity: 25
+  bulletVelocity: 45
   movementUnlockTime: 0
   cameraShakeIntensity: 0
   cameraShakeDuration: 0

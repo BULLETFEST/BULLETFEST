@@ -36,6 +36,8 @@ public class MyNetworkManager : NetworkManager
 
   public string RoomCode;
 
+  public PrivacyType privacyType = PrivacyType.Public;
+
   public GameMode gameMode = 0;
 
   public float deathmatchLength = 1;
@@ -79,11 +81,11 @@ public class MyNetworkManager : NetworkManager
   {
     try
     {
-      Firebase.KeepAlive(RoomCode);
+      Firebase.KeepAlive();
     }
     catch { }
 
-    yield return new WaitForSecondsRealtime(5f);
+    yield return new WaitForSecondsRealtime(60 * 2.5f);
 
     StartCoroutine(keepAlive());
   }
@@ -121,7 +123,7 @@ public class MyNetworkManager : NetworkManager
 
     PlayerConnect?.Invoke(conn);
 
-
+    Firebase.UpdateLobby(NetworkServer.connections.Count, gameMode.ToString(), privacyType.ToString().ToLower());
   }
 
   // public override void OnServerAddPlayer(NetworkConnectionToClient conn)
@@ -334,5 +336,11 @@ public class MyNetworkManager : NetworkManager
   {
     Rounds = 0,
     Deathmatch = 1,
+  }
+
+  public enum PrivacyType
+  {
+    Public = 0,
+    Private = 1,
   }
 }

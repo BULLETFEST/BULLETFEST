@@ -168,7 +168,7 @@ MonoBehaviour:
   - -0.25
   - 0.25
   reloadTime: 10
-  shotPushback: 35
+  shotPushback: 30
   range: 0
   damage: 5
   fireRate: 1.75

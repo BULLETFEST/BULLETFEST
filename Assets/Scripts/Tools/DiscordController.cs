@@ -136,5 +136,6 @@ public class DiscordController : MonoBehaviour
   private void OnApplicationQuit()
   {
     activityManager.ClearActivity(res => { });
+    Firebase.CloseLobby();
   }
 }
