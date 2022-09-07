@@ -3,6 +3,7 @@ using System.Linq;
 using UnityEngine;
 using Mirror;
 using System;
+using UnityEngine.UI;
 
 public class Server : NetworkBehaviour
 {
@@ -50,9 +51,17 @@ public class Server : NetworkBehaviour
     conn.identity.GetComponent<PlayerUI>().uiTimeLeft.text = timeString;
   }
 
+  Color[] colors = new Color[] {
+    new Color(0.5882353f, 0.1137255f, 0.04313726f), // 961D0B
+    new Color(0.0993236f, 0.4487756f, 0.6792453f), // 1972AD
+    new Color(0.1027946f, 0.6226415f, 0.1877513f), // 1A9F30
+    new Color(0.6235294f, 0.6018561f, 0.1019608f), // 9F991A
+  };
+
   [TargetRpc]
-  public void SetWinnerText(NetworkConnection conn, string text)
+  public void SetWinnerText(NetworkConnection conn, string text, int idx)
   {
     GameObject.FindObjectOfType<WinnerUI>().winnerText.text = text;
+    GameObject.FindObjectOfType<WinnerUI>().GetComponentInChildren<Image>().color = colors[idx];
   }
 }

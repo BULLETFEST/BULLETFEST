@@ -104,19 +104,17 @@ public class PlayerMovement : NetworkBehaviour
         if (playerVars.rb.velocity.y > 0)
         {
           playerVars.rb.AddForce(new Vector2(0, jumpForce * 0.75f));
-          playerVars.audioSystem.PlaySound("Jump");
         }
         else
         {
           playerVars.rb.AddForce(new Vector2(0, jumpForce));
-          playerVars.audioSystem.PlaySound("Jump");
         }
       }
       else
       {
         playerVars.rb.AddForce(new Vector2(0, jumpForce));
-        playerVars.audioSystem.PlaySound("Jump");
       }
+      playerVars.audioSystem.PlaySound("Jump");
     }
 
     if (doubleJumped && grounded)
@@ -133,7 +131,7 @@ public class PlayerMovement : NetworkBehaviour
   {
     if (playerVars.lockMovement) return;
 
-    if (transform.position.y <= -15 || transform.position.y >= 25) GetComponent<PlayerBehavior>().TakeDamage(9999999, null);
+    if (transform.position.y <= -15 || transform.position.y >= 50) GetComponent<PlayerBehavior>().TakeDamage(9999999, null);
 
     xRaw = Mathf.Clamp(xRaw, -1, 1);
 
@@ -160,7 +158,7 @@ public class PlayerMovement : NetworkBehaviour
 
     // Add drag
     // https://forum.unity.com/threads/physics-drag-formula.252406/
-    playerVars.rb.velocity = new Vector2(playerVars.rb.velocity.x * (1 - Time.fixedDeltaTime * drag), playerVars.rb.velocity.y);
+    playerVars.rb.velocity = new Vector2(playerVars.rb.velocity.x * (1 - Time.fixedDeltaTime * (Grounded(gameObject, playerVars.bc).collider != null ? drag * 1.15f : drag)), playerVars.rb.velocity.y);
 
     // playerVars.audioSystem.transform.position = gameObject.transform.position;
   }

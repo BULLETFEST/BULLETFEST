@@ -3482,7 +3482,7 @@ AudioSource:
   serializedVersion: 4
   OutputAudioMixerGroup: {fileID: 4337373795748371158, guid: 11d6d12bd169f01489b7e1bc90a3fb7d, type: 2}
   m_audioClip: {fileID: 0}
-  m_PlayOnAwake: 1
+  m_PlayOnAwake: 0
   m_Volume: 0.65
   m_Pitch: 1
   Loop: 0
@@ -10773,6 +10773,7 @@ MonoBehaviour:
   gameStarted: 0
   isHost: 0
   RoomCode: 
+  privacyType: 0
   gameMode: 0
   deathmatchLength: 1
   rounds: 1

@@ -4,13 +4,30 @@ using System.Linq;
 
 public class OffscreenPointer : NetworkBehaviour
 {
-  [SerializeField] private RectTransform[] pointerRectTransform;
+  private RectTransform[] pointerRectTransform;
 
   [SerializeField] float borderSize = 25f;
 
+  [SerializeField]
+  private GameObject arrowContainer,
+                     arrowPrefab;
+
   void Start()
   {
-    if (!isLocalPlayer) Destroy(this);
+    if (!isLocalPlayer) Destroy(gameObject);
+  }
+
+  public override void OnStartAuthority()
+  {
+    base.OnStartAuthority();
+
+    pointerRectTransform = new RectTransform[NetworkServer.connections.Count];
+
+    for (int i = 0; i < NetworkServer.connections.Count; i++)
+    {
+      pointerRectTransform[i] = Instantiate(arrowPrefab, Vector3.zero, Quaternion.identity, arrowContainer.transform).GetComponent<RectTransform>();
+      pointerRectTransform[i].gameObject.SetActive(false);
+    }
   }
 
   void FixedUpdate()

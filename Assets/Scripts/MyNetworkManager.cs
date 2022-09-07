@@ -207,6 +207,11 @@ public class MyNetworkManager : NetworkManager
   [Server]
   public void AnnounceWinner()
   {
+    if (Utilities.FindWithType<PlayerSpawnSystem>(out PlayerSpawnSystem go))
+    {
+      NetworkServer.Destroy(go.gameObject);
+    }
+
     // If all players have left, choose host to be the winner
     if (players.Count == 1)
       winner = players.ElementAt(0).Key;
@@ -238,9 +243,9 @@ public class MyNetworkManager : NetworkManager
 
     if (players.Count <= 1) return;
 
-    foreach (NetworkConnectionToClient conn in NetworkServer.connections.Values)
+    for (int i = 0; i < NetworkServer.connections.Count; i++)
     {
-      FindObjectOfType<Server>().SetWinnerText(conn, $"{players[winner].displayName} won the round!");
+      FindObjectOfType<Server>().SetWinnerText(NetworkServer.connections.ElementAt(i).Value, $"{players[winner].displayName} won the round!", i);
     }
   }
 
