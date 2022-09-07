@@ -126,7 +126,7 @@ GameObject:
   - component: {fileID: 446163630103249763}
   - component: {fileID: 3366149238512663894}
   m_Layer: 31
-  m_Name: Gewher 98
+  m_Name: Gewehr 98
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -176,8 +176,8 @@ MonoBehaviour:
   movementUnlockTime: 0.3
   cameraShakeIntensity: 1.5
   cameraShakeDuration: 0.15
-  weaponName: Gewher 98
-  ID: SNR_GEWHER98
+  weaponName: Gewehr 98
+  ID: SNR_Gewehr98
   firingMode: 0
   reloadType: 0
   bulletPrefab: {fileID: 7740076768845922023, guid: bd0cfe2c8625b2c4daefea4409372304, type: 3}

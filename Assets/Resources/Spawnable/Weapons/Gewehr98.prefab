@@ -100,7 +100,7 @@ GameObject:
   - component: {fileID: 1985893935}
   - component: {fileID: -1675671087038147106}
   m_Layer: 0
-  m_Name: Gewher98
+  m_Name: Gewehr98
   m_TagString: WeaponItem
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -225,7 +225,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   syncMode: 0
   syncInterval: 0.1
-  WeaponID: SNR_GEWHER98
+  WeaponID: SNR_Gewehr98
 --- !u!1 &4519730076943099475
 GameObject:
   m_ObjectHideFlags: 0
