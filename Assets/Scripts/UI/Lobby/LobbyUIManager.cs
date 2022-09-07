@@ -13,7 +13,7 @@ public class LobbyUIManager : NetworkBehaviour
 
   MyNetworkManager Room;
 
-  void Start()
+  void Awake()
   {
     Room = MyNetworkManager.instance;
 
@@ -30,15 +30,15 @@ public class LobbyUIManager : NetworkBehaviour
     }
 
 
-    roomCode.text = $"Room code: {Room.RoomCode}";
+    roomCode.text = $"Room code: {Room.roomCode}";
 
-    roundsDefault.text = $"Default: {MyNetworkManager.PlayableScenes}";
+    roundsDefault.text = $"Default: {MyNetworkManager.playableScenesCount}";
 
     startButton.onClick.AddListener(delegate { StartGame(); });
 
     List<string> mapNames = new();
 
-    for (int i = MyNetworkManager.menuScenes; i < SceneManager.sceneCountInBuildSettings; i++)
+    for (int i = MyNetworkManager.menuScenesCount; i < SceneManager.sceneCountInBuildSettings; i++)
     {
       mapNames.Add(System.IO.Path.GetFileNameWithoutExtension(SceneUtility.GetScenePathByBuildIndex(i)).Replace("_", " "));
     }

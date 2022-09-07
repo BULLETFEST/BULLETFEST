@@ -14,7 +14,7 @@ public class BuildVersionProcessor : IPreprocessBuildWithReport
     Version version = new(FindCurrentVersion());
     version.IncreaseVersion();
     PlayerSettings.bundleVersion = version.GetVersionString();
-    Debug.Log(PlayerSettings.bundleVersion);
+    PlayerSettings.SplashScreen.show = false;
   }
 
   private string FindCurrentVersion()

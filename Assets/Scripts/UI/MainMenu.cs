@@ -82,7 +82,7 @@ public class MainMenu : MonoBehaviour
 
     if (res.success)
     {
-      nm.RoomCode = code;
+      nm.roomCode = code;
       nm.networkAddress = res.code;
       nm.StartClient();
     }
@@ -112,7 +112,7 @@ public class MainMenu : MonoBehaviour
 
     if (res.success)
     {
-      nm.RoomCode = res.code;
+      nm.roomCode = res.code;
       // nm.rounds = int.Parse(rounds.text == "" ? "11" : rounds.text);
       DiscordController.partyId = DiscordController.now.ToUnixTimeMilliseconds().ToString();
       nm.StartHost();
@@ -127,11 +127,15 @@ public class MainMenu : MonoBehaviour
     }
   }
 
-  public void ChangeSceneToSettings()
+  public void OpenSettings()
   {
-    // SceneManager.LoadScene("Settings", LoadSceneMode.Additive);
     SaveSystem.settingsUI.GetComponent<Canvas>().enabled = true;
     SaveSystem.IsSettingsOpen = true;
+  }
+
+  public void OpenCredits()
+  {
+    SceneManager.LoadScene("Credits");
   }
 
   public void ChangeRoomCode(string newCode)

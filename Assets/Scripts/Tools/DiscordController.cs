@@ -55,7 +55,7 @@ public class DiscordController : MonoBehaviour
       if (Mirror.NetworkClient.isConnected || Mirror.NetworkServer.active) return;
       string[] secret = _secret.Split("|||");
       MyNetworkManager.instance.networkAddress = secret[0];
-      MyNetworkManager.instance.RoomCode = secret[1];
+      MyNetworkManager.instance.roomCode = secret[1];
       partyId = secret[2];
 
       MyNetworkManager.instance.StartClient();

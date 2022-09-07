@@ -52,7 +52,7 @@ public class LobbyPlayer : NetworkBehaviour
     {
       State = "In a lobby",
       Secrets = {
-        Join = (isServer ? EpicTransport.EOSSDKComponent.LocalUserProductIdString : MyNetworkManager.instance.networkAddress) + "|||" + MyNetworkManager.instance.RoomCode + "|||" + DiscordController.partyId,
+        Join = (isServer ? EpicTransport.EOSSDKComponent.LocalUserProductIdString : MyNetworkManager.instance.networkAddress) + "|||" + MyNetworkManager.instance.roomCode + "|||" + DiscordController.partyId,
       },
       Party = {
         Size = {
@@ -70,7 +70,7 @@ public class LobbyPlayer : NetworkBehaviour
     {
       State = "In a lobby",
       Secrets = {
-        Join = (isServer ? EpicTransport.EOSSDKComponent.LocalUserProductIdString : MyNetworkManager.instance.networkAddress) + "|||" + MyNetworkManager.instance.RoomCode + "|||" + DiscordController.partyId,
+        Join = (isServer ? EpicTransport.EOSSDKComponent.LocalUserProductIdString : MyNetworkManager.instance.networkAddress) + "|||" + MyNetworkManager.instance.roomCode + "|||" + DiscordController.partyId,
       },
       Party = {
         Size = {

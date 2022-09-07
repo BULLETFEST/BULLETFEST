@@ -8,48 +8,64 @@ using System.Collections;
 
 public class MyNetworkManager : NetworkManager
 {
-  public static MyNetworkManager instance = null;
+  public static MyNetworkManager instance;
 
-  [Scene][SerializeField] private string menu = string.Empty;
-
-  string[] playableScenes;
-
-  private GameObject LeaderboardItem;
+  string[] queuedScenes;
 
   [SerializeField]
-  private GameObject playerSpawnSystem;
-
-  public GameObject winnerUI;
+  private GameObject PlayerSpawnSystemPrefab,
+                     WinnerPanelPrefab;
 
   public Dictionary<NetworkConnectionToClient, PlayerData> players { get; } = new Dictionary<NetworkConnectionToClient, PlayerData>();
 
   public NetworkConnectionToClient[] sortedPlayerList = new NetworkConnectionToClient[4];
-
-  public bool gameStarted = false;
 
   public NetworkConnectionToClient winner;
 
   public System.Action PlayerUpdate;
   public System.Action<NetworkConnectionToClient> PlayerConnect, PlayerDisconnect;
 
-  public bool isHost = false;
+  [HideInInspector]
+  public bool gameStarted = false,
+              isHost = false;
 
-  public string RoomCode;
+  [HideInInspector]
+  public string roomCode;
 
+  [HideInInspector]
   public PrivacyType privacyType = PrivacyType.Public;
 
+  [HideInInspector]
   public GameMode gameMode = 0;
 
+  [HideInInspector]
   public float deathmatchLength = 1;
 
-  public static int PlayableScenes = 14, menuScenes = 4;
+  [HideInInspector]
+  public int rounds,
+             chosenMap = 0;
 
-  public int rounds = PlayableScenes;
+  public static int playableScenesCount = 0, menuScenesCount = 0;
 
-  public int chosenMap = 0;
+  public override void Awake()
+  {
+    base.Awake();
+
+    for (int i = 0; i < SceneManager.sceneCountInBuildSettings; i++)
+    {
+      string s = SceneUtility.GetScenePathByBuildIndex(i);
+
+      if (s.Contains("GameScenes")) playableScenesCount++;
+      else menuScenesCount++;
+    }
+
+    rounds = playableScenesCount;
+  }
 
   public override void Start()
   {
+    base.Start();
+
     if (instance == null)
       instance = this;
     else if (instance != this)
@@ -58,7 +74,6 @@ public class MyNetworkManager : NetworkManager
     foreach (GameObject prefab in Resources.LoadAll<GameObject>("Spawnable"))
     {
       NetworkClient.RegisterPrefab(prefab);
-      if (prefab.name == "LeaderboardItem") LeaderboardItem = prefab;
     }
 
     NetworkClient.RegisterHandler<Message.ServerMessge>(OnServerMessage);
@@ -108,7 +123,7 @@ public class MyNetworkManager : NetworkManager
       return;
     }
 
-    if (SceneManager.GetActiveScene().path != menu)
+    if (SceneManager.GetActiveScene().name != "Lobby")
     {
       conn.Send(new Message.ServerMessge
       {
@@ -126,33 +141,15 @@ public class MyNetworkManager : NetworkManager
     Firebase.UpdateLobby(NetworkServer.connections.Count, gameMode.ToString(), privacyType.ToString().ToLower());
   }
 
-  // public override void OnServerAddPlayer(NetworkConnectionToClient conn)
-  // {
-  //   base.OnServerAddPlayer(conn);
-
-  //   if (SceneManager.GetActiveScene().path == menu)
-  //   {
-  //     if (!playerCards) playerCards = GameObject.FindGameObjectWithTag("PlayerCards");
-
-  //     // FindObjectOfType<PlayerCardSpawner>().SpawnCard(conn);
-  //     GameObject player = Instantiate(MyNetworkManager.instance.playerCard, Vector3.zero, Quaternion.Euler(0, 0, 0), playerCards.transform);
-  //     player.GetComponent<PlayerCard>().DisplayNameUI.text = "Loading...";
-  //     if (conn != NetworkServer.localConnection) player.GetComponent<PlayerCard>().kickBtn.gameObject.SetActive(true);
-  //     NetworkServer.Spawn(player, conn);
-  //     NetworkServer.AddPlayerForConnection(conn, player);
-  //     NetworkServer.SetClientReady(conn);
-  //   }
-  // }
-
   public override void OnServerSceneChanged(string sceneName)
   {
     base.OnServerSceneChanged(sceneName);
 
-    if (SceneManager.GetActiveScene().buildIndex > menuScenes - 1)
+    if (SceneManager.GetActiveScene().buildIndex > menuScenesCount - 1)
     {
       if (!FindObjectOfType<PlayerSpawnSystem>())
       {
-        GameObject go = Instantiate(playerSpawnSystem);
+        GameObject go = Instantiate(PlayerSpawnSystemPrefab);
         if (gameMode == GameMode.Deathmatch)
         {
           go.GetComponent<PlayerSpawnSystem>().timeStamp = System.DateTime.UtcNow.AddMinutes(deathmatchLength);
@@ -174,7 +171,7 @@ public class MyNetworkManager : NetworkManager
 
       if (gameStarted)
       {
-        if (players.Count == 1) playableScenes = new string[0];
+        if (players.Count == 1) queuedScenes = new string[0];
         deadPlayers--;
         OnPlayerDie(conn);
       }
@@ -236,10 +233,10 @@ public class MyNetworkManager : NetworkManager
     winnerVars.lockMovement = true;
     winnerVars.lockShooting = true;
 
-    GameObject winnerUi = Instantiate(winnerUI);
+    GameObject winnerUi = Instantiate(WinnerPanelPrefab);
     NetworkServer.Spawn(winnerUi);
 
-    winnerUI.GetComponent<WinnerUI>().winnerText.text = $"{players[winner].displayName} won the round";
+    WinnerPanelPrefab.GetComponent<WinnerUI>().winnerText.text = $"{players[winner].displayName} won the round";
 
     if (players.Count <= 1) return;
 
@@ -268,7 +265,7 @@ public class MyNetworkManager : NetworkManager
         else if (dir.EndsWith("16Players") && players.Count <= 16) _scenes.Add(sName);
       }
 
-      rounds = Mathf.Clamp(rounds, 1, PlayableScenes);
+      rounds = Mathf.Clamp(rounds, 1, playableScenesCount);
       while (_scenes.Count > rounds)
       {
         _scenes.RemoveAt(Random.Range(0, _scenes.Count));
@@ -278,13 +275,13 @@ public class MyNetworkManager : NetworkManager
     {
       if (chosenMap == 0)
       {
-        int chosenMapIdx = Random.Range(menuScenes, sceneCount);
+        int chosenMapIdx = Random.Range(menuScenesCount, sceneCount);
         _scenes.Add(Path.GetFileNameWithoutExtension(SceneUtility.GetScenePathByBuildIndex(chosenMapIdx)));
       }
-      else _scenes.Add(Path.GetFileNameWithoutExtension(SceneUtility.GetScenePathByBuildIndex(chosenMap - 1 + menuScenes)));
+      else _scenes.Add(Path.GetFileNameWithoutExtension(SceneUtility.GetScenePathByBuildIndex(chosenMap - 1 + menuScenesCount)));
     }
 
-    playableScenes = _scenes.ToArray();
+    queuedScenes = _scenes.ToArray();
 
     gameStarted = true;
 
@@ -296,7 +293,7 @@ public class MyNetworkManager : NetworkManager
   {
     deadPlayers = 0;
 
-    if (playableScenes.Length == 0)// || gameMode == GameMode.Deathmatch)
+    if (queuedScenes.Length == 0)// || gameMode == GameMode.Deathmatch)
     {
       gameStarted = false;
       List<KeyValuePair<NetworkConnectionToClient, PlayerData>> temp = players.ToList();
@@ -312,15 +309,15 @@ public class MyNetworkManager : NetworkManager
       return;
     }
 
-    int chosenScene = Random.Range(0, playableScenes.Length);
+    int chosenScene = Random.Range(0, queuedScenes.Length);
 
-    string chosenSceneId = playableScenes[chosenScene];
+    string chosenSceneId = queuedScenes[chosenScene];
 
-    List<string> _scenes = playableScenes.ToList();
+    List<string> _scenes = queuedScenes.ToList();
 
     _scenes.Remove(chosenSceneId);
 
-    playableScenes = _scenes.ToArray();
+    queuedScenes = _scenes.ToArray();
 
     ServerChangeScene(chosenSceneId);
   }
