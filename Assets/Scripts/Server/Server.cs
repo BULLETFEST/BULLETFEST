@@ -62,6 +62,6 @@ public class Server : NetworkBehaviour
   public void SetWinnerText(NetworkConnection conn, string text, int idx)
   {
     GameObject.FindObjectOfType<WinnerUI>().winnerText.text = text;
-    GameObject.FindObjectOfType<WinnerUI>().GetComponentInChildren<Image>().color = colors[idx];
+    GameObject.FindObjectOfType<WinnerUI>().playerImage.color = colors[idx];
   }
 }

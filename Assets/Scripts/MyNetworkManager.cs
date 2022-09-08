@@ -242,7 +242,7 @@ public class MyNetworkManager : NetworkManager
 
     for (int i = 0; i < NetworkServer.connections.Count; i++)
     {
-      FindObjectOfType<Server>().SetWinnerText(NetworkServer.connections.ElementAt(i).Value, $"{players[winner].displayName} won the round!", i);
+      FindObjectOfType<Server>().SetWinnerText(NetworkServer.connections.ElementAt(i).Value, $"{players[winner].displayName} won the round!", System.Array.IndexOf(NetworkServer.connections.Values.ToArray(), winner));
     }
   }
 

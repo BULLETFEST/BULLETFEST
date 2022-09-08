@@ -2,9 +2,12 @@ using System.Collections;
 using UnityEngine;
 using Mirror;
 using TMPro;
+using UnityEngine.UI;
+
 public class WinnerUI : NetworkBehaviour
 {
   public TMP_Text winnerText;
+  public Image playerImage;
 
   MyNetworkManager nm;
 

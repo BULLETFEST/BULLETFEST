@@ -89,6 +89,8 @@ public class PlayerMovement : NetworkBehaviour
     else if (Utilities.GetKeybind("lft")) xRaw = -1;
     else if (Utilities.GetKeybind("rgt")) xRaw = 1;
 
+    xRaw = Mathf.Clamp(xRaw, -1, 1);
+
     if (SaveSystem.saveData.settings.invertControls) xRaw *= -1;
 
     bool grounded = false;
@@ -123,6 +125,7 @@ public class PlayerMovement : NetworkBehaviour
     }
 
     ValidateMovement(xRaw);
+    HandleMovement(xRaw);
   }
 
 
@@ -138,7 +141,6 @@ public class PlayerMovement : NetworkBehaviour
     HandleMovement(xRaw);
   }
 
-  [ClientRpc]
   void HandleMovement(float xRaw)
   {
     if (playerVars == null) return;

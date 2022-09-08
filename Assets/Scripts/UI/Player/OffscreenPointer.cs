@@ -14,7 +14,7 @@ public class OffscreenPointer : NetworkBehaviour
 
   void Start()
   {
-    if (!isLocalPlayer) Destroy(gameObject);
+    if (!isLocalPlayer) Destroy(this);
   }
 
   public override void OnStartAuthority()

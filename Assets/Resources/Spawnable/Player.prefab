@@ -1490,7 +1490,7 @@ MonoBehaviour:
   moveForce: 17.5
   drag: 17.5
   jumpForce: 1150
-  playerVars: {fileID: 0}
+  playerVars: {fileID: 957314521401609472}
 --- !u!114 &2728089404972226145
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1560,11 +1560,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   syncMode: 0
   syncInterval: 0.1
-  pointerRectTransform:
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
   borderSize: 25
   arrowContainer: {fileID: 8750778581718624314}
   arrowPrefab: {fileID: 2272336551118511527, guid: 22afa000613614b4ca538c2a03a89e9d, type: 3}
