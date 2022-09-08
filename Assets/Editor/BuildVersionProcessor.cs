@@ -15,6 +15,10 @@ public class BuildVersionProcessor : IPreprocessBuildWithReport
     version.IncreaseVersion();
     PlayerSettings.bundleVersion = version.GetVersionString();
     PlayerSettings.SplashScreen.show = false;
+
+#if UNITY_STANDALONE_OSX
+    UnityEditor.OSXStandalone.UserBuildSettings.architecture = UnityEditor.OSXStandalone.MacOSArchitecture.x64ARM64;
+#endif
   }
 
   private string FindCurrentVersion()
