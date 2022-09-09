@@ -97,8 +97,18 @@ jobs:
 
       - name: Set Environment Variables
         run: |
-          echo "ver=$(cat projectVer.txt)" >> $GITHUB_ENV 
-          echo "patchnotes=$(cat patchnotes.txt)" >> $GITHUB_ENV
+          echo "ver=$(cat projectVer.txt)" >> $GITHUB_ENV
+        #  echo "patchnotes=$(cat patchnotes.txt)" >> $GITHUB_ENV
+
+      - name: Create Release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: ${{ env.ver }}
+          release_name: BULLETFEST v${{ env.ver }}
+          draft: false
+          prerelease: false
       - uses: Ilshidur/action-discord@master
         env:
           DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK }}
