@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using EpicTransport;
+using Epic;
 
 public class Utilities : MonoBehaviour
 {
@@ -100,5 +102,22 @@ public class Utilities : MonoBehaviour
   public static bool AnimatorStateDonePlaying(Animator anim, string stateName)
   {
     return AnimatorStateDonePlaying(anim, stateName) && anim.GetCurrentAnimatorStateInfo(0).IsName(stateName);
+  }
+
+  public static void Disconnect()
+  {
+    if (FindWithType<MyNetworkManager>(out MyNetworkManager networkManager))
+    {
+      networkManager.StopServer();
+      networkManager.StopClient();
+
+      FindObjectOfType<EosTransport>().ClientDisconnect();
+      FindObjectOfType<EosTransport>().ServerStop();
+      FindObjectOfType<EosTransport>().Shutdown();
+
+      Destroy(networkManager.gameObject);
+
+      SceneManager.LoadScene("MainMenu");
+    }
   }
 }

@@ -84,7 +84,7 @@ namespace Mirror
             Transport.activeTransport.OnServerConnected += OnTransportConnected;
             Transport.activeTransport.OnServerDataReceived += OnTransportData;
             Transport.activeTransport.OnServerDisconnected += OnTransportDisconnected;
-            Transport.activeTransport.OnServerError += OnError;
+            Transport.activeTransport.OnServerError += OnTransportError;
         }
 
         static void RemoveTransportHandlers()
@@ -93,7 +93,7 @@ namespace Mirror
             Transport.activeTransport.OnServerConnected -= OnTransportConnected;
             Transport.activeTransport.OnServerDataReceived -= OnTransportData;
             Transport.activeTransport.OnServerDisconnected -= OnTransportDisconnected;
-            Transport.activeTransport.OnServerError -= OnError;
+            Transport.activeTransport.OnServerError -= OnTransportError;
         }
 
         // calls OnStartClient for all SERVER objects in host mode once.
@@ -264,11 +264,6 @@ namespace Mirror
             RemoveConnection(0);
         }
 
-        /// <summary>True if we have no external connections (host is allowed)</summary>
-        // DEPRECATED 2022-02-05
-        [Obsolete("Use !HasExternalConnections() instead of NoExternalConnections() to avoid double negatives.")]
-        public static bool NoExternalConnections() => !HasExternalConnections();
-
         /// <summary>True if we have external connections (that are not host)</summary>
         public static bool HasExternalConnections()
         {
@@ -349,7 +344,7 @@ namespace Mirror
                 MessagePacking.Pack(message, writer);
                 ArraySegment<byte> segment = writer.ToArraySegment();
 
-                foreach (NetworkConnection conn in identity.observers.Values)
+                foreach (NetworkConnectionToClient conn in identity.observers.Values)
                 {
                     conn.Send(segment, channelId);
                 }
@@ -388,12 +383,6 @@ namespace Mirror
             }
         }
 
-        // Deprecated 2021-09-19
-        [Obsolete("SendToReady(identity, message, ...) was renamed to SendToReadyObservers because that's what it does.")]
-        public static void SendToReady<T>(NetworkIdentity identity, T message, bool includeOwner = true, int channelId = Channels.Reliable)
-            where T : struct, NetworkMessage =>
-                SendToReadyObservers(identity, message, includeOwner, channelId);
-
         /// <summary>Send a message to only clients which are ready including the owner of the NetworkIdentity</summary>
         // TODO put rpcs into NetworkServer.Update WorldState packet, then finally remove SendToReady!
         public static void SendToReadyObservers<T>(NetworkIdentity identity, T message, int channelId)
@@ -401,12 +390,6 @@ namespace Mirror
         {
             SendToReadyObservers(identity, message, true, channelId);
         }
-
-        // Deprecated 2021-09-19
-        [Obsolete("SendToReady(identity, message, ...) was renamed to SendToReadyObservers because that's what it does.")]
-        public static void SendToReady<T>(NetworkIdentity identity, T message, int channelId)
-            where T : struct, NetworkMessage =>
-                SendToReadyObservers(identity, message, channelId);
 
         // transport events ////////////////////////////////////////////////////
         // called by transport
@@ -607,9 +590,12 @@ namespace Mirror
             }
         }
 
-        static void OnError(int connectionId, Exception exception)
+        // transport errors are forwarded to high level
+        static void OnTransportError(int connectionId, Exception exception)
         {
-            Debug.LogException(exception);
+            // transport errors will happen. logging a warning is enough.
+            // make sure the user does not panic.
+            Debug.LogWarning($"Server Transport Error for connId={connectionId}: {exception}. This is fine.");
             // try get connection. passes null otherwise.
             connections.TryGetValue(connectionId, out NetworkConnectionToClient conn);
             OnErrorEvent?.Invoke(conn, exception);
@@ -1435,7 +1421,8 @@ namespace Mirror
 
         // allocate newObservers helper HashSet only once
         // internal for tests
-        internal static readonly HashSet<NetworkConnectionToClient> newObservers = new HashSet<NetworkConnectionToClient>();
+        internal static readonly HashSet<NetworkConnectionToClient> newObservers =
+            new HashSet<NetworkConnectionToClient>();
 
         // rebuild observers default method (no AOI) - adds all connections
         static void RebuildObserversDefault(NetworkIdentity identity, bool initialize)

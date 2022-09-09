@@ -5,6 +5,8 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 using Mirror;
 using System.Collections;
+using EpicTransport;
+
 
 public class MyNetworkManager : NetworkManager
 {
@@ -82,7 +84,7 @@ public class MyNetworkManager : NetworkManager
   void OnServerMessage(Message.ServerMessge msg)
   {
     Message.DisplayMessage(msg.titleText, msg.contentText, msg.alignment);
-    if (msg.disconnect) Disconnect();
+    if (msg.disconnect) Utilities.Disconnect();
   }
 
   public override void OnStartServer()
@@ -328,10 +330,10 @@ public class MyNetworkManager : NetworkManager
     base.OnStopServer();
   }
 
-  public void Disconnect()
+  public override void OnStopClient()
   {
-    StopHost();
-    StopClient();
+    players.Clear();
+    base.OnStopClient();
   }
 
   public enum GameMode
