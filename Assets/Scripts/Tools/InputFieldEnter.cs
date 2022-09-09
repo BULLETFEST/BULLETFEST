@@ -9,6 +9,8 @@ public class InputFieldEnter : MonoBehaviour
 
   bool allowSubmit;
 
+  public TMP_InputField nextField;
+
   // Start is called before the first frame update
   void Start()
   {
@@ -18,12 +20,19 @@ public class InputFieldEnter : MonoBehaviour
   // Update is called once per frame
   void Update()
   {
-    if (allowSubmit && (Input.GetKeyDown(KeyCode.Return) || Input.GetKeyDown(KeyCode.KeypadEnter)))
+    if (allowSubmit)
     {
-      onSubmit.Invoke();
+      if (Input.GetKeyDown(KeyCode.Return) || Input.GetKeyDown(KeyCode.KeypadEnter))
+      {
+        onSubmit?.Invoke();
 
-      inputField.DeactivateInputField();// = false;
-      inputField.ActivateInputField();
+        inputField.DeactivateInputField();// = false;
+        inputField.ActivateInputField();
+      }
+      else if (Input.GetKeyDown(KeyCode.Tab) && nextField != null)
+      {
+        nextField.Select();
+      }
     }
     else
     {
