@@ -5,8 +5,6 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 using Mirror;
 using System.Collections;
-using EpicTransport;
-
 
 public class MyNetworkManager : NetworkManager
 {
@@ -98,7 +96,7 @@ public class MyNetworkManager : NetworkManager
   {
     try
     {
-      Firebase.KeepAlive();
+      FirebaseManager.KeepAlive();
     }
     catch { }
 
@@ -140,7 +138,7 @@ public class MyNetworkManager : NetworkManager
 
     PlayerConnect?.Invoke(conn);
 
-    Firebase.UpdateLobby(NetworkServer.connections.Count, gameMode.ToString(), privacyType.ToString().ToLower());
+    FirebaseManager.UpdateLobby(NetworkServer.connections.Count, gameMode.ToString(), privacyType.ToString().ToLower());
   }
 
   public override void OnServerSceneChanged(string sceneName)

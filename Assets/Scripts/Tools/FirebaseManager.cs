@@ -4,25 +4,79 @@ using System.Threading.Tasks;
 using System.Collections.Specialized;
 using UnityEngine;
 using System.Collections;
+using Firebase;
+using Firebase.Auth;
+using UnityEngine.SceneManagement;
 
-public class Firebase : MonoBehaviour
+public class FirebaseManager : MonoBehaviour
 {
   // private static readonly HttpClient client = new HttpClient();
 
   private static WebClient webClient = new WebClient();
+  private static FirebaseAuth auth
+  {
+    get
+    {
+      return FirebaseAuth.DefaultInstance;
+    }
+  }
+
+  public static FirebaseUser user
+  {
+    private set;
+    get;
+  }
+
+  public static System.Action<FirebaseUser> AuthStateChanged;
+
 
   // bool testMode;
-  static bool testMode = false;
+  static bool testMode = true;
+
+
+
   // #if UNITY_EDITOR
   //   static bool testMode = true;
   // #else
   //     static bool testMode = false;
   // #endif
 
-  /// <summary>
-  /// Attempt to host a game
-  /// </summary>
-  /// <returns>Bool: Room ID</returns>
+  public static bool Initialized
+  {
+    private set;
+    get;
+  }
+
+  public static void InitializeFirebase()
+  {
+    if (Initialized) return;
+
+    auth.StateChanged += p_AuthStateChanged;
+    p_AuthStateChanged(null, null);
+  }
+
+  // Track state changes of the auth object.
+  static void p_AuthStateChanged(object sender, System.EventArgs eventArgs)
+  {
+    if (auth.CurrentUser != user)
+    {
+      bool signedIn = user != auth.CurrentUser && auth.CurrentUser != null;
+      // if (!signedIn && user != null)
+      // {
+      //   Debug.Log("Signed out " + user.UserId);
+      // }
+      user = auth.CurrentUser;
+      if (!signedIn)
+      {
+        SceneManager.LoadScene("Initialization");
+      }
+      AuthStateChanged?.Invoke(user);
+    }
+
+    if (!Initialized) Initialized = true;
+  }
+
+
   public static async Task<Response> HostGame()
   {
     // string ipAddress = webClient.DownloadString("http://ipinfo.io/ip");
@@ -30,7 +84,7 @@ public class Firebase : MonoBehaviour
     NameValueCollection data = new NameValueCollection();
 
     data["address"] = EpicTransport.EOSSDKComponent.LocalUserProductIdString;//ipAddress;
-    data["userId"] = SystemInfo.deviceUniqueIdentifier;
+    data["userId"] = FirebaseManager.user.UserId;
 
     // https://stackoverflow.com/a/4148390
     webClient.Headers["User-Agent"] = "Mozilla/4.0 (compatible; MSIE 8.0; Windows NT 6.1; WOW64; Trident/4.0; SLCC2; .NET CLR 2.0.50727; .NET CLR 3.5.30729; .NET CLR 3.0.30729; Media Center PC 6.0; MDDC)";
@@ -104,7 +158,7 @@ public class Firebase : MonoBehaviour
   {
     NameValueCollection data = new NameValueCollection();
 
-    data["userId"] = SystemInfo.deviceUniqueIdentifier;
+    data["userId"] = FirebaseManager.user.UserId;
     webClient.Headers["User-Agent"] = "Mozilla/4.0 (compatible; MSIE 8.0; Windows NT 6.1; WOW64; Trident/4.0; SLCC2; .NET CLR 2.0.50727; .NET CLR 3.5.30729; .NET CLR 3.0.30729; Media Center PC 6.0; MDDC)";
 
     try
@@ -147,7 +201,7 @@ public class Firebase : MonoBehaviour
 
     data["gameMode"] = gameMode;
     data["playerCount"] = playerCount.ToString();
-    data["userId"] = SystemInfo.deviceUniqueIdentifier;
+    data["userId"] = FirebaseManager.user.UserId;
     data["type"] = type;
 
     try
@@ -161,7 +215,7 @@ public class Firebase : MonoBehaviour
   {
     NameValueCollection data = new NameValueCollection();
 
-    data["userId"] = SystemInfo.deviceUniqueIdentifier;
+    data["userId"] = FirebaseManager.user.UserId;
     webClient.Headers["User-Agent"] = "Mozilla/4.0 (compatible; MSIE 8.0; Windows NT 6.1; WOW64; Trident/4.0; SLCC2; .NET CLR 2.0.50727; .NET CLR 3.5.30729; .NET CLR 3.0.30729; Media Center PC 6.0; MDDC)";
 
     try
@@ -170,6 +224,56 @@ public class Firebase : MonoBehaviour
     }
     catch { }
   }
+
+  public async static Task<bool> LoginWithToken(string token)
+  {
+    if (auth.CurrentUser != null) return false;
+
+    return await auth.SignInWithCustomTokenAsync(token).ContinueWith(task =>
+    {
+      if (task.IsFaulted)
+      {
+        Message.DisplayMessage("Couldn't log in!", task.Exception.Message, TMPro.HorizontalAlignmentOptions.Center);
+        return false;
+      }
+
+      return true;
+    });
+  }
+
+  public async static Task<bool> LoginWithCredentials(string email, string password)
+  {
+    if (auth.CurrentUser != null) return false;
+
+    return await auth.SignInWithEmailAndPasswordAsync(email, password).ContinueWith(task =>
+    {
+      if (task.IsFaulted)
+      {
+        Message.DisplayMessage("Couldn't log in!", task.Exception.Message, TMPro.HorizontalAlignmentOptions.Center);
+        return false;
+      }
+
+      return true;
+    });
+  }
+
+  public async static Task<bool> CreateUser(string email, string password)
+  {
+    if (auth.CurrentUser != null) return false;
+
+    return await auth.CreateUserWithEmailAndPasswordAsync(email, password).ContinueWith(task =>
+    {
+      if (task.IsFaulted)
+      {
+        Message.DisplayMessage("Couldn't sign up!", task.Exception.Message, TMPro.HorizontalAlignmentOptions.Center);
+        return false;
+      }
+
+      return true;
+    });
+  }
+
+  public static void SignOut() => auth.SignOut();
 
   public struct Response
   {

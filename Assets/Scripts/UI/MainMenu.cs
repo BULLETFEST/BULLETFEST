@@ -66,6 +66,8 @@ public class MainMenu : MonoBehaviour
     joinBtn.interactable = EOSSDKComponent.Initialized && !isConnecting;
     hostBtn.interactable = EOSSDKComponent.Initialized && !isHosting;
     serverBrowserBtn.interactable = EOSSDKComponent.Initialized;
+
+    if (Input.GetKeyDown(KeyCode.Slash)) FirebaseManager.SignOut();
   }
 
   public async void Connect()
@@ -78,7 +80,7 @@ public class MainMenu : MonoBehaviour
 
     // In the context of joining, code is equal to the
     // host's IP.
-    Firebase.Response res = await Firebase.JoinGame(code);
+    FirebaseManager.Response res = await FirebaseManager.JoinGame(code);
 
     if (res.success)
     {
@@ -108,7 +110,7 @@ public class MainMenu : MonoBehaviour
 
     // In the context of hosting, code is equal to the
     // room code generated on the server.
-    Firebase.Response res = await Firebase.HostGame();
+    FirebaseManager.Response res = await FirebaseManager.HostGame();
 
     if (res.success)
     {
@@ -151,14 +153,14 @@ public class MainMenu : MonoBehaviour
     serverBrowser.SetActive(true);
 
 
-    Firebase.Match[] matches = await Firebase.getLobbies();
+    FirebaseManager.Match[] matches = await FirebaseManager.getLobbies();
 
     foreach (Transform child in serversContainer.transform)
     {
       Destroy(child.gameObject);
     }
 
-    foreach (Firebase.Match match in matches)
+    foreach (FirebaseManager.Match match in matches)
     {
       GameObject card = Instantiate(gameCard, Vector3.zero, Quaternion.Euler(0, 0, 0), serversContainer.transform);
 

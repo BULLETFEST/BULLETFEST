@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "796405154968",
+    "firebase_url": "https://bulletfest-805c3-default-rtdb.europe-west1.firebasedatabase.app",
+    "project_id": "bulletfest-805c3",
+    "storage_bucket": "bulletfest-805c3.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:796405154968:android:e836a3a2caf44bbd0fbced",
+        "android_client_info": {
+          "package_name": "com.EliasValk.BULLETFEST"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "796405154968-f2v6i7gp96sc25v829du1krr5q145lhr.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCJiTn0m0SDCmq52Xufw27YnM8Qw3nQbJI"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "796405154968-f2v6i7gp96sc25v829du1krr5q145lhr.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

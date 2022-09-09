@@ -144,7 +144,7 @@ namespace EpicTransport {
 
         public static void Tick() {
             instance.platformTickTimer -= Time.deltaTime;
-            instance.EOS.Tick();
+            instance.EOS?.Tick();
         }
 
         // If we're in editor, we should dynamically load and unload the SDK between play sessions.

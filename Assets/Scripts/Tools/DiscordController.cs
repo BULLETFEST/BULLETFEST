@@ -20,12 +20,12 @@ public class DiscordController : MonoBehaviour
   public readonly static ulong applicationId = 1009938773137694800U;
 
 #if UNITY_EDITOR
-  bool debugMode = false;
+  bool debugMode = true;
 #else
   bool debugMode = false;
 #endif
 
-  void Start()
+  void Awake()
   {
     if (debugMode) return;
 
@@ -136,6 +136,6 @@ public class DiscordController : MonoBehaviour
   private void OnApplicationQuit()
   {
     activityManager.ClearActivity(res => { });
-    Firebase.CloseLobby();
+    FirebaseManager.CloseLobby();
   }
 }
