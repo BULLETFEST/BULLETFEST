@@ -65,7 +65,7 @@ public class InitializationUI : MonoBehaviour
         loadingText.gameObject.SetActive(false);
         return;
       }
-      else if (new Version(v).IsMoreRecent(new Version(Application.version)))
+      else if (!Debug.isDebugBuild && new Version(v).IsMoreRecent(new Version(Application.version)))
       {
         Message.DisplayMessage("Update available!",
                                "Please update your game.",

@@ -4364,9 +4364,11 @@ MonoBehaviour:
   settingsButton: {fileID: 1305030459}
   deathmatchTime: {fileID: 1628363437}
   maps: {fileID: 1379070500}
+  gameModeDrowpdown: {fileID: 302293844}
   rounds: {fileID: 1107704484}
   roomCode: {fileID: 1300212530}
   roundsDefault: {fileID: 364570161}
+  privacy: {fileID: 246379306}
 --- !u!114 &1131764262
 MonoBehaviour:
   m_ObjectHideFlags: 0

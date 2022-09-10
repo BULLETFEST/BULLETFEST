@@ -7,9 +7,10 @@ using System.Collections.Generic;
 public class LobbyUIManager : NetworkBehaviour
 {
   public Button startButton, settingsButton;
-  public TMP_Dropdown deathmatchTime, maps;
+  public TMP_Dropdown deathmatchTime, maps, gameModeDrowpdown;
   public TMP_InputField rounds;
   public TMP_Text roomCode, roundsDefault;
+  public Toggle privacy;
 
   MyNetworkManager Room;
 
@@ -28,6 +29,12 @@ public class LobbyUIManager : NetworkBehaviour
       startButton.gameObject.SetActive(false);
       settingsButton.gameObject.SetActive(false);
     }
+
+    gameModeDrowpdown.value = (int)Room.gameMode;
+    rounds.text = Room.rounds.ToString();
+    deathmatchTime.value = DeathmatchTimeToOption(Room.deathmatchLength);
+    maps.value = Room.chosenMap;
+    privacy.isOn = Room.privacyType == MyNetworkManager.PrivacyType.Private;
 
 
     roomCode.text = $"Room code: {Room.roomCode}";
@@ -141,6 +148,32 @@ public class LobbyUIManager : NetworkBehaviour
       case 8:
         nm.deathmatchLength = 5;
         break;
+    }
+  }
+
+  public int DeathmatchTimeToOption(float t)
+  {
+    switch (t)
+    {
+      case 1:
+      default:
+        return 0;
+      case 1.5f:
+        return 1;
+      case 2:
+        return 2;
+      case 2.5f:
+        return 3;
+      case 3:
+        return 4;
+      case 3.5f:
+        return 5;
+      case 4:
+        return 6;
+      case 4.5f:
+        return 7;
+      case 5:
+        return 8;
     }
   }
 
