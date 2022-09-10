@@ -135,8 +135,9 @@ public class PlayerBehavior : NetworkBehaviour
     weapon.bulletsInMag--;
     weapon.fireTimeout = (float)NetworkTime.time + (1f / weapon.fireRate);
 
-    playerVars.weaponBehavior.Shoot(weapon.ID, connectionToClient);
     Rpc_AddForce(gameObject, weapon.shootSound);
+    playerVars.weaponBehavior.Shoot(weapon.ID, connectionToClient);
+
     Target_UpdateUI(weapon.bulletsInMag);
     shootKeyUp = false;
   }

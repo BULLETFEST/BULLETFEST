@@ -113,28 +113,31 @@ public class DiscordController : MonoBehaviour
 
   public static void UpdateActivity(Discord.Activity activity)
   {
+    if (discord == null) return;
+
     activity.Timestamps.Start = now.ToUnixTimeMilliseconds();
     activity.Assets.LargeImage = "unity";
     activity.Assets.LargeText = "BULLETFEST | ALPHA";
     activity.ApplicationId = (long)applicationId;
     activity.Instance = true;
 
-    if (discord != null)
-      activityManager.UpdateActivity(activity, (res) =>
-      {
-        if (res != Result.Ok) print(res);
-        // else
-        // {
-        //   // print(JsonUtility.ToJson(activity, true));
-        //   // print(JsonUtility.ToJson(activity.Party, true));
-        //   // print(JsonUtility.ToJson(activity.Party.Size, true));
-        //   // print(JsonUtility.ToJson(activity.Secrets, true));
-        // }
-      });
+    activityManager.UpdateActivity(activity, (res) =>
+    {
+      if (res != Result.Ok) print(res);
+      // else
+      // {
+      //   // print(JsonUtility.ToJson(activity, true));
+      //   // print(JsonUtility.ToJson(activity.Party, true));
+      //   // print(JsonUtility.ToJson(activity.Party.Size, true));
+      //   // print(JsonUtility.ToJson(activity.Secrets, true));
+      // }
+    });
   }
 
   private void OnApplicationQuit()
   {
+    if (debugMode) return;
+
     activityManager.ClearActivity(res => { });
     FirebaseManager.CloseLobby();
   }
