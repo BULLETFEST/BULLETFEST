@@ -52,9 +52,31 @@ public class InitializationUI : MonoBehaviour
   {
     if (EOSSDKComponent.Initialized && FirebaseManager.Initialized)
     {
-      if (FirebaseManager.user != null) SceneManager.LoadScene("MainMenu");
-
       if (!loadingText.gameObject.activeInHierarchy) return;
+
+      string v = FirebaseManager.CheckServerStatus();
+      if (v == null)
+      {
+        Message.DisplayMessage("Failed to connect to server!",
+                               "The servers are currently down, try again later, or you could try notifying the developer or you could try going to https://joobot.glitch.me",
+                               Application.Quit,
+                               HorizontalAlignmentOptions.Center);
+
+        loadingText.gameObject.SetActive(false);
+        return;
+      }
+      else if (new Version(v).IsMoreRecent(new Version(Application.version)))
+      {
+        Message.DisplayMessage("Update available!",
+                               "Please update your game.",
+                               Application.Quit,
+                               HorizontalAlignmentOptions.Center);
+
+        loadingText.gameObject.SetActive(false);
+        return;
+      }
+
+      if (FirebaseManager.user != null) SceneManager.LoadScene("MainMenu");
 
       loadingText.gameObject.SetActive(false);
       loginPanel.SetActive(true);
@@ -73,6 +95,8 @@ public class InitializationUI : MonoBehaviour
     signupBtn.interactable = false;
     FirebaseManager.LoginWithCredentials(l_Email.text, l_Pass.text).ContinueWith(task =>
     {
+      if (task.Result) SceneManager.LoadScene("MainMenu");
+
       loginBtn.interactable = true;
       signupBtn.interactable = true;
     });
@@ -90,6 +114,8 @@ public class InitializationUI : MonoBehaviour
     signupBtn.interactable = false;
     FirebaseManager.CreateUser(s_Email.text, s_Pass.text).ContinueWith(task =>
     {
+      if (task.Result) SceneManager.LoadScene("MainMenu");
+
       loginBtn.interactable = true;
       signupBtn.interactable = true;
     });

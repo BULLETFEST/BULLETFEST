@@ -100,7 +100,7 @@ public class MyNetworkManager : NetworkManager
     }
     catch { }
 
-    yield return new WaitForSecondsRealtime(60 * 2.5f);
+    yield return new WaitForSecondsRealtime(120f);
 
     StartCoroutine(keepAlive());
   }
@@ -138,7 +138,7 @@ public class MyNetworkManager : NetworkManager
 
     PlayerConnect?.Invoke(conn);
 
-    FirebaseManager.UpdateLobby(NetworkServer.connections.Count, gameMode.ToString(), privacyType.ToString().ToLower());
+    FirebaseManager.UpdateLobby(NetworkServer.connections.Count, gameMode.ToString(), privacyType.ToString().ToLower(), gameStarted);
   }
 
   public override void OnServerSceneChanged(string sceneName)
@@ -157,6 +157,10 @@ public class MyNetworkManager : NetworkManager
         NetworkServer.Spawn(go);
       }
     }
+    if (sceneName == "Lobby")
+    {
+      FirebaseManager.UpdateLobby(NetworkServer.connections.Count, gameMode.ToString(), privacyType.ToString().ToLower(), false);
+    }
   }
 
   public override void OnServerDisconnect(NetworkConnectionToClient conn)
@@ -166,6 +170,8 @@ public class MyNetworkManager : NetworkManager
     if (players.ContainsKey(conn))
     {
       players.Remove(conn);
+
+      FirebaseManager.UpdateLobby(NetworkServer.connections.Count, gameMode.ToString(), privacyType.ToString().ToLower(), gameStarted);
 
       PlayerUpdate?.Invoke();
 
@@ -187,7 +193,7 @@ public class MyNetworkManager : NetworkManager
   public void OnPlayerDie(NetworkConnectionToClient conn)
   {
     if (NetworkServer.connections.Count == 1) AnnounceWinner();
-    else if (gameMode == GameMode.Rounds)
+    else if (gameMode == GameMode.Elimination)
     {
       deadPlayers++;
       if (deadPlayers == NetworkServer.connections.Count - 1)
@@ -253,7 +259,7 @@ public class MyNetworkManager : NetworkManager
 
     int sceneCount = SceneManager.sceneCountInBuildSettings;
     List<string> _scenes = new();
-    if (gameMode == GameMode.Rounds)
+    if (gameMode == GameMode.Elimination)
     {
       for (int i = 0; i < sceneCount; i++)
       {
@@ -284,6 +290,8 @@ public class MyNetworkManager : NetworkManager
     queuedScenes = _scenes.ToArray();
 
     gameStarted = true;
+
+    FirebaseManager.UpdateLobby(NetworkServer.connections.Count, gameMode.ToString(), privacyType.ToString().ToLower(), gameStarted);
 
     CycleMap();
   }
@@ -336,7 +344,7 @@ public class MyNetworkManager : NetworkManager
 
   public enum GameMode
   {
-    Rounds = 0,
+    Elimination = 0,
     Deathmatch = 1,
   }
 

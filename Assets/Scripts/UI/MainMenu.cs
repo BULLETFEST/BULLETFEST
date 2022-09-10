@@ -73,6 +73,7 @@ public class MainMenu : MonoBehaviour
   public async void Connect()
   {
     if (isConnecting) return;
+    Message.DisplayMessage("", "Connecting...", false, HorizontalAlignmentOptions.Center);
 
     isConnecting = true;
     connectBtn.interactable = false;
@@ -90,10 +91,13 @@ public class MainMenu : MonoBehaviour
     }
     else
     {
+      Message.HideMessage();
+
       if (res.message != "sErr")
       {
         Message.DisplayMessage("Something went wrong!", res.message, HorizontalAlignmentOptions.Center);
       }
+
       connectBtn.interactable = true;
       isConnecting = false;
     }
@@ -104,6 +108,7 @@ public class MainMenu : MonoBehaviour
   public async void Host()
   {
     if (isHosting) return;
+    Message.DisplayMessage("", "Connecting...", false, HorizontalAlignmentOptions.Center);
 
     isHosting = true;
     PlayerPrefs.SetString("PlayerName", playerName.text);
@@ -121,10 +126,13 @@ public class MainMenu : MonoBehaviour
     }
     else
     {
+      Message.HideMessage();
+
       if (res.message != "sErr")
       {
         Message.DisplayMessage("Something went wrong!", res.message, HorizontalAlignmentOptions.Center);
       }
+
       isHosting = false;
     }
   }
@@ -145,7 +153,7 @@ public class MainMenu : MonoBehaviour
     code = newCode;
   }
 
-  public async void UpdateServerBrowser()
+  public void UpdateServerBrowser()
   {
     refreshBtn.interactable = false;
     refreshBtn.GetComponentInChildren<TMP_Text>().text = "Refreshing...";
@@ -153,7 +161,7 @@ public class MainMenu : MonoBehaviour
     serverBrowser.SetActive(true);
 
 
-    FirebaseManager.Match[] matches = await FirebaseManager.getLobbies();
+    FirebaseManager.Match[] matches = FirebaseManager.GetLobbies();
 
     foreach (Transform child in serversContainer.transform)
     {
