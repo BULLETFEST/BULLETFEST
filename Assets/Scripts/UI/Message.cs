@@ -1,5 +1,6 @@
 using UnityEngine;
 using TMPro;
+using UnityEngine.UI;
 
 public class Message : MonoBehaviour
 {
@@ -7,9 +8,13 @@ public class Message : MonoBehaviour
 
   public static Canvas canvas;
 
+  public static Button closeBtn;
+
   void Start()
   {
     canvas = GetComponent<Canvas>();
+
+    closeBtn = GetComponentInChildren<Button>();
 
     TMP_Text[] texts = GetComponentsInChildren<TMP_Text>();
 
@@ -20,8 +25,17 @@ public class Message : MonoBehaviour
     }
   }
 
+  public static void DisplayMessage(string titleText, string contentText, bool closable, HorizontalAlignmentOptions alignment = HorizontalAlignmentOptions.Left)
+  {
+    DisplayMessage(titleText, contentText, alignment);
+
+    closeBtn.gameObject.SetActive(closable);
+  }
+
   public static void DisplayMessage(string titleText, string contentText, HorizontalAlignmentOptions alignment = HorizontalAlignmentOptions.Left)
   {
+    closeBtn.gameObject.SetActive(true);
+
     title.text = titleText;
     content.text = contentText;
     content.horizontalAlignment = alignment;
@@ -29,6 +43,29 @@ public class Message : MonoBehaviour
     canvas.enabled = true;
   }
 
+  public static void DisplayMessage(string titleText, string contentText, System.Action onClose, HorizontalAlignmentOptions alignment = HorizontalAlignmentOptions.Left)
+  {
+    closeBtn.gameObject.SetActive(true);
+
+    title.text = titleText;
+    content.text = contentText;
+    content.horizontalAlignment = alignment;
+
+
+    closeBtn.onClick.AddListener(delegate
+    {
+      onClose();
+      closeBtn.onClick.RemoveAllListeners();
+      closeBtn.onClick.AddListener(() => HideMessage());
+    });
+
+    canvas.enabled = true;
+  }
+
+  public static void HideMessage()
+  {
+    canvas.enabled = false;
+  }
 
   public struct ServerMessge : Mirror.NetworkMessage
   {

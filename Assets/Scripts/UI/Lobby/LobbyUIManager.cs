@@ -93,7 +93,7 @@ public class LobbyUIManager : NetworkBehaviour
       maps.transform.parent.gameObject.SetActive(false);
     }
 
-    FirebaseManager.UpdateLobby(NetworkServer.connections.Count, nm.gameMode.ToString(), nm.privacyType.ToString().ToLower());
+    FirebaseManager.UpdateLobby(NetworkServer.connections.Count, nm.gameMode.ToString(), nm.privacyType.ToString().ToLower(), false);
   }
 
   public void TogglePrivate(bool option)
@@ -101,7 +101,7 @@ public class LobbyUIManager : NetworkBehaviour
     if (option) nm.privacyType = MyNetworkManager.PrivacyType.Private;
     else nm.privacyType = MyNetworkManager.PrivacyType.Public;
 
-    FirebaseManager.UpdateLobby(NetworkServer.connections.Count, nm.gameMode.ToString(), nm.privacyType.ToString().ToLower());
+    FirebaseManager.UpdateLobby(NetworkServer.connections.Count, nm.gameMode.ToString(), nm.privacyType.ToString().ToLower(), false);
   }
 
   public void ChangeRoundCount(string count)
