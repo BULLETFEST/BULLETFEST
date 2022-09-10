@@ -20,6 +20,7 @@ public class LobbyPlayer : NetworkBehaviour
     OnPlayerJoin();
 
     UpdateDisplayName(PlayerPrefs.GetString("PlayerName", "Guest"));
+    Message.HideMessage();
   }
 
   Color[] colors = new Color[] {

@@ -31,15 +31,15 @@ public class FirebaseManager : MonoBehaviour
 
 
   // bool testMode;
+  // static bool testMode = true;
+
+
+
+#if UNITY_EDITOR
   static bool testMode = true;
-
-
-
-  // #if UNITY_EDITOR
-  //   static bool testMode = true;
-  // #else
-  //     static bool testMode = false;
-  // #endif
+#else
+      static bool testMode = false;
+#endif
 
   public static bool Initialized
   {
@@ -168,7 +168,7 @@ public class FirebaseManager : MonoBehaviour
     catch { }
   }
 
-  public static async Task<Match[]> getLobbies()
+  public static Match[] GetLobbies()
   {
     // https://stackoverflow.com/a/4148390
     webClient.Headers["User-Agent"] = "Mozilla/4.0 (compatible; MSIE 8.0; Windows NT 6.1; WOW64; Trident/4.0; SLCC2; .NET CLR 2.0.50727; .NET CLR 3.5.30729; .NET CLR 3.0.30729; Media Center PC 6.0; MDDC)";
@@ -176,7 +176,7 @@ public class FirebaseManager : MonoBehaviour
     byte[] res = new byte[0];
     try
     {
-      res = await webClient.UploadValuesTaskAsync(new System.Uri(testMode ? "http://localhost:3000/getLobbies" : "https://joobot.glitch.me/getLobbies"), "POST", new NameValueCollection());
+      res = webClient.DownloadData(new System.Uri(testMode ? "http://localhost:3000/getLobbies" : "https://joobot.glitch.me/getLobbies"));
     }
     catch (System.Exception ex)
     {
@@ -186,14 +186,12 @@ public class FirebaseManager : MonoBehaviour
 
     if (res.Length == 0) return new Match[0];
 
-    string responseInString = Encoding.UTF8.GetString(res);
-
-    GetLobbiesResponse response = JsonUtility.FromJson<GetLobbiesResponse>(responseInString);
-
-    return response.matches;
+    string responseInString = System.Text.Encoding.Default.GetString(res);
+    Match[] response = JsonHelper.FromJson<Match>(responseInString);
+    return response;
   }
 
-  public static void UpdateLobby(int playerCount, string gameMode, string type)
+  public static void UpdateLobby(int playerCount, string gameMode, string type, bool gameStarted)
   {
     NameValueCollection data = new NameValueCollection();
 
@@ -203,6 +201,7 @@ public class FirebaseManager : MonoBehaviour
     data["playerCount"] = playerCount.ToString();
     data["userId"] = FirebaseManager.user.UserId;
     data["type"] = type;
+    data["started"] = gameStarted.ToString();
 
     try
     {
@@ -275,6 +274,23 @@ public class FirebaseManager : MonoBehaviour
 
   public static void SignOut() => auth.SignOut();
 
+  public static string CheckServerStatus()
+  {
+    webClient.Headers["User-Agent"] = "Mozilla/4.0 (compatible; MSIE 8.0; Windows NT 6.1; WOW64; Trident/4.0; SLCC2; .NET CLR 2.0.50727; .NET CLR 3.5.30729; .NET CLR 3.0.30729; Media Center PC 6.0; MDDC)";
+
+    byte[] data;
+    try
+    {
+      data = webClient.DownloadData(new System.Uri(testMode ? "http://localhost:3000/getLatestVer" : "https://joobot.glitch.me/getLatestVer"));
+    }
+    catch
+    {
+      return null;
+    }
+
+    return System.Text.Encoding.Default.GetString(data);
+  }
+
   public struct Response
   {
     public string code;
@@ -283,18 +299,12 @@ public class FirebaseManager : MonoBehaviour
   }
 
   [System.Serializable]
-  public class GetLobbiesResponse
-  {
-    public Match[] matches;
-    public bool success;
-  }
-
-  [System.Serializable]
   public class Match
   {
     public string code;
     public string gameMode;
     public string playerCount;
+    public bool started;
 
     public override string ToString()
     {
