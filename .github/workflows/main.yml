@@ -18,7 +18,7 @@ jobs:
       fail-fast: false
       matrix:
         targetPlatform:
-          - StandaloneOSX # Build a macOS standalone (Intel 64-bit).
+          #- StandaloneOSX # Build a macOS standalone (Intel 64-bit).
           #- StandaloneWindows # Build a Windows standalone.
           - StandaloneWindows64 # Build a Windows 64-bit standalone.
           - StandaloneLinux64 # Build a Linux 64-bit standalone.
@@ -123,4 +123,5 @@ jobs:
             Downloads:
             Windows: <https://drive.google.com/file/d/1XGsgIlPbgAfFbKJdavXmo9kvYYV1-TMS/view?usp=sharing>
             Linux: <https://drive.google.com/file/d/1rbJa1nVah6mPJ7R5nyyMFGKCw6hGE5jP/view?usp=sharing>
-            MacOS (Intel 64 + Apple Silicon): <https://drive.google.com/file/d/1s8wX7TrDSbG93sG5IjDeVvACR_rwN3ET/view?usp=sharing>
+
+#            MacOS (Intel 64 + Apple Silicon): <https://drive.google.com/file/d/1s8wX7TrDSbG93sG5IjDeVvACR_rwN3ET/view?usp=sharing>
