@@ -8,6 +8,7 @@ public class DontDestroyOnLoad : MonoBehaviour
     if (objects.Length > 1) Destroy(gameObject);
 
 
+    transform.SetParent(null);
     DontDestroyOnLoad(gameObject);
     Destroy(this);
   }
