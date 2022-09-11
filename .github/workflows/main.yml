@@ -35,13 +35,18 @@ jobs:
           fetch-depth: 0
           lfs: true
 
+      # - uses: actions/cache@v2
+      #   with:
+      #     path: Library
+      #     key: Library-BULLETFEST-${{ matrix.targetPlatform }}
+      #     restore-keys: |
+      #       Library-BULLETFEST-
+      #       Library-
       - uses: actions/cache@v2
         with:
           path: Library
-          key: Library-BULLETFEST-${{ matrix.targetPlatform }}
-          restore-keys: |
-            Library-BULLETFEST-
-            Library-
+          key: Library-${{ matrix.targetPlatform }}
+          restore-keys: Library-
 
       - uses: game-ci/unity-builder@v2
         env:
@@ -54,7 +59,7 @@ jobs:
           buildName: BULLETFEST #_${{ matrix.targetPlatform }}
           #buildsPath: build_${{ matrix.targetPlatform }}
           versioning: None
-          customParameters: -CompressWithLz4HC
+          #customParameters: -CompressWithLz4HC
 
       - name: Get Build Version
         run: |
