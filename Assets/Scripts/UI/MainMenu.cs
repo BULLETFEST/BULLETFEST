@@ -81,12 +81,12 @@ public class MainMenu : MonoBehaviour
 
     // In the context of joining, code is equal to the
     // host's IP.
-    FirebaseManager.Response res = await FirebaseManager.JoinGame(code);
+    FirebaseManager.Response<string> res = await FirebaseManager.JoinGame(code);
 
-    if (res.success)
+    if (res.status == 200)
     {
       nm.roomCode = code;
-      nm.networkAddress = res.code;
+      nm.networkAddress = res.data;
       nm.StartClient();
     }
     else
@@ -115,11 +115,11 @@ public class MainMenu : MonoBehaviour
 
     // In the context of hosting, code is equal to the
     // room code generated on the server.
-    FirebaseManager.Response res = await FirebaseManager.HostGame();
+    FirebaseManager.Response<string> res = await FirebaseManager.HostGame();
 
-    if (res.success)
+    if (res.status == 200)
     {
-      nm.roomCode = res.code;
+      nm.roomCode = res.data;
       // nm.rounds = int.Parse(rounds.text == "" ? "11" : rounds.text);
       DiscordController.partyId = DiscordController.now.ToUnixTimeMilliseconds().ToString();
       nm.StartHost();

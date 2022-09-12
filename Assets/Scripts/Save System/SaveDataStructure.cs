@@ -4,14 +4,13 @@ using UnityEngine.SceneManagement;
 [System.Serializable]
 public class SaveDataStructure
 {
-  public int[] worldProgress;
-  public float hp;
-  public string[] gunIDs;
   public SettingsClass settings;
+  public string token;
 
-  public SaveDataStructure(SettingsClass settings)
+  public SaveDataStructure(SettingsClass settings, string token)
   {
     this.settings = settings;
+    this.token = token;
   }
 
 }
