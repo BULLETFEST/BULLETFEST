@@ -16,13 +16,13 @@ public class LobbyPlayerSpawner : NetworkBehaviour
     }
 
     MyNetworkManager.instance.PlayerConnect += SpawnLobbyPlayer;
-    MyNetworkManager.instance.PlayerDisconnect += delegate (NetworkConnectionToClient conn) { CallPlayerDisconnect(); };
+    MyNetworkManager.instance.PlayerDisconnect += PlayerDisconnect;
   }
 
   private void OnDestroy()
   {
     MyNetworkManager.instance.PlayerConnect -= SpawnLobbyPlayer;
-    MyNetworkManager.instance.PlayerDisconnect -= delegate (NetworkConnectionToClient conn) { CallPlayerDisconnect(); };
+    MyNetworkManager.instance.PlayerDisconnect -= PlayerDisconnect;
   }
 
   public void SpawnLobbyPlayer(NetworkConnectionToClient conn)
@@ -40,6 +40,8 @@ public class LobbyPlayerSpawner : NetworkBehaviour
 
     CallPlayerJoined();
   }
+
+  public void PlayerDisconnect(NetworkConnectionToClient conn) => CallPlayerDisconnect();
 
   [ClientRpc]
   public void CallPlayerDisconnect()

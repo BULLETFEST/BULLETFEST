@@ -108,14 +108,11 @@ public class Utilities : MonoBehaviour
   {
     if (FindWithType<MyNetworkManager>(out MyNetworkManager networkManager))
     {
-      networkManager.StopServer();
-      networkManager.StopClient();
+      if (networkManager.mode == Mirror.NetworkManagerMode.ServerOnly) networkManager.StopServer();
+      else if (networkManager.mode == Mirror.NetworkManagerMode.Host) networkManager.StopHost();
+      else if (networkManager.mode == Mirror.NetworkManagerMode.ClientOnly) networkManager.StopClient();
 
-      FindObjectOfType<EosTransport>().ClientDisconnect();
-      FindObjectOfType<EosTransport>().ServerStop();
-      FindObjectOfType<EosTransport>().Shutdown();
-
-      Destroy(networkManager.gameObject);
+      // Destroy(networkManager.gameObject);
 
       SceneManager.LoadScene("MainMenu");
     }
