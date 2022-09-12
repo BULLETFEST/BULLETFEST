@@ -93,6 +93,11 @@ public class InitializationUI : MonoBehaviour
         {
           SceneManager.LoadScene(1);
         }
+        else
+        {
+          SaveSystem.saveData.token = "";
+          SaveSystem.SavePlayer(SaveSystem.saveData);
+        }
       }
 
       loadingText.gameObject.SetActive(false);
