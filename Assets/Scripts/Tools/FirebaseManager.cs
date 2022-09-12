@@ -14,7 +14,7 @@ public class FirebaseManager : MonoBehaviour
 #if UNITY_EDITOR
   static bool testMode = true;
 #else
-      static bool testMode = true;
+      static bool testMode = false;
 #endif
 
   public static bool Initialized
