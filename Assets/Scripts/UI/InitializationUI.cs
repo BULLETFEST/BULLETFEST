@@ -26,8 +26,6 @@ public class InitializationUI : MonoBehaviour
   {
     StartCoroutine(LoadingTextAnimation());
 
-    // FirebaseManager.AuthStateChanged += CheckUser;
-    FirebaseManager.InitializeFirebase();
     EOSSDKComponent.Initialize();
   }
 
@@ -50,12 +48,12 @@ public class InitializationUI : MonoBehaviour
 
   void Update()
   {
-    if (EOSSDKComponent.Initialized && FirebaseManager.Initialized)
+    if (EOSSDKComponent.Initialized)
     {
       if (!loadingText.gameObject.activeInHierarchy) return;
 
-      string v = FirebaseManager.CheckServerStatus();
-      if (v == null)
+      FirebaseManager.Response<string> v = FirebaseManager.CheckServerStatus();
+      if (v.status != 200)
       {
         Message.DisplayMessage("Failed to connect to server!",
                                "The servers are currently down, try again later, or you could try notifying the developer or you could try going to https://joobot.glitch.me",
@@ -65,7 +63,7 @@ public class InitializationUI : MonoBehaviour
         loadingText.gameObject.SetActive(false);
         return;
       }
-      else if (!Debug.isDebugBuild && new Version(v).IsMoreRecent(new Version(Application.version)))
+      else if (!Debug.isDebugBuild && new Version(v.data).IsMoreRecent(new Version(Application.version)))
       {
         Message.DisplayMessage("Update available!",
                                "Please update your game.",
@@ -76,14 +74,33 @@ public class InitializationUI : MonoBehaviour
         return;
       }
 
-      if (FirebaseManager.user != null) SceneManager.LoadScene("MainMenu");
+      if (!string.IsNullOrEmpty(SaveSystem.saveData.token))
+      {
+        FirebaseManager.Response<bool> res = FirebaseManager.ValidateToken(SaveSystem.saveData.token);
+
+        if (res.status != 200)
+        {
+          Message.DisplayMessage("Failed to connect to server!",
+                               "The servers are currently down, try again later, or you could try notifying the developer or you could try going to https://joobot.glitch.me",
+                               Application.Quit,
+                               HorizontalAlignmentOptions.Center);
+
+          loadingText.gameObject.SetActive(false);
+          return;
+        }
+
+        if (res.data)
+        {
+          SceneManager.LoadScene(1);
+        }
+      }
 
       loadingText.gameObject.SetActive(false);
       loginPanel.SetActive(true);
     }
   }
 
-  public void Login()
+  public async void Login()
   {
     if (string.IsNullOrEmpty(l_Email.text) || string.IsNullOrEmpty(l_Pass.text))
     {
@@ -93,16 +110,24 @@ public class InitializationUI : MonoBehaviour
 
     loginBtn.interactable = false;
     signupBtn.interactable = false;
-    FirebaseManager.LoginWithCredentials(l_Email.text, l_Pass.text).ContinueWith(task =>
-    {
-      if (task.Result) SceneManager.LoadScene("MainMenu");
+    FirebaseManager.Response<string> res = await FirebaseManager.Login(l_Email.text, l_Pass.text);
 
-      loginBtn.interactable = true;
-      signupBtn.interactable = true;
-    });
+    if (res.status == 200)
+    {
+      SaveSystem.saveData.token = res.data;
+      SaveSystem.SavePlayer(SaveSystem.saveData);
+      SceneManager.LoadScene(1);
+    }
+    else
+    {
+      Message.DisplayMessage("", res.message, HorizontalAlignmentOptions.Center);
+    }
+
+    loginBtn.interactable = true;
+    signupBtn.interactable = true;
   }
 
-  public void Signup()
+  public async void Signup()
   {
     if (string.IsNullOrEmpty(s_Email.text) || string.IsNullOrEmpty(s_Pass.text))
     {
@@ -112,12 +137,20 @@ public class InitializationUI : MonoBehaviour
 
     loginBtn.interactable = false;
     signupBtn.interactable = false;
-    FirebaseManager.CreateUser(s_Email.text, s_Pass.text).ContinueWith(task =>
-    {
-      if (task.Result) SceneManager.LoadScene("MainMenu");
+    FirebaseManager.Response<string> res = await FirebaseManager.CreateUser(s_Email.text, s_Pass.text);
 
-      loginBtn.interactable = true;
-      signupBtn.interactable = true;
-    });
+    if (res.status == 200)
+    {
+      SaveSystem.saveData.token = res.data;
+      SaveSystem.SavePlayer(SaveSystem.saveData);
+      SceneManager.LoadScene(1);
+    }
+    else
+    {
+      Message.DisplayMessage("", res.message, HorizontalAlignmentOptions.Center);
+    }
+
+    loginBtn.interactable = true;
+    signupBtn.interactable = true;
   }
 }

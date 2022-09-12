@@ -39,7 +39,7 @@ public class SaveSystem : MonoBehaviour
 
     if (saveData == null || saveData.settings == null)
     {
-      saveData = new SaveDataStructure(new SettingsClass(defaultBinds, 1, 1, 1, false, false, 60, 0, 0));
+      saveData = new SaveDataStructure(new SettingsClass(defaultBinds, 1, 1, 1, false, false, 60, 0, 0), "");
     }
     else if (saveData.settings.keybinds == null)
     {
@@ -83,7 +83,7 @@ public class SaveSystem : MonoBehaviour
       {
         if (settingsUI.waitingForKey) return;
 
-        SaveSystem.SavePlayer(new SaveDataStructure(SaveSystem.saveData.settings));
+        SaveSystem.SavePlayer(new SaveDataStructure(SaveSystem.saveData.settings, SaveSystem.saveData.token));
         // SceneManager.UnloadSceneAsync("Settings");
         settingsUI.GetComponent<Canvas>().enabled = false;
         IsSettingsOpen = false;
