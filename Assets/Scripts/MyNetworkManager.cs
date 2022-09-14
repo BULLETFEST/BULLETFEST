@@ -1,10 +1,11 @@
 using System.IO;
 using System.Linq;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Video;
 using UnityEngine.SceneManagement;
 using Mirror;
-using System.Collections;
 
 public class MyNetworkManager : NetworkManager
 {
@@ -161,6 +162,26 @@ public class MyNetworkManager : NetworkManager
     {
       FirebaseManager.UpdateLobby(NetworkServer.connections.Count, gameMode.ToString(), privacyType.ToString().ToLower(), false);
     }
+  }
+
+  public override void OnClientSceneChanged()
+  {
+    base.OnClientSceneChanged();
+
+    if (SceneManager.GetActiveScene().name == "End") return;
+
+    VideoPlayer v = Camera.main.gameObject.AddComponent<VideoPlayer>();
+    v.clip = Resources.Load<VideoClip>("glitch");
+    v.isLooping = true;
+    v.playOnAwake = true;
+    v.waitForFirstFrame = true;
+    v.playbackSpeed = 1.75f;
+    v.targetCameraAlpha = 0.222f;
+    v.aspectRatio = VideoAspectRatio.FitInside;
+    v.audioOutputMode = VideoAudioOutputMode.None;
+    v.renderMode = VideoRenderMode.CameraFarPlane;
+
+    v.Play();
   }
 
   public override void OnServerDisconnect(NetworkConnectionToClient conn)

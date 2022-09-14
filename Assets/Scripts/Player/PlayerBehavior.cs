@@ -162,6 +162,8 @@ public class PlayerBehavior : NetworkBehaviour
   [Command(requiresAuthority = false)]
   public void TakeDamage(float damage, GameObject owner)
   {
+    if (dead) return;
+
     damageDealer = owner;
 
     health -= damage;

@@ -190,4 +190,12 @@ public class MainMenu : MonoBehaviour
     refreshBtn.GetComponentInChildren<TMP_Text>().fontStyle = FontStyles.Normal;
     refreshBtn.interactable = true;
   }
+
+  public void PlaySelectSound()
+  {
+    if (Utilities.FindWithType<AudioSystem>(out AudioSystem audioSystem))
+    {
+      audioSystem.PlaySound("Select");
+    }
+  }
 }

@@ -112,8 +112,6 @@ public class Utilities : MonoBehaviour
       else if (networkManager.mode == Mirror.NetworkManagerMode.Host) networkManager.StopHost();
       else if (networkManager.mode == Mirror.NetworkManagerMode.ClientOnly) networkManager.StopClient();
 
-      // Destroy(networkManager.gameObject);
-
       SceneManager.LoadScene("MainMenu");
     }
   }
