@@ -43,6 +43,9 @@ jobs:
             Library-BULLETFEST-
             Library-
 
+      - name: TEST
+        run: echo 'cat $(cat ./Assets/Resources/glitch.mp4)'
+
       - uses: game-ci/unity-builder@v2
         env:
           UNITY_SERIAL: ${{ secrets.UNITY_SERIAL }}
