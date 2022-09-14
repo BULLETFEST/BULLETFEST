@@ -43,6 +43,14 @@ jobs:
             Library-BULLETFEST-
             Library-
 
+      - uses: actions/cache@v2
+        with:
+          path: ./build/${{ matrix.targetPlatform }}/BULLETFEST_BackUpThisFolder_ButDontShipItWithYourGame
+          key: IL2CPP-BULLETFEST-${{ matrix.targetPlatform }}
+          restore-keys: |
+            IL2CPP-BULLETFEST-
+            IL2CPP-
+
       - uses: game-ci/unity-builder@v2
         env:
           UNITY_SERIAL: ${{ secrets.UNITY_SERIAL }}
@@ -65,11 +73,10 @@ jobs:
           name: projectVer
           path: projectVer.txt
 
-      - name: Delete Sensitive files & Create archive
+      - name: Create archive
         run: |
           cd ./build/${{ matrix.targetPlatform }}
-          sudo rm -rf ./*_DoNotShip
-          7z a -t7z -m0=lzma -mx=9 -mfb=64 -md=32m -ms=on ../../BULLETFEST_${{ matrix.targetPlatform }}.7z *
+          7z a -t7z -m0=lzma -mx=9 -mfb=64 -md=32m -ms=on -x'!BULLETFEST_B*' ../../BULLETFEST_${{ matrix.targetPlatform }}.7z *
           cd ../..
 
       - name: Upload to google drive
