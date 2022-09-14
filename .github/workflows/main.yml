@@ -44,7 +44,7 @@ jobs:
             Library-
 
       - name: TEST
-        run: echo 'cat $(cat ./Assets/Resources/glitch.mp4)'
+        run: test -e Assets/Resources/glitch.mp4 && echo file exists || echo file not found
 
       - uses: game-ci/unity-builder@v2
         env:
