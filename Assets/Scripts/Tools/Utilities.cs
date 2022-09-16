@@ -143,7 +143,7 @@ public class Utilities : MonoBehaviour
     GameObject[] objects = GameObject.FindGameObjectsWithTag(tag);
 
     GameObject furthest = null;
-    float distance = Mathf.Infinity;
+    float distance = 0;
     Vector3 position = origin.position;
     foreach (GameObject go in objects)
     {

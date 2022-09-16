@@ -97,7 +97,6 @@ GameObject:
   - component: {fileID: -4046186402334728945}
   - component: {fileID: -7464648577466137130}
   - component: {fileID: 6179108467184649937}
-  - component: {fileID: 1985893935}
   - component: {fileID: -1675671087038147106}
   m_Layer: 0
   m_Name: Gewehr98
@@ -195,22 +194,6 @@ Rigidbody2D:
   m_SleepingMode: 1
   m_CollisionDetection: 1
   m_Constraints: 0
---- !u!58 &1985893935
-CircleCollider2D:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3075476997647957983}
-  m_Enabled: 1
-  m_Density: 1
-  m_Material: {fileID: 0}
-  m_IsTrigger: 1
-  m_UsedByEffector: 0
-  m_UsedByComposite: 0
-  m_Offset: {x: 0, y: 0}
-  serializedVersion: 2
-  m_Radius: 2
 --- !u!114 &-1675671087038147106
 MonoBehaviour:
   m_ObjectHideFlags: 0

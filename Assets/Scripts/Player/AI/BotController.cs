@@ -4,7 +4,7 @@ using UnityEngine;
 using Pathfinding;
 using Mirror;
 
-public class EnemyAI : NetworkBehaviour
+public class BotController : NetworkBehaviour
 {
   [Header("Pathfinding")]
   public Transform target;
@@ -30,18 +30,18 @@ public class EnemyAI : NetworkBehaviour
   private Path path;
   private int currentWaypoint = 0;
   RaycastHit2D isGrounded;
-  public Seeker seeker;
-  Rigidbody2D rb;
-  BoxCollider2D bc;
+  BotBaseState currentState;
+  BotVars botVars;
 
-  GameObject nearestPlayer;
+  [HideInInspector] public Seeker seeker;
 
-  EnemyBaseState currentState;
 
-  public EnemyFleeState enemyFleeState = new EnemyFleeState();
-  public EnemyLookForWeaponState enemyLookForWeaponState = new EnemyLookForWeaponState();
+  public BotFleeState enemyFleeState = new BotFleeState();
+  public BotLookForWeaponState enemyLookForWeaponState = new BotLookForWeaponState();
 
   public static GameObject[] nodes;
+
+  public System.Action<BotController> OnReachTarget;
 
   public override void OnStartServer()
   {
@@ -62,8 +62,8 @@ public class EnemyAI : NetworkBehaviour
   public void Start()
   {
     seeker = GetComponent<Seeker>();
-    rb = GetComponent<Rigidbody2D>();
-    bc = GetComponent<BoxCollider2D>();
+
+    botVars = GetComponent<BotVars>();
 
 
     // target = FindObjectOfType<PlayerBehavior>().transform;
@@ -88,8 +88,10 @@ public class EnemyAI : NetworkBehaviour
     }
   }
 
-  public void SwitchState(EnemyBaseState state)
+  public void SwitchState(BotBaseState state)
   {
+    print("STATE SWITCHED!");
+
     currentState.ExitState(this);
     currentState = state;
     currentState.EnterState(this);
@@ -99,22 +101,26 @@ public class EnemyAI : NetworkBehaviour
   {
     if (followEnabled && seeker.IsDone())
     {
-      Path p = currentState.CalculatePath(this);
-
-      if (p == null) path = null;
+      currentState.CalculatePath(this);
     };
   }
 
   private void PathFollow()
   {
-    if (path == null)
+    if (path == null || botVars.lockMovement)
     {
+      // Add drag
+      // https://forum.unity.com/threads/physics-drag-formula.252406/
+      botVars.rb.velocity = new Vector2(botVars.rb.velocity.x * (1 - Time.fixedDeltaTime * drag), botVars.rb.velocity.y);
+
       return;
     }
 
     // Reached end of path
     if (currentWaypoint >= path.vectorPath.Count)
     {
+      OnReachTarget?.Invoke(this);
+      path = null;
       return;
     }
 
@@ -122,11 +128,11 @@ public class EnemyAI : NetworkBehaviour
     Vector3 startOffset = transform.position - new Vector3(0f, GetComponent<Collider2D>().bounds.extents.y + jumpCheckOffset);
     isGrounded = Physics2D.BoxCast(
       transform.position,
-      bc.bounds.size, 0, Vector2.down,
+      botVars.bc.bounds.size, 0, Vector2.down,
       0.1f, groundLm);
 
     // Direction Calculation
-    Vector2 direction = ((Vector2)path.vectorPath[currentWaypoint] - rb.position).normalized;
+    Vector2 direction = ((Vector2)path.vectorPath[currentWaypoint] - botVars.rb.position).normalized;
     Vector2 force = direction * speed;
     // print(direction.x);
     // if (direction.x < threshold) direction = new Vector2(0, direction.y);
@@ -136,7 +142,7 @@ public class EnemyAI : NetworkBehaviour
     {
       if (direction.y > jumpNodeHeightRequirement)
       {
-        rb.AddForce(Vector2.up * jumpForce);//speed * jumpModifier);
+        botVars.rb.AddForce(Vector2.up * jumpForce);//speed * jumpModifier);
       }
     }
 
@@ -149,24 +155,23 @@ public class EnemyAI : NetworkBehaviour
       float targetSpeed = (direction.x > 0 ? 1 : -1) * speed;
 
       // //Check difference between current speed and desired speed
-      float speedDiff = targetSpeed - Mathf.Clamp(rb.velocity.x, -speed, speed);
+      float speedDiff = targetSpeed - Mathf.Clamp(botVars.rb.velocity.x, -speed, speed);
 
-      rb.AddForce(new Vector2(speedDiff, 0), ForceMode2D.Impulse);
+      botVars.rb.AddForce(new Vector2(speedDiff, 0), ForceMode2D.Impulse);
 
       //Check difference between current speed and desired speed
       // float speedDiff = force.x - Mathf.Clamp(rb.velocity.x, -speed, speed);
 
       // rb.AddForce(new Vector2(speedDiff, 0), ForceMode2D.Impulse);
-
     }
 
     // Add drag
     // https://forum.unity.com/threads/physics-drag-formula.252406/
-    rb.velocity = new Vector2(rb.velocity.x * (1 - Time.fixedDeltaTime * drag), rb.velocity.y);
+    botVars.rb.velocity = new Vector2(botVars.rb.velocity.x * (1 - Time.fixedDeltaTime * drag), botVars.rb.velocity.y);
 
 
     // Next Waypoint
-    float distance = Vector2.Distance(rb.position, path.vectorPath[currentWaypoint]);
+    float distance = Vector2.Distance(botVars.rb.position, path.vectorPath[currentWaypoint]);
     if (distance < nextWaypointDistance)
     {
       currentWaypoint++;
@@ -175,11 +180,11 @@ public class EnemyAI : NetworkBehaviour
     // Direction Graphics Handling
     if (directionLookEnabled)
     {
-      if (rb.velocity.x > 0.05f)
+      if (botVars.rb.velocity.x > 0.05f)
       {
         transform.localScale = new Vector3(-1f * Mathf.Abs(transform.localScale.x), transform.localScale.y, transform.localScale.z);
       }
-      else if (rb.velocity.x < -0.05f)
+      else if (botVars.rb.velocity.x < -0.05f)
       {
         transform.localScale = new Vector3(Mathf.Abs(transform.localScale.x), transform.localScale.y, transform.localScale.z);
       }
@@ -198,5 +203,50 @@ public class EnemyAI : NetworkBehaviour
       path = p;
       currentWaypoint = 0;
     }
+  }
+
+  // [Command]
+  void Shoot()
+  {
+    WeaponClass weapon = botVars.botWb.weapon;
+
+    if (weapon == null) return;
+    if (weapon.fireTimeout > NetworkTime.time) return;
+    if (weapon.bulletsInMag <= 0) return;
+
+    weapon.bulletsInMag--;
+    weapon.fireTimeout = (float)NetworkTime.time + (1f / weapon.fireRate);
+
+    Rpc_AddForce(gameObject, weapon.shootSound);
+    botVars.botWb.Shoot(weapon.ID, connectionToClient);
+  }
+
+  [ClientRpc]
+  void Rpc_AddForce(GameObject target, string shootSound)
+  {
+    botVars.botWb.AddForce(target);
+    if (shootSound != "")
+      FindObjectOfType<AudioSystem>().PlaySound(shootSound);
+  }
+
+  // [Command(requiresAuthority = false)]
+  public void SwitchWeapon(GameObject weapon)
+  {
+    if (weapon != null && !botVars.lockMovement)
+    {
+      WeaponItem weaponItem = weapon.GetComponent<WeaponItem>();
+
+      botVars.botWb.SwitchWeapon(weaponItem.WeaponID);
+      TargetRpc_SwitchWeapon(weaponItem.WeaponID);
+      NetworkServer.Destroy(weapon);
+    }
+  }
+
+  [ClientRpc]
+  void TargetRpc_SwitchWeapon(string WeaponID)
+  {
+    botVars.botWb.SwitchWeapon(WeaponID);
+
+    // if (playerVars.reloadRoutine != null) 
   }
 }
