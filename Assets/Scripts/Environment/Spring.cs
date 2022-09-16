@@ -19,7 +19,7 @@ public class Spring : NetworkBehaviour
 
   private void OnTriggerEnter2D(Collider2D other)
   {
-    if (other.gameObject.tag != "Player") return;
+    if (other.gameObject.tag != "Player" && other.gameObject.tag != "Bot") return;
     if (extended) return;
 
     target = other.gameObject;
@@ -31,7 +31,7 @@ public class Spring : NetworkBehaviour
 
   private void OnTriggerStay2D(Collider2D other)
   {
-    if (other.gameObject.tag != "Player") return;
+    if (other.gameObject.tag != "Player" && other.gameObject.tag != "Bot") return;
     if (extended) return;
 
     target = other.gameObject;

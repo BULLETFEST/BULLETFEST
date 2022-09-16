@@ -33,6 +33,13 @@ public class EnemyAI : MonoBehaviour
   Rigidbody2D rb;
   BoxCollider2D bc;
 
+  GameObject nearestPlayer;
+
+  EnemyBaseState currentState;
+
+  public EnemyFleeState enemyFleeState = new EnemyFleeState();
+  public EnemyLookForWeaponState enemyLookForWeaponState = new EnemyLookForWeaponState();
+
   public void Start()
   {
     seeker = GetComponent<Seeker>();
@@ -42,14 +49,49 @@ public class EnemyAI : MonoBehaviour
     InvokeRepeating("UpdatePath", 0f, pathUpdateSeconds);
 
     target = FindObjectOfType<PlayerBehavior>().transform;
+
+    currentState = enemyFleeState;
+    currentState.EnterState(this);
+  }
+
+  GameObject FindNearestPlayer()
+  {
+    ;
+    GameObject[] players = GameObject.FindGameObjectsWithTag("Player");
+
+    GameObject closest = null;
+    float distance = Mathf.Infinity;
+    Vector3 position = transform.position;
+    foreach (GameObject go in players)
+    {
+      Vector3 diff = go.transform.position - position;
+      float curDistance = diff.sqrMagnitude;
+      if (curDistance < distance)
+      {
+        //if pickable can be inserted here ~Toast
+        closest = go;
+        distance = curDistance;
+      }
+    }
+
+    return closest;
   }
 
   private void FixedUpdate()
   {
+    target = FindNearestPlayer().transform;
+    currentState.UpdateState(this);
     if (TargetInDistance() && followEnabled)
     {
       PathFollow();
     }
+  }
+
+  public void SwitchState(EnemyBaseState state)
+  {
+    currentState.ExitState(this);
+    currentState = state;
+    currentState.EnterState(this);
   }
 
   private void UpdatePath()
@@ -57,7 +99,7 @@ public class EnemyAI : MonoBehaviour
     if (followEnabled && TargetInDistance() && seeker.IsDone())
     {
       seeker.StartPath(rb.position, target.position, OnPathComplete);
-    }
+    };
   }
 
   private void PathFollow()
@@ -82,8 +124,7 @@ public class EnemyAI : MonoBehaviour
 
     // Direction Calculation
     Vector2 direction = ((Vector2)path.vectorPath[currentWaypoint] - rb.position).normalized;
-    // Vector2 force = direction * speed;// * Time.deltaTime;
-
+    Vector2 force = direction * speed;
     // print(direction.x);
     // if (direction.x < threshold) direction = new Vector2(0, direction.y);
 
@@ -96,16 +137,24 @@ public class EnemyAI : MonoBehaviour
       }
     }
 
+    // print(direction);
+
     // Movement
-    if (direction != Vector2.zero)
+    if (Mathf.Abs(direction.x) >= 0.45f)
     {
       // Get Desired moving direction
-      Vector2 targetSpeed = direction * speed;
+      float targetSpeed = (direction.x > 0 ? 1 : -1) * speed;
+
+      // //Check difference between current speed and desired speed
+      float speedDiff = targetSpeed - Mathf.Clamp(rb.velocity.x, -speed, speed);
+
+      rb.AddForce(new Vector2(speedDiff, 0), ForceMode2D.Impulse);
 
       //Check difference between current speed and desired speed
-      Vector2 speedDiff = new Vector2(targetSpeed.x - Mathf.Clamp(rb.velocity.x, -speed, speed), targetSpeed.y);
+      // float speedDiff = force.x - Mathf.Clamp(rb.velocity.x, -speed, speed);
 
-      rb.AddForce(speedDiff, ForceMode2D.Impulse);
+      // rb.AddForce(new Vector2(speedDiff, 0), ForceMode2D.Impulse);
+
     }
 
     // Add drag
