@@ -2,8 +2,9 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using Pathfinding;
+using Mirror;
 
-public class EnemyAI : MonoBehaviour
+public class EnemyAI : NetworkBehaviour
 {
   [Header("Pathfinding")]
   public Transform target;
@@ -29,7 +30,7 @@ public class EnemyAI : MonoBehaviour
   private Path path;
   private int currentWaypoint = 0;
   RaycastHit2D isGrounded;
-  Seeker seeker;
+  public Seeker seeker;
   Rigidbody2D rb;
   BoxCollider2D bc;
 
@@ -40,48 +41,48 @@ public class EnemyAI : MonoBehaviour
   public EnemyFleeState enemyFleeState = new EnemyFleeState();
   public EnemyLookForWeaponState enemyLookForWeaponState = new EnemyLookForWeaponState();
 
+  public static GameObject[] nodes;
+
+  public override void OnStartServer()
+  {
+    base.OnStartServer();
+
+    if (nodes == null)
+    {
+      nodes = GameObject.FindGameObjectsWithTag("NavigationPoint");
+    }
+  }
+
+  private void OnDestroy()
+  {
+    nodes = null;
+    seeker.pathCallback -= OnPathComplete;
+  }
+
   public void Start()
   {
     seeker = GetComponent<Seeker>();
     rb = GetComponent<Rigidbody2D>();
     bc = GetComponent<BoxCollider2D>();
 
-    InvokeRepeating("UpdatePath", 0f, pathUpdateSeconds);
 
-    target = FindObjectOfType<PlayerBehavior>().transform;
+    // target = FindObjectOfType<PlayerBehavior>().transform;
 
     currentState = enemyFleeState;
     currentState.EnterState(this);
+
+    seeker.pathCallback += OnPathComplete;
+
+    InvokeRepeating("UpdatePath", 0f, pathUpdateSeconds);
   }
 
-  GameObject FindNearestPlayer()
-  {
-    ;
-    GameObject[] players = GameObject.FindGameObjectsWithTag("Player");
 
-    GameObject closest = null;
-    float distance = Mathf.Infinity;
-    Vector3 position = transform.position;
-    foreach (GameObject go in players)
-    {
-      Vector3 diff = go.transform.position - position;
-      float curDistance = diff.sqrMagnitude;
-      if (curDistance < distance)
-      {
-        //if pickable can be inserted here ~Toast
-        closest = go;
-        distance = curDistance;
-      }
-    }
-
-    return closest;
-  }
 
   private void FixedUpdate()
   {
-    target = FindNearestPlayer().transform;
+    // target = Utilities.FindNearest(transform, "Player").transform;
     currentState.UpdateState(this);
-    if (TargetInDistance() && followEnabled)
+    if (followEnabled)
     {
       PathFollow();
     }
@@ -96,9 +97,11 @@ public class EnemyAI : MonoBehaviour
 
   private void UpdatePath()
   {
-    if (followEnabled && TargetInDistance() && seeker.IsDone())
+    if (followEnabled && seeker.IsDone())
     {
-      seeker.StartPath(rb.position, target.position, OnPathComplete);
+      Path p = currentState.CalculatePath(this);
+
+      if (p == null) path = null;
     };
   }
 

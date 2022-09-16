@@ -115,4 +115,48 @@ public class Utilities : MonoBehaviour
       SceneManager.LoadScene("MainMenu");
     }
   }
+
+  public static GameObject FindNearest(Transform origin, string tag)
+  {
+    GameObject[] objects = GameObject.FindGameObjectsWithTag(tag);
+
+    GameObject closest = null;
+    float distance = Mathf.Infinity;
+    Vector3 position = origin.position;
+    foreach (GameObject go in objects)
+    {
+      Vector3 diff = go.transform.position - position;
+      float curDistance = diff.sqrMagnitude;
+      if (curDistance < distance)
+      {
+        //if pickable can be inserted here ~Toast
+        closest = go;
+        distance = curDistance;
+      }
+    }
+
+    return closest;
+  }
+
+  public static GameObject FindFurthest(Transform origin, string tag)
+  {
+    GameObject[] objects = GameObject.FindGameObjectsWithTag(tag);
+
+    GameObject furthest = null;
+    float distance = Mathf.Infinity;
+    Vector3 position = origin.position;
+    foreach (GameObject go in objects)
+    {
+      Vector3 diff = go.transform.position - position;
+      float curDistance = diff.sqrMagnitude;
+      if (curDistance > distance)
+      {
+        //if pickable can be inserted here ~Toast
+        furthest = go;
+        distance = curDistance;
+      }
+    }
+
+    return furthest;
+  }
 }

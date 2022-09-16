@@ -1266,7 +1266,7 @@ GameObject:
   - component: {fileID: 1548013739}
   m_Layer: 31
   m_Name: Bot
-  m_TagString: Player
+  m_TagString: Bot
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -1435,7 +1435,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 5449998184297253465}
-  m_Enabled: 0
+  m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 92281e08ff2b6a54f80d03f800130f46, type: 3}
   m_Name: 
@@ -1453,7 +1453,7 @@ MonoBehaviour:
   weaponBehavior: {fileID: 8402200740394793644}
   audioSystem: {fileID: 0}
   playerMovement: {fileID: 0}
-  displayName: 
+  displayName: BOT
 --- !u!114 &2944806032652721416
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1537,16 +1537,20 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   target: {fileID: 0}
   activateDistance: 50
-  pathUpdateSeconds: 0.01
+  pathUpdateSeconds: 0.25
   speed: 17.5
   drag: 17.5
   nextWaypointDistance: 3
   jumpNodeHeightRequirement: 0.1
   jumpForce: 1150
   jumpCheckOffset: 0.1
+  groundLm:
+    serializedVersion: 2
+    m_Bits: 4160
   followEnabled: 1
   jumpEnabled: 1
   directionLookEnabled: 0
+  threshold: 0.15
 --- !u!1 &5744539765346192264
 GameObject:
   m_ObjectHideFlags: 0
