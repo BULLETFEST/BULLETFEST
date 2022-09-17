@@ -33,7 +33,7 @@ public class Server : NetworkBehaviour
       yield return new WaitForSeconds(1);
     }
 
-    FindObjectOfType<MyNetworkManager>().AnnounceWinner();
+    FindObjectOfType<MyNetworkManager>().AnnounceWinner(FindObjectsOfType<BotController>());
   }
 
   [Command(requiresAuthority = false)]
@@ -62,6 +62,11 @@ public class Server : NetworkBehaviour
   public void SetWinnerText(NetworkConnection conn, string text, int idx)
   {
     GameObject.FindObjectOfType<WinnerUI>().winnerText.text = text;
-    GameObject.FindObjectOfType<WinnerUI>().playerImage.color = colors[idx];
+
+    if (idx != -1)
+      GameObject.FindObjectOfType<WinnerUI>().playerImage.color = colors[idx];
+    else
+      GameObject.FindObjectOfType<WinnerUI>().playerImage.color = new Color(0.3936009f, 0.5186465f, 0.5754717f);
+
   }
 }

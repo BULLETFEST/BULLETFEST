@@ -9,7 +9,7 @@ public class Bullet : NetworkBehaviour
   public float damage;
 
   [HideInInspector]
-  public NetworkConnection owner;
+  public GameObject owner;
 
   [HideInInspector]
   [SyncVar]
@@ -24,7 +24,7 @@ public class Bullet : NetworkBehaviour
   [ServerCallback]
   void Start()
   {
-    Server_DisableCollisionWith(owner.identity.gameObject);
+    Server_DisableCollisionWith(owner);
     StartCoroutine(DestroySelf());
   }
 
@@ -67,6 +67,6 @@ public class Bullet : NetworkBehaviour
   [Command(requiresAuthority = false)]
   void DealDamage(GameObject victim)
   {
-    victim.GetComponent<PlayerBehavior>().TakeDamage(damage, owner.identity.gameObject);
+    victim.GetComponent<PlayerBehavior>().TakeDamage(damage, owner);
   }
 }

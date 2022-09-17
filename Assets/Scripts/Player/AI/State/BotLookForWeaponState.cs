@@ -21,7 +21,10 @@ public class BotLookForWeaponState : BotBaseState
     pickedWeaponUp = true;
 
     if (nearestGun != null)
+    {
       manager.SwitchWeapon(nearestGun);
+      manager.SwitchState(manager.botHauntPlayerState);
+    }
     else pickedWeaponUp = false;
   }
 
@@ -34,7 +37,7 @@ public class BotLookForWeaponState : BotBaseState
   {
     nearestGun = Utilities.FindNearest(manager.transform, "WeaponItem");
 
-    if (nearestGun == null && !pickedWeaponUp) manager.SwitchState(manager.enemyFleeState);
+    if (nearestGun == null && !pickedWeaponUp) manager.SwitchState(manager.botFleeState);
   }
 
   public override void CalculatePath(BotController manager)

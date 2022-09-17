@@ -35,7 +35,7 @@ public class BotFleeState : BotBaseState
     furthestNode = Utilities.FindFurthest(manager.transform, "NavigationPoint");
     nearestPlayer = Utilities.FindNearest(manager.transform, "Player");
 
-    if (GameObject.FindGameObjectWithTag("WeaponItem")) manager.SwitchState(manager.enemyLookForWeaponState);
+    if (GameObject.FindGameObjectWithTag("WeaponItem")) manager.SwitchState(manager.botLookForWeaponState);
   }
 
   public override void CalculatePath(BotController manager)

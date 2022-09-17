@@ -68,7 +68,7 @@ public class WeaponBehavior : MonoBehaviour
     spawnedBullet.GetComponent<Rigidbody2D>().velocity = weapon.bulletVelocity * spawnedBullet.transform.right;
     spawnedBullet.GetComponent<Rigidbody2D>().AddTorque(weapon.projectileTorque);
 
-    spawnedBullet.GetComponent<Bullet>().owner = shooter;
+    spawnedBullet.GetComponent<Bullet>().owner = shooter.identity.gameObject;
     spawnedBullet.GetComponent<Bullet>().damage = weapon.damage;
 
 

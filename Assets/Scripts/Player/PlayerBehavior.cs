@@ -197,13 +197,22 @@ public class PlayerBehavior : NetworkBehaviour
 
     if (gm == MyNetworkManager.GameMode.Deathmatch) playerVars.uiName.gameObject.SetActive(false);
 
-    NetworkConnectionToClient killerIdentity = killer.GetComponent<NetworkIdentity>().connectionToClient;
-
-    if (killer == killed) MyNetworkManager.instance.players[killerIdentity].kills--;
-    else MyNetworkManager.instance.players[killerIdentity].kills++;
-
-    string killerName = killer.GetComponent<PlayerVars>().displayName;
+    string killerName;
     string killedName = killed.GetComponent<PlayerVars>().displayName;
+
+    if (killer.GetComponent<BotVars>())
+    {
+      killerName = "BOT";
+    }
+    else
+    {
+      NetworkConnectionToClient killerIdentity = killer.GetComponent<NetworkIdentity>().connectionToClient;
+
+      if (killer == killed) MyNetworkManager.instance.players[killerIdentity].kills--;
+      else MyNetworkManager.instance.players[killerIdentity].kills++;
+
+      killerName = killer.GetComponent<PlayerVars>().displayName;
+    }
 
     ClientRpc_Die(killerName, killedName);
 

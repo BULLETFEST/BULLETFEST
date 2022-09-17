@@ -1402,7 +1402,7 @@ MonoBehaviour:
   connectInterfaceCredentialType: 10
   deviceModel: PC Windows 64bit
   displayName: User
-  epicLoggerLevel: 400
+  epicLoggerLevel: 200
   collectPlayerMetrics: 0
   checkForEpicLauncherAndRestart: 0
   delayedInitialization: 1

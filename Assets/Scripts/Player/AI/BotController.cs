@@ -19,7 +19,7 @@ public class BotController : NetworkBehaviour
   public float jumpForce = 20f;
   //   public float jumpModifier = 0.3f;
   public float jumpCheckOffset = 0.1f;
-  public LayerMask groundLm;
+  public LayerMask groundLm, playerLm;
 
   [Header("Custom Behavior")]
   public bool followEnabled = true;
@@ -27,19 +27,19 @@ public class BotController : NetworkBehaviour
   public bool directionLookEnabled = true;
   public float threshold = 0.15f;
 
-  private Path path;
-  private int currentWaypoint = 0;
+  [HideInInspector] public int currentWaypoint = 0;
+  [HideInInspector] public bool dead;
+  [HideInInspector] public Path path;
+  [HideInInspector] public BotVars botVars;
+  [HideInInspector] public Seeker seeker;
+  [HideInInspector] public static GameObject[] nodes;
+
   RaycastHit2D isGrounded;
   BotBaseState currentState;
-  BotVars botVars;
 
-  [HideInInspector] public Seeker seeker;
-
-
-  public BotFleeState enemyFleeState = new BotFleeState();
-  public BotLookForWeaponState enemyLookForWeaponState = new BotLookForWeaponState();
-
-  public static GameObject[] nodes;
+  public BotFleeState botFleeState = new BotFleeState();
+  public BotLookForWeaponState botLookForWeaponState = new BotLookForWeaponState();
+  public BotHauntPlayerState botHauntPlayerState = new BotHauntPlayerState();
 
   public System.Action<BotController> OnReachTarget;
 
@@ -53,13 +53,7 @@ public class BotController : NetworkBehaviour
     }
   }
 
-  private void OnDestroy()
-  {
-    nodes = null;
-    seeker.pathCallback -= OnPathComplete;
-  }
-
-  public void Start()
+  void Start()
   {
     seeker = GetComponent<Seeker>();
 
@@ -68,7 +62,7 @@ public class BotController : NetworkBehaviour
 
     // target = FindObjectOfType<PlayerBehavior>().transform;
 
-    currentState = enemyFleeState;
+    currentState = botFleeState;
     currentState.EnterState(this);
 
     seeker.pathCallback += OnPathComplete;
@@ -76,11 +70,16 @@ public class BotController : NetworkBehaviour
     InvokeRepeating("UpdatePath", 0f, pathUpdateSeconds);
   }
 
-
-
-  private void FixedUpdate()
+  void OnDestroy()
   {
-    // target = Utilities.FindNearest(transform, "Player").transform;
+    nodes = null;
+    seeker.pathCallback -= OnPathComplete;
+  }
+
+  void FixedUpdate()
+  {
+    if (Time.timeScale == 0) return;
+
     currentState.UpdateState(this);
     if (followEnabled)
     {
@@ -99,11 +98,15 @@ public class BotController : NetworkBehaviour
 
   private void UpdatePath()
   {
+    if (Time.timeScale == 0) return;
+
     if (followEnabled && seeker.IsDone())
     {
       currentState.CalculatePath(this);
     };
   }
+
+  bool doubleJumped = false;
 
   private void PathFollow()
   {
@@ -131,18 +134,29 @@ public class BotController : NetworkBehaviour
       botVars.bc.bounds.size, 0, Vector2.down,
       0.1f, groundLm);
 
+    if (isGrounded && doubleJumped) doubleJumped = false;
+
     // Direction Calculation
     Vector2 direction = ((Vector2)path.vectorPath[currentWaypoint] - botVars.rb.position).normalized;
     Vector2 force = direction * speed;
     // print(direction.x);
     // if (direction.x < threshold) direction = new Vector2(0, direction.y);
 
+
     // Jump
-    if (jumpEnabled && isGrounded)
+    if ((direction.y > jumpNodeHeightRequirement))
     {
-      if (direction.y > jumpNodeHeightRequirement)
+      if (isGrounded)
       {
         botVars.rb.AddForce(Vector2.up * jumpForce);//speed * jumpModifier);
+      }
+      else if (!doubleJumped && botVars.rb.velocity.y < 0.5f)
+      {
+        doubleJumped = true;
+        print("DJUMP!");
+
+        botVars.rb.AddForce(new Vector2(0, jumpForce));
+
       }
     }
 
@@ -177,17 +191,13 @@ public class BotController : NetworkBehaviour
       currentWaypoint++;
     }
 
-    // Direction Graphics Handling
-    if (directionLookEnabled)
+    if (botVars.rb.velocity.x > 0.05f)
     {
-      if (botVars.rb.velocity.x > 0.05f)
-      {
-        transform.localScale = new Vector3(-1f * Mathf.Abs(transform.localScale.x), transform.localScale.y, transform.localScale.z);
-      }
-      else if (botVars.rb.velocity.x < -0.05f)
-      {
-        transform.localScale = new Vector3(Mathf.Abs(transform.localScale.x), transform.localScale.y, transform.localScale.z);
-      }
+      botVars.graphics.transform.rotation = Quaternion.Euler(0, 0, 0);
+    }
+    else if (botVars.rb.velocity.x < -0.05f)
+    {
+      botVars.graphics.transform.rotation = Quaternion.Euler(0, 180, 0);
     }
   }
 
@@ -206,7 +216,7 @@ public class BotController : NetworkBehaviour
   }
 
   // [Command]
-  void Shoot()
+  public void Shoot(float playerPosX, float angle)
   {
     WeaponClass weapon = botVars.botWb.weapon;
 
@@ -214,11 +224,13 @@ public class BotController : NetworkBehaviour
     if (weapon.fireTimeout > NetworkTime.time) return;
     if (weapon.bulletsInMag <= 0) return;
 
+    botVars.botWb.transform.localRotation = Quaternion.Euler(playerPosX < 0 ? 180 : 0, playerPosX < 0 ? 180 : 0, (playerPosX < 0 ? -1 : 1) * angle + Random.Range(-15f, 15f));
+
     weapon.bulletsInMag--;
-    weapon.fireTimeout = (float)NetworkTime.time + (1f / weapon.fireRate);
+    weapon.fireTimeout = (float)NetworkTime.time + (1f / weapon.fireRate) * (weapon.firingMode == WeaponClass.FireMode.Single ? 2.1f : 1);
 
     Rpc_AddForce(gameObject, weapon.shootSound);
-    botVars.botWb.Shoot(weapon.ID, connectionToClient);
+    botVars.botWb.Shoot(weapon.ID, gameObject);
   }
 
   [ClientRpc]
@@ -246,7 +258,5 @@ public class BotController : NetworkBehaviour
   void TargetRpc_SwitchWeapon(string WeaponID)
   {
     botVars.botWb.SwitchWeapon(WeaponID);
-
-    // if (playerVars.reloadRoutine != null) 
   }
 }

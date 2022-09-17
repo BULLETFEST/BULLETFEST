@@ -17,7 +17,7 @@ public class BotWeaponBehaviour : MonoBehaviour
     botVars = GetComponentInParent<BotVars>();
   }
 
-  public void Shoot(string weaponId, NetworkConnection shooter)
+  public void Shoot(string weaponId, GameObject shooter)
   {
     WeaponClass equippedWeapon = arsenal.Where(w => w.ID == weaponId).ToArray()[0];
 
@@ -56,11 +56,11 @@ public class BotWeaponBehaviour : MonoBehaviour
     StartCoroutine(UnlockMovement(weapon.movementUnlockTime/*, shooterVars*/));
   }
 
-  public void Fire_Regular(NetworkConnection shooter)
+  public void Fire_Regular(GameObject shooter)
   {
     GameObject spawnedBullet = Instantiate(weapon.bulletPrefab, weapon.bulletSpawnPoint.transform.position, Quaternion.Euler(transform.rotation.eulerAngles.x, transform.rotation.eulerAngles.y, transform.rotation.eulerAngles.z + Random.Range(weapon.inaccuracyRange[0], weapon.inaccuracyRange[1])));
 
-    Physics2D.IgnoreCollision(spawnedBullet.GetComponent<Collider2D>(), shooter.identity.gameObject.GetComponent<Collider2D>());
+    Physics2D.IgnoreCollision(spawnedBullet.GetComponent<Collider2D>(), shooter.GetComponent<Collider2D>());
 
     spawnedBullet.GetComponent<Rigidbody2D>().velocity = weapon.bulletVelocity * spawnedBullet.transform.right;
     spawnedBullet.GetComponent<Rigidbody2D>().AddTorque(weapon.projectileTorque);
@@ -73,7 +73,7 @@ public class BotWeaponBehaviour : MonoBehaviour
     NetworkServer.Spawn(spawnedBullet);
   }
 
-  public void Fire_Pellets(NetworkConnection shooter)
+  public void Fire_Pellets(GameObject shooter)
   {
     for (int i = 0; i < weapon.pelletCount; i++)
     {
