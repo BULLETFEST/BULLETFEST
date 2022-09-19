@@ -51,4 +51,6 @@ public class BotFleeState : BotBaseState
       escaping = true;
     }
   }
+
+  public override float Timer() => 0.15f;
 }

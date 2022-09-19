@@ -1436,6 +1436,7 @@ MonoBehaviour:
   spawnPrefabs: []
   PlayerSpawnSystemPrefab: {fileID: 4884974567067367211, guid: eb13bd46980ae664896b09b867e63736, type: 3}
   WinnerPanelPrefab: {fileID: 851980100229403897, guid: d14c3c1291aaad94baf59dd68bc9675f, type: 3}
+  botWinner: {fileID: 0}
   gameStarted: 0
   isHost: 0
   roomCode: 
@@ -1444,6 +1445,37 @@ MonoBehaviour:
   deathmatchLength: 1
   rounds: 1
   chosenMap: 0
+  _4Players:
+  - Assets/Scenes/GameScenes/4Players/World_1.unity
+  - Assets/Scenes/GameScenes/4Players/World_2.unity
+  - Assets/Scenes/GameScenes/4Players/World_3.unity
+  - Assets/Scenes/GameScenes/4Players/World_4.unity
+  - Assets/Scenes/GameScenes/4Players/World_5.unity
+  - Assets/Scenes/GameScenes/4Players/World_6.unity
+  - Assets/Scenes/GameScenes/4Players/World_7.unity
+  - Assets/Scenes/GameScenes/4Players/World_8.unity
+  - Assets/Scenes/GameScenes/4Players/World_9.unity
+  - Assets/Scenes/GameScenes/4Players/World_10.unity
+  - Assets/Scenes/GameScenes/4Players/World_11.unity
+  - Assets/Scenes/GameScenes/4Players/World_12.unity
+  - Assets/Scenes/GameScenes/4Players/World_13.unity
+  - Assets/Scenes/GameScenes/4Players/World_14.unity
+  _6Players:
+  - Assets/Scenes/GameScenes/4Players/World_6.unity
+  - Assets/Scenes/GameScenes/4Players/World_12.unity
+  - Assets/Scenes/GameScenes/4Players/World_13.unity
+  - Assets/Scenes/GameScenes/4Players/World_14.unity
+  _8Players: []
+  _BotSupport:
+  - Assets/Scenes/GameScenes/4Players/World_1.unity
+  - Assets/Scenes/GameScenes/4Players/World_2.unity
+  - Assets/Scenes/GameScenes/4Players/World_3.unity
+  - Assets/Scenes/GameScenes/4Players/World_4.unity
+  - Assets/Scenes/GameScenes/4Players/World_5.unity
+  - Assets/Scenes/GameScenes/4Players/World_7.unity
+  - Assets/Scenes/GameScenes/4Players/World_8.unity
+  - Assets/Scenes/GameScenes/4Players/World_10.unity
+  - Assets/Scenes/GameScenes/4Players/World_14.unity
 --- !u!4 &204399013
 Transform:
   m_ObjectHideFlags: 0

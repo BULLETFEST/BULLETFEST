@@ -45,4 +45,6 @@ public class BotLookForWeaponState : BotBaseState
     if (nearestGun != null)
       manager.seeker.StartPath(manager.transform.position, nearestGun.transform.position);
   }
+
+  public override float Timer() => 1.75f;
 }

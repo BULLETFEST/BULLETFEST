@@ -66,8 +66,6 @@ public class BotController : NetworkBehaviour
     currentState.EnterState(this);
 
     seeker.pathCallback += OnPathComplete;
-
-    InvokeRepeating("UpdatePath", 0f, pathUpdateSeconds);
   }
 
   void OnDestroy()
@@ -94,6 +92,9 @@ public class BotController : NetworkBehaviour
     currentState.ExitState(this);
     currentState = state;
     currentState.EnterState(this);
+
+    CancelInvoke("UpdatePath");
+    InvokeRepeating("UpdatePath", 0f, state.Timer());
   }
 
   private void UpdatePath()
@@ -153,8 +154,8 @@ public class BotController : NetworkBehaviour
       else if (!doubleJumped && botVars.rb.velocity.y < 0.5f)
       {
         doubleJumped = true;
-        print("DJUMP!");
 
+        botVars.rb.velocity = new Vector2(botVars.rb.velocity.x, 0);
         botVars.rb.AddForce(new Vector2(0, jumpForce));
 
       }

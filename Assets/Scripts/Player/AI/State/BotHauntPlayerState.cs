@@ -88,4 +88,6 @@ public class BotHauntPlayerState : BotBaseState
     if (nearestPlayer != null && haunt)
       manager.seeker.StartPath(manager.transform.position, nearestPlayer.transform.position);
   }
+
+  public override float Timer() => 0.25f;
 }

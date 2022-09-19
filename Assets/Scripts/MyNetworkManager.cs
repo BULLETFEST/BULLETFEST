@@ -49,6 +49,8 @@ public class MyNetworkManager : NetworkManager
 
   public static int playableScenesCount = 0, menuScenesCount = 0;
 
+  [Scene] public string[] _4Players, _6Players, _8Players, _BotSupport;
+
   public override void Awake()
   {
     base.Awake();
