@@ -64,7 +64,7 @@ public class Server : NetworkBehaviour
     GameObject.FindObjectOfType<WinnerUI>().winnerText.text = text;
 
     if (idx != -1)
-      GameObject.FindObjectOfType<WinnerUI>().playerImage.color = colors[idx];
+      GameObject.FindObjectOfType<WinnerUI>().playerImage.color = colors[idx % 4];
     else
       GameObject.FindObjectOfType<WinnerUI>().playerImage.color = new Color(0.3936009f, 0.5186465f, 0.5754717f);
 

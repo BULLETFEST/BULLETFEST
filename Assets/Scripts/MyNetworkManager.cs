@@ -51,6 +51,10 @@ public class MyNetworkManager : NetworkManager
 
   [Scene] public string[] _4Players, _6Players, _8Players, _BotSupport;
 
+  public int maxPlayers = 4;
+
+  public bool enableBots = false;
+
   public override void Awake()
   {
     base.Awake();
@@ -114,7 +118,7 @@ public class MyNetworkManager : NetworkManager
   {
     base.OnServerConnect(conn);
 
-    if (NetworkServer.connections.Count >= 5)
+    if (NetworkServer.connections.Count > maxPlayers)
     {
       conn.Send(new Message.ServerMessge
       {

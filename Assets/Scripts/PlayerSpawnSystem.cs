@@ -70,7 +70,7 @@ public class PlayerSpawnSystem : NetworkBehaviour
   [ClientRpc]
   private void Rpc_SetPlayerColor(GameObject player, int idx)
   {
-    player.GetComponent<PlayerVars>().graphics.sprites[0].color = colors[idx];
+    player.GetComponent<PlayerVars>().graphics.sprites[0].color = colors[idx % 4];
   }
 
   [ClientRpc]

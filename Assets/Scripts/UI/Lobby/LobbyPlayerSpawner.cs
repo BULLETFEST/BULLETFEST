@@ -65,7 +65,7 @@ public class LobbyPlayerSpawner : NetworkBehaviour
 
     objToSync.transform.SetParent(lobbyPlayersContainer.transform);
     objToSync.transform.localScale = Vector3.one;
-    objToSync.GetComponent<Image>().color = colors[idx];
+    objToSync.GetComponent<Image>().color = colors[idx % 4];
     objToSync.transform.SetAsLastSibling();
   }
 
@@ -76,7 +76,7 @@ public class LobbyPlayerSpawner : NetworkBehaviour
 
     playerObj.transform.SetParent(lobbyPlayersContainer.transform);
     playerObj.transform.localScale = Vector3.one;
-    playerObj.GetComponent<Image>().color = colors[idx];
+    playerObj.GetComponent<Image>().color = colors[idx % 4];
 
     // GameObject[] lobbyPlayers = GameObject.FindGameObjectsWithTag("LobbyPlayer");
     // for (int i = 0; i < lobbyPlayers.Length; i++)
