@@ -97,10 +97,10 @@ public class MyNetworkManager : NetworkManager
   {
     base.OnStartServer();
     isHost = true;
-    StartCoroutine(keepAlive());
+    StartCoroutine(KeepAlive());
   }
 
-  IEnumerator keepAlive()
+  IEnumerator KeepAlive()
   {
     try
     {
@@ -110,7 +110,7 @@ public class MyNetworkManager : NetworkManager
 
     yield return new WaitForSecondsRealtime(120f);
 
-    StartCoroutine(keepAlive());
+    StartCoroutine(KeepAlive());
   }
 
   [Server]
