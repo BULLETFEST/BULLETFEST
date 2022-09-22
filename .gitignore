@@ -25,7 +25,7 @@ BULLETFEST_*.zip
 .vs/
 
 # UserSettings directory
-.UserSettings/
+[Uu]ser[Ss]ettings/
 
 # Gradle cache directory
 .gradle/
