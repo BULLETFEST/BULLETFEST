@@ -24,6 +24,9 @@ BULLETFEST_*.zip
 # Visual Studio cache directory
 .vs/
 
+# UserSettings directory
+.UserSettings/
+
 # Gradle cache directory
 .gradle/
 
