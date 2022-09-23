@@ -1,6 +1,6 @@
 using System.Collections;
-using UnityEngine;
 using Mirror;
+using UnityEngine;
 
 public class GunSpawner : NetworkBehaviour
 {

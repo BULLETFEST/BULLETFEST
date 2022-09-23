@@ -1,8 +1,8 @@
+using System;
 using System.Collections;
 using System.Linq;
-using UnityEngine;
 using Mirror;
-using System;
+using UnityEngine;
 
 public class Server : NetworkBehaviour
 {

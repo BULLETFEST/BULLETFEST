@@ -1,6 +1,6 @@
 #if UNITY_EDITOR
-using UnityEngine;
 using EpicTransport;
+using UnityEngine;
 
 [ExecuteInEditMode]
 public class SetCredentialNames : MonoBehaviour

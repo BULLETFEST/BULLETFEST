@@ -1,10 +1,9 @@
 using System.Collections;
-using System.Collections.Generic;
+using EpicTransport;
 using TMPro;
 using UnityEngine;
-using UnityEngine.UI;
 using UnityEngine.SceneManagement;
-using EpicTransport;
+using UnityEngine.UI;
 
 public class InitializationUI : MonoBehaviour
 {

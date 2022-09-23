@@ -1,6 +1,6 @@
 using System.Collections;
-using UnityEngine;
 using TMPro;
+using UnityEngine;
 public class KillFeedItem : MonoBehaviour
 {
   public TMP_Text killer, killed;

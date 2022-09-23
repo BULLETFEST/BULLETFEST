@@ -1,12 +1,20 @@
 using System.Collections;
-using UnityEngine;
 using Mirror;
+using UnityEngine;
 
 public class CameraShake : NetworkBehaviour
 {
+  bool isShaking = false;
+  Vector3 origin = new(0, 0, -10);
+
   public IEnumerator Shake(float duration, float magnitude)
   {
-    Vector3 origin = transform.position;
+    if (!isShaking)
+    {
+      origin = transform.position;
+    }
+
+    isShaking = true;
 
     float elapsed = 0.0f;
 
@@ -22,9 +30,13 @@ public class CameraShake : NetworkBehaviour
       yield return null;
     }
 
-    transform.position = new Vector3(0, 0, -10);
+    transform.position = origin;
+    isShaking = false;
   }
 
   [ClientRpc]
-  void ShakeAll(float duration, float magnitude) => StartCoroutine(Shake(duration, magnitude));
+  void ShakeAll(float duration, float magnitude)
+  {
+    StartCoroutine(Shake(duration, magnitude));
+  }
 }

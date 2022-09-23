@@ -1,6 +1,5 @@
-﻿using UnityEngine;
-using Mirror;
-using System.Linq;
+﻿using Mirror;
+using UnityEngine;
 
 public class OffscreenPointer : NetworkBehaviour
 {
@@ -32,7 +31,7 @@ public class OffscreenPointer : NetworkBehaviour
 
   void FixedUpdate()
   {
-    PlayerNetworking[] players = GameObject.FindObjectsOfType<PlayerNetworking>();
+    PlayerNetworking[] players = FindObjectsOfType<PlayerNetworking>();
 
     for (int i = 0; i < players.Length; i++)
     {

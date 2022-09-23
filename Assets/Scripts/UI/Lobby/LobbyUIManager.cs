@@ -1,8 +1,8 @@
+using System.Collections.Generic;
 using Mirror;
-using UnityEngine.UI;
 using TMPro;
 using UnityEngine.SceneManagement;
-using System.Collections.Generic;
+using UnityEngine.UI;
 
 public class LobbyUIManager : NetworkBehaviour
 {

@@ -1,5 +1,5 @@
-using UnityEngine;
 using TMPro;
+using UnityEngine;
 using UnityEngine.UI;
 
 public class Message : MonoBehaviour
@@ -74,11 +74,11 @@ public class Message : MonoBehaviour
     public int _alignment;
     public bool disconnect;
 
-    public TMPro.HorizontalAlignmentOptions alignment
+    public HorizontalAlignmentOptions alignment
     {
       get
       {
-        return (TMPro.HorizontalAlignmentOptions)_alignment;
+        return (HorizontalAlignmentOptions)_alignment;
       }
     }
   }

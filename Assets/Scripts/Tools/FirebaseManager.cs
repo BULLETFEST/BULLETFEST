@@ -1,9 +1,8 @@
+using System.Collections.Specialized;
 using System.Net;
 using System.Text;
 using System.Threading.Tasks;
-using System.Collections.Specialized;
 using UnityEngine;
-using System.Collections;
 using UnityEngine.SceneManagement;
 
 public class FirebaseManager : MonoBehaviour
@@ -25,7 +24,7 @@ public class FirebaseManager : MonoBehaviour
 
   private static WebClient CreateWebClient()
   {
-    WebClient client = new WebClient();
+    WebClient client = new();
     client.Headers["User-Agent"] = "Mozilla/4.0 (compatible; MSIE 8.0; Windows NT 6.1; WOW64; Trident/4.0; SLCC2; .NET CLR 2.0.50727; .NET CLR 3.5.30729; .NET CLR 3.0.30729; Media Center PC 6.0; MDDC)";
 
     return client;
@@ -36,14 +35,15 @@ public class FirebaseManager : MonoBehaviour
   {
     // string ipAddress = webClient.DownloadString("http://ipinfo.io/ip");
 
-    NameValueCollection data = new NameValueCollection();
-
-    data["address"] = EpicTransport.EOSSDKComponent.LocalUserProductIdString;//ipAddress;
-    data["token"] = SaveSystem.saveData.token;
+    NameValueCollection data = new()
+    {
+      ["address"] = EpicTransport.EOSSDKComponent.LocalUserProductIdString,//ipAddress;
+      ["token"] = SaveSystem.saveData.token
+    };
 
     // JsonUtility.FromJson<Dictionary<string, string>>();
 
-    byte[] res = new byte[0];
+    byte[] res;
     try
     {
       res = await CreateWebClient().UploadValuesTaskAsync(testMode ? "http://localhost:3000/createLobby" : "https://joobot.glitch.me/createLobby", "POST", data);
@@ -65,14 +65,15 @@ public class FirebaseManager : MonoBehaviour
 
   public static async Task<Response<string>> JoinGame(string code)
   {
-    NameValueCollection data = new NameValueCollection();
-
-    data["code"] = code;
+    NameValueCollection data = new()
+    {
+      ["code"] = code
+    };
 
     // JsonUtility.FromJson<Dictionary<string, string>>();
 
 
-    byte[] res = new byte[0];
+    byte[] res;
     try
     {
       res = await CreateWebClient().UploadValuesTaskAsync(new System.Uri(testMode ? "http://localhost:3000/joinLobby" : "https://joobot.glitch.me/joinLobby"), "POST", data);
@@ -92,9 +93,10 @@ public class FirebaseManager : MonoBehaviour
 
   public static void KeepAlive()
   {
-    NameValueCollection data = new NameValueCollection();
-
-    data["token"] = SaveSystem.saveData.token;
+    NameValueCollection data = new()
+    {
+      ["token"] = SaveSystem.saveData.token
+    };
 
     try
     {
@@ -118,26 +120,27 @@ public class FirebaseManager : MonoBehaviour
 
     if (res.Length == 0) return new Match[0];
 
-    string responseInString = System.Text.Encoding.Default.GetString(res);
+    string responseInString = Encoding.Default.GetString(res);
     Match[] response = JsonHelper.FromJson<Match>(responseInString);
     return response;
   }
 
   public async static void UpdateLobby(int playerCount, string gameMode, string type, bool gameStarted)
   {
-    NameValueCollection data = new NameValueCollection();
-
-    data["gameMode"] = gameMode;
-    data["playerCount"] = playerCount.ToString();
-    data["token"] = SaveSystem.saveData.token;
-    data["type"] = type;
-    data["started"] = gameStarted.ToString();
+    NameValueCollection data = new()
+    {
+      ["gameMode"] = gameMode,
+      ["playerCount"] = playerCount.ToString(),
+      ["token"] = SaveSystem.saveData.token,
+      ["type"] = type,
+      ["started"] = gameStarted.ToString()
+    };
 
     try
     {
       byte[] res = await CreateWebClient().UploadValuesTaskAsync(new System.Uri(testMode ? "http://localhost:3000/updateLobby" : "https://joobot.glitch.me/updateLobby"), "POST", data);
 
-      string responseInString = System.Text.Encoding.Default.GetString(res);
+      string responseInString = Encoding.Default.GetString(res);
 
       Response<string> response = JsonUtility.FromJson<Response<string>>(responseInString);
 
@@ -151,9 +154,10 @@ public class FirebaseManager : MonoBehaviour
 
   public static void CloseLobby()
   {
-    NameValueCollection data = new NameValueCollection();
-
-    data["token"] = SaveSystem.saveData.token;
+    NameValueCollection data = new()
+    {
+      ["token"] = SaveSystem.saveData.token
+    };
 
     try
     {
@@ -166,11 +170,12 @@ public class FirebaseManager : MonoBehaviour
   {
     if (!string.IsNullOrEmpty(token)) return new Response<string>(400, "Already logged in", "");
 
-    NameValueCollection data = new NameValueCollection();
+    NameValueCollection data = new()
+    {
+      ["token"] = SaveSystem.saveData.token
+    };
 
-    data["token"] = SaveSystem.saveData.token;
-
-    byte[] res = new byte[0];
+    byte[] res;
     try
     {
       res = await CreateWebClient().UploadValuesTaskAsync(new System.Uri(testMode ? "http://localhost:3000/loginUserToken" : "https://joobot.glitch.me/loginUserToken"), "POST", data);
@@ -180,7 +185,7 @@ public class FirebaseManager : MonoBehaviour
       return new Response<string>(500, "SeverError", "");
     }
 
-    string responseInString = System.Text.Encoding.Default.GetString(res);
+    string responseInString = Encoding.Default.GetString(res);
 
     Response<string> response = JsonUtility.FromJson<Response<string>>(responseInString);
 
@@ -191,12 +196,13 @@ public class FirebaseManager : MonoBehaviour
   {
     if (!string.IsNullOrEmpty(SaveSystem.saveData.token)) return new Response<string>(400, "Already logged in", "");
 
-    NameValueCollection data = new NameValueCollection();
+    NameValueCollection data = new()
+    {
+      ["email"] = email,
+      ["password"] = password
+    };
 
-    data["email"] = email;
-    data["password"] = password;
-
-    byte[] res = new byte[0];
+    byte[] res;
     try
     {
       res = await CreateWebClient().UploadValuesTaskAsync(new System.Uri(testMode ? "http://localhost:3000/loginUser" : "https://joobot.glitch.me/loginUser"), "POST", data);
@@ -206,7 +212,7 @@ public class FirebaseManager : MonoBehaviour
       return new Response<string>(500, "SeverError", "");
     }
 
-    string responseInString = System.Text.Encoding.Default.GetString(res);
+    string responseInString = Encoding.Default.GetString(res);
 
     Response<string> response = JsonUtility.FromJson<Response<string>>(responseInString);
 
@@ -217,13 +223,14 @@ public class FirebaseManager : MonoBehaviour
   {
     if (!string.IsNullOrEmpty(SaveSystem.saveData.token)) return new Response<string>(400, "Already logged in", "");
 
-    NameValueCollection data = new NameValueCollection();
+    NameValueCollection data = new()
+    {
+      ["email"] = email,
+      ["password"] = password
+    };
 
-    data["email"] = email;
-    data["password"] = password;
 
-
-    byte[] res = new byte[0];
+    byte[] res;
     try
     {
       res = await CreateWebClient().UploadValuesTaskAsync(new System.Uri(testMode ? "http://localhost:3000/createUser" : "https://joobot.glitch.me/createUser"), "POST", data);
@@ -233,7 +240,7 @@ public class FirebaseManager : MonoBehaviour
       return new Response<string>(500, "SeverError", "");
     }
 
-    string responseInString = System.Text.Encoding.Default.GetString(res);
+    string responseInString = Encoding.Default.GetString(res);
 
     Response<string> response = JsonUtility.FromJson<Response<string>>(responseInString);
 
@@ -244,11 +251,12 @@ public class FirebaseManager : MonoBehaviour
   {
     if (string.IsNullOrEmpty(token)) return new Response<bool>(200, "", false);
 
-    NameValueCollection data = new NameValueCollection();
+    NameValueCollection data = new()
+    {
+      ["token"] = SaveSystem.saveData.token
+    };
 
-    data["token"] = SaveSystem.saveData.token;
-
-    byte[] res = new byte[0];
+    byte[] res;
     try
     {
       res = CreateWebClient().UploadValues(new System.Uri(testMode ? "http://localhost:3000/validateToken" : "https://joobot.glitch.me/validateToken"), "POST", data);
@@ -258,7 +266,7 @@ public class FirebaseManager : MonoBehaviour
       return new Response<bool>(500, "SeverError", false);
     }
 
-    string responseInString = System.Text.Encoding.Default.GetString(res);
+    string responseInString = Encoding.Default.GetString(res);
 
     Response<bool> response = JsonUtility.FromJson<Response<bool>>(responseInString);
 
@@ -286,7 +294,7 @@ public class FirebaseManager : MonoBehaviour
     }
 
 
-    string responseInString = System.Text.Encoding.Default.GetString(res);
+    string responseInString = Encoding.Default.GetString(res);
 
     Response<string> response = JsonUtility.FromJson<Response<string>>(responseInString);
 

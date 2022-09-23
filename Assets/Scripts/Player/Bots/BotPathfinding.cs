@@ -1,6 +1,6 @@
-using UnityEngine;
-using Pathfinding;
 using Mirror;
+using Pathfinding;
+using UnityEngine;
 
 public class BotPathfinding : NetworkBehaviour
 {

@@ -1,5 +1,3 @@
-using UnityEngine;
-
 public class Version
 {
   public int major;
@@ -53,7 +51,7 @@ public class Version
 
   public string GetVersionString()
   {
-    return $"{major}.{minor}.{patch}.{versionType.ToString()}-{build}";
+    return $"{major}.{minor}.{patch}.{versionType}-{build}";
   }
 
   public bool IsMoreRecent(Version other)

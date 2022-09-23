@@ -1,6 +1,6 @@
-using UnityEngine;
-using TMPro;
 using Mirror;
+using TMPro;
+using UnityEngine;
 
 public class LeaderboardItem : NetworkBehaviour
 {

@@ -1,5 +1,5 @@
-using UnityEngine;
 using Mirror;
+using UnityEngine;
 using UnityEngine.UI;
 
 public class EndScreenUI : NetworkBehaviour

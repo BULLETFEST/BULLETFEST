@@ -1,11 +1,9 @@
-using System.IO;
-using UnityEngine;
-using System.Runtime.Serialization.Formatters.Binary;
-using System.Collections;
-using System.Collections.Generic;
-using System.Linq;
 using System;
-using UnityEngine.SceneManagement;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using System.Runtime.Serialization.Formatters.Binary;
+using UnityEngine;
 
 public class SaveSystem : MonoBehaviour
 {
@@ -83,7 +81,7 @@ public class SaveSystem : MonoBehaviour
       {
         if (settingsUI.waitingForKey) return;
 
-        SaveSystem.SavePlayer(new SaveDataStructure(SaveSystem.saveData.settings, SaveSystem.saveData.token));
+        SavePlayer(new SaveDataStructure(saveData.settings, saveData.token));
         // SceneManager.UnloadSceneAsync("Settings");
         settingsUI.GetComponent<Canvas>().enabled = false;
         IsSettingsOpen = false;
@@ -95,13 +93,13 @@ public class SaveSystem : MonoBehaviour
 
   public static void SavePlayer(SaveDataStructure SDS)
   {
-    BinaryFormatter formatter = new BinaryFormatter();
+    BinaryFormatter formatter = new();
     string path = Path.Combine(appDataPath, "BULLETFEST/settings.save");
     if (!Directory.Exists(Path.Combine(appDataPath, "BULLETFEST")))
     {
       Directory.CreateDirectory(Path.Combine(appDataPath, "BULLETFEST"));
     }
-    FileStream stream = new FileStream(path, FileMode.Create);
+    FileStream stream = new(path, FileMode.Create);
 
     formatter.Serialize(stream, SDS);
     stream.Close();
@@ -112,8 +110,8 @@ public class SaveSystem : MonoBehaviour
     string path = Path.Combine(appDataPath, "BULLETFEST/settings.save");
     if (File.Exists(path))
     {
-      BinaryFormatter formatter = new BinaryFormatter();
-      FileStream stream = new FileStream(path, FileMode.Open);
+      BinaryFormatter formatter = new();
+      FileStream stream = new(path, FileMode.Open);
 
       SaveDataStructure data = formatter.Deserialize(stream) as SaveDataStructure;
       stream.Close();

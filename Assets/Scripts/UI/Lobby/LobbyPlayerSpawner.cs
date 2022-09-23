@@ -1,6 +1,6 @@
-using UnityEngine;
-using Mirror;
 using System.Linq;
+using Mirror;
+using UnityEngine;
 using UnityEngine.UI;
 
 public class LobbyPlayerSpawner : NetworkBehaviour

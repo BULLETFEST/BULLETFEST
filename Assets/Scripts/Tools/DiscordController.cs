@@ -1,7 +1,7 @@
-using System.Collections.Generic;
-using UnityEngine;
-using Discord;
 using System;
+using System.Collections.Generic;
+using Discord;
+using UnityEngine;
 using UnityEngine.SceneManagement;
 
 public class DiscordController : MonoBehaviour

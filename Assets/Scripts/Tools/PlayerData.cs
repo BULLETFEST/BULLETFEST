@@ -1,6 +1,3 @@
-using UnityEngine;
-using System;
-
 public class PlayerData
 {
   // public int netId { get; set; }

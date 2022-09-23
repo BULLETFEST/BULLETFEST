@@ -1,12 +1,11 @@
 using System;
-using System.Linq;
 using System.Collections;
 using System.Collections.Generic;
-using UnityEngine;
-using UnityEngine.UI;
+using System.Linq;
 using TMPro;
+using UnityEngine;
 using UnityEngine.Audio;
-using UnityEngine.SceneManagement;
+using UnityEngine.UI;
 
 public class SettingsUI : MonoBehaviour
 {
@@ -28,12 +27,10 @@ public class SettingsUI : MonoBehaviour
   public GameObject fpsCounter;
 
   public bool waitingForKey;
-  Canvas thisCanvas;
-  List<string> resolutionsList = new List<string>();
+  List<string> resolutionsList = new();
 
   void Awake()
   {
-    thisCanvas = GetComponent<Canvas>();
     SettingsClass settings = SaveSystem.saveData.settings;
 
     foreach (Resolution res in Screen.resolutions.Reverse().ToArray())

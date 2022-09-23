@@ -1,7 +1,7 @@
 using System.Collections;
-using UnityEngine;
 using Mirror;
 using TMPro;
+using UnityEngine;
 using UnityEngine.UI;
 
 public class WinnerUI : NetworkBehaviour
@@ -27,6 +27,6 @@ public class WinnerUI : NetworkBehaviour
   {
     yield return new WaitForSecondsRealtime(5);
 
-    GameObject.FindObjectOfType<MyNetworkManager>().CycleMap();
+    FindObjectOfType<MyNetworkManager>().CycleMap();
   }
 }
