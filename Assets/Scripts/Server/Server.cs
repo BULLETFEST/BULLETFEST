@@ -3,7 +3,6 @@ using System.Linq;
 using UnityEngine;
 using Mirror;
 using System;
-using UnityEngine.UI;
 
 public class Server : NetworkBehaviour
 {
@@ -22,7 +21,7 @@ public class Server : NetworkBehaviour
 
   IEnumerator CalcTimeLeft()
   {
-    TimeSpan timeSpan = new TimeSpan(0, 5, 0);
+    TimeSpan timeSpan = new(0, 5, 0);
     while (timeSpan.TotalSeconds >= 0)
     {
       timeSpan = FindObjectOfType<PlayerSpawnSystem>().timeStamp.Subtract(DateTime.UtcNow);//FindObjectOfType<PlayerSpawnSystem>().timeStamp.Subtract(DateTime.Now);
@@ -33,7 +32,7 @@ public class Server : NetworkBehaviour
       yield return new WaitForSeconds(1);
     }
 
-    FindObjectOfType<MyNetworkManager>().AnnounceWinner(FindObjectsOfType<BotController>());
+    FindObjectOfType<MyNetworkManager>().AnnounceWinner(FindObjectsOfType<BotPathfinding>());
   }
 
   [Command(requiresAuthority = false)]
@@ -61,12 +60,11 @@ public class Server : NetworkBehaviour
   [TargetRpc]
   public void SetWinnerText(NetworkConnection conn, string text, int idx)
   {
-    GameObject.FindObjectOfType<WinnerUI>().winnerText.text = text;
+    FindObjectOfType<WinnerUI>().winnerText.text = text;
 
     if (idx != -1)
-      GameObject.FindObjectOfType<WinnerUI>().playerImage.color = colors[idx % 4];
+      FindObjectOfType<WinnerUI>().playerImage.color = colors[idx % 4];
     else
-      GameObject.FindObjectOfType<WinnerUI>().playerImage.color = new Color(0.3936009f, 0.5186465f, 0.5754717f);
-
+      FindObjectOfType<WinnerUI>().playerImage.color = new Color(0.3936009f, 0.5186465f, 0.5754717f);
   }
 }

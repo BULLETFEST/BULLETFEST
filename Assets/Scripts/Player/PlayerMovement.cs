@@ -25,25 +25,15 @@ public class PlayerMovement : NetworkBehaviour
 
   LayerMask playerLm;
 
-  WeaponBehavior weaponBehavior;
-
-  CharacterController characterController;
-
   void Start()
   {
     playerVars = GetComponent<PlayerVars>();
 
     playerLm = LayerMask.GetMask("Player");
-
-    weaponBehavior = GetComponentInChildren<WeaponBehavior>();
-
-    characterController = GetComponent<CharacterController>();
   }
-
 
   private void LateUpdate()
   {
-
     if (!isLocalPlayer) return;
     if (!NetworkClient.ready) return;
 
@@ -95,7 +85,7 @@ public class PlayerMovement : NetworkBehaviour
 
     bool grounded = false;
     if (playerVars.bc != null)
-      grounded = Grounded(gameObject, playerVars.bc).collider != null;
+      grounded = Utilities.Grounded(transform, playerVars.bc, groundLm).collider != null;
 
     if (Utilities.GetKeybindDown("jump") && (grounded || !doubleJumped))
     {
@@ -160,25 +150,9 @@ public class PlayerMovement : NetworkBehaviour
 
     // Add drag
     // https://forum.unity.com/threads/physics-drag-formula.252406/
-    playerVars.rb.velocity = new Vector2(playerVars.rb.velocity.x * (1 - Time.fixedDeltaTime * (Grounded(gameObject, playerVars.bc).collider != null ? drag * 1.15f : drag)), playerVars.rb.velocity.y);
+    playerVars.rb.velocity = new Vector2(playerVars.rb.velocity.x * (1 - Time.fixedDeltaTime * (Utilities.Grounded(transform, playerVars.bc, groundLm).collider != null ? drag * 1.15f : drag)), playerVars.rb.velocity.y);
 
     // playerVars.audioSystem.transform.position = gameObject.transform.position;
-  }
-
-  public RaycastHit2D Grounded(GameObject player, BoxCollider2D bc, float distance = 0.25f)
-  {
-    return Physics2D.BoxCast(
-      player.transform.position,
-      bc.bounds.size, 0, Vector2.down,
-      distance, groundLm);
-  }
-
-  public RaycastHit2D Grounded(GameObject player, BoxCollider2D bc, LayerMask lm, float distance = 0.25f)
-  {
-    return Physics2D.BoxCast(
-      player.transform.position,
-      bc.bounds.size, 0, Vector2.down,
-      distance, lm);
   }
 
   bool PlayersOnRight(GameObject player, BoxCollider2D bc)

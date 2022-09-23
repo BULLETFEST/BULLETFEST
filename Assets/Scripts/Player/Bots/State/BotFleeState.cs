@@ -1,7 +1,4 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
-using Pathfinding;
 
 public class BotFleeState : BotBaseState
 {
@@ -12,7 +9,7 @@ public class BotFleeState : BotBaseState
   bool escaping;
   GameObject tempFurthest;
 
-  public override void EnterState(BotController manager)
+  public override void EnterState(BotPathfinding manager)
   {
     furthestNode = Utilities.FindFurthest(manager.transform, "NavigationPoint");
     nearestPlayer = Utilities.FindNearest(manager.transform, "Player");
@@ -23,14 +20,14 @@ public class BotFleeState : BotBaseState
     manager.OnReachTarget += ReachedTarget;
   }
 
-  public void ReachedTarget(BotController manager) => escaping = false;
+  public void ReachedTarget(BotPathfinding manager) => escaping = false;
 
-  public override void ExitState(BotController manager)
+  public override void ExitState(BotPathfinding manager)
   {
     manager.OnReachTarget -= ReachedTarget;
   }
 
-  public override void UpdateState(BotController manager)
+  public override void UpdateState(BotPathfinding manager)
   {
     furthestNode = Utilities.FindFurthest(manager.transform, "NavigationPoint");
     nearestPlayer = Utilities.FindNearest(manager.transform, "Player");
@@ -38,7 +35,7 @@ public class BotFleeState : BotBaseState
     if (GameObject.FindGameObjectWithTag("WeaponItem")) manager.SwitchState(manager.botLookForWeaponState);
   }
 
-  public override void CalculatePath(BotController manager)
+  public override void CalculatePath(BotPathfinding manager)
   {
     if (escaping)
     {

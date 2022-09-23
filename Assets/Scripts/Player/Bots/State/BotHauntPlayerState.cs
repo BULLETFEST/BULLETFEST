@@ -1,36 +1,33 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
-using Pathfinding;
 
 public class BotHauntPlayerState : BotBaseState
 {
   GameObject nearestPlayer;
 
-  public override void EnterState(BotController manager)
+  public override void EnterState(BotPathfinding manager)
   {
     nearestPlayer = Utilities.FindNearest(manager.transform, "Player");
 
     // manager.OnReachTarget += ReachedTarget;
   }
 
-  public void ReachedTarget(BotController manager)
+  public void ReachedTarget(BotPathfinding manager)
   {
     // pickedWeaponUp = true;
 
     if (nearestPlayer != null)
-      manager.SwitchWeapon(nearestPlayer);
+      manager.botVars.botBehavior.SwitchWeapon(nearestPlayer);
     // else pickedWeaponUp = false;
   }
 
-  public override void ExitState(BotController manager)
+  public override void ExitState(BotPathfinding manager)
   {
     // manager.OnReachTarget -= ReachedTarget;
   }
 
   bool haunt = false;
 
-  public override void UpdateState(BotController manager)
+  public override void UpdateState(BotPathfinding manager)
   {
     nearestPlayer = Utilities.FindNearest(manager.transform, "Player");
 
@@ -72,7 +69,7 @@ public class BotHauntPlayerState : BotBaseState
         float angle = Mathf.Atan2(playerPos.y, playerPos.x) * Mathf.Rad2Deg;
         // manager.botVars.botWb.transform.LookAt(nearestPlayer.transform);
 
-        manager.Shoot(playerPos.x, angle);
+        manager.botVars.botBehavior.Shoot(playerPos.x, angle);
 
         if (manager.botVars.botWb.weapon.bulletsInMag <= 0) manager.SwitchState(manager.botFleeState);
       }
@@ -83,7 +80,7 @@ public class BotHauntPlayerState : BotBaseState
     }
   }
 
-  public override void CalculatePath(BotController manager)
+  public override void CalculatePath(BotPathfinding manager)
   {
     if (nearestPlayer != null && haunt)
       manager.seeker.StartPath(manager.transform.position, nearestPlayer.transform.position);

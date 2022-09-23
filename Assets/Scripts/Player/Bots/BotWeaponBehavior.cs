@@ -3,7 +3,7 @@ using UnityEngine;
 using Mirror;
 using System.Linq;
 
-public class BotWeaponBehaviour : MonoBehaviour
+public class BotWeaponBehavior : MonoBehaviour
 {
   public WeaponClass weapon;
   public WeaponClass[] arsenal;

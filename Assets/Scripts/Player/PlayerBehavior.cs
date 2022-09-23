@@ -1,6 +1,5 @@
 using UnityEngine;
 using Mirror;
-using UnityEngine.SceneManagement;
 
 public class PlayerBehavior : NetworkBehaviour
 {
@@ -178,7 +177,7 @@ public class PlayerBehavior : NetworkBehaviour
   public void OnDamageTaken(float oldHealth, float newHealth)
   {
     if (health > 0) return;
-    Server_Die(damageDealer != null ? damageDealer : gameObject,
+    Server_Die(damageDealer ?? gameObject,
                gameObject);
   }
 
@@ -224,7 +223,7 @@ public class PlayerBehavior : NetworkBehaviour
       LayerMask lm = 1 << 6;
       lm |= 1 << 12;
 
-      RaycastHit2D hit = playerVars.playerMovement.Grounded(gameObject, playerVars.bc, lm, 999999f);
+      RaycastHit2D hit = Utilities.Grounded(transform, playerVars.bc, lm, 999999f);
       if (hit.collider != null)
       {
         GameObject spawnedGravestone = Instantiate(gravestone, new Vector2(hit.point.x, hit.point.y + (gravestone.GetComponentInChildren<SpriteRenderer>().bounds.size.y / 2)), Quaternion.Euler(0, 0, 0));

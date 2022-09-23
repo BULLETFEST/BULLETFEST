@@ -1,0 +1,156 @@
+using UnityEngine;
+using Mirror;
+
+public class BotBehavior : NetworkBehaviour
+{
+  BotVars botVars;
+
+  [SyncVar]
+  public float maxHealth, health;
+
+  GameObject killfeedItem, gravestone;
+
+  void Start()
+  {
+    botVars = GetComponent<BotVars>();
+
+    maxHealth = FindObjectOfType<PlayerBehavior>().maxHealth;
+    gravestone = FindObjectOfType<PlayerBehavior>().gravestone;
+    killfeedItem = FindObjectOfType<PlayerBehavior>().killfeed;
+
+    health = maxHealth;
+  }
+
+  public void Shoot(float playerPosX, float angle)
+  {
+    WeaponClass weapon = botVars.botWb.weapon;
+
+    if (weapon == null) return;
+    if (weapon.fireTimeout > NetworkTime.time) return;
+    if (weapon.bulletsInMag <= 0) return;
+
+    botVars.botWb.transform.localRotation = Quaternion.Euler(playerPosX < 0 ? 180 : 0, playerPosX < 0 ? 180 : 0, (playerPosX < 0 ? -1 : 1) * angle + Random.Range(-15f, 15f));
+
+    weapon.bulletsInMag--;
+    weapon.fireTimeout = (float)NetworkTime.time + (1f / weapon.fireRate) * (weapon.firingMode == WeaponClass.FireMode.Single ? 2.1f : 1);
+
+    Rpc_AddForce(gameObject, weapon.shootSound);
+    botVars.botWb.Shoot(weapon.ID, gameObject);
+  }
+
+  [ClientRpc]
+  void Rpc_AddForce(GameObject target, string shootSound)
+  {
+    botVars.botWb.AddForce(target);
+    if (shootSound != "")
+      FindObjectOfType<AudioSystem>().PlaySound(shootSound);
+  }
+
+  public void SwitchWeapon(GameObject weapon)
+  {
+    if (weapon != null && !botVars.lockMovement)
+    {
+      WeaponItem weaponItem = weapon.GetComponent<WeaponItem>();
+
+      botVars.botWb.SwitchWeapon(weaponItem.WeaponID);
+      TargetRpc_SwitchWeapon(weaponItem.WeaponID);
+      NetworkServer.Destroy(weapon);
+    }
+  }
+
+  [ClientRpc]
+  void TargetRpc_SwitchWeapon(string WeaponID)
+  {
+    botVars.botWb.SwitchWeapon(WeaponID);
+  }
+
+  public void TakeDamage(float damage, GameObject owner)
+  {
+    if (dead) return;
+
+    damageDealer = owner;
+
+    health -= damage;
+  }
+
+  GameObject damageDealer = null;
+  public void OnDamageTaken(float oldHealth, float newHealth)
+  {
+    if (health > 0) return;
+    Server_Die(damageDealer ?? gameObject,
+               gameObject);
+  }
+
+  public bool dead = false;
+  public void Server_Die(GameObject killer, GameObject killed)
+  {
+    if (dead) return;
+
+    dead = true;
+    botVars.lockMovement = true;
+    botVars.lockShooting = true;
+    botVars.lockWeapon = true;
+
+    MyNetworkManager.GameMode gm = FindObjectOfType<MyNetworkManager>().gameMode;
+
+    if (gm == MyNetworkManager.GameMode.Deathmatch) botVars.uiName.gameObject.SetActive(false);
+
+    string killerName;
+    string killedName = killed.GetComponent<PlayerVars>().displayName;
+
+    if (killer.GetComponent<BotVars>())
+    {
+      killerName = "BOT";
+    }
+    else
+    {
+      NetworkConnectionToClient killerIdentity = killer.GetComponent<NetworkIdentity>().connectionToClient;
+
+      if (killer == killed) MyNetworkManager.instance.players[killerIdentity].kills--;
+      else MyNetworkManager.instance.players[killerIdentity].kills++;
+
+      killerName = killer.GetComponent<PlayerVars>().displayName;
+    }
+
+    ClientRpc_Die(killerName, killedName);
+
+    if (gm != MyNetworkManager.GameMode.Deathmatch)
+    {
+      LayerMask lm = 1 << 6;
+      lm |= 1 << 12;
+
+      RaycastHit2D hit = Utilities.Grounded(transform, botVars.bc, lm, 999999f);
+      if (hit.collider != null)
+      {
+        GameObject spawnedGravestone = Instantiate(gravestone, new Vector2(hit.point.x, hit.point.y + (gravestone.GetComponentInChildren<SpriteRenderer>().bounds.size.y / 2)), Quaternion.Euler(0, 0, 0));
+        NetworkServer.Spawn(spawnedGravestone);
+      }
+    }
+
+    foreach (var player in NetworkServer.connections)
+    {
+      UpdateKillfeed(player.Value, killerName, killedName);
+    }
+
+    MyNetworkManager.instance.OnPlayerDie(connectionToClient);
+  }
+
+  [ClientRpc]
+  public void ClientRpc_Die(string killer, string killed)
+  {
+    botVars.graphics.DisableAll();
+    botVars.uiName.gameObject.SetActive(false);
+
+    GetComponent<BoxCollider2D>().enabled = false;
+    GetComponent<Rigidbody2D>().simulated = false;
+  }
+
+  [TargetRpc]
+  public void UpdateKillfeed(NetworkConnection conn, string killer, string killed)
+  {
+    PlayerVars localVars = conn.identity.gameObject.GetComponent<PlayerVars>();
+    GameObject spawnedKillfeedItem = Instantiate(killfeedItem, Vector3.zero, Quaternion.Euler(0, 0, 0), localVars.killfeed.transform);
+    spawnedKillfeedItem.GetComponent<KillFeedItem>().killer.text = killer;
+    spawnedKillfeedItem.GetComponent<KillFeedItem>().killed.text = killed;
+  }
+}

@@ -3,8 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 using UnityEngine.SceneManagement;
-using EpicTransport;
-using Epic;
 
 public class Utilities : MonoBehaviour
 {
@@ -80,7 +78,7 @@ public class Utilities : MonoBehaviour
 
   public static bool FindWithType<T>(out T gameObject) where T : Component
   {
-    gameObject = GameObject.FindObjectOfType<T>();
+    gameObject = FindObjectOfType<T>();
     return gameObject != null;
   }
 
@@ -106,7 +104,7 @@ public class Utilities : MonoBehaviour
 
   public static void Disconnect()
   {
-    if (FindWithType<MyNetworkManager>(out MyNetworkManager networkManager))
+    if (FindWithType(out MyNetworkManager networkManager))
     {
       if (networkManager.mode == Mirror.NetworkManagerMode.ServerOnly) networkManager.StopServer();
       else if (networkManager.mode == Mirror.NetworkManagerMode.Host) networkManager.StopHost();
@@ -158,5 +156,13 @@ public class Utilities : MonoBehaviour
     }
 
     return furthest;
+  }
+
+  public static RaycastHit2D Grounded(Transform origin, BoxCollider2D bc, LayerMask layerMask, float distance = 0.25f)
+  {
+    return Physics2D.BoxCast(
+      origin.position,
+      bc.bounds.size, 0, Vector2.down,
+      distance, layerMask);
   }
 }

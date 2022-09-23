@@ -1,4 +1,3 @@
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using Discord;
@@ -29,13 +28,13 @@ public class DiscordController : MonoBehaviour
   {
     if (debugMode) return;
 
-    discord = new Discord.Discord((long)applicationId, (System.UInt64)Discord.CreateFlags.NoRequireDiscord);
+    discord = new Discord.Discord((long)applicationId, (ulong)CreateFlags.NoRequireDiscord);
     activityManager = discord.GetActivityManager();
     relationshipManager = discord.GetRelationshipManager();
 
     now = DateTimeOffset.UtcNow;
 
-    Activity activity = new Activity
+    Activity activity = new()
     {
       State = "In Main Menu",
       Timestamps = {
@@ -61,7 +60,7 @@ public class DiscordController : MonoBehaviour
       MyNetworkManager.instance.StartClient();
     };
 
-    activityManager.OnActivityInvite += (ActivityActionType Type, ref Discord.User user, ref Discord.Activity activity2) =>
+    activityManager.OnActivityInvite += (ActivityActionType Type, ref User user, ref Activity activity2) =>
     {
       if (Type != ActivityActionType.Join) return;
       if (activity2.ApplicationId != (long)applicationId) return;
@@ -85,18 +84,18 @@ public class DiscordController : MonoBehaviour
         relationships[(ulong)relationship.User.Id] = relationship;
       }
 
-      if (Utilities.FindWithType<Friendlist>(out Friendlist friendslist))
+      if (Utilities.FindWithType(out Friendlist friendslist))
       {
         friendslist.UpdateList();
       }
     };
 
     // Update the matching user in dict
-    relationshipManager.OnRelationshipUpdate += (ref Discord.Relationship relationship) =>
+    relationshipManager.OnRelationshipUpdate += (ref Relationship relationship) =>
     {
       relationships[(ulong)relationship.User.Id] = relationship;
 
-      if (Utilities.FindWithType<Friendlist>(out Friendlist friendslist))
+      if (Utilities.FindWithType(out Friendlist friendslist))
       {
         friendslist.UpdateList();
       }
@@ -111,7 +110,7 @@ public class DiscordController : MonoBehaviour
     }
   }
 
-  public static void UpdateActivity(Discord.Activity activity)
+  public static void UpdateActivity(Activity activity)
   {
     if (discord == null) return;
 

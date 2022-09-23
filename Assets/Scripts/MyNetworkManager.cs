@@ -220,7 +220,7 @@ public class MyNetworkManager : NetworkManager
   [Server]
   public void OnPlayerDie(NetworkConnectionToClient conn)
   {
-    BotController[] bots = FindObjectsOfType<BotController>();
+    BotPathfinding[] bots = FindObjectsOfType<BotPathfinding>();
 
     if (NetworkServer.connections.Count == 1 && bots.Length <= 0) AnnounceWinner(bots);
     else if (gameMode == GameMode.Elimination)
@@ -238,9 +238,9 @@ public class MyNetworkManager : NetworkManager
   }
 
   [Server]
-  public void AnnounceWinner(BotController[] bots)
+  public void AnnounceWinner(BotPathfinding[] bots)
   {
-    if (Utilities.FindWithType<PlayerSpawnSystem>(out PlayerSpawnSystem go))
+    if (Utilities.FindWithType(out PlayerSpawnSystem go))
     {
       NetworkServer.Destroy(go.gameObject);
     }
@@ -257,7 +257,7 @@ public class MyNetworkManager : NetworkManager
       else winner = alivePlayers[0].GetComponent<NetworkIdentity>().connectionToClient;
 
       if (winner == null)
-        botWinner = GameObject.FindGameObjectsWithTag("Bot").Where(x => !x.GetComponent<BotController>().dead).ToArray()[0];
+        botWinner = GameObject.FindGameObjectsWithTag("Bot").Where(x => !x.GetComponent<BotPathfinding>().dead).ToArray()[0];
     }
     // If gamemode is deathmatch, choose player with most kills
     else

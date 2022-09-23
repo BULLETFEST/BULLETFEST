@@ -1,6 +1,15 @@
 {
   "RoslynExtensionsOptions": {
     "EnableAnalyzersSupport": true,
+    "EnableEditorConfigSupport": true,
     "LocationPaths": ["./NuGet/Microsoft.Unity.Analyzers.dll"]
+  },
+  "FileOptions": {
+    "ExcludeSearchPatterns": ["Assets/Mirror/**/*"]
+  },
+  "FormattingOptions": {
+    "UseTabs": false,
+    "IndentationSize": 2,
+    "TabSize": 2
   }
 }

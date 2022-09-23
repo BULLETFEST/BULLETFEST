@@ -1,12 +1,15 @@
 using UnityEngine;
+using TMPro;
 
 public class BotVars : MonoBehaviour
 {
   [HideInInspector] public Rigidbody2D rb;
   [HideInInspector] public BoxCollider2D bc;
-  [HideInInspector] public BotWeaponBehaviour botWb;
+  [HideInInspector] public BotWeaponBehavior botWb;
   [HideInInspector] public SpriteGroup graphics;
+  [HideInInspector] public BotBehavior botBehavior;
 
+  public TMP_Text uiName;
 
   [HideInInspector]
   public bool lockMovement = false,
@@ -17,7 +20,8 @@ public class BotVars : MonoBehaviour
   {
     rb = GetComponent<Rigidbody2D>();
     bc = GetComponent<BoxCollider2D>();
-    botWb = GetComponentInChildren<BotWeaponBehaviour>();
+    botWb = GetComponentInChildren<BotWeaponBehavior>();
     graphics = GetComponentInChildren<SpriteGroup>();
+    botBehavior = GetComponent<BotBehavior>();
   }
 }

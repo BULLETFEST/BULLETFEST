@@ -1,13 +1,10 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
-using Pathfinding;
 
 public class BotLookForWeaponState : BotBaseState
 {
   GameObject nearestGun;
 
-  public override void EnterState(BotController manager)
+  public override void EnterState(BotPathfinding manager)
   {
     nearestGun = Utilities.FindNearest(manager.transform, "WeaponItem");
 
@@ -16,31 +13,31 @@ public class BotLookForWeaponState : BotBaseState
 
   bool pickedWeaponUp;
 
-  public void ReachedTarget(BotController manager)
+  public void ReachedTarget(BotPathfinding manager)
   {
     pickedWeaponUp = true;
 
     if (nearestGun != null)
     {
-      manager.SwitchWeapon(nearestGun);
+      manager.botVars.botBehavior.SwitchWeapon(nearestGun);
       manager.SwitchState(manager.botHauntPlayerState);
     }
     else pickedWeaponUp = false;
   }
 
-  public override void ExitState(BotController manager)
+  public override void ExitState(BotPathfinding manager)
   {
     manager.OnReachTarget -= ReachedTarget;
   }
 
-  public override void UpdateState(BotController manager)
+  public override void UpdateState(BotPathfinding manager)
   {
     nearestGun = Utilities.FindNearest(manager.transform, "WeaponItem");
 
     if (nearestGun == null && !pickedWeaponUp) manager.SwitchState(manager.botFleeState);
   }
 
-  public override void CalculatePath(BotController manager)
+  public override void CalculatePath(BotPathfinding manager)
   {
     if (nearestGun != null)
       manager.seeker.StartPath(manager.transform.position, nearestGun.transform.position);

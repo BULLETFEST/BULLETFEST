@@ -1,5 +1,3 @@
-using System.Net;
-using System.Net.Sockets;
 using System.Text.RegularExpressions;
 using UnityEngine;
 using UnityEngine.UI;
@@ -17,10 +15,6 @@ public class MainMenu : MonoBehaviour
 
   // [HideInInspector]
   // public string playerName;
-
-  private string localIp;
-
-  private EOSSDKComponent eos;
 
   [Header("UI Elements")]
   public Button connectBtn;
@@ -41,22 +35,12 @@ public class MainMenu : MonoBehaviour
   {
     buildNumber.text = "Build " + Application.version;
 
-    IPHostEntry host = Dns.GetHostEntry(Dns.GetHostName());
-    foreach (IPAddress ip in host.AddressList)
-    {
-      if (ip.AddressFamily == AddressFamily.InterNetwork)
-      {
-        localIp = ip.ToString();
-      }
-    }
-
-    eos = GetComponent<EOSSDKComponent>();
     nm = FindObjectOfType<MyNetworkManager>();
     playerName.text = PlayerPrefs.GetString("PlayerName", "");
 
     Application.targetFrameRate = Screen.currentResolution.refreshRate;
 
-    nm.networkAddress = EpicTransport.EOSSDKComponent.LocalUserProductIdString;//localIp;
+    nm.networkAddress = EOSSDKComponent.LocalUserProductIdString;//localIp;
 
     EOSSDKComponent.Initialize();
   }
@@ -103,7 +87,7 @@ public class MainMenu : MonoBehaviour
     }
   }
 
-  public Regex nonNumbers = new Regex(@"\D");
+  public Regex nonNumbers = new(@"\D");
 
   public async void Host()
   {
@@ -193,7 +177,7 @@ public class MainMenu : MonoBehaviour
 
   public void PlaySelectSound()
   {
-    if (Utilities.FindWithType<AudioSystem>(out AudioSystem audioSystem))
+    if (Utilities.FindWithType(out AudioSystem audioSystem))
     {
       audioSystem.PlaySound("Select");
     }
