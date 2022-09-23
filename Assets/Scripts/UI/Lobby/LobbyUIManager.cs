@@ -18,17 +18,12 @@ public class LobbyUIManager : NetworkBehaviour
   {
     Room = MyNetworkManager.instance;
 
-    if (Room.isHost)
-    {
-      // startButton.interactable = true;
-      Room.PlayerUpdate += PlayerUpdate;
-      PlayerUpdate();
-    }
-    else
+    if (!Room.isHost)
     {
       startButton.gameObject.SetActive(false);
       settingsButton.gameObject.SetActive(false);
     }
+
 
     gameModeDrowpdown.value = (int)Room.gameMode;
     rounds.text = Room.rounds.ToString();
@@ -54,25 +49,23 @@ public class LobbyUIManager : NetworkBehaviour
     maps.onValueChanged.AddListener(delegate { SelectMap(maps.value); });
   }
 
+  void Update()
+  {
+    if (Room.isHost)
+    {
+#if !UNITY_EDITOR
+    if (Room.players.Count < 2 && !Room.enableBots) startButton.interactable = false;
+    else
+#endif
+      startButton.interactable = true;
+    }
+  }
+
   [Server]
   void StartGame()
   {
     Room.StartGame();
     FindObjectOfType<AudioSystem>().PlaySound("Select");
-  }
-
-  public void PlayerUpdate()
-  {
-#if !UNITY_EDITOR
-    if (Room.players.Count < 2) startButton.interactable = false;
-    else
-#endif
-    startButton.interactable = true;
-  }
-
-  private void OnDestroy()
-  {
-    Room.PlayerUpdate -= PlayerUpdate;
   }
 
   public void Quit()
@@ -109,6 +102,11 @@ public class LobbyUIManager : NetworkBehaviour
     else nm.privacyType = MyNetworkManager.PrivacyType.Public;
 
     FirebaseManager.UpdateLobby(NetworkServer.connections.Count, nm.gameMode.ToString(), nm.privacyType.ToString().ToLower(), false);
+  }
+
+  public void ToggleBots(bool option)
+  {
+    nm.enableBots = option;
   }
 
   public void ChangeRoundCount(string count)

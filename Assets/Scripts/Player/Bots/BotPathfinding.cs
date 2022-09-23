@@ -41,6 +41,8 @@ public class BotPathfinding : NetworkBehaviour
 
   void Start()
   {
+    if (!isServer) return;
+
     seeker = GetComponent<Seeker>();
 
     botVars = GetComponent<BotVars>();
@@ -57,12 +59,13 @@ public class BotPathfinding : NetworkBehaviour
     seeker.pathCallback -= OnPathComplete;
   }
 
-  void FixedUpdate()
+  void Update()
   {
-    if (Time.timeScale == 0 || botVars.lockMovement) return;
+    if (Time.timeScale == 0 || botVars.damageController.dead || !isServer) return;
+
+    if (!botVars.lockMovement) PathFollow();
 
     currentState.UpdateState(this);
-    PathFollow();
   }
 
   public void SwitchState(BotBaseState state)
@@ -72,7 +75,7 @@ public class BotPathfinding : NetworkBehaviour
     currentState.EnterState(this);
 
     CancelInvoke("UpdatePath");
-    InvokeRepeating("UpdatePath", 0f, state.Timer());
+    InvokeRepeating("UpdatePath", 1f, state.Timer());
   }
 
   private void UpdatePath()

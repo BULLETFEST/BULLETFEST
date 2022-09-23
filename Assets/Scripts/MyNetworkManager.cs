@@ -14,8 +14,10 @@ public class MyNetworkManager : NetworkManager
   string[] queuedScenes;
 
   [SerializeField]
-  private GameObject PlayerSpawnSystemPrefab,
-                     WinnerPanelPrefab;
+  public GameObject PlayerSpawnSystemPrefab,
+                     WinnerPanelPrefab,
+                     PlayerPrefab,
+                     BotPrefab;
 
   public Dictionary<NetworkConnectionToClient, PlayerData> players { get; } = new Dictionary<NetworkConnectionToClient, PlayerData>();
 
@@ -273,11 +275,11 @@ public class MyNetworkManager : NetworkManager
     {
       players[winner].wins++;
 
-      PlayerVars winnerVars = winner.identity.GetComponent<PlayerVars>();
+      // PlayerVars winnerVars = winner.identity.GetComponent<PlayerVars>();
 
-      winnerVars.lockWeapon = true;
-      winnerVars.lockMovement = true;
-      winnerVars.lockShooting = true;
+      // winnerVars.lockWeapon = true;
+      // winnerVars.lockMovement = true;
+      // winnerVars.lockShooting = true;
     }
 
     GameObject winnerUi = Instantiate(WinnerPanelPrefab);
@@ -315,6 +317,8 @@ public class MyNetworkManager : NetworkManager
         string dir = Path.GetDirectoryName(path);
         string sName = Path.GetFileNameWithoutExtension(path);
 
+        if (enableBots && !_BotSupport.Contains(path)) continue;
+
         if (dir.EndsWith("4Players") && players.Count <= 4) _scenes.Add(sName);
         else if (dir.EndsWith("16Players") && players.Count <= 16) _scenes.Add(sName);
       }
@@ -329,8 +333,15 @@ public class MyNetworkManager : NetworkManager
     {
       if (chosenMap == 0)
       {
-        int chosenMapIdx = Random.Range(menuScenesCount, sceneCount);
-        _scenes.Add(Path.GetFileNameWithoutExtension(SceneUtility.GetScenePathByBuildIndex(chosenMapIdx)));
+        if (!enableBots)
+        {
+          int chosenMapIdx = Random.Range(menuScenesCount, sceneCount);
+          _scenes.Add(Path.GetFileNameWithoutExtension(SceneUtility.GetScenePathByBuildIndex(chosenMapIdx)));
+        }
+        else
+        {
+          _scenes.Add(Path.GetFileNameWithoutExtension(_BotSupport[Random.Range(0, _BotSupport.Length)]));
+        }
       }
       else _scenes.Add(Path.GetFileNameWithoutExtension(SceneUtility.GetScenePathByBuildIndex(chosenMap - 1 + menuScenesCount)));
     }

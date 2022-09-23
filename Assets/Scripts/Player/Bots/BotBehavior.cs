@@ -5,20 +5,14 @@ public class BotBehavior : NetworkBehaviour
 {
   BotVars botVars;
 
-  [SyncVar]
-  public float maxHealth, health;
-
   GameObject killfeedItem, gravestone;
 
   void Start()
   {
     botVars = GetComponent<BotVars>();
 
-    maxHealth = FindObjectOfType<DamageController>().maxHealth;
     gravestone = FindObjectOfType<PlayerBehavior>().gravestone;
-    killfeedItem = FindObjectOfType<PlayerBehavior>().killfeed;
-
-    health = maxHealth;
+    killfeedItem = FindObjectOfType<PlayerBehavior>().killfeedItem;
 
     botVars.damageController.onDeath += Die;
   }
@@ -28,18 +22,25 @@ public class BotBehavior : NetworkBehaviour
     botVars.damageController.onDeath -= Die;
   }
 
+  void Update()
+  {
+    if (!isServer) return;
+
+    if (transform.position.y <= -15 || transform.position.y >= 50) botVars.damageController.TakeDamage(9999999, null);
+  }
+
   public void Shoot(float playerPosX, float angle)
   {
     WeaponClass weapon = botVars.botWb.weapon;
 
     if (weapon == null) return;
-    if (weapon.fireTimeout > NetworkTime.time) return;
+    if (weapon.fireTimeout > Time.time) return;
     if (weapon.bulletsInMag <= 0) return;
 
-    botVars.botWb.transform.localRotation = Quaternion.Euler(playerPosX < 0 ? 180 : 0, playerPosX < 0 ? 180 : 0, (playerPosX < 0 ? -1 : 1) * angle + Random.Range(-15f, 15f));
+    botVars.botWb.transform.localRotation = Quaternion.Euler(playerPosX < 0 ? 180 : 0, playerPosX < 0 ? 180 : 0, (playerPosX < 0 ? -1 : 1) * angle + Random.Range(-25f, 25f));
 
     weapon.bulletsInMag--;
-    weapon.fireTimeout = (float)NetworkTime.time + (1f / weapon.fireRate) * (weapon.firingMode == WeaponClass.FireMode.Single ? 2.1f : 1);
+    weapon.fireTimeout = (float)Time.time + (1f / weapon.fireRate) * (weapon.firingMode == WeaponClass.FireMode.Single ? 1.65f : 1);
 
     Rpc_AddForce(gameObject, weapon.shootSound);
     botVars.botWb.Shoot(weapon.ID, gameObject);

@@ -1,3 +1,4 @@
+using System.Linq;
 using UnityEngine;
 
 public class BotFleeState : BotBaseState
@@ -12,7 +13,7 @@ public class BotFleeState : BotBaseState
   public override void EnterState(BotPathfinding manager)
   {
     furthestNode = Utilities.FindFurthest(manager.transform, "NavigationPoint");
-    nearestPlayer = Utilities.FindNearest(manager.transform, "Player");
+    nearestPlayer = Utilities.FindNearest(manager.transform, GameObject.FindObjectsOfType<DamageController>());
 
     escaping = true;
     tempFurthest = furthestNode;
@@ -30,7 +31,7 @@ public class BotFleeState : BotBaseState
   public override void UpdateState(BotPathfinding manager)
   {
     furthestNode = Utilities.FindFurthest(manager.transform, "NavigationPoint");
-    nearestPlayer = Utilities.FindNearest(manager.transform, "Player");
+    nearestPlayer = Utilities.FindNearest(manager.transform, GameObject.FindObjectsOfType<DamageController>().Where(x => x.gameObject != manager.gameObject && !x.dead).ToArray());
 
     if (GameObject.FindGameObjectWithTag("WeaponItem")) manager.SwitchState(manager.botLookForWeaponState);
   }

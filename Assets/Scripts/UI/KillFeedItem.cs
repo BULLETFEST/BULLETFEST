@@ -21,7 +21,7 @@ public class KillFeedItem : MonoBehaviour
 
     while (canvasGroup.alpha > 0.01f)
     {
-      canvasGroup.alpha = Mathf.Lerp(canvasGroup.alpha, 0, fadeOutTime * Time.deltaTime);
+      canvasGroup.alpha = Mathf.Lerp(canvasGroup.alpha, 0, fadeOutTime * Time.unscaledDeltaTime);
       yield return null;
 
     }

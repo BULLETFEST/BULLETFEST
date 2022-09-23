@@ -678,6 +678,7 @@ GameObject:
   - component: {fileID: 1548013739}
   - component: {fileID: 4673171023595102494}
   - component: {fileID: 1015102264460988468}
+  - component: {fileID: 4139013161569277563}
   m_Layer: 28
   m_Name: Bot
   m_TagString: Bot
@@ -892,7 +893,7 @@ MonoBehaviour:
     m_Bits: 4160
   playerLm:
     serializedVersion: 2
-    m_Bits: 3758104575
+    m_Bits: 2147483647
   currentWaypoint: 0
   dead: 0
   botVars: {fileID: 0}
@@ -914,6 +915,7 @@ MonoBehaviour:
   botWb: {fileID: 0}
   graphics: {fileID: 0}
   botBehavior: {fileID: 0}
+  damageController: {fileID: 0}
   uiName: {fileID: 6970322006210730000}
   lockMovement: 0
   lockShooting: 0
@@ -935,6 +937,20 @@ MonoBehaviour:
   health: 0
   maxHealth: 10
   dead: 0
+--- !u!114 &4139013161569277563
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5449998184297253465}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2c8771b6d6e3c1d408d9d57b84b42280, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  syncMode: 0
+  syncInterval: 0.1
 --- !u!1 &5744539765346192264
 GameObject:
   m_ObjectHideFlags: 0

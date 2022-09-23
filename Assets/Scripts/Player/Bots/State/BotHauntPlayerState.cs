@@ -1,3 +1,4 @@
+using System.Linq;
 using UnityEngine;
 
 public class BotHauntPlayerState : BotBaseState
@@ -6,36 +7,28 @@ public class BotHauntPlayerState : BotBaseState
 
   public override void EnterState(BotPathfinding manager)
   {
-    nearestPlayer = Utilities.FindNearest(manager.transform, "Player");
-
-    // manager.OnReachTarget += ReachedTarget;
+    nearestPlayer = Utilities.FindNearest(manager.transform, GameObject.FindObjectsOfType<DamageController>());
   }
 
   public void ReachedTarget(BotPathfinding manager)
   {
-    // pickedWeaponUp = true;
-
     if (nearestPlayer != null)
       manager.botVars.botBehavior.SwitchWeapon(nearestPlayer);
-    // else pickedWeaponUp = false;
   }
 
-  public override void ExitState(BotPathfinding manager)
-  {
-    // manager.OnReachTarget -= ReachedTarget;
-  }
+  public override void ExitState(BotPathfinding manager) { }
 
   bool haunt = false;
 
   public override void UpdateState(BotPathfinding manager)
   {
-    nearestPlayer = Utilities.FindNearest(manager.transform, "Player");
+    nearestPlayer = Utilities.FindNearest(manager.transform, GameObject.FindObjectsOfType<DamageController>().Where(x => x.gameObject != manager.gameObject && !x.dead).ToArray());
 
     if (nearestPlayer != null)
     {
       Vector2 dir = (nearestPlayer.transform.position - manager.transform.position).normalized;
 
-      RaycastHit2D rh = Physics2D.Raycast(manager.transform.position, dir, Mathf.Infinity, manager.playerLm);
+      RaycastHit2D rh = Physics2D.Raycast(manager.transform.position, dir, Mathf.Infinity);
 
       /*manager.botVars.botWb.transform.localRotation*/
 
@@ -45,7 +38,7 @@ public class BotHauntPlayerState : BotBaseState
         return;
       }
 
-      if (rh.collider.gameObject.tag == "Player")
+      if (rh.collider.gameObject.tag == "Player" || rh.collider.gameObject.tag == "Bot")
       {
         haunt = false;
 
@@ -86,5 +79,5 @@ public class BotHauntPlayerState : BotBaseState
       manager.seeker.StartPath(manager.transform.position, nearestPlayer.transform.position);
   }
 
-  public override float Timer() => 0.25f;
+  public override float Timer() => 0.15f;
 }

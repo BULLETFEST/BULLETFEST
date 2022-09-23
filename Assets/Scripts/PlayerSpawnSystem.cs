@@ -2,6 +2,7 @@ using System.Collections;
 using System.Linq;
 using Mirror;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class PlayerSpawnSystem : NetworkBehaviour
 {
@@ -9,6 +10,8 @@ public class PlayerSpawnSystem : NetworkBehaviour
 
   [SyncVar]
   public System.DateTime timeStamp;
+
+  MyNetworkManager nm = MyNetworkManager.instance;
 
   Color[] colors = new Color[] {
     new Color(0.5882353f, 0.1137255f, 0.04313726f), // 961D0B
@@ -28,22 +31,33 @@ public class PlayerSpawnSystem : NetworkBehaviour
     base.OnStartServer();
 
     GameObject winningPlayer = null;
-    for (int i = 0; i < MyNetworkManager.instance.players.Count; i++)
+    for (int i = 0; i < nm.players.Count; i++)
     {
-      NetworkConnectionToClient conn = MyNetworkManager.instance.players.ElementAt(i).Key;
-      GameObject playerInstance = Instantiate(NetworkManager.singleton.playerPrefab, spawnPoints[i].transform.position, Quaternion.Euler(0, 0, 0));
+      NetworkConnectionToClient conn = nm.players.ElementAt(i).Key;
+      GameObject playerInstance = Instantiate(nm.PlayerPrefab, spawnPoints[i].transform.position, Quaternion.Euler(0, 0, 0));
       // playerInstance.GetComponent<PlayerVars>().uiName.text = displayName;
       // NetworkServer.Spawn(playerInstance, Room.players.ElementAt(i).Key);
       // playerInstance.GetComponent<PlayerVars>().timeleft = timeStamp;
       NetworkServer.Spawn(playerInstance);
       NetworkServer.ReplacePlayerForConnection(conn, playerInstance);
       NetworkServer.SetClientReady(conn);
-      if (conn == MyNetworkManager.instance.winner) winningPlayer = playerInstance; //playerInstance.GetComponent<PlayerVars>().crown.SetActive(true);
+      if (conn == nm.winner) winningPlayer = playerInstance; //playerInstance.GetComponent<PlayerVars>().crown.SetActive(true);
     }
 
-    for (int i = 0; i < MyNetworkManager.instance.players.Count; i++)
+    if (nm.enableBots && nm._BotSupport.Contains(SceneManager.GetActiveScene().path))
     {
-      NetworkConnectionToClient conn = MyNetworkManager.instance.players.ElementAt(i).Key;
+      for (int i = 0; i < nm.maxPlayers - nm.players.Count; i++)
+      {
+        GameObject bot = Instantiate(nm.BotPrefab, spawnPoints[spawnPoints.Length - 1 - i].transform.position, Quaternion.identity);
+        bot.name = "BOT" + i;
+        NetworkServer.Spawn(bot);
+        Rpc_SetPlayerColor(bot, i + nm.players.Count);
+      }
+    }
+
+    for (int i = 0; i < nm.players.Count; i++)
+    {
+      NetworkConnectionToClient conn = nm.players.ElementAt(i).Key;
       Rpc_SetPlayerColor(conn.identity.gameObject, i);
     }
 
@@ -74,10 +88,28 @@ public class PlayerSpawnSystem : NetworkBehaviour
     conn.identity.gameObject.GetComponent<DamageController>().health = conn.identity.gameObject.GetComponent<DamageController>().maxHealth;
   }
 
+  [Server]
+  public IEnumerator Cmd_RespawnBot(GameObject bot)
+  {
+    Rpc_SetPlayerPosition(bot);
+    yield return new WaitForSecondsRealtime(5);
+
+    BotVars botVars = bot.GetComponent<BotVars>();
+
+    botVars.damageController.dead = false;
+    botVars.lockMovement = false;
+    botVars.lockShooting = false;
+    botVars.lockWeapon = false;
+
+    Rpc_RespawnPlayer(bot);
+    bot.GetComponent<DamageController>().health = bot.GetComponent<DamageController>().maxHealth;
+  }
+
   [ClientRpc]
   private void Rpc_SetPlayerColor(GameObject player, int idx)
   {
-    player.GetComponent<PlayerVars>().graphics.sprites[0].color = colors[idx % 4];
+    if (player.tag == "Player") player.GetComponent<PlayerVars>().graphics.sprites[0].color = colors[idx % 4];
+    else if (player.tag == "Bot") player.GetComponent<BotVars>().graphics.sprites[0].color = colors[idx % 4];
   }
 
   [ClientRpc]
@@ -91,17 +123,35 @@ public class PlayerSpawnSystem : NetworkBehaviour
   [ClientRpc]
   private void Rpc_RespawnPlayer(GameObject player)
   {
-    PlayerBehavior pb = player.GetComponent<PlayerBehavior>();
+    if (gameObject.tag == "Bot")
+    {
+      BotVars botVars = player.GetComponent<BotVars>();
 
-    pb.playerVars.rb.velocity = Vector2.zero;
+      botVars.rb.velocity = Vector2.zero;
 
-    pb.playerVars.uiName.gameObject.SetActive(true);
+      botVars.uiName.gameObject.SetActive(true);
 
-    // pb.health = pb.maxHealth;
+      // pb.health = pb.maxHealth;
 
-    pb.playerVars.graphics.EnableAll();
-    pb.playerVars.uiName.gameObject.SetActive(true);
-    player.GetComponent<BoxCollider2D>().enabled = true;
-    player.GetComponent<Rigidbody2D>().simulated = true;
+      botVars.graphics.EnableAll();
+      botVars.uiName.gameObject.SetActive(true);
+      player.GetComponent<BoxCollider2D>().enabled = true;
+      player.GetComponent<Rigidbody2D>().simulated = true;
+    }
+    else
+    {
+      PlayerBehavior pb = player.GetComponent<PlayerBehavior>();
+
+      pb.playerVars.rb.velocity = Vector2.zero;
+
+      pb.playerVars.uiName.gameObject.SetActive(true);
+
+      // pb.health = pb.maxHealth;
+
+      pb.playerVars.graphics.EnableAll();
+      pb.playerVars.uiName.gameObject.SetActive(true);
+      player.GetComponent<BoxCollider2D>().enabled = true;
+      player.GetComponent<Rigidbody2D>().simulated = true;
+    }
   }
 }

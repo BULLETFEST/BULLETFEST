@@ -136,6 +136,26 @@ public class Utilities : MonoBehaviour
     return closest;
   }
 
+  public static GameObject FindNearest(Transform origin, Component[] objects)
+  {
+    GameObject closest = null;
+    float distance = Mathf.Infinity;
+    Vector3 position = origin.position;
+    foreach (Component go in objects)
+    {
+      Vector3 diff = go.transform.position - position;
+      float curDistance = diff.sqrMagnitude;
+      if (curDistance < distance)
+      {
+        //if pickable can be inserted here ~Toast
+        closest = go.gameObject;
+        distance = curDistance;
+      }
+    }
+
+    return closest;
+  }
+
   public static GameObject FindFurthest(Transform origin, string tag)
   {
     GameObject[] objects = GameObject.FindGameObjectsWithTag(tag);
@@ -151,6 +171,26 @@ public class Utilities : MonoBehaviour
       {
         //if pickable can be inserted here ~Toast
         furthest = go;
+        distance = curDistance;
+      }
+    }
+
+    return furthest;
+  }
+
+  public static GameObject FindFurthest(Transform origin, Component[] objects)
+  {
+    GameObject furthest = null;
+    float distance = 0;
+    Vector3 position = origin.position;
+    foreach (Component go in objects)
+    {
+      Vector3 diff = go.transform.position - position;
+      float curDistance = diff.sqrMagnitude;
+      if (curDistance > distance)
+      {
+        //if pickable can be inserted here ~Toast
+        furthest = go.gameObject;
         distance = curDistance;
       }
     }
