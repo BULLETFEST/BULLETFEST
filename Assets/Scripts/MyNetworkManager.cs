@@ -360,6 +360,7 @@ public class MyNetworkManager : NetworkManager
   {
     deadPlayers = 0;
     winner = null;
+    botWinner = null;
 
     if (queuedScenes.Length == 0)// || gameMode == GameMode.Deathmatch)
     {
