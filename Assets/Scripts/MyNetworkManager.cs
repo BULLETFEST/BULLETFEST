@@ -242,6 +242,9 @@ public class MyNetworkManager : NetworkManager
   [Server]
   public void AnnounceWinner(BotPathfinding[] bots)
   {
+    winner = null;
+    botWinner = null;
+
     if (Utilities.FindWithType(out PlayerSpawnSystem go))
     {
       NetworkServer.Destroy(go.gameObject);
@@ -253,8 +256,8 @@ public class MyNetworkManager : NetworkManager
     // If gamemode is elimination, choose last player alive
     else if (gameMode == 0)
     {
-      GameObject[] alivePlayers = GameObject.FindGameObjectsWithTag("Player").Where(x => !x.GetComponent<DamageController>().dead).ToArray();
-
+      GameObject[] alivePlayers = FindObjectsOfType<PlayerBehavior>().Where(x => !x.GetComponent<DamageController>().dead).Select(x => x.gameObject).ToArray();
+      print(alivePlayers.Length);
       if (alivePlayers.Length <= 0) winner = null;
       else winner = alivePlayers[0].GetComponent<NetworkIdentity>().connectionToClient;
 
@@ -290,7 +293,7 @@ public class MyNetworkManager : NetworkManager
 
     WinnerPanelPrefab.GetComponent<WinnerUI>().winnerText.text = $"{winnerName} won the round";
 
-    if (botWinner != null)
+    if (winnerIdx == -1)
       WinnerPanelPrefab.GetComponent<WinnerUI>().playerImage.color = new Color(0.3936009f, 0.5186465f, 0.5754717f);
 
     if (players.Count <= 1) return;
