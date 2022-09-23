@@ -72,7 +72,7 @@ public class PlayerMovement : NetworkBehaviour
     if (!isLocalPlayer) return;
     if (playerVars.lockMovement) return;
 
-    if (Input.GetKeyDown(KeyCode.X)) GetComponent<PlayerBehavior>().TakeDamage(5f, null);
+    if (Input.GetKeyDown(KeyCode.X)) GetComponent<DamageController>().TakeDamage(5f, null);
 
     int xRaw = 0;
     if (Utilities.GetKeybind("lft") && Utilities.GetKeybind("rgt")) xRaw = 0;
@@ -124,7 +124,7 @@ public class PlayerMovement : NetworkBehaviour
   {
     if (playerVars.lockMovement) return;
 
-    if (transform.position.y <= -15 || transform.position.y >= 50) GetComponent<PlayerBehavior>().TakeDamage(9999999, null);
+    if (transform.position.y <= -15 || transform.position.y >= 50) GetComponent<DamageController>().TakeDamage(9999999, null);
 
     xRaw = Mathf.Clamp(xRaw, -1, 1);
 

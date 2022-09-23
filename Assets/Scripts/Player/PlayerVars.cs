@@ -34,12 +34,14 @@ public class PlayerVars : NetworkBehaviour
 
   [HideInInspector] public PlayerMovement playerMovement;
 
+  [HideInInspector] public DamageController damageController;
+
   // [HideInInspector]
   [SyncVar(hook = nameof(HandleUpdateDisplayName))]
   public string displayName;
 
   // Start is called before the first frame update
-  void Start()
+  void Awake()
   {
     rb = GetComponent<Rigidbody2D>();
     bc = GetComponent<BoxCollider2D>();
@@ -49,6 +51,8 @@ public class PlayerVars : NetworkBehaviour
     // weaponBehavior = GetComponentInChildren<WeaponBehavior>();
 
     audioSystem = FindObjectOfType<AudioSystem>();
+
+    damageController = GetComponent<DamageController>();
   }
 
   public override void OnStartAuthority()

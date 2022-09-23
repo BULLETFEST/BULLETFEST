@@ -63,8 +63,15 @@ public class PlayerSpawnSystem : NetworkBehaviour
     Rpc_SetPlayerPosition(conn.identity.gameObject);
     yield return new WaitForSecondsRealtime(5);
 
+    PlayerBehavior pb = conn.identity.gameObject.GetComponent<PlayerBehavior>();
+
+    pb.playerVars.damageController.dead = false;
+    pb.playerVars.lockMovement = false;
+    pb.playerVars.lockShooting = false;
+    pb.playerVars.lockWeapon = false;
+
     Rpc_RespawnPlayer(conn.identity.gameObject);
-    conn.identity.gameObject.GetComponent<PlayerBehavior>().health = 10;
+    conn.identity.gameObject.GetComponent<DamageController>().health = conn.identity.gameObject.GetComponent<DamageController>().maxHealth;
   }
 
   [ClientRpc]
@@ -85,11 +92,6 @@ public class PlayerSpawnSystem : NetworkBehaviour
   private void Rpc_RespawnPlayer(GameObject player)
   {
     PlayerBehavior pb = player.GetComponent<PlayerBehavior>();
-
-    pb.dead = false;
-    pb.playerVars.lockMovement = false;
-    pb.playerVars.lockShooting = false;
-    pb.playerVars.lockWeapon = false;
 
     pb.playerVars.rb.velocity = Vector2.zero;
 

@@ -14,11 +14,18 @@ public class BotBehavior : NetworkBehaviour
   {
     botVars = GetComponent<BotVars>();
 
-    maxHealth = FindObjectOfType<PlayerBehavior>().maxHealth;
+    maxHealth = FindObjectOfType<DamageController>().maxHealth;
     gravestone = FindObjectOfType<PlayerBehavior>().gravestone;
     killfeedItem = FindObjectOfType<PlayerBehavior>().killfeed;
 
     health = maxHealth;
+
+    botVars.damageController.onDeath += Die;
+  }
+
+  void OnDestroy()
+  {
+    botVars.damageController.onDeath -= Die;
   }
 
   public void Shoot(float playerPosX, float angle)
@@ -64,29 +71,9 @@ public class BotBehavior : NetworkBehaviour
     botVars.botWb.SwitchWeapon(WeaponID);
   }
 
-  public void TakeDamage(float damage, GameObject owner)
+  [ServerCallback]
+  public void Die(GameObject killer)
   {
-    if (dead) return;
-
-    damageDealer = owner;
-
-    health -= damage;
-  }
-
-  GameObject damageDealer = null;
-  public void OnDamageTaken(float oldHealth, float newHealth)
-  {
-    if (health > 0) return;
-    Server_Die(damageDealer ?? gameObject,
-               gameObject);
-  }
-
-  public bool dead = false;
-  public void Server_Die(GameObject killer, GameObject killed)
-  {
-    if (dead) return;
-
-    dead = true;
     botVars.lockMovement = true;
     botVars.lockShooting = true;
     botVars.lockWeapon = true;
@@ -96,7 +83,7 @@ public class BotBehavior : NetworkBehaviour
     if (gm == MyNetworkManager.GameMode.Deathmatch) botVars.uiName.gameObject.SetActive(false);
 
     string killerName;
-    string killedName = killed.GetComponent<PlayerVars>().displayName;
+    string killedName = "BOT";
 
     if (killer.GetComponent<BotVars>())
     {
@@ -106,7 +93,7 @@ public class BotBehavior : NetworkBehaviour
     {
       NetworkConnectionToClient killerIdentity = killer.GetComponent<NetworkIdentity>().connectionToClient;
 
-      if (killer == killed) MyNetworkManager.instance.players[killerIdentity].kills--;
+      if (killer == gameObject) MyNetworkManager.instance.players[killerIdentity].kills--;
       else MyNetworkManager.instance.players[killerIdentity].kills++;
 
       killerName = killer.GetComponent<PlayerVars>().displayName;

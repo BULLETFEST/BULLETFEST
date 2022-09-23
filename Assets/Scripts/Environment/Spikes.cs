@@ -10,7 +10,7 @@ public class Spikes : NetworkBehaviour
   [ServerCallback]
   private void OnCollisionEnter2D(Collision2D other)
   {
-    if (other.gameObject.tag != "Player") return;
+    if (!other.gameObject.GetComponent<DamageController>()) return;
 
     dict.Add(other.gameObject, StartCoroutine(DealDamage(other.gameObject)));
   }
@@ -18,7 +18,7 @@ public class Spikes : NetworkBehaviour
   [ServerCallback]
   private void OnCollisionExit2D(Collision2D other)
   {
-    if (other.gameObject.tag != "Player") return;
+    if (!other.gameObject.GetComponent<DamageController>()) return;
 
     StopCoroutine(dict[other.gameObject]);
     dict.Remove(other.gameObject);
@@ -27,7 +27,7 @@ public class Spikes : NetworkBehaviour
   [ServerCallback]
   IEnumerator DealDamage(GameObject go)
   {
-    go.GetComponent<PlayerBehavior>().TakeDamage(2.5f, null);
+    go.GetComponent<DamageController>().TakeDamage(2.5f, null);
     yield return new WaitForSecondsRealtime(1.75f);
     dict[go] = StartCoroutine(DealDamage(go));
   }

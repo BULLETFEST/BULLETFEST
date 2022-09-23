@@ -8,6 +8,7 @@ public class BotVars : MonoBehaviour
   [HideInInspector] public BotWeaponBehavior botWb;
   [HideInInspector] public SpriteGroup graphics;
   [HideInInspector] public BotBehavior botBehavior;
+  [HideInInspector] public DamageController damageController;
 
   public TMP_Text uiName;
 
@@ -16,12 +17,13 @@ public class BotVars : MonoBehaviour
             lockShooting = false,
             lockWeapon = false;
 
-  void Start()
+  void Awake()
   {
     rb = GetComponent<Rigidbody2D>();
     bc = GetComponent<BoxCollider2D>();
     botWb = GetComponentInChildren<BotWeaponBehavior>();
     graphics = GetComponentInChildren<SpriteGroup>();
     botBehavior = GetComponent<BotBehavior>();
+    damageController = GetComponent<DamageController>();
   }
 }

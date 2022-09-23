@@ -37,21 +37,18 @@ public class Bullet : NetworkBehaviour
   [ServerCallback]
   private void OnCollisionEnter2D(Collision2D other)
   {
-    if (other.gameObject.tag != "Player")
+    if (!other.gameObject.GetComponent<DamageController>())
     {
-      NetworkServer.Destroy(this.gameObject);
+      NetworkServer.Destroy(gameObject);
       return;
     }
 
-
-    // if (other.gameObject == owner.identity.gameObject) return;
-
     DealDamage(other.gameObject);
 
-    if (!passThrough) NetworkServer.Destroy(this.gameObject);
+    if (!passThrough) NetworkServer.Destroy(gameObject);
     else
     {
-      if (passedThrough >= passThroughAmount) NetworkServer.Destroy(this.gameObject);
+      if (passedThrough >= passThroughAmount) NetworkServer.Destroy(gameObject);
       Server_DisableCollisionWith(other.gameObject);
       passedThrough++;
     }
@@ -67,6 +64,6 @@ public class Bullet : NetworkBehaviour
   [Command(requiresAuthority = false)]
   void DealDamage(GameObject victim)
   {
-    victim.GetComponent<PlayerBehavior>().TakeDamage(damage, owner);
+    victim.GetComponent<DamageController>().TakeDamage(damage, owner);
   }
 }

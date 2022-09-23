@@ -251,7 +251,7 @@ public class MyNetworkManager : NetworkManager
     // If gamemode is elimination, choose last player alive
     else if (gameMode == 0)
     {
-      GameObject[] alivePlayers = GameObject.FindGameObjectsWithTag("Player").Where(x => !x.GetComponent<PlayerBehavior>().dead).ToArray();
+      GameObject[] alivePlayers = GameObject.FindGameObjectsWithTag("Player").Where(x => !x.GetComponent<DamageController>().dead).ToArray();
 
       if (alivePlayers.Length <= 0) winner = null;
       else winner = alivePlayers[0].GetComponent<NetworkIdentity>().connectionToClient;
@@ -290,9 +290,6 @@ public class MyNetworkManager : NetworkManager
 
     if (botWinner != null)
       WinnerPanelPrefab.GetComponent<WinnerUI>().playerImage.color = new Color(0.3936009f, 0.5186465f, 0.5754717f);
-
-
-    print(winnerName);
 
     if (players.Count <= 1) return;
 

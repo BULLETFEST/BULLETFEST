@@ -1266,6 +1266,7 @@ GameObject:
   - component: {fileID: 2944806032652721416}
   - component: {fileID: 6057913054904780200}
   - component: {fileID: 6840303063418505447}
+  - component: {fileID: -5384952949535392072}
   m_Layer: 31
   m_Name: Player
   m_TagString: Player
@@ -1469,6 +1470,7 @@ MonoBehaviour:
   weaponBehavior: {fileID: 8402200740394793644}
   audioSystem: {fileID: 0}
   playerMovement: {fileID: 0}
+  damageController: {fileID: 0}
   displayName: 
 --- !u!114 &2970595044478850307
 MonoBehaviour:
@@ -1519,15 +1521,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   syncMode: 0
   syncInterval: 0.1
-  maxHealth: 10
-  health: 1
   playerVars: {fileID: 0}
   uiController: {fileID: 0}
   weaponBehavior: {fileID: 0}
   gravestone: {fileID: 6030231851616318269, guid: 57f25a84d55296a40bb69f685dc01911, type: 3}
   killfeed: {fileID: 1038483244208179192}
   killfeedItem: {fileID: 7200907496177310357, guid: 1e94cb2ec6b3e19439dfa832a7f1d308, type: 3}
-  dead: 0
 --- !u!114 &6057913054904780200
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1563,6 +1562,23 @@ MonoBehaviour:
   borderSize: 25
   arrowContainer: {fileID: 8750778581718624314}
   arrowPrefab: {fileID: 2272336551118511527, guid: 22afa000613614b4ca538c2a03a89e9d, type: 3}
+--- !u!114 &-5384952949535392072
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5449998184297253465}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b1b18cba91fd6ad42b65999319996885, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  syncMode: 0
+  syncInterval: 0.1
+  health: 0
+  maxHealth: 10
+  dead: 0
 --- !u!1 &5744539765346192264
 GameObject:
   m_ObjectHideFlags: 0

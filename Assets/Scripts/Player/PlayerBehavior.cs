@@ -3,10 +3,10 @@ using UnityEngine;
 
 public class PlayerBehavior : NetworkBehaviour
 {
-  public float maxHealth = 10f;
+  // public float maxHealth = 10f;
 
-  [SyncVar(hook = nameof(OnDamageTaken))]
-  public float health = 1f;
+  // [SyncVar(hook = nameof(OnDamageTaken))]
+  // public float health = 1f;
 
   [HideInInspector]
   public PlayerVars playerVars;
@@ -21,16 +21,29 @@ public class PlayerBehavior : NetworkBehaviour
 
   public GameObject gravestone, killfeed, killfeedItem;
 
+  System.Action<GameObject> a;
+
   // Start is called before the first frame update
-  void Awake()
+  void Start()
   {
     playerVars = GetComponent<PlayerVars>();
     uiController = GetComponent<PlayerUI>();
     weaponBehavior = GetComponentInChildren<WeaponBehavior>();
 
-    health = maxHealth;
+    // health = maxHealth;
+
+    a = delegate (GameObject g) { PlayHitSound(connectionToClient); };
+
+    playerVars.damageController.onDeath += Server_Die;
+    playerVars.damageController.onTakeDamage += a;
 
     FetchTime();
+  }
+
+  void OnDestroy()
+  {
+    playerVars.damageController.onDeath -= Server_Die;
+    playerVars.damageController.onTakeDamage -= a;
   }
 
   public override void OnStartAuthority()
@@ -158,36 +171,32 @@ public class PlayerBehavior : NetworkBehaviour
     uiController.UpdateAmmoText(bulletsInMag);
   }
 
-  [Command(requiresAuthority = false)]
-  public void TakeDamage(float damage, GameObject owner)
-  {
-    if (dead) return;
+  // [Command(requiresAuthority = false)]
+  // public void TakeDamage(float damage, GameObject owner)
+  // {
+  //   if (dead) return;
 
-    damageDealer = owner;
+  //   damageDealer = owner;
 
-    health -= damage;
+  //   health -= damage;
 
-    PlayHitSound(connectionToClient);
-  }
+  //   PlayHitSound(connectionToClient);
+  // }
 
   [TargetRpc]
   void PlayHitSound(NetworkConnection conn) => playerVars.audioSystem.PlaySound("Hit");
 
-  GameObject damageDealer = null;
-  public void OnDamageTaken(float oldHealth, float newHealth)
-  {
-    if (health > 0) return;
-    Server_Die(damageDealer ?? gameObject,
-               gameObject);
-  }
+  // GameObject damageDealer = null;
+  // public void OnDamageTaken(float oldHealth, float newHealth)
+  // {
+  //   if (health > 0) return;
+  //   Server_Die(damageDealer ?? gameObject,
+  //              gameObject);
+  // }
 
-  public bool dead = false;
-  [Command(requiresAuthority = false)]
-  public void Server_Die(GameObject killer, GameObject killed)
+  [ServerCallback]
+  public void Server_Die(GameObject killer)
   {
-    if (dead) return;
-
-    dead = true;
     playerVars.lockMovement = true;
     playerVars.lockShooting = true;
     playerVars.lockWeapon = true;
@@ -197,7 +206,7 @@ public class PlayerBehavior : NetworkBehaviour
     if (gm == MyNetworkManager.GameMode.Deathmatch) playerVars.uiName.gameObject.SetActive(false);
 
     string killerName;
-    string killedName = killed.GetComponent<PlayerVars>().displayName;
+    string killedName = GetComponent<PlayerVars>().displayName;
 
     if (killer.GetComponent<BotVars>())
     {
@@ -207,7 +216,7 @@ public class PlayerBehavior : NetworkBehaviour
     {
       NetworkConnectionToClient killerIdentity = killer.GetComponent<NetworkIdentity>().connectionToClient;
 
-      if (killer == killed) MyNetworkManager.instance.players[killerIdentity].kills--;
+      if (killer == gameObject) MyNetworkManager.instance.players[killerIdentity].kills--;
       else MyNetworkManager.instance.players[killerIdentity].kills++;
 
       killerName = killer.GetComponent<PlayerVars>().displayName;
@@ -244,8 +253,8 @@ public class PlayerBehavior : NetworkBehaviour
   {
     playerVars.graphics.DisableAll();
     playerVars.uiName.gameObject.SetActive(false);
-    this.gameObject.GetComponent<BoxCollider2D>().enabled = false;
-    this.gameObject.GetComponent<Rigidbody2D>().simulated = false;
+    gameObject.GetComponent<BoxCollider2D>().enabled = false;
+    gameObject.GetComponent<Rigidbody2D>().simulated = false;
   }
 
   [TargetRpc]

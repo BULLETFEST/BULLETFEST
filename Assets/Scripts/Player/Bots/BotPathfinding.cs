@@ -59,7 +59,7 @@ public class BotPathfinding : NetworkBehaviour
 
   void FixedUpdate()
   {
-    if (Time.timeScale == 0) return;
+    if (Time.timeScale == 0 || botVars.lockMovement) return;
 
     currentState.UpdateState(this);
     PathFollow();
@@ -77,7 +77,7 @@ public class BotPathfinding : NetworkBehaviour
 
   private void UpdatePath()
   {
-    if (Time.timeScale == 0) return;
+    if (Time.timeScale == 0 || botVars.lockMovement) return;
 
     if (seeker.IsDone())
     {
