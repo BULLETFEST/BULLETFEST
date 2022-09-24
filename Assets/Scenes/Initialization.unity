@@ -1477,6 +1477,7 @@ MonoBehaviour:
   - Assets/Scenes/GameScenes/4Players/World_7.unity
   - Assets/Scenes/GameScenes/4Players/World_8.unity
   - Assets/Scenes/GameScenes/4Players/World_10.unity
+  - Assets/Scenes/GameScenes/4Players/World_12.unity
   - Assets/Scenes/GameScenes/4Players/World_14.unity
   maxPlayers: 4
   enableBots: 0
