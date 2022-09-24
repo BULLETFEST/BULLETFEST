@@ -57,8 +57,8 @@ public class Server : NetworkBehaviour
     new Color(0.6235294f, 0.6018561f, 0.1019608f), // 9F991A
   };
 
-  [TargetRpc]
-  public void SetWinnerText(NetworkConnection conn, string text, int idx)
+  [ClientRpc]
+  public void SetWinnerText(string text, int idx)
   {
     FindObjectOfType<WinnerUI>().winnerText.text = text;
 

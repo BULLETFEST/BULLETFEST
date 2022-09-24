@@ -257,12 +257,12 @@ public class MyNetworkManager : NetworkManager
     else if (gameMode == 0)
     {
       GameObject[] alivePlayers = FindObjectsOfType<PlayerBehavior>().Where(x => !x.GetComponent<DamageController>().dead).Select(x => x.gameObject).ToArray();
-      print(alivePlayers.Length);
+
       if (alivePlayers.Length <= 0) winner = null;
       else winner = alivePlayers[0].GetComponent<NetworkIdentity>().connectionToClient;
 
       if (winner == null)
-        botWinner = GameObject.FindGameObjectsWithTag("Bot").Where(x => !x.GetComponent<BotPathfinding>().dead).ToArray()[0];
+        botWinner = GameObject.FindGameObjectsWithTag("Bot").Where(x => !x.GetComponent<DamageController>().dead).ToArray()[0];
     }
     // If gamemode is deathmatch, choose player with most kills
     else
@@ -277,12 +277,6 @@ public class MyNetworkManager : NetworkManager
     if (botWinner == null)
     {
       players[winner].wins++;
-
-      // PlayerVars winnerVars = winner.identity.GetComponent<PlayerVars>();
-
-      // winnerVars.lockWeapon = true;
-      // winnerVars.lockMovement = true;
-      // winnerVars.lockShooting = true;
     }
 
     GameObject winnerUi = Instantiate(WinnerPanelPrefab);
@@ -291,17 +285,7 @@ public class MyNetworkManager : NetworkManager
     string winnerName = botWinner != null ? "BOT" : players[winner].displayName;
     int winnerIdx = botWinner != null ? -1 : System.Array.IndexOf(NetworkServer.connections.Values.ToArray(), winner);
 
-    WinnerPanelPrefab.GetComponent<WinnerUI>().winnerText.text = $"{winnerName} won the round";
-
-    if (winnerIdx == -1)
-      WinnerPanelPrefab.GetComponent<WinnerUI>().playerImage.color = new Color(0.3936009f, 0.5186465f, 0.5754717f);
-
-    if (players.Count <= 1) return;
-
-    for (int i = 0; i < NetworkServer.connections.Count; i++)
-    {
-      FindObjectOfType<Server>().SetWinnerText(NetworkServer.connections.ElementAt(i).Value, $"{winnerName} won the round!", winnerIdx);
-    }
+    FindObjectOfType<Server>().SetWinnerText($"{winnerName} won the round!", winnerIdx);
   }
 
   [Server]
@@ -362,8 +346,6 @@ public class MyNetworkManager : NetworkManager
   public void CycleMap()
   {
     deadPlayers = 0;
-    winner = null;
-    botWinner = null;
 
     if (queuedScenes.Length == 0)// || gameMode == GameMode.Deathmatch)
     {

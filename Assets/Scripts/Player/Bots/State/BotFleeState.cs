@@ -42,7 +42,7 @@ public class BotFleeState : BotBaseState
     {
       manager.seeker.StartPath(manager.transform.position, tempFurthest.transform.position);
     }
-    if (Vector2.Distance(manager.transform.position, nearestPlayer.transform.position) < 5)
+    if (nearestPlayer != null && Vector2.Distance(manager.transform.position, nearestPlayer.transform.position) < 5)
     {
       manager.seeker.StartPath(manager.transform.position, furthestNode.transform.position);
       tempFurthest = furthestNode;
