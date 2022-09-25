@@ -81,17 +81,17 @@ MonoBehaviour:
   isShotgun: 0
   pelletCount: 0
   inaccuracyRange:
-  - -5
-  - 5
+  - -7.5
+  - 7.5
   reloadTime: 0
-  shotPushback: 2.5
+  shotPushback: 55
   range: 0
   damage: 1e+10
   fireRate: 7
   bulletVelocity: 80
   movementUnlockTime: 0.15
-  cameraShakeIntensity: 0.08
-  cameraShakeDuration: 0.075
+  cameraShakeIntensity: 2.5
+  cameraShakeDuration: 0.15
   weaponName: Golden Gun
   ID: HDG_GoldenGun
   firingMode: 0

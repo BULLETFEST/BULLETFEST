@@ -26,12 +26,13 @@ public class MyNetworkManager : NetworkManager
   public NetworkConnectionToClient winner;
   public GameObject botWinner;
 
-  public System.Action PlayerUpdate;
-  public System.Action<NetworkConnectionToClient> PlayerConnect, PlayerDisconnect;
+  public System.Action PlayerUpdate, AllClientsReady;
+  public System.Action<NetworkConnectionToClient> PlayerConnect, PlayerDisconnect, PlayerSpawn;
 
   [HideInInspector]
   public bool gameStarted = false,
-              isHost = false;
+              isHost = false,
+              enableBots = false;
 
   [HideInInspector]
   public string roomCode;
@@ -47,19 +48,26 @@ public class MyNetworkManager : NetworkManager
 
   [HideInInspector]
   public int rounds,
-             chosenMap = 0;
+             chosenMap = 0,
+             maxPlayers = 4;
 
   public static int playableScenesCount = 0, menuScenesCount = 0;
 
   [Scene] public string[] _4Players, _6Players, _8Players, _BotSupport;
 
-  public int maxPlayers = 4;
+  bool hasFiredReadyEvent;
 
-  public bool enableBots = false;
+  static bool firstInit = true;
 
   public override void Awake()
   {
     base.Awake();
+
+    if (!firstInit)
+    {
+      rounds = playableScenesCount;
+      return;
+    }
 
     for (int i = 0; i < SceneManager.sceneCountInBuildSettings; i++)
     {
@@ -70,6 +78,15 @@ public class MyNetworkManager : NetworkManager
     }
 
     rounds = playableScenesCount;
+
+    firstInit = false;
+  }
+
+  public override void OnServerAddPlayer(NetworkConnectionToClient conn)
+  {
+    // base.OnServerAddPlayer(conn);
+
+    PlayerSpawn?.Invoke(conn);
   }
 
   public override void Start()
@@ -81,6 +98,9 @@ public class MyNetworkManager : NetworkManager
     else if (instance != this)
       Destroy(gameObject);
 
+    transport = gameObject.AddComponent<EpicTransport.EosTransport>();
+    Transport.activeTransport = transport;
+
     foreach (GameObject prefab in Resources.LoadAll<GameObject>("Spawnable"))
     {
       NetworkClient.RegisterPrefab(prefab);
@@ -89,10 +109,35 @@ public class MyNetworkManager : NetworkManager
     NetworkClient.RegisterHandler<Message.ServerMessge>(OnServerMessage);
   }
 
+  public override void LateUpdate()
+  {
+    base.LateUpdate();
+
+    if (isHost && !hasFiredReadyEvent)
+    {
+      bool allReady = true;
+
+      for (int i = 0; i < NetworkServer.connections.Count; i++)
+      {
+        if (NetworkServer.connections.ElementAt(i).Value.identity == null)
+        {
+          allReady = false;
+          break;
+        }
+      }
+
+      if (allReady)
+      {
+        AllClientsReady?.Invoke();
+        hasFiredReadyEvent = true;
+      }
+    }
+  }
+
   void OnServerMessage(Message.ServerMessge msg)
   {
     Message.DisplayMessage(msg.titleText, msg.contentText, msg.alignment);
-    if (msg.disconnect) Utilities.Disconnect();
+    if (msg.disconnect) Disconnect();
   }
 
   public override void OnStartServer()
@@ -153,6 +198,8 @@ public class MyNetworkManager : NetworkManager
 
   public override void OnServerSceneChanged(string sceneName)
   {
+    hasFiredReadyEvent = false;
+
     base.OnServerSceneChanged(sceneName);
 
     if (SceneManager.GetActiveScene().buildIndex > menuScenesCount - 1)
@@ -176,6 +223,7 @@ public class MyNetworkManager : NetworkManager
   public override void OnClientSceneChanged()
   {
     base.OnClientSceneChanged();
+
 
     if (SceneManager.GetActiveScene().name == "End") return;
 
@@ -376,16 +424,28 @@ public class MyNetworkManager : NetworkManager
     ServerChangeScene(chosenSceneId);
   }
 
-  public override void OnStopServer()
+  public override void OnStopHost()
   {
+    base.OnStopHost();
+    isHost = false;
     players.Clear();
-    base.OnStopServer();
+    if (SceneManager.GetActiveScene().name != "MainMenu") SceneManager.LoadScene(1);
   }
 
   public override void OnStopClient()
   {
-    players.Clear();
     base.OnStopClient();
+    players.Clear();
+    // if (SceneManager.GetActiveScene().name != "MainMenu") SceneManager.LoadScene(1);
+  }
+
+  public void Disconnect()
+  {
+    if (mode == NetworkManagerMode.ServerOnly) StopServer();
+    else if (mode == NetworkManagerMode.Host) StopHost();
+    else if (mode == NetworkManagerMode.ClientOnly) StopClient();
+
+    // SceneManager.LoadSceneAsync("MainMenu");
   }
 
   public enum GameMode

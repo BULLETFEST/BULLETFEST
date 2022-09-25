@@ -113,7 +113,7 @@ public class BotPathfinding : NetworkBehaviour
     isGrounded = Physics2D.BoxCast(
       transform.position,
       botVars.bc.bounds.size, 0, Vector2.down,
-      0.1f, groundLm);
+      0.05f, groundLm);
 
     if (isGrounded && doubleJumped) doubleJumped = false;
 
@@ -132,7 +132,7 @@ public class BotPathfinding : NetworkBehaviour
         doubleJumped = true;
 
         botVars.rb.velocity = new Vector2(botVars.rb.velocity.x, 0);
-        botVars.rb.AddForce(new Vector2(0, jumpForce));
+        botVars.rb.AddForce(Vector2.up * jumpForce);
 
       }
     }

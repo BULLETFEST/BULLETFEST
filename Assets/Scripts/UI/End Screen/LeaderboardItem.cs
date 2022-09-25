@@ -24,6 +24,7 @@ public class LeaderboardItem : NetworkBehaviour
   {
     transform.SetParent(GameObject.FindGameObjectWithTag("Leaderboard").transform);
     transform.localScale = Vector3.one;
+    transform.position = new Vector3(transform.position.x, transform.position.y, 0);
     Time.timeScale = 1;
   }
 

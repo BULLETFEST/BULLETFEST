@@ -70,7 +70,7 @@ public class LobbyUIManager : NetworkBehaviour
 
   public void Quit()
   {
-    Utilities.Disconnect();
+    Room.Disconnect();
     FindObjectOfType<AudioSystem>().PlaySound("Select");
   }
 

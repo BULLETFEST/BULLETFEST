@@ -2,10 +2,17 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
-using UnityEngine.SceneManagement;
 
 public class Utilities : MonoBehaviour
 {
+
+  public static Color[] colors = new Color[] {
+    new Color(0.5882353f, 0.1137255f, 0.04313726f), // 961D0B
+    new Color(0.0993236f, 0.4487756f, 0.6792453f), // 1972AD
+    new Color(0.1027946f, 0.6226415f, 0.1877513f), // 1A9F30
+    new Color(0.6235294f, 0.6018561f, 0.1019608f), // 9F991A
+  };
+
   public static void PrintArr<T>(T[] array)
   {
     string res = "[ ";
@@ -102,17 +109,17 @@ public class Utilities : MonoBehaviour
     return AnimatorStateDonePlaying(anim, stateName) && anim.GetCurrentAnimatorStateInfo(0).IsName(stateName);
   }
 
-  public static void Disconnect()
-  {
-    if (FindWithType(out MyNetworkManager networkManager))
-    {
-      if (networkManager.mode == Mirror.NetworkManagerMode.ServerOnly) networkManager.StopServer();
-      else if (networkManager.mode == Mirror.NetworkManagerMode.Host) networkManager.StopHost();
-      else if (networkManager.mode == Mirror.NetworkManagerMode.ClientOnly) networkManager.StopClient();
+  // public static void Disconnect()
+  // {
+  //   if (FindWithType(out MyNetworkManager networkManager))
+  //   {
+  //     if (networkManager.mode == Mirror.NetworkManagerMode.ServerOnly) networkManager.StopServer();
+  //     else if (networkManager.mode == Mirror.NetworkManagerMode.Host) networkManager.StopHost();
+  //     else if (networkManager.mode == Mirror.NetworkManagerMode.ClientOnly) networkManager.StopClient();
 
-      SceneManager.LoadScene("MainMenu");
-    }
-  }
+  //     // SceneManager.LoadScene("MainMenu");
+  //   }
+  // }
 
   public static GameObject FindNearest(Transform origin, string tag)
   {

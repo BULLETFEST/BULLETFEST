@@ -34,7 +34,7 @@ public class EndScreenUI : NetworkBehaviour
 
   public void Exit()
   {
-    Utilities.Disconnect();
+    MyNetworkManager.instance.Disconnect();
     FindObjectOfType<AudioSystem>().PlaySound("Select");
   }
 }

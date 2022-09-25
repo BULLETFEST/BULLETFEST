@@ -1,7 +1,7 @@
-﻿using Epic.OnlineServices;
-using Epic.OnlineServices.P2P;
-using System;
+﻿using System;
 using System.Collections.Generic;
+using Epic.OnlineServices;
+using Epic.OnlineServices.P2P;
 using UnityEngine;
 
 namespace EpicTransport {
@@ -9,7 +9,7 @@ namespace EpicTransport {
         private event Action<int> OnConnected;
         private event Action<int, byte[], int> OnReceivedData;
         private event Action<int> OnDisconnected;
-        private event Action<int, Exception> OnReceivedError;
+        private event Action<int, Mirror.TransportError, string> OnReceivedError;
 
         private BidirectionalDictionary<ProductUserId, int> epicToMirrorIds;
         private Dictionary<ProductUserId, SocketId> epicToSocketIds;
@@ -22,7 +22,7 @@ namespace EpicTransport {
             s.OnConnected += (id) => transport.OnServerConnected.Invoke(id);
             s.OnDisconnected += (id) => transport.OnServerDisconnected.Invoke(id);
             s.OnReceivedData += (id, data, channel) => transport.OnServerDataReceived.Invoke(id, new ArraySegment<byte>(data), channel);
-            s.OnReceivedError += (id, exception) => transport.OnServerError.Invoke(id, exception);
+            s.OnReceivedError += (id, exception, message) => transport.OnServerError.Invoke(id, exception, message);
 
             if (!EOSSDKComponent.Initialized) {
                 Debug.LogError("EOS not initialized.");
@@ -90,7 +90,7 @@ namespace EpicTransport {
                         epicToSocketIds.Remove(clientUserId);
                         Debug.Log($"Client with Product User ID {clientUserId} disconnected.");
                     } else {
-                        OnReceivedError.Invoke(-1, new Exception("ERROR Unknown Product User ID"));
+                        OnReceivedError.Invoke(-1, Mirror.TransportError.Unexpected, "ERROR Unknown Product User ID");// new Exception("ERROR Unknown Product User ID"));
                     }
 
                     break;
@@ -116,7 +116,7 @@ namespace EpicTransport {
                 clientUserId.ToString(out productId);
 
                 Debug.LogError("Data received from epic client thats not known " + productId);
-                OnReceivedError.Invoke(-1, new Exception("ERROR Unknown product ID"));
+                OnReceivedError.Invoke(-1, Mirror.TransportError.Refused, "ERROR Unknown product ID");//new Exception("ERROR Unknown product ID"));
             }
         }
 
@@ -153,7 +153,7 @@ namespace EpicTransport {
                 Send(userId, socketId, data, (byte)channelId);
             } else {
                 Debug.LogError("Trying to send on unknown connection: " + connectionId);
-                OnReceivedError.Invoke(connectionId, new Exception("ERROR Unknown Connection"));
+                OnReceivedError.Invoke(connectionId, Mirror.TransportError.Refused, "ERROR Unknown Connection");
             }
 
         }
@@ -165,7 +165,7 @@ namespace EpicTransport {
                 return userIdString;
             } else {
                 Debug.LogError("Trying to get info on unknown connection: " + connectionId);
-                OnReceivedError.Invoke(connectionId, new Exception("ERROR Unknown Connection"));
+                OnReceivedError.Invoke(connectionId, Mirror.TransportError.Refused, "ERROR Unknown Connection");
                 return string.Empty;
             }
         }

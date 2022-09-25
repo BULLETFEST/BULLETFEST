@@ -53,7 +53,8 @@ public class LobbyPlayerSpawner : NetworkBehaviour
 
     for (int i = 0; i < conns.Length; i++)
     {
-      SyncPreviousPlayers(conn, conns[i].identity.gameObject, i);
+      if (conns[i].identity != null)
+        SyncPreviousPlayers(conn, conns[i].identity.gameObject, i);
     }
 
   }
