@@ -58,7 +58,7 @@ public class LobbyUIManager : NetworkBehaviour
     if (nm.isHost)
     {
 #if !UNITY_EDITOR
-    if (Room.players.Count < 2 && !Room.settings.enableBots) startButton.interactable = false;
+    if (nm.players.Count < 2 && !nm.settings.enableBots) startButton.interactable = false;
     else
 #endif
       startButton.interactable = true;
