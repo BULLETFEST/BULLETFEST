@@ -201,9 +201,9 @@ public class PlayerBehavior : NetworkBehaviour
     playerVars.lockShooting = true;
     playerVars.lockWeapon = true;
 
-    MyNetworkManager.GameMode gm = FindObjectOfType<MyNetworkManager>().gameMode;
+    GameSettings.GameMode gm = MyNetworkManager.instance.settings.gameMode;
 
-    if (gm == MyNetworkManager.GameMode.Deathmatch) playerVars.uiName.gameObject.SetActive(false);
+    if (gm == GameSettings.GameMode.Deathmatch) playerVars.uiName.gameObject.SetActive(false);
 
     string killerName;
     string killedName = GetComponent<PlayerVars>().displayName;
@@ -224,7 +224,7 @@ public class PlayerBehavior : NetworkBehaviour
 
     ClientRpc_Die(killerName, killedName);
 
-    if (gm != MyNetworkManager.GameMode.Deathmatch)
+    if (gm != GameSettings.GameMode.Deathmatch)
     {
       // GameObject spawnedGravestone = Instantiate(gravestone, new Vector2(transform.position.x,
       //                                                       playerVars.bc.bounds.min.y + (gravestone.GetComponentInChildren<SpriteRenderer>().bounds.size.y / 2)), Quaternion.Euler(0, 0, 0));

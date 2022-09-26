@@ -44,9 +44,9 @@ public class PlayerSpawnSystem : NetworkBehaviour
       if (conn == nm.winner) winningPlayer = playerInstance; //playerInstance.GetComponent<PlayerVars>().crown.SetActive(true);
     }
 
-    if (nm.enableBots && nm._BotSupport.Contains(SceneManager.GetActiveScene().path))
+    if (nm.settings.enableBots && nm._BotSupport.Contains(SceneManager.GetActiveScene().path))
     {
-      for (int i = 0; i < nm.maxPlayers - nm.players.Count; i++)
+      for (int i = 0; i < nm.settings.lobbySize - nm.players.Count; i++)
       {
         GameObject bot = Instantiate(nm.BotPrefab, spawnPoints[spawnPoints.Length - 1 - i].transform.position, Quaternion.identity);
         bot.name = "BOT" + i;

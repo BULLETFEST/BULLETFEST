@@ -10,6 +10,8 @@ public class MyNetworkManager : NetworkManager
 {
   public static MyNetworkManager instance;
 
+  public GameSettings settings = new();
+
   string[] queuedScenes;
 
   [SerializeField]
@@ -32,25 +34,10 @@ public class MyNetworkManager : NetworkManager
 
   [HideInInspector]
   public bool gameStarted = false,
-              isHost = false,
-              enableBots = false;
+              isHost = false;
 
   [HideInInspector]
   public string roomCode;
-
-  [HideInInspector]
-  public PrivacyType privacyType = PrivacyType.Public;
-
-  [HideInInspector]
-  public GameMode gameMode = 0;
-
-  [HideInInspector]
-  public float deathmatchLength = 1;
-
-  [HideInInspector]
-  public int rounds,
-             chosenMap = 0,
-             maxPlayers = 4;
 
   public static int playableScenesCount = 0, menuScenesCount = 0;
 
@@ -66,7 +53,7 @@ public class MyNetworkManager : NetworkManager
 
     if (!firstInit)
     {
-      rounds = playableScenesCount;
+      settings.rounds = playableScenesCount;
       return;
     }
 
@@ -78,7 +65,7 @@ public class MyNetworkManager : NetworkManager
       else menuScenesCount++;
     }
 
-    rounds = playableScenesCount;
+    settings.rounds = playableScenesCount;
 
     firstInit = false;
   }
@@ -166,7 +153,7 @@ public class MyNetworkManager : NetworkManager
   {
     base.OnServerConnect(conn);
 
-    if (NetworkServer.connections.Count > maxPlayers)
+    if (NetworkServer.connections.Count > settings.lobbySize)
     {
       conn.Send(new Message.ServerMessge
       {
@@ -194,7 +181,7 @@ public class MyNetworkManager : NetworkManager
 
     PlayerConnect?.Invoke(conn);
 
-    FirebaseManager.UpdateLobby(NetworkServer.connections.Count, gameMode.ToString(), privacyType.ToString().ToLower(), gameStarted);
+    FirebaseManager.UpdateLobby(NetworkServer.connections.Count);
   }
 
   public override void OnServerSceneChanged(string sceneName)
@@ -208,16 +195,16 @@ public class MyNetworkManager : NetworkManager
       if (!FindObjectOfType<PlayerSpawnSystem>())
       {
         GameObject go = Instantiate(PlayerSpawnSystemPrefab);
-        if (gameMode == GameMode.Deathmatch)
+        if (settings.gameMode == GameSettings.GameMode.Deathmatch)
         {
-          go.GetComponent<PlayerSpawnSystem>().timeStamp = System.DateTime.UtcNow.AddMinutes(deathmatchLength);
+          go.GetComponent<PlayerSpawnSystem>().timeStamp = System.DateTime.UtcNow.AddMinutes(settings.deathmatchLength);
         }
         NetworkServer.Spawn(go);
       }
     }
     if (sceneName == "Lobby")
     {
-      FirebaseManager.UpdateLobby(NetworkServer.connections.Count, gameMode.ToString(), privacyType.ToString().ToLower(), false);
+      FirebaseManager.UpdateLobby(NetworkServer.connections.Count);
     }
   }
 
@@ -250,7 +237,7 @@ public class MyNetworkManager : NetworkManager
     {
       players.Remove(conn);
 
-      FirebaseManager.UpdateLobby(NetworkServer.connections.Count, gameMode.ToString(), privacyType.ToString().ToLower(), gameStarted);
+      FirebaseManager.UpdateLobby(NetworkServer.connections.Count);
 
       PlayerUpdate?.Invoke();
 
@@ -274,7 +261,7 @@ public class MyNetworkManager : NetworkManager
     BotPathfinding[] bots = FindObjectsOfType<BotPathfinding>();
 
     if (NetworkServer.connections.Count == 1 && bots.Length <= 0) AnnounceWinner(bots);
-    else if (gameMode == GameMode.Elimination)
+    else if (settings.gameMode == GameSettings.GameMode.Elimination)
     {
       deadPlayers++;
       if (deadPlayers == NetworkServer.connections.Count + bots.Length - 1)
@@ -304,7 +291,7 @@ public class MyNetworkManager : NetworkManager
     if (players.Count == 1 && bots.Length <= 0)
       winner = players.ElementAt(0).Key;
     // If gamemode is elimination, choose last player alive
-    else if (gameMode == 0)
+    else if (settings.gameMode == 0)
     {
       GameObject[] alivePlayers = FindObjectsOfType<PlayerBehavior>().Where(x => !x.GetComponent<DamageController>().dead).Select(x => x.gameObject).ToArray();
 
@@ -347,7 +334,7 @@ public class MyNetworkManager : NetworkManager
     int sceneCount = SceneManager.sceneCountInBuildSettings;
     List<string> _scenes = new();
 
-    switch (maxPlayers)
+    switch (settings.lobbySize)
     {
       case 4:
       default:
@@ -358,15 +345,15 @@ public class MyNetworkManager : NetworkManager
         break;
     }
 
-    if (enableBots)
+    if (settings.enableBots)
     {
       _scenes = _BotSupport.Where(x => _scenes.Contains(x)).ToList();
     }
 
-    if (gameMode == GameMode.Elimination)
+    if (settings.gameMode == GameSettings.GameMode.Elimination)
     {
-      rounds = Mathf.Clamp(rounds, 1, playableScenesCount);
-      while (_scenes.Count > rounds)
+      settings.rounds = Mathf.Clamp(settings.rounds, 1, playableScenesCount);
+      while (_scenes.Count > settings.rounds)
       {
         _scenes.RemoveAt(Random.Range(0, _scenes.Count));
       }
@@ -374,7 +361,7 @@ public class MyNetworkManager : NetworkManager
     else
     {
       List<string> temp = new();
-      if (chosenMap == 0)
+      if (settings.chosenMap == 0)
       {
         int chosenMapIdx = Random.Range(0, _scenes.Count);
 
@@ -384,7 +371,7 @@ public class MyNetworkManager : NetworkManager
       }
       else
       {
-        temp.Add(_scenes[chosenMap - 1]);
+        temp.Add(_scenes[settings.chosenMap - 1]);
 
         _scenes = temp;
       }
@@ -394,7 +381,7 @@ public class MyNetworkManager : NetworkManager
 
     gameStarted = true;
 
-    FirebaseManager.UpdateLobby(NetworkServer.connections.Count, gameMode.ToString(), privacyType.ToString().ToLower(), gameStarted);
+    FirebaseManager.UpdateLobby(NetworkServer.connections.Count);
 
     CycleMap();
   }
@@ -455,17 +442,5 @@ public class MyNetworkManager : NetworkManager
     else if (mode == NetworkManagerMode.ClientOnly) StopClient();
 
     // SceneManager.LoadSceneAsync("MainMenu");
-  }
-
-  public enum GameMode
-  {
-    Elimination = 0,
-    Deathmatch = 1,
-  }
-
-  public enum PrivacyType
-  {
-    Public = 0,
-    Private = 1,
   }
 }

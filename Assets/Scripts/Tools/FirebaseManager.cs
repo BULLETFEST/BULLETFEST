@@ -11,7 +11,7 @@ public class FirebaseManager : MonoBehaviour
   public static string uid;
 
 #if UNITY_EDITOR
-  static bool testMode = true;
+  static bool testMode = false;
 #else
       static bool testMode = false;
 #endif
@@ -125,16 +125,16 @@ public class FirebaseManager : MonoBehaviour
     return response;
   }
 
-  public async static void UpdateLobby(int playerCount, string gameMode, string type, bool gameStarted)
+  public async static void UpdateLobby(int playerCount)
   {
     NameValueCollection data = new()
     {
-      ["gameMode"] = gameMode,
+      ["gameMode"] = MyNetworkManager.instance.settings.gameMode.ToString(),
       ["playerCount"] = playerCount.ToString(),
       ["token"] = SaveSystem.saveData.token,
-      ["type"] = type,
-      ["started"] = gameStarted.ToString(),
-      ["lobbySize"] = MyNetworkManager.instance.maxPlayers.ToString()
+      ["type"] = MyNetworkManager.instance.settings.privacyType.ToString().ToLower(),
+      ["started"] = MyNetworkManager.instance.gameStarted.ToString(),
+      ["lobbySize"] = MyNetworkManager.instance.settings.lobbySize.ToString()
     };
 
     try

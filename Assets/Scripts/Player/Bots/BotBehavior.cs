@@ -79,9 +79,9 @@ public class BotBehavior : NetworkBehaviour
     botVars.lockShooting = true;
     botVars.lockWeapon = true;
 
-    MyNetworkManager.GameMode gm = FindObjectOfType<MyNetworkManager>().gameMode;
+    GameSettings.GameMode gm = MyNetworkManager.instance.settings.gameMode;
 
-    if (gm == MyNetworkManager.GameMode.Deathmatch) botVars.uiName.gameObject.SetActive(false);
+    if (gm == GameSettings.GameMode.Deathmatch) botVars.uiName.gameObject.SetActive(false);
 
     string killerName;
     string killedName = "BOT";
@@ -102,7 +102,7 @@ public class BotBehavior : NetworkBehaviour
 
     ClientRpc_Die(killerName, killedName);
 
-    if (gm != MyNetworkManager.GameMode.Deathmatch)
+    if (gm != GameSettings.GameMode.Deathmatch)
     {
       LayerMask lm = 1 << 6;
       lm |= 1 << 12;
@@ -122,7 +122,7 @@ public class BotBehavior : NetworkBehaviour
 
     MyNetworkManager.instance.OnPlayerDie(null);
 
-    if (MyNetworkManager.instance.gameMode != MyNetworkManager.GameMode.Elimination)
+    if (MyNetworkManager.instance.settings.gameMode != GameSettings.GameMode.Elimination)
       StartCoroutine(FindObjectOfType<PlayerSpawnSystem>().Cmd_RespawnBot(gameObject));
   }
 

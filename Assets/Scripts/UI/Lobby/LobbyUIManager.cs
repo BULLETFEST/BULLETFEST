@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Mirror;
 using TMPro;
+using UnityEngine;
 using UnityEngine.UI;
 
 public class LobbyUIManager : NetworkBehaviour
@@ -10,29 +11,28 @@ public class LobbyUIManager : NetworkBehaviour
   public TMP_Dropdown deathmatchTime, maps, gameModeDrowpdown;
   public TMP_InputField rounds;
   public TMP_Text roomCode, roundsDefault;
-  public Toggle privacy;
+  public Toggle privacy, enableBots;
 
-  MyNetworkManager Room;
+  MyNetworkManager nm = MyNetworkManager.instance;
 
   void Awake()
   {
-    Room = MyNetworkManager.instance;
-
-    if (!Room.isHost)
+    if (!nm.isHost)
     {
       startButton.gameObject.SetActive(false);
       settingsButton.gameObject.SetActive(false);
     }
 
 
-    gameModeDrowpdown.value = (int)Room.gameMode;
-    rounds.text = Room.rounds.ToString();
-    deathmatchTime.value = DeathmatchTimeToOption(Room.deathmatchLength);
-    maps.value = Room.chosenMap;
-    privacy.isOn = Room.privacyType == MyNetworkManager.PrivacyType.Private;
+    gameModeDrowpdown.value = (int)nm.settings.gameMode;
+    rounds.text = nm.settings.rounds.ToString();
+    deathmatchTime.value = DeathmatchTimeToOption(nm.settings.deathmatchLength);
+    maps.value = nm.settings.chosenMap;
+    privacy.isOn = nm.settings.privacyType == GameSettings.PrivacyType.Private;
+    enableBots.isOn = nm.settings.enableBots;
 
 
-    roomCode.text = $"Room code: {Room.roomCode}";
+    roomCode.text = $"Room code: {nm.roomCode}";
 
     roundsDefault.text = $"Default: {MyNetworkManager.playableScenesCount}";
 
@@ -49,14 +49,16 @@ public class LobbyUIManager : NetworkBehaviour
     UpdateMapsList();
 
     maps.onValueChanged.AddListener(delegate { SelectMap(maps.value); });
+
+    SetupModifiers();
   }
 
   void Update()
   {
-    if (Room.isHost)
+    if (nm.isHost)
     {
 #if !UNITY_EDITOR
-    if (Room.players.Count < 2 && !Room.enableBots) startButton.interactable = false;
+    if (Room.players.Count < 2 && !Room.settings.enableBots) startButton.interactable = false;
     else
 #endif
       startButton.interactable = true;
@@ -66,21 +68,19 @@ public class LobbyUIManager : NetworkBehaviour
   [Server]
   void StartGame()
   {
-    Room.StartGame();
+    nm.StartGame();
     FindObjectOfType<AudioSystem>().PlaySound("Select");
   }
 
   public void Quit()
   {
-    Room.Disconnect();
+    nm.Disconnect();
     FindObjectOfType<AudioSystem>().PlaySound("Select");
   }
 
-  MyNetworkManager nm = MyNetworkManager.instance;
-
   public void ChangeGameMode(int option)
   {
-    nm.gameMode = (MyNetworkManager.GameMode)option;
+    nm.settings.gameMode = (GameSettings.GameMode)option;
 
     if (option == 1)
     {
@@ -95,27 +95,27 @@ public class LobbyUIManager : NetworkBehaviour
       maps.transform.parent.gameObject.SetActive(false);
     }
 
-    FirebaseManager.UpdateLobby(NetworkServer.connections.Count, nm.gameMode.ToString(), nm.privacyType.ToString().ToLower(), false);
+    FirebaseManager.UpdateLobby(NetworkServer.connections.Count);
   }
 
   public void TogglePrivate(bool option)
   {
-    if (option) nm.privacyType = MyNetworkManager.PrivacyType.Private;
-    else nm.privacyType = MyNetworkManager.PrivacyType.Public;
+    if (option) nm.settings.privacyType = GameSettings.PrivacyType.Private;
+    else nm.settings.privacyType = GameSettings.PrivacyType.Public;
 
-    FirebaseManager.UpdateLobby(NetworkServer.connections.Count, nm.gameMode.ToString(), nm.privacyType.ToString().ToLower(), false);
+    FirebaseManager.UpdateLobby(NetworkServer.connections.Count);
   }
 
   public void ToggleBots(bool option)
   {
-    nm.enableBots = option;
+    nm.settings.enableBots = option;
 
     UpdateMapsList();
   }
 
   public void ChangeRoundCount(string count)
   {
-    nm.rounds = int.Parse(count);
+    nm.settings.rounds = int.Parse(count);
   }
 
   public void ChangeDeathmatchTime(int option)
@@ -124,31 +124,31 @@ public class LobbyUIManager : NetworkBehaviour
     {
       case 0:
       default:
-        nm.deathmatchLength = 1;
+        nm.settings.deathmatchLength = 1;
         break;
       case 1:
-        nm.deathmatchLength = 1.5f;
+        nm.settings.deathmatchLength = 1.5f;
         break;
       case 2:
-        nm.deathmatchLength = 2;
+        nm.settings.deathmatchLength = 2;
         break;
       case 3:
-        nm.deathmatchLength = 2.5f;
+        nm.settings.deathmatchLength = 2.5f;
         break;
       case 4:
-        nm.deathmatchLength = 3;
+        nm.settings.deathmatchLength = 3;
         break;
       case 5:
-        nm.deathmatchLength = 3.5f;
+        nm.settings.deathmatchLength = 3.5f;
         break;
       case 6:
-        nm.deathmatchLength = 4;
+        nm.settings.deathmatchLength = 4;
         break;
       case 7:
-        nm.deathmatchLength = 4.5f;
+        nm.settings.deathmatchLength = 4.5f;
         break;
       case 8:
-        nm.deathmatchLength = 5;
+        nm.settings.deathmatchLength = 5;
         break;
     }
   }
@@ -181,7 +181,7 @@ public class LobbyUIManager : NetworkBehaviour
 
   public void SelectMap(int map)
   {
-    nm.chosenMap = map;
+    nm.settings.chosenMap = map;
   }
 
   public void ChangeLobbySize(int option)
@@ -190,15 +190,15 @@ public class LobbyUIManager : NetworkBehaviour
     {
       case 0:
       default:
-        nm.maxPlayers = 4;
+        nm.settings.lobbySize = 4;
         break;
       case 1:
-        nm.maxPlayers = 6;
+        nm.settings.lobbySize = 6;
         break;
     }
 
     UpdateMapsList();
-    FirebaseManager.UpdateLobby(NetworkServer.connections.Count, nm.gameMode.ToString(), nm.privacyType.ToString().ToLower(), false);
+    FirebaseManager.UpdateLobby(NetworkServer.connections.Count);
   }
 
   public void UpdateMapsList()
@@ -207,7 +207,7 @@ public class LobbyUIManager : NetworkBehaviour
 
     List<string> other;
 
-    switch (nm.maxPlayers)
+    switch (nm.settings.lobbySize)
     {
       case 4:
       default:
@@ -218,7 +218,7 @@ public class LobbyUIManager : NetworkBehaviour
         break;
     }
 
-    if (nm.enableBots)
+    if (nm.settings.enableBots)
     {
       n = nm._BotSupport.ToList().Where(x => other.Contains(x)).ToList();
     }
@@ -234,5 +234,24 @@ public class LobbyUIManager : NetworkBehaviour
     maps.ClearOptions();
 
     maps.AddOptions(n);
+  }
+
+  /*
+  *
+  * Additional Modifiers
+  *
+  */
+
+  [Header("Additional Modifiers")]
+  public Toggle goldenGun;
+
+  void SetupModifiers()
+  {
+    goldenGun.isOn = nm.settings.goldenGun;
+  }
+
+  public void ToggleGoldenGun(bool option)
+  {
+    nm.settings.goldenGun = option;
   }
 }

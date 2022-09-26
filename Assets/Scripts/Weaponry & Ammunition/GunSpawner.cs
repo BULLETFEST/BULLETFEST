@@ -1,15 +1,19 @@
 using System.Collections;
+using System.Collections.Generic;
+using System.Linq;
 using Mirror;
 using UnityEngine;
 
 public class GunSpawner : NetworkBehaviour
 {
-  GameObject[] weapons;
+  List<GameObject> weapons;
+
+  GameObject goldenGun;
 
   // const float spawnInterval = 8f;
 
   // Percent chance (1.0f = 10%, 2.5f = 25%, etc)
-  const float spawnChance = 4.5f;
+  const float spawnChance = 7f;
 
   BoxCollider2D boxCollider2D;
 
@@ -19,7 +23,12 @@ public class GunSpawner : NetworkBehaviour
 
   void Start()
   {
-    weapons = Resources.LoadAll<GameObject>("Spawnable/Weapons");
+    weapons = Resources.LoadAll<GameObject>("Spawnable/Weapons").ToList();
+
+    goldenGun = weapons.Where(x => x.name == "Golden Gun").ToArray()[0];
+
+    weapons.Remove(goldenGun);
+
     boxCollider2D = GetComponent<BoxCollider2D>();
 
     float bcSize = boxCollider2D.bounds.extents.x;
@@ -37,13 +46,23 @@ public class GunSpawner : NetworkBehaviour
     // {
     float rndNum = float.Parse(Random.Range(0.0f, 10.0f).ToString().Substring(0, 3));
 
-    if (rndNum >= spawnChance || firstRound)
+    if (rndNum >= 10f - spawnChance || firstRound)
     {
       firstRound = false;
       // if ()
-      GameObject spawnedGun = Instantiate(weapons[Random.Range(0, weapons.Length)],
-                                          new Vector2(Random.Range(spawnMinMax[0], spawnMinMax[1]), transform.position.y),
-                                          Quaternion.Euler(0, 0, 0));
+      GameObject spawnedGun;
+      if (MyNetworkManager.instance.settings.goldenGun)
+      {
+        spawnedGun = Instantiate(goldenGun,
+                     new Vector2(Random.Range(spawnMinMax[0], spawnMinMax[1]), transform.position.y),
+                     Quaternion.Euler(0, 0, 0));
+      }
+      else
+      {
+        spawnedGun = Instantiate(weapons[Random.Range(0, weapons.Count)],
+                                            new Vector2(Random.Range(spawnMinMax[0], spawnMinMax[1]), transform.position.y),
+                                            Quaternion.Euler(0, 0, 0));
+      }
 
       spawnedGun.GetComponent<Rigidbody2D>().AddTorque(Random.Range(0, 1) == 0 ? Random.Range(-20f, -80f) : Random.Range(20f, 80f));
 

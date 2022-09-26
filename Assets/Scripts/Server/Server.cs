@@ -16,7 +16,7 @@ public class Server : NetworkBehaviour
       // Destroy(GetComponent<PlayerVars>().publicCanvas.gameObject);
       Destroy(GetComponent<Server>());
     }
-    if ((int)FindObjectOfType<MyNetworkManager>().gameMode == 1) timerRoutine = StartCoroutine(CalcTimeLeft());
+    if (MyNetworkManager.instance.settings.gameMode == GameSettings.GameMode.Deathmatch) timerRoutine = StartCoroutine(CalcTimeLeft());
   }
 
   IEnumerator CalcTimeLeft()
