@@ -384,7 +384,7 @@ public class MyNetworkManager : NetworkManager
       }
       else
       {
-        temp.Add(_scenes[chosenMap]);
+        temp.Add(_scenes[chosenMap - 1]);
 
         _scenes = temp;
       }
