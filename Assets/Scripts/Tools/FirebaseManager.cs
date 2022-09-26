@@ -11,7 +11,7 @@ public class FirebaseManager : MonoBehaviour
   public static string uid;
 
 #if UNITY_EDITOR
-  static bool testMode = false;
+  static bool testMode = true;
 #else
       static bool testMode = false;
 #endif
@@ -133,7 +133,8 @@ public class FirebaseManager : MonoBehaviour
       ["playerCount"] = playerCount.ToString(),
       ["token"] = SaveSystem.saveData.token,
       ["type"] = type,
-      ["started"] = gameStarted.ToString()
+      ["started"] = gameStarted.ToString(),
+      ["lobbySize"] = MyNetworkManager.instance.maxPlayers.ToString()
     };
 
     try
@@ -331,11 +332,12 @@ public class FirebaseManager : MonoBehaviour
     public string code;
     public string gameMode;
     public string playerCount;
+    public string lobbySize;
     public bool started;
 
     public override string ToString()
     {
-      return $"Code: {code}; Mode: {gameMode}; Players: {playerCount}";
+      return $"Code: {code}; Mode: {gameMode}; Players: {playerCount}; Lobby Size: {lobbySize}";
     }
   }
 }

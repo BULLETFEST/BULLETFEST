@@ -123,7 +123,7 @@ public class PlayerSpawnSystem : NetworkBehaviour
   [ClientRpc]
   private void Rpc_RespawnPlayer(GameObject player)
   {
-    if (gameObject.tag == "Bot")
+    if (player.tag == "Bot")
     {
       BotVars botVars = player.GetComponent<BotVars>();
 

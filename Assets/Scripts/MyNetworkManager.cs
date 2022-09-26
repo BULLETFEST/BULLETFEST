@@ -1,6 +1,5 @@
 using System.Collections;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 using Mirror;
 using UnityEngine;
@@ -19,12 +18,14 @@ public class MyNetworkManager : NetworkManager
                      PlayerPrefab,
                      BotPrefab;
 
+  [HideInInspector]
+  public GameObject botWinner;
+
   public Dictionary<NetworkConnectionToClient, PlayerData> players { get; } = new Dictionary<NetworkConnectionToClient, PlayerData>();
 
   public NetworkConnectionToClient[] sortedPlayerList = new NetworkConnectionToClient[4];
 
   public NetworkConnectionToClient winner;
-  public GameObject botWinner;
 
   public System.Action PlayerUpdate, AllClientsReady;
   public System.Action<NetworkConnectionToClient> PlayerConnect, PlayerDisconnect, PlayerSpawn;
@@ -276,14 +277,15 @@ public class MyNetworkManager : NetworkManager
     else if (gameMode == GameMode.Elimination)
     {
       deadPlayers++;
-      if (deadPlayers == (NetworkServer.connections.Count + bots.Length) - 1)
+      if (deadPlayers == NetworkServer.connections.Count + bots.Length - 1)
       {
         AnnounceWinner(bots);
       }
     }
     else
     {
-      StartCoroutine(FindObjectOfType<PlayerSpawnSystem>().Cmd_RespawnPlayer(conn));
+      if (conn != null)
+        StartCoroutine(FindObjectOfType<PlayerSpawnSystem>().Cmd_RespawnPlayer(conn));
     }
   }
 
@@ -344,20 +346,25 @@ public class MyNetworkManager : NetworkManager
 
     int sceneCount = SceneManager.sceneCountInBuildSettings;
     List<string> _scenes = new();
+
+    switch (maxPlayers)
+    {
+      case 4:
+      default:
+        _scenes = _4Players.ToList();
+        break;
+      case 6:
+        _scenes = _6Players.ToList();
+        break;
+    }
+
+    if (enableBots)
+    {
+      _scenes = _BotSupport.Where(x => _scenes.Contains(x)).ToList();
+    }
+
     if (gameMode == GameMode.Elimination)
     {
-      for (int i = 0; i < sceneCount; i++)
-      {
-        string path = SceneUtility.GetScenePathByBuildIndex(i);
-        string dir = Path.GetDirectoryName(path);
-        string sName = Path.GetFileNameWithoutExtension(path);
-
-        if (enableBots && !_BotSupport.Contains(path)) continue;
-
-        if (dir.EndsWith("4Players") && players.Count <= 4) _scenes.Add(sName);
-        else if (dir.EndsWith("16Players") && players.Count <= 16) _scenes.Add(sName);
-      }
-
       rounds = Mathf.Clamp(rounds, 1, playableScenesCount);
       while (_scenes.Count > rounds)
       {
@@ -366,19 +373,21 @@ public class MyNetworkManager : NetworkManager
     }
     else
     {
+      List<string> temp = new();
       if (chosenMap == 0)
       {
-        if (!enableBots)
-        {
-          int chosenMapIdx = Random.Range(menuScenesCount, sceneCount);
-          _scenes.Add(Path.GetFileNameWithoutExtension(SceneUtility.GetScenePathByBuildIndex(chosenMapIdx)));
-        }
-        else
-        {
-          _scenes.Add(Path.GetFileNameWithoutExtension(_BotSupport[Random.Range(0, _BotSupport.Length)]));
-        }
+        int chosenMapIdx = Random.Range(0, _scenes.Count);
+
+        temp.Add(_scenes[chosenMapIdx]);
+
+        _scenes = temp;
       }
-      else _scenes.Add(Path.GetFileNameWithoutExtension(SceneUtility.GetScenePathByBuildIndex(chosenMap - 1 + menuScenesCount)));
+      else
+      {
+        temp.Add(_scenes[chosenMap]);
+
+        _scenes = temp;
+      }
     }
 
     queuedScenes = _scenes.ToArray();

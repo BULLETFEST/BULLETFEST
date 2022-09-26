@@ -120,7 +120,10 @@ public class BotBehavior : NetworkBehaviour
       UpdateKillfeed(player.Value, killerName, killedName);
     }
 
-    MyNetworkManager.instance.OnPlayerDie(connectionToClient);
+    MyNetworkManager.instance.OnPlayerDie(null);
+
+    if (MyNetworkManager.instance.gameMode != MyNetworkManager.GameMode.Elimination)
+      StartCoroutine(FindObjectOfType<PlayerSpawnSystem>().Cmd_RespawnBot(gameObject));
   }
 
   [ClientRpc]

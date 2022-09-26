@@ -158,7 +158,7 @@ public class MainMenu : MonoBehaviour
 
       GameCard gameCardUi = card.GetComponent<GameCard>();
 
-      gameCardUi.playerCount.text = match.playerCount + "/4";
+      gameCardUi.playerCount.text = match.playerCount + "/" + match.lobbySize;
       gameCardUi.code.text = match.code;
       gameCardUi.gameMode.text = match.gameMode;
 

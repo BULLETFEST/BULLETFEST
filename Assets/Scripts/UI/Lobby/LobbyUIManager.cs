@@ -1,7 +1,7 @@
 using System.Collections.Generic;
+using System.Linq;
 using Mirror;
 using TMPro;
-using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 public class LobbyUIManager : NetworkBehaviour
@@ -38,13 +38,15 @@ public class LobbyUIManager : NetworkBehaviour
 
     startButton.onClick.AddListener(delegate { StartGame(); });
 
-    List<string> mapNames = new();
+    // List<string> mapNames = new();
 
-    for (int i = MyNetworkManager.menuScenesCount; i < SceneManager.sceneCountInBuildSettings; i++)
-    {
-      mapNames.Add(System.IO.Path.GetFileNameWithoutExtension(SceneUtility.GetScenePathByBuildIndex(i)).Replace("_", " "));
-    }
-    maps.AddOptions(mapNames);
+    // for (int i = MyNetworkManager.menuScenesCount; i < SceneManager.sceneCountInBuildSettings; i++)
+    // {
+    //   mapNames.Add(System.IO.Path.GetFileNameWithoutExtension(SceneUtility.GetScenePathByBuildIndex(i)).Replace("_", " "));
+    // }
+    // maps.AddOptions(nm._4Players.ToList());
+
+    UpdateMapsList();
 
     maps.onValueChanged.AddListener(delegate { SelectMap(maps.value); });
   }
@@ -107,6 +109,8 @@ public class LobbyUIManager : NetworkBehaviour
   public void ToggleBots(bool option)
   {
     nm.enableBots = option;
+
+    UpdateMapsList();
   }
 
   public void ChangeRoundCount(string count)
@@ -178,5 +182,57 @@ public class LobbyUIManager : NetworkBehaviour
   public void SelectMap(int map)
   {
     nm.chosenMap = map;
+  }
+
+  public void ChangeLobbySize(int option)
+  {
+    switch (option)
+    {
+      case 0:
+      default:
+        nm.maxPlayers = 4;
+        break;
+      case 1:
+        nm.maxPlayers = 6;
+        break;
+    }
+
+    UpdateMapsList();
+    FirebaseManager.UpdateLobby(NetworkServer.connections.Count, nm.gameMode.ToString(), nm.privacyType.ToString().ToLower(), false);
+  }
+
+  public void UpdateMapsList()
+  {
+    List<string> n;
+
+    List<string> other;
+
+    switch (nm.maxPlayers)
+    {
+      case 4:
+      default:
+        other = nm._4Players.ToList();
+        break;
+      case 6:
+        other = nm._6Players.ToList();
+        break;
+    }
+
+    if (nm.enableBots)
+    {
+      n = nm._BotSupport.ToList().Where(x => other.Contains(x)).ToList();
+    }
+    else
+    {
+      n = other;
+    }
+
+    n = n.Select(map => { return map = System.IO.Path.GetFileNameWithoutExtension(map).Replace("_", " "); }).ToList();
+
+    n.Insert(0, "Random");
+
+    maps.ClearOptions();
+
+    maps.AddOptions(n);
   }
 }
