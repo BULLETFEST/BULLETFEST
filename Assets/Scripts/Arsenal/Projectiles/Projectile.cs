@@ -21,16 +21,27 @@ public class Projectile : NetworkBehaviour
 
   internal int passedThrough = 0;
 
+  public bool destroySelf = true;
+
+  [DrawIf("destroySelf", true)]
+  public float destroySelfTime = 5f;
+
+  public bool modifyStartingRotation;
+
+  [DrawIf("modifyStartingRotation", true)]
+  public Vector3 startingRotation;
+
   [ServerCallback]
   internal virtual void Start()
   {
     Server_DisableCollisionWith(owner);
-    StartCoroutine(DestroySelf());
+    if (destroySelf) StartCoroutine(DestroySelf());
+    if (modifyStartingRotation) transform.rotation = Quaternion.Euler(startingRotation);
   }
 
   internal virtual IEnumerator DestroySelf()
   {
-    yield return new WaitForSeconds(5f);
+    yield return new WaitForSeconds(destroySelfTime);
     NetworkServer.Destroy(gameObject);
   }
 

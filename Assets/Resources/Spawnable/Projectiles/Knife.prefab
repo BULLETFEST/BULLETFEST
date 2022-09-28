@@ -231,3 +231,7 @@ MonoBehaviour:
   owner: {fileID: 0}
   passThrough: 0
   passThroughAmount: 0
+  destroySelf: 1
+  destroySelfTime: 10
+  modifyStartingRotation: 0
+  startingRotation: {x: 0, y: 0, z: 0}

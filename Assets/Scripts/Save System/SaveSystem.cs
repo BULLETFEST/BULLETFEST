@@ -22,6 +22,9 @@ public class SaveSystem : MonoBehaviour
       {"fire", "Return"},
       {"fire2", "Mouse0"},
 
+      {"altFire", "Mouse1"},
+      {"altFire2", "Backspace"},
+
       {"jump", "Space"},
       {"jump2", "None"},
 
@@ -42,12 +45,12 @@ public class SaveSystem : MonoBehaviour
     else if (saveData.settings.keybinds == null)
     {
       saveData.settings.keybinds = new Dictionary<string, string>();
-      for (int i = 0; i < defaultBinds.Count - 1; i++)
+    }
+    for (int i = 0; i < defaultBinds.Count - 1; i++)
+    {
+      if (!saveData.settings.keybinds.ContainsKey(defaultBinds.ElementAt(i).Key))
       {
-        if (!saveData.settings.keybinds.ContainsKey(defaultBinds.ElementAt(i).Key))
-        {
-          saveData.settings.keybinds[defaultBinds.ElementAt(i).Key] = defaultBinds.ElementAt(i).Value;
-        }
+        saveData.settings.keybinds[defaultBinds.ElementAt(i).Key] = defaultBinds.ElementAt(i).Value;
       }
     }
 

@@ -16,7 +16,7 @@ GameObject:
   - component: {fileID: 2953802464434722625}
   - component: {fileID: -5092226126746168353}
   - component: {fileID: 3493643137068875771}
-  m_Layer: 8
+  m_Layer: 11
   m_Name: C4
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -231,6 +231,12 @@ MonoBehaviour:
   owner: {fileID: 0}
   passThrough: 0
   passThroughAmount: 0
+  destroySelf: 0
+  destroySelfTime: 0
+  modifyStartingRotation: 1
+  startingRotation: {x: 0, y: 0, z: -90}
   detonateOnImpact: 0
+  explosionParticle: {fileID: 6931337059881789214, guid: 1ef010f6d96a1d349b97d602bed45072, type: 3}
   detonated: 0
+  stickOnCollision: 1
   radius: 10

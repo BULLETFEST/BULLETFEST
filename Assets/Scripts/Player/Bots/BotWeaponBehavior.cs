@@ -1,4 +1,5 @@
 using System.Collections;
+using System.Collections.Generic;
 using System.Linq;
 using Mirror;
 using UnityEngine;
@@ -11,18 +12,21 @@ public class BotWeaponBehavior : MonoBehaviour
   Coroutine reloadRoutine;
   BotVars botVars;
 
+  [HideInInspector]
+  public List<Explosive> awaitingDetonation = new();
+
   void Start()
   {
     arsenal = FindObjectOfType<PlayerBehavior>().gameObject.GetComponentInChildren<WeaponBehavior>().arsenal;
     botVars = GetComponentInParent<BotVars>();
   }
 
-  public void Shoot(string weaponId, GameObject shooter)
+  public void Fire(string weaponId, GameObject shooter)
   {
     WeaponClass equippedWeapon = arsenal.Where(w => w.ID == weaponId).ToArray()[0];
 
     // Get the weapon prefix ID (stg, hdg, etc)
-    string weaponType = equippedWeapon.ID.Substring(0, 3).ToLower();
+    string weaponType = equippedWeapon.ID.Split("_")[0].ToLower();
 
     switch (weaponType)
     {
@@ -30,6 +34,7 @@ public class BotWeaponBehavior : MonoBehaviour
       case "smg":
       case "lmg":
       case "snr":
+      case "thrw":
         Fire_Regular(shooter);
         break;
       case "stg":
@@ -65,11 +70,14 @@ public class BotWeaponBehavior : MonoBehaviour
     spawnedBullet.GetComponent<Rigidbody2D>().velocity = weapon.projectileVelocity * spawnedBullet.transform.right;
     spawnedBullet.GetComponent<Rigidbody2D>().AddTorque(weapon.projectileTorque);
 
-    spawnedBullet.GetComponent<Bullet>().owner = shooter;
-    spawnedBullet.GetComponent<Bullet>().damage = weapon.damage;
+    spawnedBullet.GetComponent<Projectile>().owner = shooter;
+    spawnedBullet.GetComponent<Projectile>().damage = weapon.damage;
 
+    if (spawnedBullet.GetComponent<Explosive>())
+    {
+      awaitingDetonation.Add(spawnedBullet.GetComponent<Explosive>());
+    }
 
-    // Destroy(spawnedBullet, 0.3f);
     NetworkServer.Spawn(spawnedBullet);
   }
 

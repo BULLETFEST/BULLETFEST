@@ -68,6 +68,7 @@ public class LobbyPlayerSpawner : NetworkBehaviour
     objToSync.transform.localScale = Vector3.one;
     objToSync.GetComponent<Image>().color = colors[idx % 4];
     objToSync.transform.SetAsLastSibling();
+    objToSync.transform.position = Vector3.zero;
   }
 
   [ClientRpc]

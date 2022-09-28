@@ -62,7 +62,7 @@ public class BotHauntPlayerState : BotBaseState
         float angle = Mathf.Atan2(playerPos.y, playerPos.x) * Mathf.Rad2Deg;
         // manager.botVars.botWb.transform.LookAt(nearestPlayer.transform);
 
-        manager.botVars.botBehavior.Shoot(playerPos.x, angle);
+        manager.botVars.botBehavior.Fire(playerPos.x, angle);
 
         if (manager.botVars.botWb.weapon.bulletsInMag <= 0) manager.SwitchState(manager.botFleeState);
       }

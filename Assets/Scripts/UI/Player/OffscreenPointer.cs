@@ -1,9 +1,10 @@
-﻿using Mirror;
+﻿using System.Collections.Generic;
+using Mirror;
 using UnityEngine;
 
 public class OffscreenPointer : NetworkBehaviour
 {
-  private RectTransform[] pointerRectTransform;
+  private List<RectTransform> pointerRectTransform = new();
 
   [SerializeField] float borderSize = 25f;
 
@@ -11,20 +12,20 @@ public class OffscreenPointer : NetworkBehaviour
   private GameObject arrowContainer,
                      arrowPrefab;
 
+
   void Start()
   {
-    if (!isLocalPlayer) Destroy(this);
-  }
-
-  public override void OnStartAuthority()
-  {
-    base.OnStartAuthority();
-
-    pointerRectTransform = new RectTransform[NetworkServer.connections.Count];
-
-    for (int i = 0; i < NetworkServer.connections.Count; i++)
+    if (!isLocalPlayer)
     {
-      pointerRectTransform[i] = Instantiate(arrowPrefab, Vector3.zero, Quaternion.identity, arrowContainer.transform).GetComponent<RectTransform>();
+      Destroy(this);
+      return;
+    }
+    // pointerRectTransform = new RectTransform[NetworkServer.connections.Count];
+
+    print(FindObjectsOfType<DamageController>().Length);
+    for (int i = 0; i < FindObjectsOfType<PlayerNetworking>().Length; i++)
+    {
+      pointerRectTransform.Add(Instantiate(arrowPrefab, Vector3.zero, Quaternion.identity, arrowContainer.transform).GetComponent<RectTransform>());
       pointerRectTransform[i].gameObject.SetActive(false);
     }
   }

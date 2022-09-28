@@ -216,27 +216,6 @@ public static readonly bool testMode = false;
     }
   }
 
-  public override void OnClientSceneChanged()
-  {
-    base.OnClientSceneChanged();
-
-
-    if (SceneManager.GetActiveScene().name == "End") return;
-
-    VideoPlayer v = Camera.main.gameObject.AddComponent<VideoPlayer>();
-    v.clip = Resources.Load<VideoClip>("glitch");
-    v.isLooping = true;
-    v.playOnAwake = true;
-    v.waitForFirstFrame = true;
-    v.playbackSpeed = 1.75f;
-    v.targetCameraAlpha = 0.222f;
-    v.aspectRatio = VideoAspectRatio.FitInside;
-    v.audioOutputMode = VideoAudioOutputMode.None;
-    v.renderMode = VideoRenderMode.CameraFarPlane;
-
-    v.Play();
-  }
-
   public override void OnServerDisconnect(NetworkConnectionToClient conn)
   {
     if (SceneManager.GetActiveScene().name != "End") base.OnServerDisconnect(conn);
@@ -456,8 +435,16 @@ public static readonly bool testMode = false;
 
   public void Disconnect()
   {
-    if (mode == NetworkManagerMode.ServerOnly) StopServer();
-    else if (mode == NetworkManagerMode.Host) StopHost();
+    if (mode == NetworkManagerMode.ServerOnly)
+    {
+      FirebaseManager.CloseLobby();
+      StopServer();
+    }
+    else if (mode == NetworkManagerMode.Host)
+    {
+      FirebaseManager.CloseLobby();
+      StopHost();
+    }
     else if (mode == NetworkManagerMode.ClientOnly) StopClient();
 
     // SceneManager.LoadSceneAsync("MainMenu");

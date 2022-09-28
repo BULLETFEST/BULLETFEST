@@ -1,4 +1,5 @@
 using System.Collections;
+using System.Collections.Generic;
 using System.Linq;
 using Mirror;
 using UnityEngine;
@@ -13,6 +14,9 @@ public class WeaponBehavior : MonoBehaviour
 
   Coroutine reloadRoutine;
 
+  [HideInInspector]
+  public List<Explosive> awaitingDetonation = new();
+
   void Start()
   {
     // weapon.bulletsInMag = weapon.magazineSize;
@@ -22,7 +26,7 @@ public class WeaponBehavior : MonoBehaviour
     // uiController.UpdateWeaponUI(weapon);
   }
 
-  public void Shoot(string weaponId, NetworkConnection shooter)
+  public void Fire(string weaponId, NetworkConnection shooter)
   {
     WeaponClass equippedWeapon = arsenal.Where(w => w.ID == weaponId).ToArray()[0];
 
@@ -70,8 +74,11 @@ public class WeaponBehavior : MonoBehaviour
     spawnedBullet.GetComponent<Projectile>().owner = shooter.identity.gameObject;
     spawnedBullet.GetComponent<Projectile>().damage = weapon.damage;
 
+    if (spawnedBullet.GetComponent<Explosive>())
+    {
+      awaitingDetonation.Add(spawnedBullet.GetComponent<Explosive>());
+    }
 
-    // Destroy(spawnedBullet, 0.3f);
     NetworkServer.Spawn(spawnedBullet, shooter);
   }
 

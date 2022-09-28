@@ -1,5 +1,6 @@
 using Mirror;
 using UnityEngine;
+using UnityEngine.Video;
 
 public class PlayerBehavior : NetworkBehaviour
 {
@@ -36,6 +37,19 @@ public class PlayerBehavior : NetworkBehaviour
 
     playerVars.damageController.onDeath += Server_Die;
     playerVars.damageController.onTakeDamage += a;
+
+    VideoPlayer v = Camera.main.gameObject.AddComponent<VideoPlayer>();
+    v.clip = Resources.Load<VideoClip>("glitch");
+    v.isLooping = true;
+    v.playOnAwake = true;
+    v.waitForFirstFrame = true;
+    v.playbackSpeed = 1.75f;
+    v.targetCameraAlpha = 0.222f;
+    v.aspectRatio = VideoAspectRatio.FitInside;
+    v.audioOutputMode = VideoAudioOutputMode.None;
+    v.renderMode = VideoRenderMode.CameraFarPlane;
+
+    v.Play();
 
     FetchTime();
   }
@@ -77,7 +91,8 @@ public class PlayerBehavior : NetworkBehaviour
 
     weaponToPickup = FindClosestGun();
 
-    if (Utilities.GetKeybind("fire") && !playerVars.lockShooting) Shoot();
+    if (Utilities.GetKeybind("fire") && !playerVars.lockShooting) Fire();
+    if (Utilities.GetKeybindDown("altFire") && !playerVars.lockShooting) AltFire();
 
     if (Utilities.GetKeybindUp("fire")) ShootKeyUp();
 
@@ -132,7 +147,7 @@ public class PlayerBehavior : NetworkBehaviour
   [Command] void ShootKeyUp() => shootKeyUp = true;
 
   [Command]
-  void Shoot()
+  void Fire()
   {
     WeaponClass weapon = playerVars.weaponBehavior.weapon;
 
@@ -148,7 +163,7 @@ public class PlayerBehavior : NetworkBehaviour
     weapon.fireTimeout = (float)NetworkTime.time + (1f / weapon.fireRate);
 
     Rpc_AddForce(gameObject, weapon.shootSound);
-    playerVars.weaponBehavior.Shoot(weapon.ID, connectionToClient);
+    playerVars.weaponBehavior.Fire(weapon.ID, connectionToClient);
 
     Target_UpdateUI(weapon.bulletsInMag);
     shootKeyUp = false;
@@ -157,6 +172,26 @@ public class PlayerBehavior : NetworkBehaviour
     {
       TargetRpc_SwitchWeapon(null);
       weaponBehavior.SwitchWeapon(null);
+    }
+  }
+
+  [Command]
+  void AltFire()
+  {
+    if (playerVars.lockShooting) return;
+
+    print("Called explosion");
+
+    WeaponBehavior weapon = playerVars.weaponBehavior;
+
+    if (weapon.awaitingDetonation.Count > 0)
+    {
+      foreach (Explosive explosive in weapon.awaitingDetonation)
+      {
+        explosive.Detonate();
+      }
+
+      weapon.awaitingDetonation.Clear();
     }
   }
 

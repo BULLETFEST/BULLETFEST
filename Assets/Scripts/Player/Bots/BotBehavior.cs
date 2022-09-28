@@ -29,7 +29,7 @@ public class BotBehavior : NetworkBehaviour
     if (transform.position.y <= -15 || transform.position.y >= 50) botVars.damageController.TakeDamage(9999999, null);
   }
 
-  public void Shoot(float playerPosX, float angle)
+  public void Fire(float playerPosX, float angle)
   {
     WeaponClass weapon = botVars.botWb.weapon;
 
@@ -43,7 +43,17 @@ public class BotBehavior : NetworkBehaviour
     weapon.fireTimeout = (float)Time.time + (1f / weapon.fireRate) * (weapon.firingMode == WeaponClass.FireMode.Single ? 1.65f : 1);
 
     Rpc_AddForce(gameObject, weapon.shootSound);
-    botVars.botWb.Shoot(weapon.ID, gameObject);
+    botVars.botWb.Fire(weapon.ID, gameObject);
+
+    if (botVars.botWb.awaitingDetonation.Count >= 3)
+    {
+      foreach (Explosive explosive in botVars.botWb.awaitingDetonation)
+      {
+        explosive.Detonate();
+      }
+
+      botVars.botWb.awaitingDetonation.Clear();
+    }
   }
 
   [ClientRpc]
