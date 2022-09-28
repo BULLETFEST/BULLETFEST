@@ -43,9 +43,17 @@ public class MyNetworkManager : NetworkManager
 
   [Scene] public string[] _4Players, _6Players, _8Players, _BotSupport;
 
+  [Scene] public string TESTING_SCENE;
+
   bool hasFiredReadyEvent;
 
   static bool firstInit = true;
+
+#if UNITY_EDITOR
+  public static readonly bool testMode = true;
+#else
+public static readonly bool testMode = false;
+#endif
 
   public override void Awake()
   {
@@ -345,36 +353,47 @@ public class MyNetworkManager : NetworkManager
         break;
     }
 
-    if (settings.enableBots)
-    {
-      _scenes = _BotSupport.Where(x => _scenes.Contains(x)).ToList();
-    }
+    print(testMode);
 
-    if (settings.gameMode == GameSettings.GameMode.Elimination)
+    if (!testMode)
     {
-      settings.rounds = Mathf.Clamp(settings.rounds, 1, playableScenesCount);
-      while (_scenes.Count > settings.rounds)
+      if (settings.enableBots)
       {
-        _scenes.RemoveAt(Random.Range(0, _scenes.Count));
+        _scenes = _BotSupport.Where(x => _scenes.Contains(x)).ToList();
+      }
+
+      if (settings.gameMode == GameSettings.GameMode.Elimination)
+      {
+        settings.rounds = Mathf.Clamp(settings.rounds, 1, playableScenesCount);
+        while (_scenes.Count > settings.rounds)
+        {
+          _scenes.RemoveAt(Random.Range(0, _scenes.Count));
+        }
+      }
+      else
+      {
+        List<string> temp = new();
+        if (settings.chosenMap == 0)
+        {
+          int chosenMapIdx = Random.Range(0, _scenes.Count);
+
+          temp.Add(_scenes[chosenMapIdx]);
+
+          _scenes = temp;
+        }
+        else
+        {
+          temp.Add(_scenes[settings.chosenMap - 1]);
+
+          _scenes = temp;
+        }
       }
     }
     else
     {
-      List<string> temp = new();
-      if (settings.chosenMap == 0)
-      {
-        int chosenMapIdx = Random.Range(0, _scenes.Count);
+      _scenes = new();
 
-        temp.Add(_scenes[chosenMapIdx]);
-
-        _scenes = temp;
-      }
-      else
-      {
-        temp.Add(_scenes[settings.chosenMap - 1]);
-
-        _scenes = temp;
-      }
+      _scenes.Add(TESTING_SCENE);
     }
 
     queuedScenes = _scenes.ToArray();

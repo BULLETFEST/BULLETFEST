@@ -16,6 +16,19 @@ public class WeaponClass : MonoBehaviour
     Shells
   }
 
+  [Header("Base Weapon Information")]
+  public string weaponName;
+  [Tooltip(
+  @"Valid weapon IDs: 
+  HDG - Handgun
+  RPG - Rocket Propelled Grenade
+  THRW - Throwable
+  SMG - Sub-Machine Gun
+  LMG - Light Machine Gun
+  STG - Shotgun
+  SNR - Sniper Rifle
+  ")]
+  public string ID;
 
   public bool rotateWithCursor = true;
   public bool deleteOnEmpty = false;
@@ -29,31 +42,26 @@ public class WeaponClass : MonoBehaviour
 
   public float[] inaccuracyRange = new float[] { 0, 0 };
 
-  // public float reloadTime;
   public float shotPushback;
-  // public float range;
+  public float movementUnlockTime;
+
   public float damage;
   public float fireRate;
-  public float bulletVelocity;
-  public float movementUnlockTime;
 
   public float cameraShakeIntensity,
                cameraShakeDuration;
 
-  public string weaponName;
-  public string ID;
-
   public FireMode firingMode;
 
-  public ReloadType reloadType;
+  // public ReloadType reloadType;
 
-  public GameObject bulletPrefab;
-  public Transform bulletSpawnPoint;
-
-  public Sprite weaponSprite;
-
+  [Header("Projectile")]
+  public GameObject projectilePrefab;
+  public Transform projectileSpawnPoint;
+  public float projectileVelocity;
   public float projectileTorque;
 
+  [Header("")]
   public string shootSound = "Shoot";
 
 

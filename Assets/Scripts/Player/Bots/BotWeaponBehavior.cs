@@ -58,11 +58,11 @@ public class BotWeaponBehavior : MonoBehaviour
 
   public void Fire_Regular(GameObject shooter)
   {
-    GameObject spawnedBullet = Instantiate(weapon.bulletPrefab, weapon.bulletSpawnPoint.transform.position, Quaternion.Euler(transform.rotation.eulerAngles.x, transform.rotation.eulerAngles.y, transform.rotation.eulerAngles.z + Random.Range(weapon.inaccuracyRange[0], weapon.inaccuracyRange[1])));
+    GameObject spawnedBullet = Instantiate(weapon.projectilePrefab, weapon.projectileSpawnPoint.transform.position, Quaternion.Euler(transform.rotation.eulerAngles.x, transform.rotation.eulerAngles.y, transform.rotation.eulerAngles.z + Random.Range(weapon.inaccuracyRange[0], weapon.inaccuracyRange[1])));
 
     Physics2D.IgnoreCollision(spawnedBullet.GetComponent<Collider2D>(), shooter.GetComponent<Collider2D>());
 
-    spawnedBullet.GetComponent<Rigidbody2D>().velocity = weapon.bulletVelocity * spawnedBullet.transform.right;
+    spawnedBullet.GetComponent<Rigidbody2D>().velocity = weapon.projectileVelocity * spawnedBullet.transform.right;
     spawnedBullet.GetComponent<Rigidbody2D>().AddTorque(weapon.projectileTorque);
 
     spawnedBullet.GetComponent<Bullet>().owner = shooter;

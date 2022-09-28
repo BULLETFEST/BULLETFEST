@@ -140,7 +140,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 3075476997647957983}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: 0.25, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -161,28 +161,27 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 79cff5247a00f9440ba17186830d8908, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  magazineSize: 4
+  weaponName: Double Barrel
+  ID: STG_DoubleBarrel
   rotateWithCursor: 1
   deleteOnEmpty: 0
   isShotgun: 1
   pelletCount: 5
+  magazineSize: 4
   inaccuracyRange:
   - -5
   - 5
   shotPushback: 40
+  movementUnlockTime: 0.1
   damage: 1.5
   fireRate: 5
-  bulletVelocity: 50
-  movementUnlockTime: 0.1
   cameraShakeIntensity: 0.25
   cameraShakeDuration: 0.05
-  weaponName: Double Barrel
-  ID: STG_DoubleBarrel
   firingMode: 0
   reloadType: 1
-  bulletPrefab: {fileID: 7740076768845922023, guid: bd0cfe2c8625b2c4daefea4409372304, type: 3}
-  bulletSpawnPoint: {fileID: 5449872525946486571}
-  weaponSprite: {fileID: 46198654, guid: 42f7f1a58f976a5409856172beec4300, type: 3}
+  projectilePrefab: {fileID: 7740076768845922023, guid: bd0cfe2c8625b2c4daefea4409372304, type: 3}
+  projectileSpawnPoint: {fileID: 5449872525946486571}
+  projectileVelocity: 50
   projectileTorque: 0
   shootSound: Shoot
   fireTimeout: 65.9566

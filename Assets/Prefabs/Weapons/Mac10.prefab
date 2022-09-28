@@ -140,7 +140,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 3075476997647957983}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: 0.35, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -161,28 +161,27 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 79cff5247a00f9440ba17186830d8908, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  magazineSize: 15
+  weaponName: Mac-10
+  ID: SMG_Mac10
+  rotateWithCursor: 1
+  deleteOnEmpty: 0
   isShotgun: 0
   pelletCount: 0
+  magazineSize: 15
   inaccuracyRange:
   - -5
   - 5
-  reloadTime: 3
   shotPushback: 6
-  range: 0
+  movementUnlockTime: 0.2
   damage: 3
   fireRate: 20
-  bulletVelocity: 35
-  movementUnlockTime: 0.2
   cameraShakeIntensity: 0.05
   cameraShakeDuration: 0.03
-  weaponName: Mac-10
-  ID: SMG_Mac10
   firingMode: 2
   reloadType: 0
-  bulletPrefab: {fileID: 7740076768845922023, guid: bd0cfe2c8625b2c4daefea4409372304, type: 3}
-  bulletSpawnPoint: {fileID: 5449872525946486571}
-  weaponSprite: {fileID: -1454497904, guid: cce83fdaf70387641a662afe9fdffe74, type: 3}
+  projectilePrefab: {fileID: 7740076768845922023, guid: bd0cfe2c8625b2c4daefea4409372304, type: 3}
+  projectileSpawnPoint: {fileID: 5449872525946486571}
+  projectileVelocity: 35
   projectileTorque: 0
   shootSound: Shoot
   fireTimeout: 134.44652

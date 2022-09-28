@@ -140,7 +140,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 3075476997647957983}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: 0.25, y: 0.15, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -161,28 +161,27 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 79cff5247a00f9440ba17186830d8908, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  magazineSize: 5
+  weaponName: Gewehr 98
+  ID: SNR_Gewehr98
+  rotateWithCursor: 1
+  deleteOnEmpty: 0
   isShotgun: 0
   pelletCount: 0
+  magazineSize: 5
   inaccuracyRange:
   - -0.25
   - 0.25
-  reloadTime: 10
   shotPushback: 30
-  range: 0
+  movementUnlockTime: 0.3
   damage: 5
   fireRate: 1.75
-  bulletVelocity: 100
-  movementUnlockTime: 0.3
   cameraShakeIntensity: 1.5
   cameraShakeDuration: 0.15
-  weaponName: Gewehr 98
-  ID: SNR_Gewehr98
   firingMode: 0
   reloadType: 0
-  bulletPrefab: {fileID: 7740076768845922023, guid: bd0cfe2c8625b2c4daefea4409372304, type: 3}
-  bulletSpawnPoint: {fileID: 5449872525946486571}
-  weaponSprite: {fileID: 21300000, guid: 6a7be8b3718fdd14da67780753ef1d45, type: 3}
+  projectilePrefab: {fileID: 7740076768845922023, guid: bd0cfe2c8625b2c4daefea4409372304, type: 3}
+  projectileSpawnPoint: {fileID: 5449872525946486571}
+  projectileVelocity: 100
   projectileTorque: 0
   shootSound: Shoot
   fireTimeout: 90.863235

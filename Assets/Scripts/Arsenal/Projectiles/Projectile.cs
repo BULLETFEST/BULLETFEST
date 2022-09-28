@@ -2,7 +2,7 @@ using System.Collections;
 using Mirror;
 using UnityEngine;
 
-public class Bullet : NetworkBehaviour
+public class Projectile : NetworkBehaviour
 {
   [HideInInspector]
   [SyncVar]
@@ -19,23 +19,23 @@ public class Bullet : NetworkBehaviour
   [SyncVar]
   public int passThroughAmount = 0;
 
-  int passedThrough = 0;
+  internal int passedThrough = 0;
 
   [ServerCallback]
-  void Start()
+  internal virtual void Start()
   {
     Server_DisableCollisionWith(owner);
     StartCoroutine(DestroySelf());
   }
 
-  IEnumerator DestroySelf()
+  internal virtual IEnumerator DestroySelf()
   {
     yield return new WaitForSeconds(5f);
     NetworkServer.Destroy(gameObject);
   }
 
   [ServerCallback]
-  private void OnCollisionEnter2D(Collision2D other)
+  internal virtual void OnCollisionEnter2D(Collision2D other)
   {
     if (!other.gameObject.GetComponent<DamageController>())
     {
@@ -55,14 +55,14 @@ public class Bullet : NetworkBehaviour
   }
 
   [Command(requiresAuthority = false)]
-  void Server_DisableCollisionWith(GameObject other) => DisableCollisionWith(other);
+  internal void Server_DisableCollisionWith(GameObject other) => DisableCollisionWith(other);
 
   [ClientRpc]
-  void DisableCollisionWith(GameObject other) =>
+  internal void DisableCollisionWith(GameObject other) =>
     Physics2D.IgnoreCollision(GetComponent<Collider2D>(), other.GetComponent<Collider2D>());
 
   [Command(requiresAuthority = false)]
-  void DealDamage(GameObject victim)
+  internal void DealDamage(GameObject victim)
   {
     victim.GetComponent<DamageController>().TakeDamage(damage, owner);
   }

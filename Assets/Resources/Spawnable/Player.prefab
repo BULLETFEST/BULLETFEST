@@ -1028,6 +1028,7 @@ MonoBehaviour:
   - {fileID: 3366149238512663894, guid: 4ef5e3eca7f2ade419b28dd1260121a5, type: 3}
   - {fileID: 3366149238512663894, guid: a026a3dc0585e2248847d6a4ef37e5bf, type: 3}
   - {fileID: 3366149238512663894, guid: 32c25b7d80db55345a8ec9020cde918a, type: 3}
+  - {fileID: 3366149238512663894, guid: 1cafbc10508f9444483d239ec160a560, type: 3}
 --- !u!1 &4296064582951867007
 GameObject:
   m_ObjectHideFlags: 0
@@ -1378,22 +1379,25 @@ MonoBehaviour:
   syncMode: 0
   syncInterval: 0.1
   clientAuthority: 1
-  sendInterval: 0
-  syncPosition: 1
-  syncRotation: 1
-  syncScale: 0
-  interpolatePosition: 1
-  interpolateRotation: 1
-  interpolateScale: 0
+  sendRate: 30
   bufferTimeMultiplier: 1
   bufferSizeLimit: 64
-  catchupThreshold: 4
-  catchupMultiplier: 0.1
+  catchupNegativeThreshold: -1
+  catchupPositiveThreshold: 1
+  catchupSpeed: 0.009999999776482582
+  slowdownSpeed: 0.009999999776482582
+  driftEmaDuration: 1
+  dynamicAdjustment: 1
+  dynamicAdjustmentTolerance: 1
+  deliveryTimeEmaDuration: 2
   onlySyncOnChange: 0
   bufferResetMultiplier: 5
   positionSensitivity: 0.01
   rotationSensitivity: 0.01
   scaleSensitivity: 0.01
+  syncPosition: 1
+  syncRotation: 1
+  syncScale: 0
   showGizmos: 0
   showOverlay: 0
   overlayColor: {r: 0, g: 0, b: 0, a: 0.5}
@@ -1412,22 +1416,25 @@ MonoBehaviour:
   syncMode: 0
   syncInterval: 0
   clientAuthority: 1
-  sendInterval: 0.05
-  syncPosition: 0
-  syncRotation: 1
-  syncScale: 0
-  interpolatePosition: 0
-  interpolateRotation: 0
-  interpolateScale: 0
+  sendRate: 30
   bufferTimeMultiplier: 1
   bufferSizeLimit: 64
-  catchupThreshold: 4
-  catchupMultiplier: 0.1
+  catchupNegativeThreshold: -1
+  catchupPositiveThreshold: 1
+  catchupSpeed: 0.009999999776482582
+  slowdownSpeed: 0.009999999776482582
+  driftEmaDuration: 1
+  dynamicAdjustment: 1
+  dynamicAdjustmentTolerance: 1
+  deliveryTimeEmaDuration: 2
   onlySyncOnChange: 1
   bufferResetMultiplier: 5
   positionSensitivity: 0.01
   rotationSensitivity: 0.01
   scaleSensitivity: 0.01
+  syncPosition: 0
+  syncRotation: 1
+  syncScale: 0
   showGizmos: 0
   showOverlay: 0
   overlayColor: {r: 0, g: 0, b: 0, a: 0.5}
