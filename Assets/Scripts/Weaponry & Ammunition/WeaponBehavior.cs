@@ -43,14 +43,12 @@ public class WeaponBehavior : MonoBehaviour
       case "rpg":
         throw new System.NotImplementedException();
     }
-
-
   }
 
   // Add recoil to the user
   public void AddForce(GameObject target)
   {
-    if (weapon.shotPushback == 0) return;
+    if (weapon?.shotPushback == 0) return;
     PlayerVars shooterVars = target.GetComponent<PlayerVars>();
     shooterVars.rb.velocity = new Vector2(0, shooterVars.rb.velocity.y);
     shooterVars.lockMovement = true;
@@ -93,14 +91,25 @@ public class WeaponBehavior : MonoBehaviour
   public void SwitchWeapon(string weaponID)
   {
     if (weapon != null) Destroy(weapon.gameObject);
-    GameObject newWeapon = Instantiate(arsenal.Where(w => w.ID == weaponID).ToArray()[0].gameObject, transform.position, transform.rotation, transform);
-    weapon = newWeapon.GetComponent<WeaponClass>();
-    weapon.bulletsInMag = weapon.magazineSize;
-    weapon.fireTimeout = 0;
-
-    uiController.UpdateAmmoText(weapon.magazineSize);
 
     if (playerVars.graphics.sprites.Count > 2) playerVars.graphics.sprites.RemoveAt(2);
-    playerVars.graphics.sprites.Add(newWeapon.GetComponentInChildren<SpriteRenderer>());
+    if (weaponID != null)
+    {
+      GameObject newWeapon = Instantiate(arsenal.Where(w => w.ID == weaponID).ToArray()[0].gameObject, transform.position, transform.rotation, transform);
+      weapon = newWeapon.GetComponent<WeaponClass>();
+      weapon.bulletsInMag = weapon.magazineSize;
+      weapon.fireTimeout = 0;
+
+      uiController.UpdateAmmoText(weapon.magazineSize);
+      playerVars.graphics.sprites.Add(newWeapon.GetComponentInChildren<SpriteRenderer>());
+      playerVars.graphics.sprites[2].enabled = true;
+    }
+    else
+    {
+      // weapon = null;
+      if (playerVars.graphics.sprites.Count >= 3)
+        playerVars.graphics.sprites[2].enabled = false;
+      uiController.UpdateAmmoText(-1);
+    }
   }
 }

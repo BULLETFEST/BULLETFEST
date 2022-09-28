@@ -48,6 +48,6 @@ public class PlayerUI : NetworkBehaviour
 
   public void UpdateAmmoText(int bullets)
   {
-    uiGunAmmo.text = $"{bullets}";
+    uiGunAmmo.text = $"{(bullets == -1 ? "" : bullets)}";
   }
 }

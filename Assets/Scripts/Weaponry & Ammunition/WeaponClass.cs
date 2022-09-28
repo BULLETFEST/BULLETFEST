@@ -16,17 +16,22 @@ public class WeaponClass : MonoBehaviour
     Shells
   }
 
-  public int magazineSize;
+
+  public bool rotateWithCursor = true;
+  public bool deleteOnEmpty = false;
 
   public bool isShotgun = false;
+
   [DrawIf("isShotgun", true)]
   public int pelletCount;
 
+  public int magazineSize;
+
   public float[] inaccuracyRange = new float[] { 0, 0 };
 
-  public float reloadTime;
+  // public float reloadTime;
   public float shotPushback;
-  public float range;
+  // public float range;
   public float damage;
   public float fireRate;
   public float bulletVelocity;
@@ -50,7 +55,6 @@ public class WeaponClass : MonoBehaviour
   public float projectileTorque;
 
   public string shootSound = "Shoot";
-
 
 
   // Copied over from DWAG2 Code

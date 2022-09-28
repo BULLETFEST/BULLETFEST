@@ -3755,7 +3755,7 @@ Canvas:
   m_GameObject: {fileID: 581182461}
   m_Enabled: 1
   serializedVersion: 3
-  m_RenderMode: 0
+  m_RenderMode: 1
   m_Camera: {fileID: 1303093678}
   m_PlaneDistance: 100
   m_PixelPerfect: 0
@@ -7705,7 +7705,7 @@ VideoPlayer:
   m_TimeReference: 0
   m_TargetMaterialRenderer: {fileID: 0}
   m_TargetMaterialProperty: <noninit>
-  m_RenderMode: 2
+  m_RenderMode: 1
   m_AspectRatio: 2
   m_DataSource: 0
   m_PlaybackSpeed: 1.75

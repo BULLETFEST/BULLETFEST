@@ -137,7 +137,7 @@ public class PlayerBehavior : NetworkBehaviour
     WeaponClass weapon = playerVars.weaponBehavior.weapon;
 
     if (playerVars.lockShooting) return;
-    if (playerVars.weaponBehavior.weapon == null) return;
+    if (weapon == null) return;
     if (weapon.firingMode == WeaponClass.FireMode.Single && !shootKeyUp) return;
     if (weapon.fireTimeout > NetworkTime.time) return;
     if (weapon.bulletsInMag <= 0) return;
@@ -152,6 +152,12 @@ public class PlayerBehavior : NetworkBehaviour
 
     Target_UpdateUI(weapon.bulletsInMag);
     shootKeyUp = false;
+
+    if (weapon.bulletsInMag <= 0 && weapon.deleteOnEmpty)
+    {
+      TargetRpc_SwitchWeapon(null);
+      weaponBehavior.SwitchWeapon(null);
+    }
   }
 
   [ClientRpc]

@@ -1394,14 +1394,7 @@ MonoBehaviour:
   botWinner: {fileID: 0}
   gameStarted: 0
   isHost: 0
-  enableBots: 0
   roomCode: 
-  privacyType: 0
-  gameMode: 0
-  deathmatchLength: 1
-  rounds: 1
-  chosenMap: 0
-  maxPlayers: 4
   _4Players:
   - Assets/Scenes/GameScenes/World_1.unity
   - Assets/Scenes/GameScenes/World_2.unity

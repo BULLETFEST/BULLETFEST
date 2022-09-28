@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 8683824508677763702}
   - component: {fileID: 5240681828942563628}
   - component: {fileID: 3649052536454209937}
-  m_Layer: 3
+  m_Layer: 11
   m_Name: FloorCollision
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -98,7 +98,7 @@ GameObject:
   - component: {fileID: -7464648577466137130}
   - component: {fileID: 6179108467184649937}
   - component: {fileID: -1675671087038147106}
-  m_Layer: 0
+  m_Layer: 11
   m_Name: Double Barrel
   m_TagString: WeaponItem
   m_Icon: {fileID: 0}
@@ -154,22 +154,25 @@ MonoBehaviour:
   syncMode: 0
   syncInterval: 0.1
   clientAuthority: 0
-  sendInterval: 0.05
-  syncPosition: 1
-  syncRotation: 1
-  syncScale: 0
-  interpolatePosition: 1
-  interpolateRotation: 1
-  interpolateScale: 0
+  sendRate: 30
   bufferTimeMultiplier: 1
   bufferSizeLimit: 64
-  catchupThreshold: 4
-  catchupMultiplier: 0.1
+  catchupNegativeThreshold: -1
+  catchupPositiveThreshold: 1
+  catchupSpeed: 0.009999999776482582
+  slowdownSpeed: 0.009999999776482582
+  driftEmaDuration: 1
+  dynamicAdjustment: 1
+  dynamicAdjustmentTolerance: 1
+  deliveryTimeEmaDuration: 2
   onlySyncOnChange: 1
   bufferResetMultiplier: 5
   positionSensitivity: 0.01
   rotationSensitivity: 0.01
   scaleSensitivity: 0.01
+  syncPosition: 1
+  syncRotation: 1
+  syncScale: 0
   showGizmos: 0
   showOverlay: 0
   overlayColor: {r: 0, g: 0, b: 0, a: 0.5}
@@ -219,7 +222,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4348407845678988095}
   - component: {fileID: 620321269466763823}
-  m_Layer: 0
+  m_Layer: 11
   m_Name: Sprite
   m_TagString: Untagged
   m_Icon: {fileID: 0}

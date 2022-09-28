@@ -46,25 +46,35 @@ public class PlayerMovement : NetworkBehaviour
 
     float angle = Mathf.Atan2(mousePos.y, mousePos.x) * Mathf.Rad2Deg;
 
-    Cmd_UpdateGun(Quaternion.Euler(0, mousePos.x < 0 ? 180 : 0, 0), Quaternion.Euler(mousePos.x < 0 ? 180 : 0, mousePos.x < 0 ? 180 : 0, (mousePos.x < 0 ? -1 : 1) * angle));
+    Cmd_UpdateGun(Quaternion.Euler(0, mousePos.x < 0 ? 180 : 0, 0),
+                  Quaternion.Euler(mousePos.x < 0 ? 180 : 0, mousePos.x < 0 ? 180 : 0, (mousePos.x < 0 ? -1 : 1) * angle),
+                  Quaternion.Euler(0, mousePos.x < 0 ? 180 : 0, 0));
   }
 
   [Command]
-  void Cmd_UpdateGun(Quaternion graphicsRotation, Quaternion gunRotation)
+  void Cmd_UpdateGun(Quaternion graphicsRotation, Quaternion gunRotation, Quaternion globalGunRotation)
   {
     if (playerVars.lockWeapon) return;
 
-    Rpc_UpdateGun(graphicsRotation, gunRotation);
+    Rpc_UpdateGun(graphicsRotation, gunRotation, globalGunRotation);
   }
 
   [ClientRpc]
-  void Rpc_UpdateGun(Quaternion graphicsRotation, Quaternion gunRotation)
+  void Rpc_UpdateGun(Quaternion graphicsRotation, Quaternion gunRotation, Quaternion globalGunRotation)
   {
     if (playerVars == null) return;
 
     playerVars.graphics.transform.rotation = graphicsRotation;
 
     playerVars.weaponBehavior.transform.localRotation = gunRotation;
+
+    if (playerVars.weaponBehavior.weapon && playerVars.graphics.sprites.Count >= 3)
+    {
+      if (!playerVars.weaponBehavior.weapon.rotateWithCursor)
+      {
+        playerVars.graphics.sprites[2].gameObject.transform.rotation = globalGunRotation;
+      }
+    }
   }
 
   void Update()
