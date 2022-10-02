@@ -1361,6 +1361,7 @@ MonoBehaviour:
   playerSpawnMethod: 0
   spawnPrefabs: []
   PlayerSpawnSystemPrefab: {fileID: 4884974567067367211, guid: eb13bd46980ae664896b09b867e63736, type: 3}
+  GunSpawnerPrefab: {fileID: 3801778096542937584, guid: 1cd6fecd7fbaded44aa96f7c0367fef5, type: 3}
   WinnerPanelPrefab: {fileID: 851980100229403897, guid: d14c3c1291aaad94baf59dd68bc9675f, type: 3}
   PlayerPrefab: {fileID: 5449998184297253465, guid: 11ab8712550f3cf4f80acdecd8357203, type: 3}
   BotPrefab: {fileID: 5449998184297253465, guid: cd1b4683432beb646b14260618c1ce90, type: 3}

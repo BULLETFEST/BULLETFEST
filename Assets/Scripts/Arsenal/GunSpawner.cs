@@ -6,9 +6,9 @@ using UnityEngine;
 
 public class GunSpawner : NetworkBehaviour
 {
-  List<GameObject> weapons;
+  public List<GameObject> weapons;
 
-  GameObject goldenGun;
+  public GameObject goldenGun;
 
   // const float spawnInterval = 8f;
 
@@ -23,11 +23,11 @@ public class GunSpawner : NetworkBehaviour
 
   void Start()
   {
-    weapons = Resources.LoadAll<GameObject>("Spawnable/Weapons").ToList();
+    // weapons = Resources.LoadAll<GameObject>("Spawnable/Weapons").ToList();
 
-    goldenGun = weapons.Where(x => x.name == "Golden Gun").ToArray()[0];
+    // goldenGun = weapons.Where(x => x.name == "Golden Gun").ToArray()[0];
 
-    weapons.Remove(goldenGun);
+    // weapons.Remove(goldenGun);
 
     boxCollider2D = GetComponent<BoxCollider2D>();
 

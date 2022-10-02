@@ -1021,7 +1021,6 @@ MonoBehaviour:
   uiController: {fileID: 6057913054904780200}
   playerVars: {fileID: 957314521401609472}
   arsenal:
-  - {fileID: 3366149238512663894, guid: 0a317f4ae61eaee4e986cecaa30d5046, type: 3}
   - {fileID: 3366149238512663894, guid: 5782fa51db3b6c446bbd752762f84548, type: 3}
   - {fileID: 3366149238512663894, guid: b0150a1c8ca1e994298ca8da3516d48a, type: 3}
   - {fileID: 3366149238512663894, guid: 5d1e5a85bf8a3cf4fbf29efaa0f63075, type: 3}
@@ -1029,6 +1028,7 @@ MonoBehaviour:
   - {fileID: 3366149238512663894, guid: a026a3dc0585e2248847d6a4ef37e5bf, type: 3}
   - {fileID: 3366149238512663894, guid: 32c25b7d80db55345a8ec9020cde918a, type: 3}
   - {fileID: 3366149238512663894, guid: 1cafbc10508f9444483d239ec160a560, type: 3}
+  awaitingDetonation: []
 --- !u!1 &4296064582951867007
 GameObject:
   m_ObjectHideFlags: 0

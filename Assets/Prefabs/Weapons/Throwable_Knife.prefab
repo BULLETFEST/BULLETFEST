@@ -78,7 +78,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   weaponName: Throwable Knife
-  ID: HDG_Knife
+  ID: THRW_Knife
   rotateWithCursor: 1
   deleteOnEmpty: 0
   isShotgun: 0
@@ -94,7 +94,6 @@ MonoBehaviour:
   cameraShakeIntensity: 0
   cameraShakeDuration: 0
   firingMode: 0
-  reloadType: 0
   projectilePrefab: {fileID: 7740076768845922023, guid: 73f26281e002da648b0c3e5ff4e3ae01, type: 3}
   projectileSpawnPoint: {fileID: 5449872525946486571}
   projectileVelocity: 50

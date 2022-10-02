@@ -4,7 +4,6 @@ using System.Linq;
 using Mirror;
 using UnityEngine;
 using UnityEngine.SceneManagement;
-using UnityEngine.Video;
 
 public class MyNetworkManager : NetworkManager
 {
@@ -16,9 +15,10 @@ public class MyNetworkManager : NetworkManager
 
   [SerializeField]
   public GameObject PlayerSpawnSystemPrefab,
-                     WinnerPanelPrefab,
-                     PlayerPrefab,
-                     BotPrefab;
+                    GunSpawnerPrefab,
+                    WinnerPanelPrefab,
+                    PlayerPrefab,
+                    BotPrefab;
 
   [HideInInspector]
   public GameObject botWinner;
@@ -207,6 +207,15 @@ public static readonly bool testMode = false;
         {
           go.GetComponent<PlayerSpawnSystem>().timeStamp = System.DateTime.UtcNow.AddMinutes(settings.deathmatchLength);
         }
+        NetworkServer.Spawn(go);
+      }
+
+      if (!FindObjectOfType<GunSpawner>())
+      {
+        GameObject go = Instantiate(GunSpawnerPrefab);
+
+        go.transform.position = Camera.main.ScreenToWorldPoint(new Vector3(Screen.width / 2, Screen.height + 50, 10));
+        go.GetComponent<BoxCollider2D>().size = new Vector2(Camera.main.orthographicSize * Camera.main.aspect * 1.75f, 1);
         NetworkServer.Spawn(go);
       }
     }
