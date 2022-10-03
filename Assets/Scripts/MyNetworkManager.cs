@@ -49,8 +49,10 @@ public class MyNetworkManager : NetworkManager
 
   static bool firstInit = true;
 
+  public bool enableTestMode;
+
 #if UNITY_EDITOR
-  public static readonly bool testMode = true;
+  public static bool testMode = true;
 #else
 public static readonly bool testMode = false;
 #endif
@@ -64,6 +66,11 @@ public static readonly bool testMode = false;
       settings.rounds = playableScenesCount;
       return;
     }
+
+#if UNITY_EDITOR
+    if (testMode)
+      testMode = enableTestMode;
+#endif
 
     for (int i = 0; i < SceneManager.sceneCountInBuildSettings; i++)
     {
