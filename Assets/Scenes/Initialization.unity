@@ -1389,7 +1389,9 @@ MonoBehaviour:
   - Assets/Scenes/GameScenes/World_12.unity
   - Assets/Scenes/GameScenes/World_13.unity
   - Assets/Scenes/GameScenes/World_14.unity
-  _8Players: []
+  - Assets/Scenes/GameScenes/World_15.unity
+  _8Players:
+  - Assets/Scenes/GameScenes/World_15.unity
   _BotSupport:
   - Assets/Scenes/GameScenes/World_1.unity
   - Assets/Scenes/GameScenes/World_2.unity
@@ -1402,6 +1404,7 @@ MonoBehaviour:
   - Assets/Scenes/GameScenes/World_12.unity
   - Assets/Scenes/GameScenes/World_14.unity
   TESTING_SCENE: Assets/Scenes/GameScenes/TESTING.unity
+  enableTestMode: 0
 --- !u!4 &204399013
 Transform:
   m_ObjectHideFlags: 0
