@@ -239,4 +239,4 @@ MonoBehaviour:
   explosionParticle: {fileID: 6931337059881789214, guid: 1ef010f6d96a1d349b97d602bed45072, type: 3}
   detonated: 0
   stickOnCollision: 1
-  radius: 10
+  radius: 7
