@@ -36,6 +36,7 @@ public class PlayerMovement : NetworkBehaviour
   {
     if (!isLocalPlayer) return;
     if (!NetworkClient.ready) return;
+    if (Time.timeScale == 0) return;
 
     Vector3 mousePos = Input.mousePosition;
     mousePos.z = 5.23f;
@@ -82,7 +83,7 @@ public class PlayerMovement : NetworkBehaviour
     if (!isLocalPlayer) return;
     if (playerVars.lockMovement) return;
 
-    if (Input.GetKeyDown(KeyCode.X)) GetComponent<DamageController>().TakeDamage(5f, null);
+    // if (Input.GetKeyDown(KeyCode.X)) GetComponent<DamageController>().TakeDamage(5f, null);
 
     int xRaw = 0;
     if (Utilities.GetKeybind("lft") && Utilities.GetKeybind("rgt")) xRaw = 0;
@@ -133,6 +134,7 @@ public class PlayerMovement : NetworkBehaviour
   void ValidateMovement(float xRaw)
   {
     if (playerVars.lockMovement) return;
+    if (Time.timeScale == 0) return;
 
     if (transform.position.y <= -15 || transform.position.y >= 50) GetComponent<DamageController>().TakeDamage(9999999, null);
 

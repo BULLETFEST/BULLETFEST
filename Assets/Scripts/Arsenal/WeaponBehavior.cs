@@ -47,6 +47,9 @@ public class WeaponBehavior : MonoBehaviour
         break;
       case "rpg":
         throw new System.NotImplementedException();
+      case "mel":
+        StartCoroutine(Fire_Melee(shooter));
+        break;
     }
   }
 
@@ -60,6 +63,18 @@ public class WeaponBehavior : MonoBehaviour
     Vector2 vel = shooterVars.weaponBehavior.weapon.shotPushback * -shooterVars.weaponBehavior.transform.right;
     shooterVars.rb.AddForce(new Vector2(vel.x * 1.75f, vel.y / 1.55f), ForceMode2D.Impulse);
     StartCoroutine(UnlockMovement(shooterVars.weaponBehavior.weapon.movementUnlockTime, shooterVars));
+  }
+
+  public IEnumerator Fire_Melee(NetworkConnection shooter)
+  {
+    yield return new WaitForSeconds(weapon.animationShotDamageDelay);
+    RaycastHit2D hit = Physics2D.Raycast(weapon.projectileSpawnPoint.transform.position, transform.right, weapon.meleeRange);
+    if (hit.collider == null) yield break;
+
+    Debug.DrawLine(weapon.projectileSpawnPoint.transform.position, hit.point, Color.white, 2f);
+
+    if (!hit.collider.GetComponent<DamageController>()) yield break;
+    hit.collider.GetComponent<DamageController>().TakeDamage(weapon.damage, shooter.identity.gameObject);
   }
 
   public void Fire_Regular(NetworkConnection shooter)
@@ -115,6 +130,11 @@ public class WeaponBehavior : MonoBehaviour
       uiController.UpdateAmmoText(weapon.magazineSize);
       playerVars.graphics.sprites.Add(newWeapon.GetComponentInChildren<SpriteRenderer>());
       playerVars.graphics.sprites[2].enabled = true;
+
+      if (weapon.animateOnShot)
+      {
+        playerVars.weaponAnimator.animator = weapon.GetComponent<Animator>();
+      }
     }
     else
     {

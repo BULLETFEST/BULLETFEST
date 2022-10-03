@@ -98,4 +98,6 @@ MonoBehaviour:
   - {fileID: 3075476997647957983, guid: 04faecb775fed4e4c990786388e1bcaa, type: 3}
   - {fileID: 3075476997647957983, guid: 14adf42cf04874a4bb42583a97bda34d, type: 3}
   - {fileID: 3075476997647957983, guid: 12b296b81ede90941a2bead0c60ee348, type: 3}
+  - {fileID: 3075476997647957983, guid: 03addc5a30706fd42a09b0256267504e, type: 3}
+  - {fileID: 3075476997647957983, guid: d7146960aa73de84992056a414dcb0fd, type: 3}
   goldenGun: {fileID: 3075476997647957983, guid: 60deb3cb8c34b2a4fb14080c0cd942be, type: 3}

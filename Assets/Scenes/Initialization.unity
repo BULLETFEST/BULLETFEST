@@ -1404,7 +1404,7 @@ MonoBehaviour:
   - Assets/Scenes/GameScenes/World_12.unity
   - Assets/Scenes/GameScenes/World_14.unity
   TESTING_SCENE: Assets/Scenes/GameScenes/TESTING.unity
-  enableTestMode: 0
+  enableTestMode: 1
 --- !u!4 &204399013
 Transform:
   m_ObjectHideFlags: 0

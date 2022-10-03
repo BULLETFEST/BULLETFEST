@@ -1028,6 +1028,8 @@ MonoBehaviour:
   - {fileID: 3366149238512663894, guid: a026a3dc0585e2248847d6a4ef37e5bf, type: 3}
   - {fileID: 3366149238512663894, guid: 32c25b7d80db55345a8ec9020cde918a, type: 3}
   - {fileID: 3366149238512663894, guid: 1cafbc10508f9444483d239ec160a560, type: 3}
+  - {fileID: 3366149238512663894, guid: faa85e4417f208648ac64b0420e09634, type: 3}
+  - {fileID: 3366149238512663894, guid: b60a643e267cc4f48973eee77bc93abe, type: 3}
   awaitingDetonation: []
 --- !u!1 &4296064582951867007
 GameObject:
@@ -1269,6 +1271,7 @@ GameObject:
   - component: {fileID: 6057913054904780200}
   - component: {fileID: 6840303063418505447}
   - component: {fileID: -5384952949535392072}
+  - component: {fileID: 1402960411359606548}
   m_Layer: 31
   m_Name: Player
   m_TagString: Player
@@ -1477,6 +1480,7 @@ MonoBehaviour:
   graphics: {fileID: 315762542858786891}
   weaponBehavior: {fileID: 8402200740394793644}
   audioSystem: {fileID: 0}
+  weaponAnimator: {fileID: 1402960411359606548}
   playerMovement: {fileID: 0}
   damageController: {fileID: 0}
   displayName: 
@@ -1587,6 +1591,22 @@ MonoBehaviour:
   health: 0
   maxHealth: 10
   dead: 0
+--- !u!114 &1402960411359606548
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5449998184297253465}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7f6f3bf89aa97405989c802ba270f815, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  syncMode: 0
+  syncInterval: 0.1
+  clientAuthority: 1
+  animator: {fileID: 0}
 --- !u!1 &5744539765346192264
 GameObject:
   m_ObjectHideFlags: 0

@@ -27,6 +27,7 @@ public class WeaponClass : MonoBehaviour
   LMG - Light Machine Gun
   STG - Shotgun
   SNR - Sniper Rifle
+  MEL - Melee
   ")]
   public string ID;
 
@@ -35,8 +36,13 @@ public class WeaponClass : MonoBehaviour
 
   public bool isShotgun = false;
 
+  public bool isMelee = false;
+
   [DrawIf("isShotgun", true)]
   public int pelletCount;
+
+  [DrawIf("isMelee", true)]
+  public float meleeRange;
 
   public int magazineSize;
 
@@ -94,4 +100,7 @@ public class WeaponClass : MonoBehaviour
 
   [HideInInspector]
   public int bulletsInMag;
+
+  public bool animateOnShot = false;
+  public float animationShotDamageDelay = 0f;
 }

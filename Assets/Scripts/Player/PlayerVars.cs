@@ -32,6 +32,8 @@ public class PlayerVars : NetworkBehaviour
 
   public AudioSystem audioSystem;
 
+  public NetworkAnimator weaponAnimator;
+
   [HideInInspector] public PlayerMovement playerMovement;
 
   [HideInInspector] public DamageController damageController;

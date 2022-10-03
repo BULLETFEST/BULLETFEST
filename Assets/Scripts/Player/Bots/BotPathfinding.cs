@@ -13,6 +13,9 @@ public class BotPathfinding : NetworkBehaviour
   public float jumpCheckOffset = 0.1f;
   public LayerMask groundLm, playerLm;
 
+  [SerializeField]
+  private bool enablePathfinding = true;
+
   [HideInInspector] public int currentWaypoint = 0;
   [HideInInspector] public bool dead;
   [HideInInspector] public Path path;
@@ -61,7 +64,7 @@ public class BotPathfinding : NetworkBehaviour
 
   void Update()
   {
-    if (Time.timeScale == 0 || botVars.damageController.dead || !isServer) return;
+    if (Time.timeScale == 0 || botVars.damageController.dead || !isServer || !enablePathfinding) return;
 
     if (!botVars.lockMovement) PathFollow();
 
@@ -80,7 +83,7 @@ public class BotPathfinding : NetworkBehaviour
 
   private void UpdatePath()
   {
-    if (Time.timeScale == 0 || botVars.lockMovement) return;
+    if (Time.timeScale == 0 || botVars.lockMovement || !isServer || !enablePathfinding) return;
 
     if (seeker.IsDone())
     {

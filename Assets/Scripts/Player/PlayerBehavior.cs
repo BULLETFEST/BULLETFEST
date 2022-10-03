@@ -155,11 +155,9 @@ public class PlayerBehavior : NetworkBehaviour
     if (weapon == null) return;
     if (weapon.firingMode == WeaponClass.FireMode.Single && !shootKeyUp) return;
     if (weapon.fireTimeout > NetworkTime.time) return;
-    if (weapon.bulletsInMag <= 0) return;
+    if (weapon.bulletsInMag <= 0 && !weapon.isMelee) return;
 
-
-
-    weapon.bulletsInMag--;
+    if (!weapon.isMelee) weapon.bulletsInMag--;
     weapon.fireTimeout = (float)NetworkTime.time + (1f / weapon.fireRate);
 
     Rpc_AddForce(gameObject, weapon.shootSound);
@@ -198,6 +196,11 @@ public class PlayerBehavior : NetworkBehaviour
   [ClientRpc]
   void Rpc_AddForce(GameObject target, string shootSound)
   {
+    if (playerVars.weaponBehavior.weapon.animateOnShot)
+    {
+      playerVars.weaponAnimator.animator.Play("Fire");
+    }
+
     playerVars.weaponBehavior.AddForce(target);
     if (shootSound != "")
       playerVars.audioSystem.PlaySound(shootSound);
