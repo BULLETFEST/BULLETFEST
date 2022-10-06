@@ -332,8 +332,6 @@ GameObject:
   m_Component:
   - component: {fileID: 329895678}
   - component: {fileID: 329895677}
-  - component: {fileID: 329895676}
-  - component: {fileID: 329895675}
   m_Layer: 0
   m_Name: NetManager
   m_TagString: Untagged
@@ -341,32 +339,6 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!114 &329895675
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 329895674}
-  m_Enabled: 0
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: cb62940793cd3b74a93cec85246cd7a6, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
---- !u!114 &329895676
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 329895674}
-  m_Enabled: 0
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: db5efa10489208a44a5e560cc56f93ed, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  AttributeKeys:
-  - lobby_name
 --- !u!114 &329895677
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -382,7 +354,7 @@ MonoBehaviour:
   dontDestroyOnLoad: 1
   runInBackground: 1
   autoStartServerBuild: 1
-  serverTickRate: 30
+  serverTickRate: 64
   offlineScene: Assets/Scenes/MainMenu.unity
   onlineScene: Assets/Scenes/Lobby.unity
   transport: {fileID: 0}
@@ -390,11 +362,11 @@ MonoBehaviour:
   maxConnections: 15
   authenticator: {fileID: 0}
   playerPrefab: {fileID: 5449998184297253465, guid: 11ab8712550f3cf4f80acdecd8357203, type: 3}
-  autoCreatePlayer: 1
+  autoCreatePlayer: 0
   playerSpawnMethod: 0
   spawnPrefabs: []
   PlayerSpawnSystemPrefab: {fileID: 4884974567067367211, guid: eb13bd46980ae664896b09b867e63736, type: 3}
-  GunSpawnerPrefab: {fileID: 0}
+  GunSpawnerPrefab: {fileID: 3801778096542937584, guid: 1cd6fecd7fbaded44aa96f7c0367fef5, type: 3}
   WinnerPanelPrefab: {fileID: 851980100229403897, guid: d14c3c1291aaad94baf59dd68bc9675f, type: 3}
   PlayerPrefab: {fileID: 5449998184297253465, guid: 11ab8712550f3cf4f80acdecd8357203, type: 3}
   BotPrefab: {fileID: 5449998184297253465, guid: cd1b4683432beb646b14260618c1ce90, type: 3}
@@ -422,7 +394,9 @@ MonoBehaviour:
   - Assets/Scenes/GameScenes/World_12.unity
   - Assets/Scenes/GameScenes/World_13.unity
   - Assets/Scenes/GameScenes/World_14.unity
-  _8Players: []
+  - Assets/Scenes/GameScenes/World_15.unity
+  _8Players:
+  - Assets/Scenes/GameScenes/World_15.unity
   _BotSupport:
   - Assets/Scenes/GameScenes/World_1.unity
   - Assets/Scenes/GameScenes/World_2.unity
@@ -434,8 +408,8 @@ MonoBehaviour:
   - Assets/Scenes/GameScenes/World_10.unity
   - Assets/Scenes/GameScenes/World_12.unity
   - Assets/Scenes/GameScenes/World_14.unity
-  TESTING_SCENE: 
-  enableTestMode: 0
+  TESTING_SCENE: Assets/Scenes/GameScenes/TESTING.unity
+  enableTestMode: 1
 --- !u!4 &329895678
 Transform:
   m_ObjectHideFlags: 0

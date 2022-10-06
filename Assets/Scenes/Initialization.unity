@@ -1317,109 +1317,6 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 192303218}
   m_CullTransparentMesh: 1
---- !u!1 &204399007
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 204399013}
-  - component: {fileID: 204399012}
-  m_Layer: 0
-  m_Name: NetManager
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!114 &204399012
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 204399007}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 9075f47ff74558646afb994ff8606e1e, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  dontDestroyOnLoad: 1
-  runInBackground: 1
-  autoStartServerBuild: 1
-  serverTickRate: 64
-  offlineScene: Assets/Scenes/MainMenu.unity
-  onlineScene: Assets/Scenes/Lobby.unity
-  transport: {fileID: 0}
-  networkAddress: localhost
-  maxConnections: 15
-  authenticator: {fileID: 0}
-  playerPrefab: {fileID: 5449998184297253465, guid: 11ab8712550f3cf4f80acdecd8357203, type: 3}
-  autoCreatePlayer: 0
-  playerSpawnMethod: 0
-  spawnPrefabs: []
-  PlayerSpawnSystemPrefab: {fileID: 4884974567067367211, guid: eb13bd46980ae664896b09b867e63736, type: 3}
-  GunSpawnerPrefab: {fileID: 3801778096542937584, guid: 1cd6fecd7fbaded44aa96f7c0367fef5, type: 3}
-  WinnerPanelPrefab: {fileID: 851980100229403897, guid: d14c3c1291aaad94baf59dd68bc9675f, type: 3}
-  PlayerPrefab: {fileID: 5449998184297253465, guid: 11ab8712550f3cf4f80acdecd8357203, type: 3}
-  BotPrefab: {fileID: 5449998184297253465, guid: cd1b4683432beb646b14260618c1ce90, type: 3}
-  botWinner: {fileID: 0}
-  gameStarted: 0
-  isHost: 0
-  roomCode: 
-  _4Players:
-  - Assets/Scenes/GameScenes/World_1.unity
-  - Assets/Scenes/GameScenes/World_2.unity
-  - Assets/Scenes/GameScenes/World_3.unity
-  - Assets/Scenes/GameScenes/World_4.unity
-  - Assets/Scenes/GameScenes/World_5.unity
-  - Assets/Scenes/GameScenes/World_6.unity
-  - Assets/Scenes/GameScenes/World_7.unity
-  - Assets/Scenes/GameScenes/World_8.unity
-  - Assets/Scenes/GameScenes/World_9.unity
-  - Assets/Scenes/GameScenes/World_10.unity
-  - Assets/Scenes/GameScenes/World_11.unity
-  - Assets/Scenes/GameScenes/World_12.unity
-  - Assets/Scenes/GameScenes/World_13.unity
-  - Assets/Scenes/GameScenes/World_14.unity
-  _6Players:
-  - Assets/Scenes/GameScenes/World_6.unity
-  - Assets/Scenes/GameScenes/World_12.unity
-  - Assets/Scenes/GameScenes/World_13.unity
-  - Assets/Scenes/GameScenes/World_14.unity
-  - Assets/Scenes/GameScenes/World_15.unity
-  _8Players:
-  - Assets/Scenes/GameScenes/World_15.unity
-  _BotSupport:
-  - Assets/Scenes/GameScenes/World_1.unity
-  - Assets/Scenes/GameScenes/World_2.unity
-  - Assets/Scenes/GameScenes/World_3.unity
-  - Assets/Scenes/GameScenes/World_4.unity
-  - Assets/Scenes/GameScenes/World_5.unity
-  - Assets/Scenes/GameScenes/World_7.unity
-  - Assets/Scenes/GameScenes/World_8.unity
-  - Assets/Scenes/GameScenes/World_10.unity
-  - Assets/Scenes/GameScenes/World_12.unity
-  - Assets/Scenes/GameScenes/World_14.unity
-  TESTING_SCENE: Assets/Scenes/GameScenes/TESTING.unity
-  enableTestMode: 1
---- !u!4 &204399013
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 204399007}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 0}
-  m_RootOrder: 3
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &216499275
 GameObject:
   m_ObjectHideFlags: 0
@@ -1848,7 +1745,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 5
+  m_RootOrder: 4
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &272587786
 MonoBehaviour:
@@ -7412,7 +7309,7 @@ Transform:
   - {fileID: 1463535267}
   - {fileID: 311813006}
   m_Father: {fileID: 0}
-  m_RootOrder: 4
+  m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &925636514
 MonoBehaviour:
