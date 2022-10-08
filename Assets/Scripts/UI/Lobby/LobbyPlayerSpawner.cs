@@ -54,13 +54,13 @@ public class LobbyPlayerSpawner : NetworkBehaviour
     for (int i = 0; i < conns.Length; i++)
     {
       if (conns[i].identity != null)
-        SyncPreviousPlayers(conn, conns[i].identity.gameObject, i);
+        SyncPreviousPlayers(conn, conns[i].identity.gameObject, i, i == 0);
     }
 
   }
 
   [TargetRpc]
-  public void SyncPreviousPlayers(NetworkConnection conn, GameObject objToSync, int idx)
+  public void SyncPreviousPlayers(NetworkConnection conn, GameObject objToSync, int idx, bool isHost)
   {
     GameObject lobbyPlayersContainer = GameObject.FindGameObjectWithTag("LobbyPlayerContainer");
 
@@ -69,6 +69,14 @@ public class LobbyPlayerSpawner : NetworkBehaviour
     objToSync.GetComponent<Image>().color = colors[idx % 4];
     objToSync.transform.SetAsLastSibling();
     objToSync.transform.position = Vector3.zero;
+
+    if (isHost)
+    {
+      RectTransform rt = objToSync.GetComponent<LobbyPlayer>().DisplayNameUI.GetComponent<RectTransform>();
+      rt.anchoredPosition = new Vector3(0, 90, rt.localPosition.z);
+
+      objToSync.GetComponent<LobbyPlayer>().crown.gameObject.SetActive(true);
+    }
   }
 
   [ClientRpc]

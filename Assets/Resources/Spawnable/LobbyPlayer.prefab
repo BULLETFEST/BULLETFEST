@@ -15,7 +15,7 @@ GameObject:
   - component: {fileID: 97786969960219526}
   - component: {fileID: 1960331476403587061}
   m_Layer: 5
-  m_Name: Client
+  m_Name: LobbyPlayer
   m_TagString: LobbyPlayer
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -166,8 +166,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 1}
   m_AnchorMax: {x: 0.5, y: 1}
-  m_AnchoredPosition: {x: 0, y: 31}
-  m_SizeDelta: {x: 282.0276, y: 50}
+  m_AnchoredPosition: {x: 0, y: 36.5}
+  m_SizeDelta: {x: 270, y: 57}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &4301124364679645111
 CanvasRenderer:
