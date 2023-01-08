@@ -101,6 +101,7 @@ MonoBehaviour:
   projectileVelocity: 40
   projectileTorque: 150
   shootSound: NONE
+  weaponIcon: {fileID: 21300000, guid: 09e2682d5a443ff45aaaeb9cbaf4ee78, type: 3}
   fireTimeout: 187.58855
   bulletsInMag: 6
   animateOnShot: 0

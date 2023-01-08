@@ -70,6 +70,8 @@ public class WeaponClass : MonoBehaviour
   [Header("")]
   public string shootSound = "Shoot";
 
+  public Sprite weaponIcon;
+
 
   // Copied over from DWAG2 Code
   //   public WeaponClass(int magSize, int pelletCount, int[] inAccRange,

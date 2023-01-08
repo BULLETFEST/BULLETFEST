@@ -82,7 +82,9 @@ MonoBehaviour:
   rotateWithCursor: 1
   deleteOnEmpty: 0
   isShotgun: 0
+  isMelee: 0
   pelletCount: 3
+  meleeRange: 0
   magazineSize: 4
   inaccuracyRange:
   - 0
@@ -99,8 +101,11 @@ MonoBehaviour:
   projectileVelocity: 50
   projectileTorque: 45
   shootSound: 
+  weaponIcon: {fileID: 21300000, guid: 6166addf3a99b184889a9fd76270b98d, type: 3}
   fireTimeout: 187.58855
   bulletsInMag: 6
+  animateOnShot: 0
+  animationShotDamageDelay: 0
 --- !u!1 &3309130001094873767
 GameObject:
   m_ObjectHideFlags: 0

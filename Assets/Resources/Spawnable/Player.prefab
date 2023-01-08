@@ -1271,7 +1271,7 @@ GameObject:
   - component: {fileID: 6057913054904780200}
   - component: {fileID: 6840303063418505447}
   - component: {fileID: -5384952949535392072}
-  - component: {fileID: 1402960411359606548}
+  - component: {fileID: 7764119719476624490}
   m_Layer: 31
   m_Name: Player
   m_TagString: Player
@@ -1480,7 +1480,7 @@ MonoBehaviour:
   graphics: {fileID: 315762542858786891}
   weaponBehavior: {fileID: 8402200740394793644}
   audioSystem: {fileID: 0}
-  weaponAnimator: {fileID: 1402960411359606548}
+  weaponAnimator: {fileID: 7764119719476624490}
   playerMovement: {fileID: 0}
   damageController: {fileID: 0}
   displayName: 
@@ -1591,7 +1591,7 @@ MonoBehaviour:
   health: 0
   maxHealth: 10
   dead: 0
---- !u!114 &1402960411359606548
+--- !u!114 &7764119719476624490
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -1605,7 +1605,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   syncMode: 0
   syncInterval: 0.1
-  clientAuthority: 1
+  clientAuthority: 0
   animator: {fileID: 0}
 --- !u!1 &5744539765346192264
 GameObject:

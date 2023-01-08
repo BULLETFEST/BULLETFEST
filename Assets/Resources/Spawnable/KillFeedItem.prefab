@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 652032722159481568}
   - component: {fileID: 1841274236952611159}
   m_Layer: 5
-  m_Name: Skull
+  m_Name: Weapon
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -66,7 +66,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: 13d7cd2df1529e4459aae9b2cb596597, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 93778546579a34447b17ef5db1c35b08, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -169,7 +169,7 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 33
+  m_fontSize: 32.05
   m_fontSizeBase: 36
   m_fontWeight: 400
   m_enableAutoSizing: 1
@@ -304,7 +304,7 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 33
+  m_fontSize: 32.05
   m_fontSizeBase: 36
   m_fontWeight: 400
   m_enableAutoSizing: 1
@@ -442,6 +442,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   killer: {fileID: 8579700803488379303}
   killed: {fileID: 9136896451979348966}
+  weapon: {fileID: 1841274236952611159}
   fadeOutTime: 3
   fadeOutDelay: 3
   fadeAmount: 0

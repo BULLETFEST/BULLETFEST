@@ -127,7 +127,7 @@ public class BotBehavior : NetworkBehaviour
 
     foreach (var player in NetworkServer.connections)
     {
-      UpdateKillfeed(player.Value, killerName, killedName);
+      UpdateKillfeed(player.Value, killerName, killedName, killer.GetComponentInChildren<WeaponBehavior>().weapon.weaponIcon);
     }
 
     MyNetworkManager.instance.OnPlayerDie(null);
@@ -147,11 +147,17 @@ public class BotBehavior : NetworkBehaviour
   }
 
   [TargetRpc]
-  public void UpdateKillfeed(NetworkConnection conn, string killer, string killed)
+  public void UpdateKillfeed(NetworkConnection conn, string killer, string killed, Sprite weaponImage)
   {
     PlayerVars localVars = conn.identity.gameObject.GetComponent<PlayerVars>();
     GameObject spawnedKillfeedItem = Instantiate(killfeedItem, Vector3.zero, Quaternion.Euler(0, 0, 0), localVars.killfeed.transform);
-    spawnedKillfeedItem.GetComponent<KillFeedItem>().killer.text = killer;
+
+    if (killer == killed) spawnedKillfeedItem.GetComponent<KillFeedItem>().killer.text = "";
+    else
+    {
+      spawnedKillfeedItem.GetComponent<KillFeedItem>().killer.text = killer;
+      spawnedKillfeedItem.GetComponent<KillFeedItem>().weapon.sprite = weaponImage;
+    }
     spawnedKillfeedItem.GetComponent<KillFeedItem>().killed.text = killed;
   }
 }

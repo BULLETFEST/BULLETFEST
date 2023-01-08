@@ -57,7 +57,7 @@ Transform:
   m_GameObject: {fileID: 2318460577565423013}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 0.01, y: 0.01, z: 0.01}
+  m_LocalScale: {x: 1.4, y: 1.4, z: 1.4}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 446163630103249763}
@@ -104,12 +104,12 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 1
-  m_Sprite: {fileID: 46198654, guid: 42f7f1a58f976a5409856172beec4300, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 42f7f1a58f976a5409856172beec4300, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
-  m_Size: {x: 102, y: 79}
+  m_Size: {x: 1, y: 1}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
   m_WasSpriteAssigned: 1
@@ -166,7 +166,9 @@ MonoBehaviour:
   rotateWithCursor: 1
   deleteOnEmpty: 0
   isShotgun: 1
+  isMelee: 0
   pelletCount: 5
+  meleeRange: 0
   magazineSize: 4
   inaccuracyRange:
   - -5
@@ -178,11 +180,13 @@ MonoBehaviour:
   cameraShakeIntensity: 0.25
   cameraShakeDuration: 0.05
   firingMode: 0
-  reloadType: 1
   projectilePrefab: {fileID: 7740076768845922023, guid: bd0cfe2c8625b2c4daefea4409372304, type: 3}
   projectileSpawnPoint: {fileID: 5449872525946486571}
   projectileVelocity: 50
   projectileTorque: 0
   shootSound: Shoot
+  weaponIcon: {fileID: 21300000, guid: 42f7f1a58f976a5409856172beec4300, type: 3}
   fireTimeout: 65.9566
   bulletsInMag: 2
+  animateOnShot: 0
+  animationShotDamageDelay: 0

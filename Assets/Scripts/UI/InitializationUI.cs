@@ -19,7 +19,8 @@ public class InitializationUI : MonoBehaviour
   public TMP_InputField l_Pass;
   public Button loginBtn;
 
-  public GameObject loginPanel;
+  public GameObject loginPanel, whyNeedAccount;
+
 
   void Start()
   {
@@ -101,6 +102,7 @@ public class InitializationUI : MonoBehaviour
 
       loadingText.gameObject.SetActive(false);
       loginPanel.SetActive(true);
+      whyNeedAccount.SetActive(true);
     }
   }
 
@@ -156,5 +158,10 @@ public class InitializationUI : MonoBehaviour
 
     loginBtn.interactable = true;
     signupBtn.interactable = true;
+  }
+
+  public void ShowReason()
+  {
+    Message.DisplayMessage("Why do I need an account?", "Accounts are required because the game is cross-platform, and is being hosted on multiple places, even on the same platform. Accounts help with friendlist, keeping cheaters away, etc.");
   }
 }
