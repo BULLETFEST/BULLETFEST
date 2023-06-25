@@ -147,7 +147,7 @@ public class MainMenu : MonoBehaviour
     code = newCode;
   }
 
-  public void UpdateServerBrowser()
+  public async void UpdateServerBrowser()
   {
     refreshBtn.interactable = false;
     refreshBtn.GetComponentInChildren<TMP_Text>().text = "Refreshing...";
@@ -155,7 +155,7 @@ public class MainMenu : MonoBehaviour
     serverBrowser.SetActive(true);
 
 
-    FirebaseManager.Match[] matches = FirebaseManager.GetLobbies();
+    FirebaseManager.Match[] matches = await FirebaseManager.GetLobbies();
 
     foreach (Transform child in serversContainer.transform)
     {

@@ -7,20 +7,15 @@ using UnityEngine.SceneManagement;
 
 public class FirebaseManager : MonoBehaviour
 {
-  // private static readonly HttpClient client = new HttpClient();
   public static string uid;
 
 #if UNITY_EDITOR
-  private static bool testMode = false;
+  private static bool testMode = true;
 #else
       static bool testMode = false;
 #endif
 
-  public static bool Initialized
-  {
-    private set;
-    get;
-  }
+  /* UTILITY METHODS */
 
   private static WebClient CreateWebClient()
   {
@@ -30,6 +25,46 @@ public class FirebaseManager : MonoBehaviour
     return client;
   }
 
+  private static async Task<Response<T>> CreateRequest<T>(string endpoint, NameValueCollection data = null, HTTPMethod method = HTTPMethod.Get)
+  {
+    WebClient wc = CreateWebClient();
+
+    byte[] _res = new byte[0];
+    Response<T> res = new(0, "", default);
+
+    try
+    {
+      if (method == HTTPMethod.Post)
+      {
+        Debug.Log(method.ToString().ToUpper());
+        _res = await wc.UploadValuesTaskAsync(testMode ? $"http://localhost:3000/{endpoint}" : $"https://joobot.glitch.me/{endpoint}", method.ToString().ToUpper(), data);
+      }
+      else if (method == HTTPMethod.Get)
+      {
+        _res = await wc.DownloadDataTaskAsync(testMode ? $"http://localhost:3000/{endpoint}" : $"https://joobot.glitch.me/{endpoint}");
+      }
+    }
+    catch (System.Exception e)
+    {
+      // Message.DisplayMessage("Failed to create host", "Client failed to connect to server!", TMPro.HorizontalAlignmentOptions.Center);
+      Debug.Log(e.Message);
+      res = new Response<T>(500, "ServerError", default);
+    }
+
+    if (_res.Length > 1)
+    {
+      string responseInString = Encoding.UTF8.GetString(_res);
+
+      res = JsonUtility.FromJson<Response<T>>(responseInString);
+    }
+
+    wc.Dispose();
+
+    return res;
+  }
+
+
+  /* LOBBY METHODS */
 
   public static async Task<Response<string>> HostGame()
   {
@@ -41,24 +76,12 @@ public class FirebaseManager : MonoBehaviour
       ["token"] = SaveSystem.saveData.token
     };
 
-    // JsonUtility.FromJson<Dictionary<string, string>>();
+    Response<string> response = await CreateRequest<string>("createLobby", data, HTTPMethod.Post);
 
-    byte[] res;
-    try
-    {
-      res = await CreateWebClient().UploadValuesTaskAsync(testMode ? "http://localhost:3000/createLobby" : "https://joobot.glitch.me/createLobby", "POST", data);
-    }
-    catch
+    if (response.status == 500)
     {
       Message.DisplayMessage("Failed to create host", "Client failed to connect to server!", TMPro.HorizontalAlignmentOptions.Center);
-      return new Response<string>(500, "SeverError", "");
     }
-
-    string responseInString = Encoding.UTF8.GetString(res);
-
-    // Debug.Log(responseInString);
-
-    Response<string> response = JsonUtility.FromJson<Response<string>>(responseInString);
 
     return response;
   }
@@ -70,23 +93,7 @@ public class FirebaseManager : MonoBehaviour
       ["code"] = code
     };
 
-    // JsonUtility.FromJson<Dictionary<string, string>>();
-
-
-    byte[] res;
-    try
-    {
-      res = await CreateWebClient().UploadValuesTaskAsync(new System.Uri(testMode ? "http://localhost:3000/joinLobby" : "https://joobot.glitch.me/joinLobby"), "POST", data);
-    }
-    catch
-    {
-      Message.DisplayMessage("Failed to connect to game", "Client failed to connect to server!", TMPro.HorizontalAlignmentOptions.Center);
-      return new Response<string>(500, "SeverError", "");
-    }
-
-    string responseInString = Encoding.UTF8.GetString(res);
-
-    Response<string> response = JsonUtility.FromJson<Response<string>>(responseInString);
+    Response<string> response = await CreateRequest<string>("joinLobby", data, HTTPMethod.Post);
 
     return response;
   }
@@ -100,32 +107,18 @@ public class FirebaseManager : MonoBehaviour
 
     try
     {
-      _ = CreateWebClient().UploadValuesTaskAsync(new System.Uri(testMode ? "http://localhost:3000/keepLobbyAlive" : "https://joobot.glitch.me/keepLobbyAlive"), "POST", data);
+      WebClient wc = CreateWebClient();
+
+      _ = wc.UploadValuesTaskAsync(new System.Uri(testMode ? "http://localhost:3000/keepLobbyAlive" : "https://joobot.glitch.me/keepLobbyAlive"), "POST", data);
+
+      wc.Dispose();
     }
     catch { }
   }
 
-  public static Match[] GetLobbies()
+  public static async Task<Match[]> GetLobbies()
   {
-    byte[] res = new byte[0];
-    try
-    {
-      res = CreateWebClient().DownloadData(new System.Uri(testMode ? "http://localhost:3000/getLobbies" : "https://joobot.glitch.me/getLobbies"));
-    }
-    catch (System.Exception ex)
-    {
-      Debug.LogError(ex.Message);
-      Message.DisplayMessage("Failed to connect to game", "Client failed to connect to server!", TMPro.HorizontalAlignmentOptions.Center);
-    }
-
-    if (res.Length == 0)
-    {
-      return new Match[0];
-    }
-
-    string responseInString = Encoding.Default.GetString(res);
-    Match[] response = JsonHelper.FromJson<Match>(responseInString);
-    return response;
+    return (await CreateRequest<Match[]>("getLobbies")).data;
   }
 
   public static async void UpdateLobby(int playerCount)
@@ -140,20 +133,7 @@ public class FirebaseManager : MonoBehaviour
       ["lobbySize"] = MyNetworkManager.instance.settings.lobbySize.ToString()
     };
 
-    try
-    {
-      byte[] res = await CreateWebClient().UploadValuesTaskAsync(new System.Uri(testMode ? "http://localhost:3000/updateLobby" : "https://joobot.glitch.me/updateLobby"), "POST", data);
-
-      string responseInString = Encoding.Default.GetString(res);
-
-      Response<string> response = JsonUtility.FromJson<Response<string>>(responseInString);
-
-      print(response.ToString());
-    }
-    catch (System.Exception e)
-    {
-      print(e.Message);
-    }
+    print(await CreateRequest<string>("updateLobby", data, HTTPMethod.Post));
   }
 
   public static void CloseLobby()
@@ -163,11 +143,31 @@ public class FirebaseManager : MonoBehaviour
       ["token"] = SaveSystem.saveData.token
     };
 
-    try
+    _ = CreateRequest<string>("closeLobby", data, HTTPMethod.Post);
+  }
+
+  public static async Task<Response<string>> CheckServerStatus()
+  {
+    return await CreateRequest<string>("getLatestVer");
+  }
+
+
+
+  /* USER SPECIFIC METHODS */
+
+  public static async Task<Response<bool>> ValidateToken(string token)
+  {
+    if (string.IsNullOrEmpty(token))
     {
-      _ = CreateWebClient().UploadValuesTaskAsync(new System.Uri(testMode ? "http://localhost:3000/closeLobby" : "https://joobot.glitch.me/closeLobby"), "POST", data);
+      return new Response<bool>(200, "", false);
     }
-    catch { }
+
+    NameValueCollection data = new()
+    {
+      ["token"] = SaveSystem.saveData.token
+    };
+
+    return await CreateRequest<bool>("validateToken", data, HTTPMethod.Post);
   }
 
   public static async Task<Response<string>> Login(string token)
@@ -182,21 +182,7 @@ public class FirebaseManager : MonoBehaviour
       ["token"] = SaveSystem.saveData.token
     };
 
-    byte[] res;
-    try
-    {
-      res = await CreateWebClient().UploadValuesTaskAsync(new System.Uri(testMode ? "http://localhost:3000/loginUserToken" : "https://joobot.glitch.me/loginUserToken"), "POST", data);
-    }
-    catch
-    {
-      return new Response<string>(500, "SeverError", "");
-    }
-
-    string responseInString = Encoding.Default.GetString(res);
-
-    Response<string> response = JsonUtility.FromJson<Response<string>>(responseInString);
-
-    return response;
+    return await CreateRequest<string>("loginUserToken", data, HTTPMethod.Post);
   }
 
   public static async Task<Response<string>> Login(string email, string password)
@@ -212,21 +198,14 @@ public class FirebaseManager : MonoBehaviour
       ["password"] = password
     };
 
-    byte[] res;
-    try
-    {
-      res = await CreateWebClient().UploadValuesTaskAsync(new System.Uri(testMode ? "http://localhost:3000/loginUser" : "https://joobot.glitch.me/loginUser"), "POST", data);
-    }
-    catch
-    {
-      return new Response<string>(500, "SeverError", "");
-    }
+    return await CreateRequest<string>("loginUser", data, HTTPMethod.Post);
+  }
 
-    string responseInString = Encoding.Default.GetString(res);
-
-    Response<string> response = JsonUtility.FromJson<Response<string>>(responseInString);
-
-    return response;
+  public static void SignOut()
+  {
+    SaveSystem.saveData.token = "";
+    SaveSystem.SavePlayer(SaveSystem.saveData);
+    SceneManager.LoadScene("Initialization");
   }
 
   public static async Task<Response<string>> CreateUser(string email, string password)
@@ -242,80 +221,12 @@ public class FirebaseManager : MonoBehaviour
       ["password"] = password
     };
 
-
-    byte[] res;
-    try
-    {
-      res = await CreateWebClient().UploadValuesTaskAsync(new System.Uri(testMode ? "http://localhost:3000/createUser" : "https://joobot.glitch.me/createUser"), "POST", data);
-    }
-    catch
-    {
-      return new Response<string>(500, "SeverError", "");
-    }
-
-    string responseInString = Encoding.Default.GetString(res);
-
-    Response<string> response = JsonUtility.FromJson<Response<string>>(responseInString);
-
-    return response;
+    return await CreateRequest<string>("createUser", data, HTTPMethod.Post);
   }
 
-  public static Response<bool> ValidateToken(string token)
-  {
-    if (string.IsNullOrEmpty(token))
-    {
-      return new Response<bool>(200, "", false);
-    }
 
-    NameValueCollection data = new()
-    {
-      ["token"] = SaveSystem.saveData.token
-    };
+  /* CLASSES, ENUMS, ETC */
 
-    byte[] res;
-    try
-    {
-      res = CreateWebClient().UploadValues(new System.Uri(testMode ? "http://localhost:3000/validateToken" : "https://joobot.glitch.me/validateToken"), "POST", data);
-    }
-    catch
-    {
-      return new Response<bool>(500, "SeverError", false);
-    }
-
-    string responseInString = Encoding.Default.GetString(res);
-
-    Response<bool> response = JsonUtility.FromJson<Response<bool>>(responseInString);
-
-    return response;
-  }
-
-  public static void SignOut()
-  {
-    SaveSystem.saveData.token = "";
-    SaveSystem.SavePlayer(SaveSystem.saveData);
-    SceneManager.LoadScene("Initialization");
-  }
-
-  public static Response<string> CheckServerStatus()
-  {
-    byte[] res;
-    try
-    {
-      res = CreateWebClient().DownloadData(new System.Uri(testMode ? "http://localhost:3000/getLatestVer" : "https://joobot.glitch.me/getLatestVer"));
-    }
-    catch (System.Exception e)
-    {
-      Debug.Log(e.Message);
-      return new Response<string>(500, "", "");
-    }
-
-
-    string responseInString = Encoding.Default.GetString(res);
-
-    Response<string> response = JsonUtility.FromJson<Response<string>>(responseInString);
-
-    return response;
-  }
 
   [System.Serializable]
   public class Response<T>
@@ -354,5 +265,19 @@ public class FirebaseManager : MonoBehaviour
     {
       return $"Code: {code}; Mode: {gameMode}; Players: {playerCount}; Lobby Size: {lobbySize}";
     }
+  }
+
+  public static bool Initialized
+  {
+    private set;
+    get;
+  }
+
+  private enum HTTPMethod
+  {
+    Get,
+    Post,
+    Delete,
+    Patch,
   }
 }

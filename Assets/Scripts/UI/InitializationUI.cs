@@ -58,7 +58,7 @@ public class InitializationUI : MonoBehaviour
         return;
       }
 
-      FirebaseManager.Response<string> v = FirebaseManager.CheckServerStatus();
+      FirebaseManager.Response<string> v = FirebaseManager.CheckServerStatus().Result;
       if (v.status != 200)
       {
         Message.DisplayMessage("Failed to connect to server!",
@@ -82,7 +82,7 @@ public class InitializationUI : MonoBehaviour
 
       if (!string.IsNullOrEmpty(SaveSystem.saveData.token))
       {
-        FirebaseManager.Response<bool> res = FirebaseManager.ValidateToken(SaveSystem.saveData.token);
+        FirebaseManager.Response<bool> res = FirebaseManager.ValidateToken(SaveSystem.saveData.token).Result;
 
         if (res.status != 200)
         {
