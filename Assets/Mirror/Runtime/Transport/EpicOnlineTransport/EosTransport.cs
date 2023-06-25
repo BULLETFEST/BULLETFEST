@@ -1,6 +1,4 @@
-using System;
-using System.Collections.Generic;
-using System.IO;
+using System; 
 using UnityEngine;
 using Epic.OnlineServices.P2P;
 using Epic.OnlineServices;
@@ -57,7 +55,10 @@ namespace EpicTransport {
         }
 
         public override void ClientEarlyUpdate() {
-            EOSSDKComponent.Tick();
+            if (EOSSDKComponent.Initialized)
+            {
+                EOSSDKComponent.Tick();
+            }
 
             if (activeNode != null) {
                 ignoreCachedMessagesTimer += Time.deltaTime;
@@ -87,7 +88,10 @@ namespace EpicTransport {
         public override void ClientLateUpdate() {}
 
         public override void ServerEarlyUpdate() {
-            EOSSDKComponent.Tick();
+            if (EOSSDKComponent.Initialized)
+            {
+                EOSSDKComponent.Tick();
+            }
 
             if (activeNode != null) {
                 ignoreCachedMessagesTimer += Time.deltaTime;
@@ -231,6 +235,12 @@ namespace EpicTransport {
 
             for(int i  = 0; i < packets.Length; i++) {
                 if (connectionId == int.MinValue) {
+                    if (client == null)
+                    {
+                        OnClientDisconnected.Invoke();
+                        return;
+                    }
+                    
                     client.Send(packets[i].ToBytes(), channelId);
                 } else {
                     server.SendAll(connectionId, packets[i].ToBytes(), channelId);

@@ -6,21 +6,19 @@ using UnityEngine.SceneManagement;
 
 public class PlayerSpawnSystem : NetworkBehaviour
 {
-  GameObject[] spawnPoints;
+  private GameObject[] spawnPoints;
 
   [SyncVar]
   public System.DateTime timeStamp;
-
-  MyNetworkManager nm = MyNetworkManager.instance;
-
-  Color[] colors = new Color[] {
+  private MyNetworkManager nm = MyNetworkManager.instance;
+  private Color[] colors = new Color[] {
     new Color(0.5882353f, 0.1137255f, 0.04313726f), // 961D0B
     new Color(0.0993236f, 0.4487756f, 0.6792453f), // 1972AD
     new Color(0.1027946f, 0.6226415f, 0.1877513f), // 1A9F30
     new Color(0.6235294f, 0.6018561f, 0.1019608f), // 9F991A
   };
 
-  void Awake()
+  private void Awake()
   {
     Time.timeScale = 1;
     spawnPoints = GameObject.FindGameObjectsWithTag("Spawnpoint");
@@ -39,9 +37,12 @@ public class PlayerSpawnSystem : NetworkBehaviour
       // NetworkServer.Spawn(playerInstance, Room.players.ElementAt(i).Key);
       // playerInstance.GetComponent<PlayerVars>().timeleft = timeStamp;
       NetworkServer.Spawn(playerInstance);
-      NetworkServer.ReplacePlayerForConnection(conn, playerInstance);
+      _ = NetworkServer.ReplacePlayerForConnection(conn, playerInstance);
       NetworkServer.SetClientReady(conn);
-      if (conn == nm.winner) winningPlayer = playerInstance; //playerInstance.GetComponent<PlayerVars>().crown.SetActive(true);
+      if (conn == nm.winner)
+      {
+        winningPlayer = playerInstance; //playerInstance.GetComponent<PlayerVars>().crown.SetActive(true);
+      }
     }
 
     if (nm.settings.enableBots && nm._BotSupport.Contains(SceneManager.GetActiveScene().path))
@@ -61,11 +62,14 @@ public class PlayerSpawnSystem : NetworkBehaviour
       Rpc_SetPlayerColor(conn.identity.gameObject, i);
     }
 
-    if (winningPlayer != null) EnableCrown(winningPlayer);
+    if (winningPlayer != null)
+    {
+      EnableCrown(winningPlayer);
+    }
   }
 
   [ClientRpc]
-  void EnableCrown(GameObject player)
+  private void EnableCrown(GameObject player)
   {
     player.GetComponent<PlayerVars>().crown.SetActive(true);
     player.GetComponent<PlayerVars>().uiName.transform.localPosition = new Vector3(0, 2, 0);
@@ -108,8 +112,14 @@ public class PlayerSpawnSystem : NetworkBehaviour
   [ClientRpc]
   private void Rpc_SetPlayerColor(GameObject player, int idx)
   {
-    if (player.tag == "Player") player.GetComponent<PlayerVars>().graphics.sprites[0].color = colors[idx % 4];
-    else if (player.tag == "Bot") player.GetComponent<BotVars>().graphics.sprites[0].color = colors[idx % 4];
+    if (player.tag == "Player")
+    {
+      player.GetComponent<PlayerVars>().graphics.sprites[0].color = colors[idx % 4];
+    }
+    else if (player.tag == "Bot")
+    {
+      player.GetComponent<BotVars>().graphics.sprites[0].color = colors[idx % 4];
+    }
   }
 
   [ClientRpc]

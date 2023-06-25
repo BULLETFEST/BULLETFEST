@@ -123,14 +123,15 @@ namespace EpicTransport {
                 return;
             }
 
-            if (hostProductId == result.RemoteUserId) {
-                var acceptConnectionOptions = new AcceptConnectionOptions() {
+            if (hostProductId == result.RemoteUserId)
+            {
+                var temp = new AcceptConnectionOptions()
+                {
                     LocalUserId = EOSSDKComponent.LocalUserProductId,
                     RemoteUserId = result.RemoteUserId,
                     SocketId = result.SocketId
                 };
-                EOSSDKComponent.GetP2PInterface().AcceptConnection(
-                    ref acceptConnectionOptions);
+                EOSSDKComponent.GetP2PInterface().AcceptConnection(ref temp);
             } else {
                 Debug.LogError("P2P Acceptance Request from unknown host ID.");
             }

@@ -10,8 +10,7 @@ public class MyNetworkManager : NetworkManager
   public static MyNetworkManager instance;
 
   public GameSettings settings = new();
-
-  string[] queuedScenes;
+  private string[] queuedScenes;
 
   [SerializeField]
   public GameObject PlayerSpawnSystemPrefab,
@@ -44,10 +43,8 @@ public class MyNetworkManager : NetworkManager
   [Scene] public string[] _4Players, _6Players, _8Players, _BotSupport;
 
   [Scene] public string TESTING_SCENE;
-
-  bool hasFiredReadyEvent;
-
-  static bool firstInit = true;
+  private bool hasFiredReadyEvent;
+  private static bool firstInit = true;
 
   public bool enableTestMode;
 
@@ -69,15 +66,23 @@ public static readonly bool testMode = false;
 
 #if UNITY_EDITOR
     if (testMode)
+    {
       testMode = enableTestMode;
+    }
 #endif
 
     for (int i = 0; i < SceneManager.sceneCountInBuildSettings; i++)
     {
       string s = SceneUtility.GetScenePathByBuildIndex(i);
 
-      if (s.Contains("GameScenes")) playableScenesCount++;
-      else menuScenesCount++;
+      if (s.Contains("GameScenes"))
+      {
+        playableScenesCount++;
+      }
+      else
+      {
+        menuScenesCount++;
+      }
     }
 
     settings.rounds = playableScenesCount;
@@ -97,12 +102,16 @@ public static readonly bool testMode = false;
     base.Start();
 
     if (instance == null)
+    {
       instance = this;
+    }
     else if (instance != this)
+    {
       Destroy(gameObject);
+    }
 
-    transport = gameObject.AddComponent<EpicTransport.EosTransport>();
-    Transport.activeTransport = transport;
+    // transport = gameObject.AddComponent<EpicTransport.EosTransport>();
+    // FindObjectOfType<NetworkManager>().transport = transport;
 
     foreach (GameObject prefab in Resources.LoadAll<GameObject>("Spawnable"))
     {
@@ -137,20 +146,23 @@ public static readonly bool testMode = false;
     }
   }
 
-  void OnServerMessage(Message.ServerMessge msg)
+  private void OnServerMessage(Message.ServerMessge msg)
   {
     Message.DisplayMessage(msg.titleText, msg.contentText, msg.alignment);
-    if (msg.disconnect) Disconnect();
+    if (msg.disconnect)
+    {
+      Disconnect();
+    }
   }
 
   public override void OnStartServer()
   {
     base.OnStartServer();
     isHost = true;
-    StartCoroutine(KeepAlive());
+    _ = StartCoroutine(KeepAlive());
   }
 
-  IEnumerator KeepAlive()
+  private IEnumerator KeepAlive()
   {
     try
     {
@@ -160,7 +172,7 @@ public static readonly bool testMode = false;
 
     yield return new WaitForSecondsRealtime(120f);
 
-    StartCoroutine(KeepAlive());
+    _ = StartCoroutine(KeepAlive());
   }
 
   [Server]
@@ -234,11 +246,14 @@ public static readonly bool testMode = false;
 
   public override void OnServerDisconnect(NetworkConnectionToClient conn)
   {
-    if (SceneManager.GetActiveScene().name != "End") base.OnServerDisconnect(conn);
+    if (SceneManager.GetActiveScene().name != "End")
+    {
+      base.OnServerDisconnect(conn);
+    }
 
     if (players.ContainsKey(conn))
     {
-      players.Remove(conn);
+      _ = players.Remove(conn);
 
       FirebaseManager.UpdateLobby(NetworkServer.connections.Count);
 
@@ -246,7 +261,11 @@ public static readonly bool testMode = false;
 
       if (gameStarted)
       {
-        if (players.Count == 1) queuedScenes = new string[0];
+        if (players.Count == 1)
+        {
+          queuedScenes = new string[0];
+        }
+
         deadPlayers--;
         OnPlayerDie(conn);
       }
@@ -255,15 +274,17 @@ public static readonly bool testMode = false;
     PlayerDisconnect?.Invoke(conn);
   }
 
-
-  int deadPlayers = 0;
+  private int deadPlayers = 0;
 
   [Server]
   public void OnPlayerDie(NetworkConnectionToClient conn)
   {
     BotPathfinding[] bots = FindObjectsOfType<BotPathfinding>();
 
-    if (NetworkServer.connections.Count == 1 && bots.Length <= 0) AnnounceWinner(bots);
+    if (NetworkServer.connections.Count == 1 && bots.Length <= 0)
+    {
+      AnnounceWinner(bots);
+    }
     else if (settings.gameMode == GameSettings.GameMode.Elimination)
     {
       deadPlayers++;
@@ -275,7 +296,9 @@ public static readonly bool testMode = false;
     else
     {
       if (conn != null)
-        StartCoroutine(FindObjectOfType<PlayerSpawnSystem>().Cmd_RespawnPlayer(conn));
+      {
+        _ = StartCoroutine(FindObjectOfType<PlayerSpawnSystem>().Cmd_RespawnPlayer(conn));
+      }
     }
   }
 
@@ -292,17 +315,20 @@ public static readonly bool testMode = false;
 
     // If all players have left, choose host to be the winner
     if (players.Count == 1 && bots.Length <= 0)
+    {
       winner = players.ElementAt(0).Key;
+    }
     // If gamemode is elimination, choose last player alive
     else if (settings.gameMode == 0)
     {
       GameObject[] alivePlayers = FindObjectsOfType<PlayerBehavior>().Where(x => !x.GetComponent<DamageController>().dead).Select(x => x.gameObject).ToArray();
 
-      if (alivePlayers.Length <= 0) winner = null;
-      else winner = alivePlayers[0].GetComponent<NetworkIdentity>().connectionToClient;
+      winner = alivePlayers.Length <= 0 ? null : alivePlayers[0].GetComponent<NetworkIdentity>().connectionToClient;
 
       if (winner == null)
+      {
         botWinner = GameObject.FindGameObjectsWithTag("Bot").Where(x => !x.GetComponent<DamageController>().dead).ToArray()[0];
+      }
     }
     // If gamemode is deathmatch, choose player with most kills
     else
@@ -386,9 +412,10 @@ public static readonly bool testMode = false;
     }
     else
     {
-      _scenes = new();
-
-      _scenes.Add(TESTING_SCENE);
+      _scenes = new()
+      {
+        TESTING_SCENE
+      };
     }
 
     queuedScenes = _scenes.ToArray();
@@ -427,7 +454,7 @@ public static readonly bool testMode = false;
 
     List<string> _scenes = queuedScenes.ToList();
 
-    _scenes.Remove(chosenSceneId);
+    _ = _scenes.Remove(chosenSceneId);
 
     queuedScenes = _scenes.ToArray();
 
@@ -439,7 +466,10 @@ public static readonly bool testMode = false;
     base.OnStopHost();
     isHost = false;
     players.Clear();
-    if (SceneManager.GetActiveScene().name != "MainMenu") SceneManager.LoadScene(1);
+    if (SceneManager.GetActiveScene().name != "MainMenu")
+    {
+      SceneManager.LoadScene(1);
+    }
   }
 
   public override void OnStopClient()
@@ -461,7 +491,10 @@ public static readonly bool testMode = false;
       FirebaseManager.CloseLobby();
       StopHost();
     }
-    else if (mode == NetworkManagerMode.ClientOnly) StopClient();
+    else if (mode == NetworkManagerMode.ClientOnly)
+    {
+      StopClient();
+    }
 
     // SceneManager.LoadSceneAsync("MainMenu");
   }

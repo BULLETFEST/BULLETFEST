@@ -614,8 +614,8 @@ GameObject:
   - component: {fileID: 8631385485136129152}
   - component: {fileID: 7002485216491363599}
   - component: {fileID: 3617098029652222943}
-  - component: {fileID: 1598857373370782326}
-  - component: {fileID: 8884745557371285228}
+  - component: {fileID: 5209660134438109088}
+  - component: {fileID: 3961840638381049855}
   - component: {fileID: 1548013740}
   - component: {fileID: 1548013739}
   - component: {fileID: 4673171023595102494}
@@ -708,11 +708,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   sceneId: 0
+  _assetId: 2962739419
   serverOnly: 0
   visible: 0
-  m_AssetId: cd1b4683432beb646b14260618c1ce90
   hasSpawned: 0
---- !u!114 &1598857373370782326
+--- !u!114 &5209660134438109088
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -721,35 +721,32 @@ MonoBehaviour:
   m_GameObject: {fileID: 5449998184297253465}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 2f74aedd71d9a4f55b3ce499326d45fb, type: 3}
+  m_Script: {fileID: 11500000, guid: 8ff3ba0becae47b8b9381191598957c8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  syncDirection: 0
   syncMode: 0
-  syncInterval: 0.1
+  syncInterval: 0
+  target: {fileID: 3120188896167655879}
   clientAuthority: 0
-  sendRate: 30
-  bufferTimeMultiplier: 1
-  bufferSizeLimit: 64
-  catchupNegativeThreshold: -1
-  catchupPositiveThreshold: 1
-  catchupSpeed: 0.009999999776482582
-  slowdownSpeed: 0.009999999776482582
-  driftEmaDuration: 1
-  dynamicAdjustment: 1
-  dynamicAdjustmentTolerance: 1
-  deliveryTimeEmaDuration: 2
-  onlySyncOnChange: 0
-  bufferResetMultiplier: 5
-  positionSensitivity: 0.01
-  rotationSensitivity: 0.01
-  scaleSensitivity: 0.01
   syncPosition: 1
   syncRotation: 1
   syncScale: 0
+  interpolatePosition: 1
+  interpolateRotation: 1
+  interpolateScale: 0
+  sendIntervalMultiplier: 1
+  timelineOffset: 0
   showGizmos: 0
   showOverlay: 0
   overlayColor: {r: 0, g: 0, b: 0, a: 0.5}
---- !u!114 &8884745557371285228
+  onlySyncOnChange: 0
+  onlySyncOnChangeCorrectionMultiplier: 2
+  rotationSensitivity: 0.01
+  compressRotation: 0
+  positionPrecision: 0.01
+  scalePrecision: 0.01
+--- !u!114 &3961840638381049855
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -758,35 +755,31 @@ MonoBehaviour:
   m_GameObject: {fileID: 5449998184297253465}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 734b48bea0b204338958ee3d885e11f0, type: 3}
+  m_Script: {fileID: 11500000, guid: 8ff3ba0becae47b8b9381191598957c8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  syncDirection: 0
   syncMode: 0
   syncInterval: 0
+  target: {fileID: 8401439734901990775}
   clientAuthority: 0
-  sendRate: 30
-  bufferTimeMultiplier: 1
-  bufferSizeLimit: 64
-  catchupNegativeThreshold: -1
-  catchupPositiveThreshold: 1
-  catchupSpeed: 0.009999999776482582
-  slowdownSpeed: 0.009999999776482582
-  driftEmaDuration: 1
-  dynamicAdjustment: 1
-  dynamicAdjustmentTolerance: 1
-  deliveryTimeEmaDuration: 2
-  onlySyncOnChange: 1
-  bufferResetMultiplier: 5
-  positionSensitivity: 0.01
-  rotationSensitivity: 0.01
-  scaleSensitivity: 0.01
   syncPosition: 0
   syncRotation: 1
   syncScale: 0
+  interpolatePosition: 1
+  interpolateRotation: 1
+  interpolateScale: 1
+  sendIntervalMultiplier: 1
+  timelineOffset: 0
   showGizmos: 0
   showOverlay: 0
   overlayColor: {r: 0, g: 0, b: 0, a: 0.5}
-  target: {fileID: 8401439734901990775}
+  onlySyncOnChange: 0
+  onlySyncOnChangeCorrectionMultiplier: 2
+  rotationSensitivity: 0.01
+  compressRotation: 0
+  positionPrecision: 0.01
+  scalePrecision: 0.01
 --- !u!114 &1548013740
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -827,6 +820,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 487d43d1fb63e204cbdb8b4b5711c1d2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  syncDirection: 0
   syncMode: 0
   syncInterval: 0.1
   speed: 17.5
@@ -880,6 +874,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b1b18cba91fd6ad42b65999319996885, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  syncDirection: 0
   syncMode: 0
   syncInterval: 0.1
   health: 0
@@ -897,5 +892,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2c8771b6d6e3c1d408d9d57b84b42280, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  syncDirection: 0
   syncMode: 0
   syncInterval: 0.1
