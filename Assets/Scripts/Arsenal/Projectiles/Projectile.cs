@@ -37,7 +37,7 @@ public class Projectile : NetworkBehaviour
     Server_DisableCollisionWith(owner);
     if (destroySelf)
     {
-      _ = StartCoroutine(DestroySelf());
+      StartCoroutine(DestroySelf());
     }
 
     if (modifyStartingRotation)

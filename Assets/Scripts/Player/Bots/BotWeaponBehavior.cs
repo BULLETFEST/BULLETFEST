@@ -62,7 +62,7 @@ public class BotWeaponBehavior : MonoBehaviour
     botVars.lockMovement = true;
     Vector2 vel = weapon.shotPushback * -gameObject.transform.right;
     rb.AddForce(new Vector2(vel.x * 1.75f, vel.y / 1.55f), ForceMode2D.Impulse);
-    _ = StartCoroutine(UnlockMovement(weapon.movementUnlockTime/*, shooterVars*/));
+    StartCoroutine(UnlockMovement(weapon.movementUnlockTime/*, shooterVars*/));
   }
 
   public void Fire_Regular(GameObject shooter)

@@ -18,7 +18,7 @@ public class WinnerUI : NetworkBehaviour
 
   public void AnimationOver()
   {
-    _ = StartCoroutine(SwitchScene());
+    StartCoroutine(SwitchScene());
   }
 
   [ServerCallback]

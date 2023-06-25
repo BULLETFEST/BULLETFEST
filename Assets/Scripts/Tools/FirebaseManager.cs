@@ -58,7 +58,7 @@ public class FirebaseManager : MonoBehaviour
       res = JsonUtility.FromJson<Response<T>>(responseInString);
     }
 
-    wc.Dispose();
+    // wc.Dispose();
 
     return res;
   }
@@ -109,7 +109,7 @@ public class FirebaseManager : MonoBehaviour
     {
       WebClient wc = CreateWebClient();
 
-      _ = wc.UploadValuesTaskAsync(new System.Uri(testMode ? "http://localhost:3000/keepLobbyAlive" : "https://joobot.glitch.me/keepLobbyAlive"), "POST", data);
+      wc.UploadValuesTaskAsync(new System.Uri(testMode ? "http://localhost:3000/keepLobbyAlive" : "https://joobot.glitch.me/keepLobbyAlive"), "POST", data);
 
       wc.Dispose();
     }
@@ -133,7 +133,7 @@ public class FirebaseManager : MonoBehaviour
       ["lobbySize"] = MyNetworkManager.instance.settings.lobbySize.ToString()
     };
 
-    print(await CreateRequest<string>("updateLobby", data, HTTPMethod.Post));
+    await CreateRequest<string>("updateLobby", data, HTTPMethod.Post);
   }
 
   public static void CloseLobby()
@@ -143,7 +143,7 @@ public class FirebaseManager : MonoBehaviour
       ["token"] = SaveSystem.saveData.token
     };
 
-    _ = CreateRequest<string>("closeLobby", data, HTTPMethod.Post);
+    CreateRequest<string>("closeLobby", data, HTTPMethod.Post);
   }
 
   public static async Task<Response<string>> CheckServerStatus()

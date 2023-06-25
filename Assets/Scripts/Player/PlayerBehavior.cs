@@ -254,7 +254,7 @@ public class PlayerBehavior : NetworkBehaviour
   [TargetRpc]
   private void Target_UpdateUI(int bulletsInMag)
   {
-    _ = StartCoroutine(Camera.main.GetComponent<CameraShake>().Shake(playerVars.weaponBehavior.weapon.cameraShakeDuration,
+    StartCoroutine(Camera.main.GetComponent<CameraShake>().Shake(playerVars.weaponBehavior.weapon.cameraShakeDuration,
                                                                  playerVars.weaponBehavior.weapon.cameraShakeIntensity));
     playerVars.weaponBehavior.weapon.bulletsInMag = bulletsInMag;
     uiController.UpdateAmmoText(bulletsInMag);

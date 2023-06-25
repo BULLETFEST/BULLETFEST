@@ -24,7 +24,7 @@ public class LeaderboardItemSpawner : NetworkBehaviour
     {
       GameObject lbItem = Instantiate(leaderboardItem, Vector3.zero, Quaternion.Euler(0, 0, 0), leaderboard.transform);
       NetworkServer.Spawn(lbItem, Room.players.ElementAt(i).Key);
-      _ = NetworkServer.ReplacePlayerForConnection(Room.players.ElementAt(i).Key, lbItem);
+      NetworkServer.ReplacePlayerForConnection(Room.players.ElementAt(i).Key, lbItem);
     }
   }
 }

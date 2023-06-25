@@ -52,7 +52,7 @@ public class LobbyPlayer : NetworkBehaviour
 
     if (MyNetworkManager.instance.players.ContainsKey(connectionToClient))
     {
-      _ = MyNetworkManager.instance.players.Remove(connectionToClient);
+      MyNetworkManager.instance.players.Remove(connectionToClient);
     }
 
     MyNetworkManager.instance.players.Add(connectionToClient, new PlayerData(dName));

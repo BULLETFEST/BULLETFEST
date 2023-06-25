@@ -14,7 +14,7 @@ public class KillFeedItem : MonoBehaviour
 
   private void Start()
   {
-    _ = StartCoroutine(FadeOut());
+    StartCoroutine(FadeOut());
     canvasGroup = GetComponent<CanvasGroup>();
 
   }

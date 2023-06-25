@@ -23,9 +23,16 @@ public class InitializationUI : MonoBehaviour
 
   private void Start()
   {
-    _ = StartCoroutine(LoadingTextAnimation());
+    StartCoroutine(LoadingTextAnimation());
 
     EOSSDKComponent.Initialize();
+
+    EOSSDKComponent.OnInitialized += RunChecks;
+  }
+
+  private void OnDestroy()
+  {
+    EOSSDKComponent.OnInitialized -= RunChecks;
   }
 
   private IEnumerator LoadingTextAnimation()
@@ -44,72 +51,66 @@ public class InitializationUI : MonoBehaviour
     }
   }
 
-  // void OnDestroy()
-  // {
-  //   FirebaseManager.AuthStateChanged -= CheckUser;
-  // }
-
-  private void Update()
+  private async void RunChecks()
   {
-    if (EOSSDKComponent.Initialized)
+    if (!loadingText.gameObject.activeInHierarchy)
     {
-      if (!loadingText.gameObject.activeInHierarchy)
-      {
-        return;
-      }
+      return;
+    }
 
-      FirebaseManager.Response<string> v = FirebaseManager.CheckServerStatus().Result;
-      if (v.status != 200)
-      {
-        Message.DisplayMessage("Failed to connect to server!",
-                               "The servers are currently down, try again later, or you could try notifying the developer or you could try going to https://joobot.glitch.me",
-                               Application.Quit,
-                               HorizontalAlignmentOptions.Center);
+    FirebaseManager.Response<string> v = await FirebaseManager.CheckServerStatus();
 
-        loadingText.gameObject.SetActive(false);
-        return;
-      }
-      else if (!Debug.isDebugBuild && new Version(v.data).IsMoreRecent(new Version(Application.version)))
-      {
-        Message.DisplayMessage("Update available!",
-                               "Please update your game.",
-                               Application.Quit,
-                               HorizontalAlignmentOptions.Center);
-
-        loadingText.gameObject.SetActive(false);
-        return;
-      }
-
-      if (!string.IsNullOrEmpty(SaveSystem.saveData.token))
-      {
-        FirebaseManager.Response<bool> res = FirebaseManager.ValidateToken(SaveSystem.saveData.token).Result;
-
-        if (res.status != 200)
-        {
-          Message.DisplayMessage("Failed to connect to server!",
-                               "The servers are currently down, try again later, or you could try notifying the developer or you could try going to https://joobot.glitch.me",
-                               Application.Quit,
-                               HorizontalAlignmentOptions.Center);
-
-          loadingText.gameObject.SetActive(false);
-          return;
-        }
-
-        if (res.data)
-        {
-          SceneManager.LoadScene(1);
-        }
-        else
-        {
-          SaveSystem.saveData.token = "";
-          SaveSystem.SavePlayer(SaveSystem.saveData);
-        }
-      }
+    if (v.status != 200)
+    {
+      Message.DisplayMessage("Failed to connect to server!",
+                             "The servers are currently down, try again later, or you could try notifying the developer or you could try going to https://joobot.glitch.me",
+                             Application.Quit,
+                             HorizontalAlignmentOptions.Center);
 
       loadingText.gameObject.SetActive(false);
-      loginPanel.SetActive(true);
-      whyNeedAccount.SetActive(true);
+      return;
     }
+    else if (!Debug.isDebugBuild && new Version(v.data).IsMoreRecent(new Version(Application.version)))
+    {
+      Message.DisplayMessage("Update available!",
+                             "Please update your game.",
+                             Application.Quit,
+                             HorizontalAlignmentOptions.Center);
+
+      loadingText.gameObject.SetActive(false);
+      return;
+    }
+
+
+    if (!string.IsNullOrEmpty(SaveSystem.saveData.token))
+    {
+      FirebaseManager.Response<bool> res = await FirebaseManager.ValidateToken(SaveSystem.saveData.token);
+
+      if (res.status != 200)
+      {
+        Message.DisplayMessage("Failed to connect to server!",
+                             "The servers are currently down, try again later, or you could try notifying the developer or you could try going to https://joobot.glitch.me",
+                             Application.Quit,
+                             HorizontalAlignmentOptions.Center);
+
+        loadingText.gameObject.SetActive(false);
+        return;
+      }
+
+      if (res.data)
+      {
+        SceneManager.LoadScene(1);
+      }
+      else
+      {
+        SaveSystem.saveData.token = "";
+        SaveSystem.SavePlayer(SaveSystem.saveData);
+      }
+    }
+
+    loadingText.gameObject.SetActive(false);
+    loginPanel.SetActive(true);
+    whyNeedAccount.SetActive(true);
   }
 
   public async void Login()

@@ -161,7 +161,7 @@ public class BotBehavior : NetworkBehaviour
 
     if (MyNetworkManager.instance.settings.gameMode != GameSettings.GameMode.Elimination)
     {
-      _ = StartCoroutine(FindObjectOfType<PlayerSpawnSystem>().Cmd_RespawnBot(gameObject));
+      StartCoroutine(FindObjectOfType<PlayerSpawnSystem>().Cmd_RespawnBot(gameObject));
     }
   }
 

@@ -104,7 +104,7 @@ public class SaveSystem : MonoBehaviour
     string path = Path.Combine(appDataPath, "BULLETFEST/settings.save");
     if (!Directory.Exists(Path.Combine(appDataPath, "BULLETFEST")))
     {
-      _ = Directory.CreateDirectory(Path.Combine(appDataPath, "BULLETFEST"));
+      Directory.CreateDirectory(Path.Combine(appDataPath, "BULLETFEST"));
     }
     FileStream stream = new(path, FileMode.Create);
 

@@ -27,7 +27,7 @@ public class Spikes : NetworkBehaviour
     }
 
     StopCoroutine(dict[other.gameObject]);
-    _ = dict.Remove(other.gameObject);
+    dict.Remove(other.gameObject);
   }
 
   [ServerCallback]

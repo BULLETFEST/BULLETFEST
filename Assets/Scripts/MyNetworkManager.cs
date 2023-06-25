@@ -159,7 +159,7 @@ public static readonly bool testMode = false;
   {
     base.OnStartServer();
     isHost = true;
-    _ = StartCoroutine(KeepAlive());
+    StartCoroutine(KeepAlive());
   }
 
   private IEnumerator KeepAlive()
@@ -172,7 +172,7 @@ public static readonly bool testMode = false;
 
     yield return new WaitForSecondsRealtime(120f);
 
-    _ = StartCoroutine(KeepAlive());
+    StartCoroutine(KeepAlive());
   }
 
   [Server]
@@ -253,7 +253,7 @@ public static readonly bool testMode = false;
 
     if (players.ContainsKey(conn))
     {
-      _ = players.Remove(conn);
+      players.Remove(conn);
 
       FirebaseManager.UpdateLobby(NetworkServer.connections.Count);
 
@@ -297,7 +297,7 @@ public static readonly bool testMode = false;
     {
       if (conn != null)
       {
-        _ = StartCoroutine(FindObjectOfType<PlayerSpawnSystem>().Cmd_RespawnPlayer(conn));
+        StartCoroutine(FindObjectOfType<PlayerSpawnSystem>().Cmd_RespawnPlayer(conn));
       }
     }
   }
@@ -454,7 +454,7 @@ public static readonly bool testMode = false;
 
     List<string> _scenes = queuedScenes.ToList();
 
-    _ = _scenes.Remove(chosenSceneId);
+    _scenes.Remove(chosenSceneId);
 
     queuedScenes = _scenes.ToArray();
 

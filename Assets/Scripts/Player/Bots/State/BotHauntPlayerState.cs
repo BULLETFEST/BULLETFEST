@@ -75,7 +75,7 @@ public class BotHauntPlayerState : BotBaseState
   {
     if (nearestPlayer != null && haunt)
     {
-      _ = manager.seeker.StartPath(manager.transform.position, nearestPlayer.transform.position);
+      manager.seeker.StartPath(manager.transform.position, nearestPlayer.transform.position);
     }
   }
 

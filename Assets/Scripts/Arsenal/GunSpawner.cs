@@ -32,7 +32,7 @@ public class GunSpawner : NetworkBehaviour
     spawnMinMax[0] = transform.position.x - bcSize;
     spawnMinMax[1] = transform.position.x + bcSize;
 
-    _ = StartCoroutine(SpawnWeapon());
+    StartCoroutine(SpawnWeapon());
   }
 
   [ServerCallback]
@@ -61,7 +61,7 @@ public class GunSpawner : NetworkBehaviour
 
     yield return new WaitForSecondsRealtime(1.3f);
     // yield return new WaitForSecondsRealtime(spawnInterval);
-    _ = StartCoroutine(SpawnWeapon());
+    StartCoroutine(SpawnWeapon());
     // }
   }
 }

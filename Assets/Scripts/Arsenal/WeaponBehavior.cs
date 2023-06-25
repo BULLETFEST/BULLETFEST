@@ -47,7 +47,7 @@ public class WeaponBehavior : MonoBehaviour
       case "rpg":
         throw new System.NotImplementedException();
       case "mel":
-        _ = StartCoroutine(Fire_Melee(shooter));
+        StartCoroutine(Fire_Melee(shooter));
         break;
       default:
         break;
@@ -67,7 +67,7 @@ public class WeaponBehavior : MonoBehaviour
     shooterVars.lockMovement = true;
     Vector2 vel = shooterVars.weaponBehavior.weapon.shotPushback * -shooterVars.weaponBehavior.transform.right;
     shooterVars.rb.AddForce(new Vector2(vel.x * 1.75f, vel.y / 1.55f), ForceMode2D.Impulse);
-    _ = StartCoroutine(UnlockMovement(shooterVars.weaponBehavior.weapon.movementUnlockTime, shooterVars));
+    StartCoroutine(UnlockMovement(shooterVars.weaponBehavior.weapon.movementUnlockTime, shooterVars));
   }
 
   public IEnumerator Fire_Melee(NetworkConnection shooter)

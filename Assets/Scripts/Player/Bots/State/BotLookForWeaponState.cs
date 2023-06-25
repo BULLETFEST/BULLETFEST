@@ -47,7 +47,7 @@ public class BotLookForWeaponState : BotBaseState
   {
     if (nearestGun != null)
     {
-      _ = manager.seeker.StartPath(manager.transform.position, nearestGun.transform.position);
+      manager.seeker.StartPath(manager.transform.position, nearestGun.transform.position);
     }
   }
 

@@ -37,7 +37,7 @@ public class PlayerSpawnSystem : NetworkBehaviour
       // NetworkServer.Spawn(playerInstance, Room.players.ElementAt(i).Key);
       // playerInstance.GetComponent<PlayerVars>().timeleft = timeStamp;
       NetworkServer.Spawn(playerInstance);
-      _ = NetworkServer.ReplacePlayerForConnection(conn, playerInstance);
+      NetworkServer.ReplacePlayerForConnection(conn, playerInstance);
       NetworkServer.SetClientReady(conn);
       if (conn == nm.winner)
       {

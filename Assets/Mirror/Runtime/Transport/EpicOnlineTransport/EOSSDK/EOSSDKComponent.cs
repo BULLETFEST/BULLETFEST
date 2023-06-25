@@ -124,6 +124,8 @@ namespace EpicTransport {
             }
         }
 
+        public static Action OnInitialized;
+
         protected bool isConnecting;
         public static bool IsConnecting {
             get {
@@ -381,6 +383,7 @@ namespace EpicTransport {
                 }
                 
                 initialized = true;
+                OnInitialized.Invoke();
                 isConnecting = false;
 
                 var authExpirationOptions = new Epic.OnlineServices.Connect.AddNotifyAuthExpirationOptions();

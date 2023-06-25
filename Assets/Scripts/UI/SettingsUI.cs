@@ -73,7 +73,7 @@ public class SettingsUI : MonoBehaviour
 
     if (settings.fpsCounter)
     {
-      _ = Instantiate(fpsCounter);
+      Instantiate(fpsCounter);
     }
   }
 
@@ -153,7 +153,7 @@ public class SettingsUI : MonoBehaviour
     waitingForKey = true;
     waitForKeyImage.gameObject.SetActive(true);
 
-    _ = StartCoroutine(ChangeBindEnum(bind));
+    StartCoroutine(ChangeBindEnum(bind));
   }
 
   private IEnumerator ChangeBindEnum(string bind)
@@ -198,7 +198,7 @@ public class SettingsUI : MonoBehaviour
 
     if (value)
     {
-      _ = Instantiate(fpsCounter);
+      Instantiate(fpsCounter);
     }
     else
     {
@@ -265,7 +265,7 @@ public class SettingsUI : MonoBehaviour
 
   public void ChangeSFXVolume(float v)
   {
-    _ = sfx.SetFloat("SFX_Vol", v);
+    sfx.SetFloat("SFX_Vol", v);
     SaveSystem.saveData.settings.sfxVolume = v;
   }
 }

@@ -44,11 +44,11 @@ public class BotFleeState : BotBaseState
   {
     if (escaping)
     {
-      _ = manager.seeker.StartPath(manager.transform.position, tempFurthest.transform.position);
+      manager.seeker.StartPath(manager.transform.position, tempFurthest.transform.position);
     }
     if (nearestPlayer != null && Vector2.Distance(manager.transform.position, nearestPlayer.transform.position) < 5)
     {
-      _ = manager.seeker.StartPath(manager.transform.position, furthestNode.transform.position);
+      manager.seeker.StartPath(manager.transform.position, furthestNode.transform.position);
       tempFurthest = furthestNode;
       escaping = true;
     }

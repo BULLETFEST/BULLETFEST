@@ -45,7 +45,7 @@ public class LobbyPlayerSpawner : NetworkBehaviour
     }
 
     NetworkServer.Spawn(player, conn);
-    _ = NetworkServer.AddPlayerForConnection(conn, player);
+    NetworkServer.AddPlayerForConnection(conn, player);
     NetworkServer.SetClientReady(conn);
 
     // CallPlayerJoined();
