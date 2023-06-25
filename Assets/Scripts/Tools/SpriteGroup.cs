@@ -7,11 +7,17 @@ public class SpriteGroup : MonoBehaviour
 
   public void DisableAll()
   {
-    foreach (SpriteRenderer sprite in sprites) sprite.enabled = false;
+    foreach (SpriteRenderer sprite in sprites)
+    {
+      sprite.enabled = false;
+    }
   }
 
   public void EnableAll()
   {
-    foreach (SpriteRenderer sprite in sprites) sprite.enabled = true;
+    foreach (SpriteRenderer sprite in sprites)
+    {
+      sprite.enabled = true;
+    }
   }
 }

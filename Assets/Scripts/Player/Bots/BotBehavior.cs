@@ -3,11 +3,10 @@ using UnityEngine;
 
 public class BotBehavior : NetworkBehaviour
 {
-  BotVars botVars;
+  private BotVars botVars;
+  private GameObject killfeedItem, gravestone;
 
-  GameObject killfeedItem, gravestone;
-
-  void Start()
+  private void Start()
   {
     botVars = GetComponent<BotVars>();
 
@@ -17,30 +16,47 @@ public class BotBehavior : NetworkBehaviour
     botVars.damageController.onDeath += Die;
   }
 
-  void OnDestroy()
+  private void OnDestroy()
   {
     botVars.damageController.onDeath -= Die;
   }
 
-  void Update()
+  private void Update()
   {
-    if (!isServer) return;
+    if (!isServer)
+    {
+      return;
+    }
 
-    if (transform.position.y <= -15 || transform.position.y >= 50) botVars.damageController.TakeDamage(9999999, null);
+    if (transform.position.y is <= (-15) or >= 50)
+    {
+      botVars.damageController.TakeDamage(9999999, null);
+    }
   }
 
   public void Fire(float playerPosX, float angle)
   {
     WeaponClass weapon = botVars.botWb.weapon;
 
-    if (weapon == null) return;
-    if (weapon.fireTimeout > Time.time) return;
-    if (weapon.bulletsInMag <= 0) return;
+    if (weapon == null)
+    {
+      return;
+    }
 
-    botVars.botWb.transform.localRotation = Quaternion.Euler(playerPosX < 0 ? 180 : 0, playerPosX < 0 ? 180 : 0, (playerPosX < 0 ? -1 : 1) * angle + Random.Range(-25f, 25f));
+    if (weapon.fireTimeout > Time.time)
+    {
+      return;
+    }
+
+    if (weapon.bulletsInMag <= 0)
+    {
+      return;
+    }
+
+    botVars.botWb.transform.localRotation = Quaternion.Euler(playerPosX < 0 ? 180 : 0, playerPosX < 0 ? 180 : 0, ((playerPosX < 0 ? -1 : 1) * angle) + Random.Range(-25f, 25f));
 
     weapon.bulletsInMag--;
-    weapon.fireTimeout = (float)Time.time + (1f / weapon.fireRate) * (weapon.firingMode == WeaponClass.FireMode.Single ? 1.65f : 1);
+    weapon.fireTimeout = (float)Time.time + (1f / weapon.fireRate * (weapon.firingMode == WeaponClass.FireMode.Single ? 1.65f : 1));
 
     Rpc_AddForce(gameObject, weapon.shootSound);
     botVars.botWb.Fire(weapon.ID, gameObject);
@@ -57,11 +73,13 @@ public class BotBehavior : NetworkBehaviour
   }
 
   [ClientRpc]
-  void Rpc_AddForce(GameObject target, string shootSound)
+  private void Rpc_AddForce(GameObject target, string shootSound)
   {
     botVars.botWb.AddForce(target);
     if (shootSound != "")
+    {
       FindObjectOfType<AudioSystem>().PlaySound(shootSound);
+    }
   }
 
   public void SwitchWeapon(GameObject weapon)
@@ -77,7 +95,7 @@ public class BotBehavior : NetworkBehaviour
   }
 
   [ClientRpc]
-  void TargetRpc_SwitchWeapon(string WeaponID)
+  private void TargetRpc_SwitchWeapon(string WeaponID)
   {
     botVars.botWb.SwitchWeapon(WeaponID);
   }
@@ -91,7 +109,10 @@ public class BotBehavior : NetworkBehaviour
 
     GameSettings.GameMode gm = MyNetworkManager.instance.settings.gameMode;
 
-    if (gm == GameSettings.GameMode.Deathmatch) botVars.uiName.gameObject.SetActive(false);
+    if (gm == GameSettings.GameMode.Deathmatch)
+    {
+      botVars.uiName.gameObject.SetActive(false);
+    }
 
     string killerName;
     string killedName = "BOT";
@@ -104,8 +125,14 @@ public class BotBehavior : NetworkBehaviour
     {
       NetworkConnectionToClient killerIdentity = killer.GetComponent<NetworkIdentity>().connectionToClient;
 
-      if (killer == gameObject) MyNetworkManager.instance.players[killerIdentity].kills--;
-      else MyNetworkManager.instance.players[killerIdentity].kills++;
+      if (killer == gameObject)
+      {
+        MyNetworkManager.instance.players[killerIdentity].kills--;
+      }
+      else
+      {
+        MyNetworkManager.instance.players[killerIdentity].kills++;
+      }
 
       killerName = killer.GetComponent<PlayerVars>().displayName;
     }
@@ -125,7 +152,7 @@ public class BotBehavior : NetworkBehaviour
       }
     }
 
-    foreach (var player in NetworkServer.connections)
+    foreach (System.Collections.Generic.KeyValuePair<int, NetworkConnectionToClient> player in NetworkServer.connections)
     {
       UpdateKillfeed(player.Value, killerName, killedName, killer.GetComponentInChildren<WeaponBehavior>().weapon.weaponIcon);
     }
@@ -133,7 +160,9 @@ public class BotBehavior : NetworkBehaviour
     MyNetworkManager.instance.OnPlayerDie(null);
 
     if (MyNetworkManager.instance.settings.gameMode != GameSettings.GameMode.Elimination)
-      StartCoroutine(FindObjectOfType<PlayerSpawnSystem>().Cmd_RespawnBot(gameObject));
+    {
+      _ = StartCoroutine(FindObjectOfType<PlayerSpawnSystem>().Cmd_RespawnBot(gameObject));
+    }
   }
 
   [ClientRpc]
@@ -152,7 +181,10 @@ public class BotBehavior : NetworkBehaviour
     PlayerVars localVars = conn.identity.gameObject.GetComponent<PlayerVars>();
     GameObject spawnedKillfeedItem = Instantiate(killfeedItem, Vector3.zero, Quaternion.Euler(0, 0, 0), localVars.killfeed.transform);
 
-    if (killer == killed) spawnedKillfeedItem.GetComponent<KillFeedItem>().killer.text = "";
+    if (killer == killed)
+    {
+      spawnedKillfeedItem.GetComponent<KillFeedItem>().killer.text = "";
+    }
     else
     {
       spawnedKillfeedItem.GetComponent<KillFeedItem>().killer.text = killer;

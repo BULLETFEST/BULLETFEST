@@ -17,7 +17,7 @@ public class BotVars : MonoBehaviour
             lockShooting = false,
             lockWeapon = false;
 
-  void Awake()
+  private void Awake()
   {
     rb = GetComponent<Rigidbody2D>();
     bc = GetComponent<BoxCollider2D>();

@@ -4,8 +4,8 @@ using UnityEngine;
 
 public class CameraShake : NetworkBehaviour
 {
-  bool isShaking = false;
-  Vector3 origin = new(0, 0, -10);
+  private bool isShaking = false;
+  private Vector3 origin = new(0, 0, -10);
 
   public IEnumerator Shake(float duration, float magnitude)
   {
@@ -35,8 +35,8 @@ public class CameraShake : NetworkBehaviour
   }
 
   [ClientRpc]
-  void ShakeAll(float duration, float magnitude)
+  private void ShakeAll(float duration, float magnitude)
   {
-    StartCoroutine(Shake(duration, magnitude));
+    _ = StartCoroutine(Shake(duration, magnitude));
   }
 }

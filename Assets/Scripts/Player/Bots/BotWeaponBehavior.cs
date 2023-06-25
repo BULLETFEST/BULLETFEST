@@ -8,14 +8,13 @@ public class BotWeaponBehavior : MonoBehaviour
 {
   public WeaponClass weapon;
   public WeaponClass[] arsenal;
-
-  Coroutine reloadRoutine;
-  BotVars botVars;
+  private Coroutine reloadRoutine;
+  private BotVars botVars;
 
   [HideInInspector]
   public List<Explosive> awaitingDetonation = new();
 
-  void Start()
+  private void Start()
   {
     arsenal = FindObjectOfType<PlayerBehavior>().gameObject.GetComponentInChildren<WeaponBehavior>().arsenal;
     botVars = GetComponentInParent<BotVars>();
@@ -42,6 +41,8 @@ public class BotWeaponBehavior : MonoBehaviour
         break;
       case "rpg":
         throw new System.NotImplementedException();
+      default:
+        break;
     }
 
 
@@ -50,7 +51,10 @@ public class BotWeaponBehavior : MonoBehaviour
   // Add recoil to the user
   public void AddForce(GameObject target)
   {
-    if (weapon.shotPushback == 0) return;
+    if (weapon.shotPushback == 0)
+    {
+      return;
+    }
 
     Rigidbody2D rb = target.GetComponent<Rigidbody2D>();
 
@@ -58,7 +62,7 @@ public class BotWeaponBehavior : MonoBehaviour
     botVars.lockMovement = true;
     Vector2 vel = weapon.shotPushback * -gameObject.transform.right;
     rb.AddForce(new Vector2(vel.x * 1.75f, vel.y / 1.55f), ForceMode2D.Impulse);
-    StartCoroutine(UnlockMovement(weapon.movementUnlockTime/*, shooterVars*/));
+    _ = StartCoroutine(UnlockMovement(weapon.movementUnlockTime/*, shooterVars*/));
   }
 
   public void Fire_Regular(GameObject shooter)
@@ -89,7 +93,7 @@ public class BotWeaponBehavior : MonoBehaviour
     }
   }
 
-  IEnumerator UnlockMovement(float time)
+  private IEnumerator UnlockMovement(float time)
   {
     yield return new WaitForSecondsRealtime(time);
     botVars.lockMovement = false;
@@ -97,13 +101,21 @@ public class BotWeaponBehavior : MonoBehaviour
 
   public void SwitchWeapon(string weaponID)
   {
-    if (weapon != null) Destroy(weapon.gameObject);
+    if (weapon != null)
+    {
+      Destroy(weapon.gameObject);
+    }
+
     GameObject newWeapon = Instantiate(arsenal.Where(w => w.ID == weaponID).ToArray()[0].gameObject, transform.position, transform.rotation, transform);
     weapon = newWeapon.GetComponent<WeaponClass>();
     weapon.bulletsInMag = weapon.magazineSize;
     weapon.fireTimeout = 0;
 
-    if (botVars.graphics.sprites.Count > 2) botVars.graphics.sprites.RemoveAt(2);
+    if (botVars.graphics.sprites.Count > 2)
+    {
+      botVars.graphics.sprites.RemoveAt(2);
+    }
+
     botVars.graphics.sprites.Add(newWeapon.GetComponentInChildren<SpriteRenderer>());
   }
 }

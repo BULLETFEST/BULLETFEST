@@ -27,16 +27,19 @@ public class SettingsUI : MonoBehaviour
   public GameObject fpsCounter;
 
   public bool waitingForKey;
-  List<string> resolutionsList = new();
+  private List<string> resolutionsList = new();
 
-  void Awake()
+  private void Awake()
   {
     SettingsClass settings = SaveSystem.saveData.settings;
 
     foreach (Resolution res in Screen.resolutions.Reverse().ToArray())
     {
       // Get rid of duplicates
-      if (resolutionsList.IndexOf($"{res.width}x{res.height}") < 0) resolutionsList.Add($"{res.width}x{res.height}");
+      if (resolutionsList.IndexOf($"{res.width}x{res.height}") < 0)
+      {
+        resolutionsList.Add($"{res.width}x{res.height}");
+      }
     }
     resolutionDropdown.AddOptions(resolutionsList);
 
@@ -68,10 +71,13 @@ public class SettingsUI : MonoBehaviour
 
     UpdateBindUI();
 
-    if (settings.fpsCounter) Instantiate(fpsCounter);
+    if (settings.fpsCounter)
+    {
+      _ = Instantiate(fpsCounter);
+    }
   }
 
-  void Start()
+  private void Start()
   {
     sfxVolume.value = SaveSystem.saveData.settings.sfxVolume;
   }
@@ -130,15 +136,13 @@ public class SettingsUI : MonoBehaviour
     }
   }
 
-  string AwaitKey()
+  private string AwaitKey()
   {
     foreach (KeyCode kcode in Enum.GetValues(typeof(KeyCode)))
     {
       if (Input.GetKey(kcode))
       {
-        if (kcode == KeyCode.Escape) return "cancel";
-
-        return kcode.ToString();
+        return kcode == KeyCode.Escape ? "cancel" : kcode.ToString();
       }
     }
     return null;
@@ -149,10 +153,10 @@ public class SettingsUI : MonoBehaviour
     waitingForKey = true;
     waitForKeyImage.gameObject.SetActive(true);
 
-    StartCoroutine(ChangeBindEnum(bind));
+    _ = StartCoroutine(ChangeBindEnum(bind));
   }
 
-  IEnumerator ChangeBindEnum(string bind)
+  private IEnumerator ChangeBindEnum(string bind)
   {
     string key = null;
     while (key == null)
@@ -164,7 +168,10 @@ public class SettingsUI : MonoBehaviour
     waitingForKey = false;
     waitForKeyImage.gameObject.SetActive(false);
 
-    if (key == "cancel") yield break;
+    if (key == "cancel")
+    {
+      yield break;
+    }
 
     Dictionary<string, string> binds = SaveSystem.saveData.settings.keybinds;
     if (binds.ContainsValue(key))
@@ -189,7 +196,10 @@ public class SettingsUI : MonoBehaviour
   {
     SaveSystem.saveData.settings.fpsCounter = value;
 
-    if (value) Instantiate(fpsCounter);
+    if (value)
+    {
+      _ = Instantiate(fpsCounter);
+    }
     else
     {
       GameObject[] objs = GameObject.FindGameObjectsWithTag("FPSCounter");
@@ -208,7 +218,10 @@ public class SettingsUI : MonoBehaviour
 
   public void TargetFPSFieldOnEdit(string value)
   {
-    if (value.Contains('-')) targetFpsField.text = value.Replace("-", "");
+    if (value.Contains('-'))
+    {
+      targetFpsField.text = value.Replace("-", "");
+    }
   }
 
   public void TargetFPSFieldEndEdit(string value)
@@ -229,9 +242,14 @@ public class SettingsUI : MonoBehaviour
 
   public void DropdownScreenMode(int value)
   {
-    if (value == 2) value = 3;
-    else if (value == 0) resolutionDropdown.value = 0;
-
+    if (value == 2)
+    {
+      value = 3;
+    }
+    else if (value == 0)
+    {
+      resolutionDropdown.value = 0;
+    }
 
     SaveSystem.saveData.settings.screenMode = value;
     Screen.fullScreenMode = (FullScreenMode)value;
@@ -247,7 +265,7 @@ public class SettingsUI : MonoBehaviour
 
   public void ChangeSFXVolume(float v)
   {
-    sfx.SetFloat("SFX_Vol", v);
+    _ = sfx.SetFloat("SFX_Vol", v);
     SaveSystem.saveData.settings.sfxVolume = v;
   }
 }

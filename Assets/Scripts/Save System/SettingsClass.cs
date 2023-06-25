@@ -14,7 +14,7 @@ public class SettingsClass
   public int targetFps;
   public int screenMode;
 
-  /// <summary> 
+  /// <summary>
   /// 0 = Highest res available
   /// </summary>
   public int resolution;

@@ -9,7 +9,7 @@ public class LeaderboardItem : NetworkBehaviour
   public TMP_Text uiWins;
 
   [SyncVar(hook = nameof(UpdateRichPresence))]
-  int place;
+  private int place;
 
   [SyncVar(hook = nameof(HandleUpdateDisplayName))]
   [HideInInspector] public string displayName;
@@ -36,7 +36,7 @@ public class LeaderboardItem : NetworkBehaviour
   }
 
   [Command]
-  void UpdateStats(NetworkConnectionToClient conn)
+  private void UpdateStats(NetworkConnectionToClient conn)
   {
     displayName = MyNetworkManager.instance.players[conn].displayName;
     kills = MyNetworkManager.instance.players[conn].kills.ToString();
@@ -46,7 +46,7 @@ public class LeaderboardItem : NetworkBehaviour
     ChangeItemIndex(conn.identity.gameObject, place);
   }
 
-  void UpdateRichPresence(int oldValue, int newValue)
+  private void UpdateRichPresence(int oldValue, int newValue)
   {
     DiscordController.UpdateActivity(new Discord.Activity
     {
@@ -55,23 +55,23 @@ public class LeaderboardItem : NetworkBehaviour
   }
 
   [ClientRpc]
-  void ChangeItemIndex(GameObject owner, int index)
+  private void ChangeItemIndex(GameObject owner, int index)
   {
     print(index);
     owner.transform.SetSiblingIndex(Mathf.Max(0, index) + 1);
   }
 
-  void HandleUpdateDisplayName(string oldName, string newName)
+  private void HandleUpdateDisplayName(string oldName, string newName)
   {
     uiDisplayname.text = newName;
   }
 
-  void HandleUpdateKills(string oldKills, string newKills)
+  private void HandleUpdateKills(string oldKills, string newKills)
   {
     uiKills.text = newKills;
   }
 
-  void HandleUpdateWins(string oldWins, string newWins)
+  private void HandleUpdateWins(string oldWins, string newWins)
   {
     uiWins.text = newWins;
   }

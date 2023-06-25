@@ -11,7 +11,7 @@ public class FirebaseManager : MonoBehaviour
   public static string uid;
 
 #if UNITY_EDITOR
-  static bool testMode = false;
+  private static bool testMode = false;
 #else
       static bool testMode = false;
 #endif
@@ -100,7 +100,7 @@ public class FirebaseManager : MonoBehaviour
 
     try
     {
-      CreateWebClient().UploadValuesTaskAsync(new System.Uri(testMode ? "http://localhost:3000/keepLobbyAlive" : "https://joobot.glitch.me/keepLobbyAlive"), "POST", data);
+      _ = CreateWebClient().UploadValuesTaskAsync(new System.Uri(testMode ? "http://localhost:3000/keepLobbyAlive" : "https://joobot.glitch.me/keepLobbyAlive"), "POST", data);
     }
     catch { }
   }
@@ -118,14 +118,17 @@ public class FirebaseManager : MonoBehaviour
       Message.DisplayMessage("Failed to connect to game", "Client failed to connect to server!", TMPro.HorizontalAlignmentOptions.Center);
     }
 
-    if (res.Length == 0) return new Match[0];
+    if (res.Length == 0)
+    {
+      return new Match[0];
+    }
 
     string responseInString = Encoding.Default.GetString(res);
     Match[] response = JsonHelper.FromJson<Match>(responseInString);
     return response;
   }
 
-  public async static void UpdateLobby(int playerCount)
+  public static async void UpdateLobby(int playerCount)
   {
     NameValueCollection data = new()
     {
@@ -162,14 +165,17 @@ public class FirebaseManager : MonoBehaviour
 
     try
     {
-      CreateWebClient().UploadValuesTaskAsync(new System.Uri(testMode ? "http://localhost:3000/closeLobby" : "https://joobot.glitch.me/closeLobby"), "POST", data);
+      _ = CreateWebClient().UploadValuesTaskAsync(new System.Uri(testMode ? "http://localhost:3000/closeLobby" : "https://joobot.glitch.me/closeLobby"), "POST", data);
     }
     catch { }
   }
 
-  public async static Task<Response<string>> Login(string token)
+  public static async Task<Response<string>> Login(string token)
   {
-    if (!string.IsNullOrEmpty(token)) return new Response<string>(400, "Already logged in", "");
+    if (!string.IsNullOrEmpty(token))
+    {
+      return new Response<string>(400, "Already logged in", "");
+    }
 
     NameValueCollection data = new()
     {
@@ -193,9 +199,12 @@ public class FirebaseManager : MonoBehaviour
     return response;
   }
 
-  public async static Task<Response<string>> Login(string email, string password)
+  public static async Task<Response<string>> Login(string email, string password)
   {
-    if (!string.IsNullOrEmpty(SaveSystem.saveData.token)) return new Response<string>(400, "Already logged in", "");
+    if (!string.IsNullOrEmpty(SaveSystem.saveData.token))
+    {
+      return new Response<string>(400, "Already logged in", "");
+    }
 
     NameValueCollection data = new()
     {
@@ -220,9 +229,12 @@ public class FirebaseManager : MonoBehaviour
     return response;
   }
 
-  public async static Task<Response<string>> CreateUser(string email, string password)
+  public static async Task<Response<string>> CreateUser(string email, string password)
   {
-    if (!string.IsNullOrEmpty(SaveSystem.saveData.token)) return new Response<string>(400, "Already logged in", "");
+    if (!string.IsNullOrEmpty(SaveSystem.saveData.token))
+    {
+      return new Response<string>(400, "Already logged in", "");
+    }
 
     NameValueCollection data = new()
     {
@@ -250,7 +262,10 @@ public class FirebaseManager : MonoBehaviour
 
   public static Response<bool> ValidateToken(string token)
   {
-    if (string.IsNullOrEmpty(token)) return new Response<bool>(200, "", false);
+    if (string.IsNullOrEmpty(token))
+    {
+      return new Response<bool>(200, "", false);
+    }
 
     NameValueCollection data = new()
     {
@@ -318,7 +333,7 @@ public class FirebaseManager : MonoBehaviour
 
     public override string ToString()
     {
-      return $@"{{ 
+      return $@"{{
         Status: {status},
         Message: {message},
         data: {data?.ToString()}

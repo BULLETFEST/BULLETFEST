@@ -3,12 +3,11 @@ using UnityEngine;
 
 public class AudioSystem : MonoBehaviour
 {
-  Dictionary<string, AudioClip> clips = new();
-
-  AudioSource source;
+  private Dictionary<string, AudioClip> clips = new();
+  private AudioSource source;
 
   // Start is called before the first frame update
-  void Start()
+  private void Start()
   {
     AudioClip[] temp = Resources.LoadAll<AudioClip>("Sounds");
     foreach (AudioClip clip in temp)

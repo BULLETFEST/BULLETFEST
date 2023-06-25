@@ -4,12 +4,12 @@ using UnityEngine.UI;
 
 public class EndScreenUI : NetworkBehaviour
 {
-  MyNetworkManager Room;
+  private MyNetworkManager Room;
 
   [SerializeField] private Button playAgain, exit;
 
   // Start is called before the first frame update
-  void Awake()
+  private void Awake()
   {
     Room = MyNetworkManager.instance;
     Cursor.visible = true;
@@ -29,7 +29,10 @@ public class EndScreenUI : NetworkBehaviour
         FindObjectOfType<AudioSystem>().PlaySound("Select");
       });
     }
-    else Destroy(playAgain);
+    else
+    {
+      Destroy(playAgain);
+    }
   }
 
   public void Exit()

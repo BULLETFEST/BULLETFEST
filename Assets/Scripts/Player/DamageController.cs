@@ -12,10 +12,9 @@ public class DamageController : NetworkBehaviour
 
   [SyncVar]
   public bool dead = false;
+  private GameObject damageDealer;
 
-  GameObject damageDealer;
-
-  void Start()
+  private void Start()
   {
     health = maxHealth;
   }
@@ -23,7 +22,10 @@ public class DamageController : NetworkBehaviour
   [Command(requiresAuthority = false)]
   public void TakeDamage(float damage, GameObject owner)
   {
-    if (dead) return;
+    if (dead)
+    {
+      return;
+    }
 
     damageDealer = owner;
 
@@ -32,15 +34,21 @@ public class DamageController : NetworkBehaviour
     onTakeDamage?.Invoke(damageDealer);
   }
 
-  void OnDamageTaken(float oldHealth, float newHealth)
+  private void OnDamageTaken(float oldHealth, float newHealth)
   {
-    if (health <= 0) Die();
+    if (health <= 0)
+    {
+      Die();
+    }
   }
 
   [Command(requiresAuthority = false)]
   public void Die()
   {
-    if (health > 0 || dead) return;
+    if (health > 0 || dead)
+    {
+      return;
+    }
 
     dead = true;
 

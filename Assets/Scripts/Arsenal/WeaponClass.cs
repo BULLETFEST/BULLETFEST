@@ -19,7 +19,7 @@ public class WeaponClass : MonoBehaviour
   [Header("Base Weapon Information")]
   public string weaponName;
   [Tooltip(
-  @"Valid weapon IDs: 
+  @"Valid weapon IDs:
   HDG - Handgun
   RPG - Rocket Propelled Grenade
   THRW - Throwable

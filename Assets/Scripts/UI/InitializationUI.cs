@@ -21,20 +21,23 @@ public class InitializationUI : MonoBehaviour
 
   public GameObject loginPanel, whyNeedAccount;
 
-
-  void Start()
+  private void Start()
   {
-    StartCoroutine(LoadingTextAnimation());
+    _ = StartCoroutine(LoadingTextAnimation());
 
     EOSSDKComponent.Initialize();
   }
 
-  IEnumerator LoadingTextAnimation()
+  private IEnumerator LoadingTextAnimation()
   {
     int dots = 0;
     while (loadingText.gameObject.activeInHierarchy)
     {
-      if (dots >= 4) dots = 0;
+      if (dots >= 4)
+      {
+        dots = 0;
+      }
+
       loadingText.text = $"Loading{new string('.', dots)}";
       dots++;
       yield return new WaitForSecondsRealtime(0.25f);
@@ -46,11 +49,14 @@ public class InitializationUI : MonoBehaviour
   //   FirebaseManager.AuthStateChanged -= CheckUser;
   // }
 
-  void Update()
+  private void Update()
   {
     if (EOSSDKComponent.Initialized)
     {
-      if (!loadingText.gameObject.activeInHierarchy) return;
+      if (!loadingText.gameObject.activeInHierarchy)
+      {
+        return;
+      }
 
       FirebaseManager.Response<string> v = FirebaseManager.CheckServerStatus();
       if (v.status != 200)

@@ -10,16 +10,16 @@ public class KillFeedItem : MonoBehaviour
   public Image weapon;
 
   public float fadeOutTime, fadeOutDelay, fadeAmount;
+  private CanvasGroup canvasGroup;
 
-  CanvasGroup canvasGroup;
-  void Start()
+  private void Start()
   {
-    StartCoroutine(FadeOut());
+    _ = StartCoroutine(FadeOut());
     canvasGroup = GetComponent<CanvasGroup>();
 
   }
 
-  IEnumerator FadeOut()
+  private IEnumerator FadeOut()
   {
     yield return new WaitForSecondsRealtime(fadeOutDelay);
 

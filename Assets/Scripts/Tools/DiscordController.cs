@@ -16,17 +16,20 @@ public class DiscordController : MonoBehaviour
 
   public static Dictionary<ulong, Relationship> relationships = new();
 
-  public readonly static ulong applicationId = 1009938773137694800U;
+  public static readonly ulong applicationId = 1009938773137694800U;
 
 #if UNITY_EDITOR
-  bool debugMode = true;
+  private bool debugMode = true;
 #else
   bool debugMode = false;
 #endif
 
-  void Awake()
+  private void Awake()
   {
-    if (debugMode) return;
+    if (debugMode)
+    {
+      return;
+    }
 
     discord = new Discord.Discord((long)applicationId, (ulong)CreateFlags.NoRequireDiscord);
     activityManager = discord.GetActivityManager();
@@ -46,12 +49,19 @@ public class DiscordController : MonoBehaviour
 
     SceneManager.activeSceneChanged += (Scene oldScene, Scene newScene) =>
     {
-      if (newScene.name == "MainMenu") UpdateActivity(activity);
+      if (newScene.name == "MainMenu")
+      {
+        UpdateActivity(activity);
+      }
     };
 
     activityManager.OnActivityJoin += _secret =>
     {
-      if (Mirror.NetworkClient.isConnected || Mirror.NetworkServer.active) return;
+      if (Mirror.NetworkClient.isConnected || Mirror.NetworkServer.active)
+      {
+        return;
+      }
+
       string[] secret = _secret.Split("|||");
       MyNetworkManager.instance.networkAddress = secret[0];
       MyNetworkManager.instance.roomCode = secret[1];
@@ -62,8 +72,15 @@ public class DiscordController : MonoBehaviour
 
     activityManager.OnActivityInvite += (ActivityActionType Type, ref User user, ref Activity activity2) =>
     {
-      if (Type != ActivityActionType.Join) return;
-      if (activity2.ApplicationId != (long)applicationId) return;
+      if (Type != ActivityActionType.Join)
+      {
+        return;
+      }
+
+      if (activity2.ApplicationId != (long)applicationId)
+      {
+        return;
+      }
 
       Message.DisplayMessage("Invite received!", "Received invite from " + user.Username);
     };
@@ -76,7 +93,7 @@ public class DiscordController : MonoBehaviour
         return relationship.Type == RelationshipType.Friend;// && relationship.Presence.Activity.ApplicationId == 1009938773137694800;
       });
 
-      for (var i = 0; i < relationshipManager.Count(); i++)
+      for (int i = 0; i < relationshipManager.Count(); i++)
       {
         // Get an individual relationship from the list
         Relationship relationship = relationshipManager.GetAt((uint)i);
@@ -102,17 +119,17 @@ public class DiscordController : MonoBehaviour
     };
   }
 
-  void Update()
+  private void Update()
   {
-    if (discord != null)
-    {
-      discord.RunCallbacks();
-    }
+    discord?.RunCallbacks();
   }
 
   public static void UpdateActivity(Activity activity)
   {
-    if (discord == null) return;
+    if (discord == null)
+    {
+      return;
+    }
 
     activity.Timestamps.Start = now.ToUnixTimeMilliseconds();
     activity.Assets.LargeImage = "unity";
@@ -122,7 +139,10 @@ public class DiscordController : MonoBehaviour
 
     activityManager.UpdateActivity(activity, (res) =>
     {
-      if (res != Result.Ok) print(res);
+      if (res != Result.Ok)
+      {
+        print(res);
+      }
       // else
       // {
       //   // print(JsonUtility.ToJson(activity, true));
@@ -135,7 +155,10 @@ public class DiscordController : MonoBehaviour
 
   private void OnApplicationQuit()
   {
-    if (debugMode) return;
+    if (debugMode)
+    {
+      return;
+    }
 
     activityManager.ClearActivity(res => { });
     FirebaseManager.CloseLobby();

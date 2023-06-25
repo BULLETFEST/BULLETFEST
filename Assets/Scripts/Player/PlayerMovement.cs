@@ -15,17 +15,15 @@ public class PlayerMovement : NetworkBehaviour
   private float moveForce = 13f,
                 drag = 5f,
                 jumpForce = 1500f;
-
-  bool doubleJumped;
+  private bool doubleJumped;
 
   // [SyncVar]
   // float maxSpeedX = 10;
 
   public PlayerVars playerVars;
+  private LayerMask playerLm;
 
-  LayerMask playerLm;
-
-  void Start()
+  private void Start()
   {
     playerVars = GetComponent<PlayerVars>();
 
@@ -34,9 +32,20 @@ public class PlayerMovement : NetworkBehaviour
 
   private void LateUpdate()
   {
-    if (!isLocalPlayer) return;
-    if (!NetworkClient.ready) return;
-    if (Time.timeScale == 0) return;
+    if (!isLocalPlayer)
+    {
+      return;
+    }
+
+    if (!NetworkClient.ready)
+    {
+      return;
+    }
+
+    if (Time.timeScale == 0)
+    {
+      return;
+    }
 
     Vector3 mousePos = Input.mousePosition;
     mousePos.z = 5.23f;
@@ -53,17 +62,23 @@ public class PlayerMovement : NetworkBehaviour
   }
 
   [Command]
-  void Cmd_UpdateGun(Quaternion graphicsRotation, Quaternion gunRotation, Quaternion globalGunRotation)
+  private void Cmd_UpdateGun(Quaternion graphicsRotation, Quaternion gunRotation, Quaternion globalGunRotation)
   {
-    if (playerVars.lockWeapon) return;
+    if (playerVars.lockWeapon)
+    {
+      return;
+    }
 
     Rpc_UpdateGun(graphicsRotation, gunRotation, globalGunRotation);
   }
 
   [ClientRpc]
-  void Rpc_UpdateGun(Quaternion graphicsRotation, Quaternion gunRotation, Quaternion globalGunRotation)
+  private void Rpc_UpdateGun(Quaternion graphicsRotation, Quaternion gunRotation, Quaternion globalGunRotation)
   {
-    if (playerVars == null) return;
+    if (playerVars == null)
+    {
+      return;
+    }
 
     playerVars.graphics.transform.rotation = graphicsRotation;
 
@@ -78,25 +93,46 @@ public class PlayerMovement : NetworkBehaviour
     }
   }
 
-  void Update()
+  private void Update()
   {
-    if (!isLocalPlayer) return;
-    if (playerVars.lockMovement) return;
+    if (!isLocalPlayer)
+    {
+      return;
+    }
+
+    if (playerVars.lockMovement)
+    {
+      return;
+    }
 
     // if (Input.GetKeyDown(KeyCode.X)) GetComponent<DamageController>().TakeDamage(5f, null);
 
     int xRaw = 0;
-    if (Utilities.GetKeybind("lft") && Utilities.GetKeybind("rgt")) xRaw = 0;
-    else if (Utilities.GetKeybind("lft")) xRaw = -1;
-    else if (Utilities.GetKeybind("rgt")) xRaw = 1;
+    if (Utilities.GetKeybind("lft") && Utilities.GetKeybind("rgt"))
+    {
+      xRaw = 0;
+    }
+    else if (Utilities.GetKeybind("lft"))
+    {
+      xRaw = -1;
+    }
+    else if (Utilities.GetKeybind("rgt"))
+    {
+      xRaw = 1;
+    }
 
     xRaw = Mathf.Clamp(xRaw, -1, 1);
 
-    if (SaveSystem.saveData.settings.invertControls) xRaw *= -1;
+    if (SaveSystem.saveData.settings.invertControls)
+    {
+      xRaw *= -1;
+    }
 
     bool grounded = false;
     if (playerVars.bc != null)
+    {
       grounded = Utilities.Grounded(transform, playerVars.bc, groundLm).collider != null;
+    }
 
     if (Utilities.GetKeybindDown("jump") && (grounded || !doubleJumped))
     {
@@ -131,23 +167,39 @@ public class PlayerMovement : NetworkBehaviour
 
 
   [Command]
-  void ValidateMovement(float xRaw)
+  private void ValidateMovement(float xRaw)
   {
-    if (playerVars.lockMovement) return;
-    if (Time.timeScale == 0) return;
+    if (playerVars.lockMovement)
+    {
+      return;
+    }
 
-    if (transform.position.y <= -15 || transform.position.y >= 50) GetComponent<DamageController>().TakeDamage(9999999, null);
+    if (Time.timeScale == 0)
+    {
+      return;
+    }
+
+    if (transform.position.y is <= (-15) or >= 50)
+    {
+      GetComponent<DamageController>().TakeDamage(9999999, null);
+    }
 
     xRaw = Mathf.Clamp(xRaw, -1, 1);
 
     HandleMovement(xRaw);
   }
 
-  void HandleMovement(float xRaw)
+  private void HandleMovement(float xRaw)
   {
-    if (playerVars == null) return;
+    if (playerVars == null)
+    {
+      return;
+    }
 
-    if ((PlayersOnLeft(gameObject, playerVars.bc) && xRaw == -1) || (PlayersOnRight(gameObject, playerVars.bc) && xRaw == 1)) xRaw = 0;
+    if ((PlayersOnLeft(gameObject, playerVars.bc) && xRaw == -1) || (PlayersOnRight(gameObject, playerVars.bc) && xRaw == 1))
+    {
+      xRaw = 0;
+    }
 
     if (xRaw != 0)
     {
@@ -162,12 +214,12 @@ public class PlayerMovement : NetworkBehaviour
 
     // Add drag
     // https://forum.unity.com/threads/physics-drag-formula.252406/
-    playerVars.rb.velocity = new Vector2(playerVars.rb.velocity.x * (1 - Time.fixedDeltaTime * (Utilities.Grounded(transform, playerVars.bc, groundLm).collider != null ? drag * 1.15f : drag)), playerVars.rb.velocity.y);
+    playerVars.rb.velocity = new Vector2(playerVars.rb.velocity.x * (1 - (Time.fixedDeltaTime * (Utilities.Grounded(transform, playerVars.bc, groundLm).collider != null ? drag * 1.15f : drag))), playerVars.rb.velocity.y);
 
     // playerVars.audioSystem.transform.position = gameObject.transform.position;
   }
 
-  bool PlayersOnRight(GameObject player, BoxCollider2D bc)
+  private bool PlayersOnRight(GameObject player, BoxCollider2D bc)
   {
     RaycastHit2D ray = Physics2D.BoxCast(
       player.transform.position,
@@ -177,7 +229,7 @@ public class PlayerMovement : NetworkBehaviour
     return ray.collider != null;
   }
 
-  bool PlayersOnLeft(GameObject player, BoxCollider2D bc)
+  private bool PlayersOnLeft(GameObject player, BoxCollider2D bc)
   {
     RaycastHit2D ray = Physics2D.BoxCast(
       player.transform.position,

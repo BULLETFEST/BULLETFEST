@@ -2,13 +2,15 @@ using Mirror;
 
 public class PlayerNetworking : NetworkBehaviour
 {
-  PlayerVars playerVars;
+  private PlayerVars playerVars;
 
   public override void OnStartClient()
   {
     base.OnStartClient();
     if (isLocalPlayer)
+    {
       gameObject.layer = 30;
+    }
 
     playerVars = GetComponent<PlayerVars>();
 
@@ -17,7 +19,7 @@ public class PlayerNetworking : NetworkBehaviour
   }
 
   [ClientRpc]
-  void ClientRpc_InitializePlayer(string playerName)
+  private void ClientRpc_InitializePlayer(string playerName)
   {
     playerVars.uiName.text = playerName;
   }

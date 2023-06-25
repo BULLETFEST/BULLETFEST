@@ -12,12 +12,14 @@ public class PlayerUI : NetworkBehaviour
   public GameObject crosshair;
 
   private PlayerVars playerVars;
+  private bool focusState;
 
-  bool focusState;
-
-  void Start()
+  private void Start()
   {
-    if (!isLocalPlayer) return;
+    if (!isLocalPlayer)
+    {
+      return;
+    }
 
     mainCanvas.gameObject.SetActive(true);
     mainCanvas.worldCamera = Camera.main;
@@ -35,9 +37,12 @@ public class PlayerUI : NetworkBehaviour
     focusState = _focusState;
   }
 
-  void Update()
+  private void Update()
   {
-    if (!isLocalPlayer) return;
+    if (!isLocalPlayer)
+    {
+      return;
+    }
 
     Cursor.visible = !focusState && SaveSystem.IsSettingsOpen;
 

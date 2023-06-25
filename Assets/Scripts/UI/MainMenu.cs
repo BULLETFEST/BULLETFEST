@@ -8,7 +8,7 @@ using UnityEngine.UI;
 // using ParrelSync;
 public class MainMenu : MonoBehaviour
 {
-  MyNetworkManager nm;
+  private MyNetworkManager nm;
 
   [HideInInspector]
   public string code = "0000";
@@ -27,11 +27,10 @@ public class MainMenu : MonoBehaviour
   public GameObject serverBrowser, serversContainer;
 
   public GameObject gameCard;
+  private bool isConnecting = false;
+  private bool isHosting = false;
 
-  bool isConnecting = false;
-  bool isHosting = false;
-
-  void Start()
+  private void Start()
   {
     buildNumber.text = "Build " + Application.version;
 
@@ -51,12 +50,19 @@ public class MainMenu : MonoBehaviour
     hostBtn.interactable = EOSSDKComponent.Initialized && !isHosting;
     serverBrowserBtn.interactable = EOSSDKComponent.Initialized;
 
-    if (Input.GetKeyDown(KeyCode.Slash)) FirebaseManager.SignOut();
+    if (Input.GetKeyDown(KeyCode.Slash))
+    {
+      FirebaseManager.SignOut();
+    }
   }
 
   public async void Connect()
   {
-    if (isConnecting) return;
+    if (isConnecting)
+    {
+      return;
+    }
+
     Message.DisplayMessage("", "Connecting...", false, HorizontalAlignmentOptions.Center);
 
     isConnecting = true;
@@ -91,7 +97,11 @@ public class MainMenu : MonoBehaviour
 
   public async void Host()
   {
-    if (isHosting) return;
+    if (isHosting)
+    {
+      return;
+    }
+
     Message.DisplayMessage("", "Connecting...", false, HorizontalAlignmentOptions.Center);
 
     isHosting = true;

@@ -46,7 +46,10 @@ public class Version
       patch++;
       build = 0;
     }
-    else build++;
+    else
+    {
+      build++;
+    }
   }
 
   public string GetVersionString()
@@ -56,28 +59,47 @@ public class Version
 
   public bool IsMoreRecent(Version other)
   {
-    if (this.versionType > other.versionType) return true;
-    else if (this.versionType == other.versionType)
+    if (versionType > other.versionType)
     {
-      if (this.major > other.major) return true;
-      else if (this.major == other.major)
-      {
-        if (this.minor > other.minor) return true;
-        else if (this.minor == other.minor)
-        {
-          if (this.patch > other.patch) return true;
-          else if (this.patch == other.patch)
-          {
-            if (this.build > other.build) return true;
-            else return false;
-          }
-          else return false;
-        }
-        else return false;
-      }
-      else return false;
+      return true;
     }
-    else return false;
+    else if (versionType == other.versionType)
+    {
+      if (major > other.major)
+      {
+        return true;
+      }
+      else if (major == other.major)
+      {
+        if (minor > other.minor)
+        {
+          return true;
+        }
+        else if (minor == other.minor)
+        {
+          if (patch > other.patch)
+          {
+            return true;
+          }
+          else
+          {
+            return patch == other.patch ? build > other.build : false;
+          }
+        }
+        else
+        {
+          return false;
+        }
+      }
+      else
+      {
+        return false;
+      }
+    }
+    else
+    {
+      return false;
+    }
   }
 
 

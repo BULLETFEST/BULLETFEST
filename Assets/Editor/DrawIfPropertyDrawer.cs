@@ -10,17 +10,19 @@ public class DrawIfPropertyDrawer : PropertyDrawer
   #region Fields
 
   // Reference to the attribute on the property.
-  DrawIfAttribute drawIf;
+  private DrawIfAttribute drawIf;
 
   // Field that is being compared.
-  SerializedProperty comparedField;
+  private SerializedProperty comparedField;
 
   #endregion
 
   public override float GetPropertyHeight(SerializedProperty property, GUIContent label)
   {
     if (!ShowMe(property) && drawIf.disablingType == DrawIfAttribute.DisablingType.DontDraw)
+    {
       return 0f;
+    }
 
     // The height of the property should be defaulted to the default height.
     return base.GetPropertyHeight(property, label);
@@ -61,12 +63,12 @@ public class DrawIfPropertyDrawer : PropertyDrawer
     // If the condition is met, simply draw the field.
     if (ShowMe(property))
     {
-      EditorGUI.PropertyField(position, property);
+      _ = EditorGUI.PropertyField(position, property);
     } //...check if the disabling type is read only. If it is, draw it disabled
     else if (drawIf.disablingType == DrawIfAttribute.DisablingType.ReadOnly)
     {
       GUI.enabled = false;
-      EditorGUI.PropertyField(position, property);
+      _ = EditorGUI.PropertyField(position, property);
       GUI.enabled = true;
     }
   }

@@ -6,7 +6,7 @@ using UnityEngine;
 
 public class Server : NetworkBehaviour
 {
-  Coroutine timerRoutine;
+  private Coroutine timerRoutine;
 
   public override void OnStartAuthority()
   {
@@ -16,10 +16,13 @@ public class Server : NetworkBehaviour
       // Destroy(GetComponent<PlayerVars>().publicCanvas.gameObject);
       Destroy(GetComponent<Server>());
     }
-    if (MyNetworkManager.instance.settings.gameMode == GameSettings.GameMode.Deathmatch) timerRoutine = StartCoroutine(CalcTimeLeft());
+    if (MyNetworkManager.instance.settings.gameMode == GameSettings.GameMode.Deathmatch)
+    {
+      timerRoutine = StartCoroutine(CalcTimeLeft());
+    }
   }
 
-  IEnumerator CalcTimeLeft()
+  private IEnumerator CalcTimeLeft()
   {
     TimeSpan timeSpan = new(0, 5, 0);
     while (timeSpan.TotalSeconds >= 0)
@@ -36,7 +39,7 @@ public class Server : NetworkBehaviour
   }
 
   [Command(requiresAuthority = false)]
-  void Cmd_UpdateTimer(string timeString)
+  private void Cmd_UpdateTimer(string timeString)
   {
     foreach (NetworkConnectionToClient conn in NetworkServer.connections.Values.ToArray())
     {
@@ -45,12 +48,12 @@ public class Server : NetworkBehaviour
   }
 
   [TargetRpc]
-  void Rpc_UpdateTimer(NetworkConnection conn, string timeString)
+  private void Rpc_UpdateTimer(NetworkConnection conn, string timeString)
   {
     conn.identity.GetComponent<PlayerUI>().uiTimeLeft.text = timeString;
   }
 
-  Color[] colors = new Color[] {
+  private Color[] colors = new Color[] {
     new Color(0.5882353f, 0.1137255f, 0.04313726f), // 961D0B
     new Color(0.0993236f, 0.4487756f, 0.6792453f), // 1972AD
     new Color(0.1027946f, 0.6226415f, 0.1877513f), // 1A9F30
@@ -62,9 +65,6 @@ public class Server : NetworkBehaviour
   {
     FindObjectOfType<WinnerUI>().winnerText.text = text;
 
-    if (idx != -1)
-      FindObjectOfType<WinnerUI>().playerImage.color = colors[idx % 4];
-    else
-      FindObjectOfType<WinnerUI>().playerImage.color = new Color(0.3936009f, 0.5186465f, 0.5754717f);
+    FindObjectOfType<WinnerUI>().playerImage.color = idx != -1 ? colors[idx % 4] : new Color(0.3936009f, 0.5186465f, 0.5754717f);
   }
 }

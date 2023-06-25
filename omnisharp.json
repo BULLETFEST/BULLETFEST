@@ -6,10 +6,5 @@
   },
   "FileOptions": {
     "ExcludeSearchPatterns": ["Assets/Mirror/**/*"]
-  },
-  "FormattingOptions": {
-    "UseTabs": false,
-    "IndentationSize": 2,
-    "TabSize": 2
   }
 }

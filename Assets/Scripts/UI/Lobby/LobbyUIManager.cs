@@ -12,10 +12,9 @@ public class LobbyUIManager : NetworkBehaviour
   public TMP_InputField rounds;
   public TMP_Text roomCode, roundsDefault;
   public Toggle privacy, enableBots;
+  private MyNetworkManager nm = MyNetworkManager.instance;
 
-  MyNetworkManager nm = MyNetworkManager.instance;
-
-  void Awake()
+  private void Awake()
   {
     if (!nm.isHost)
     {
@@ -53,7 +52,7 @@ public class LobbyUIManager : NetworkBehaviour
     SetupModifiers();
   }
 
-  void Update()
+  private void Update()
   {
     if (nm.isHost)
     {
@@ -66,7 +65,7 @@ public class LobbyUIManager : NetworkBehaviour
   }
 
   [Server]
-  void StartGame()
+  private void StartGame()
   {
     nm.StartGame();
     FindObjectOfType<AudioSystem>().PlaySound("Select");
@@ -100,8 +99,7 @@ public class LobbyUIManager : NetworkBehaviour
 
   public void TogglePrivate(bool option)
   {
-    if (option) nm.settings.privacyType = GameSettings.PrivacyType.Private;
-    else nm.settings.privacyType = GameSettings.PrivacyType.Public;
+    nm.settings.privacyType = option ? GameSettings.PrivacyType.Private : GameSettings.PrivacyType.Public;
 
     FirebaseManager.UpdateLobby(NetworkServer.connections.Count);
   }
@@ -218,14 +216,7 @@ public class LobbyUIManager : NetworkBehaviour
         break;
     }
 
-    if (nm.settings.enableBots)
-    {
-      n = nm._BotSupport.ToList().Where(x => other.Contains(x)).ToList();
-    }
-    else
-    {
-      n = other;
-    }
+    n = nm.settings.enableBots ? nm._BotSupport.ToList().Where(x => other.Contains(x)).ToList() : other;
 
     n = n.Select(map => { return map = System.IO.Path.GetFileNameWithoutExtension(map).Replace("_", " "); }).ToList();
 
@@ -245,7 +236,7 @@ public class LobbyUIManager : NetworkBehaviour
   [Header("Additional Modifiers")]
   public Toggle goldenGun;
 
-  void SetupModifiers()
+  private void SetupModifiers()
   {
     goldenGun.isOn = nm.settings.goldenGun;
   }

@@ -4,12 +4,11 @@ using UnityEngine;
 
 public class LeaderboardItemSpawner : NetworkBehaviour
 {
-  GameObject leaderboard;
-  GameObject leaderboardItem;
+  private GameObject leaderboard;
+  private GameObject leaderboardItem;
+  private MyNetworkManager Room;
 
-  MyNetworkManager Room;
-
-  void Awake()
+  private void Awake()
   {
     leaderboard = GameObject.FindGameObjectWithTag("Leaderboard");
     leaderboardItem = (GameObject)Resources.Load("Spawnable/LeaderboardItem");
@@ -25,7 +24,7 @@ public class LeaderboardItemSpawner : NetworkBehaviour
     {
       GameObject lbItem = Instantiate(leaderboardItem, Vector3.zero, Quaternion.Euler(0, 0, 0), leaderboard.transform);
       NetworkServer.Spawn(lbItem, Room.players.ElementAt(i).Key);
-      NetworkServer.ReplacePlayerForConnection(Room.players.ElementAt(i).Key, lbItem);
+      _ = NetworkServer.ReplacePlayerForConnection(Room.players.ElementAt(i).Key, lbItem);
     }
   }
 }

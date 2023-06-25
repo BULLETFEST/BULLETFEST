@@ -8,8 +8,8 @@ using UnityEngine;
 public class SaveSystem : MonoBehaviour
 {
   public static SaveDataStructure saveData;
-  static Dictionary<string, string> defaultBinds;
-  static string appDataPath;
+  private static Dictionary<string, string> defaultBinds;
+  private static string appDataPath;
 
   public static bool IsSettingsOpen;
 
@@ -42,10 +42,11 @@ public class SaveSystem : MonoBehaviour
     {
       saveData = new SaveDataStructure(new SettingsClass(defaultBinds, 1, 1, 1, false, false, 60, 0, 0), "");
     }
-    else if (saveData.settings.keybinds == null)
+    else
     {
-      saveData.settings.keybinds = new Dictionary<string, string>();
+      saveData.settings.keybinds ??= new Dictionary<string, string>();
     }
+
     for (int i = 0; i < defaultBinds.Count - 1; i++)
     {
       if (!saveData.settings.keybinds.ContainsKey(defaultBinds.ElementAt(i).Key))
@@ -59,7 +60,7 @@ public class SaveSystem : MonoBehaviour
 
   public static SettingsUI settingsUI;
 
-  void Update()
+  private void Update()
   {
     if (Input.GetKeyDown(KeyCode.Escape))
     {
@@ -82,7 +83,10 @@ public class SaveSystem : MonoBehaviour
       }
       else
       {
-        if (settingsUI.waitingForKey) return;
+        if (settingsUI.waitingForKey)
+        {
+          return;
+        }
 
         SavePlayer(new SaveDataStructure(saveData.settings, saveData.token));
         // SceneManager.UnloadSceneAsync("Settings");
@@ -100,7 +104,7 @@ public class SaveSystem : MonoBehaviour
     string path = Path.Combine(appDataPath, "BULLETFEST/settings.save");
     if (!Directory.Exists(Path.Combine(appDataPath, "BULLETFEST")))
     {
-      Directory.CreateDirectory(Path.Combine(appDataPath, "BULLETFEST"));
+      _ = Directory.CreateDirectory(Path.Combine(appDataPath, "BULLETFEST"));
     }
     FileStream stream = new(path, FileMode.Create);
 

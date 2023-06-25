@@ -22,9 +22,8 @@ public class BotPathfinding : NetworkBehaviour
   [HideInInspector] public BotVars botVars;
   [HideInInspector] public Seeker seeker;
   [HideInInspector] public static GameObject[] nodes;
-
-  RaycastHit2D isGrounded;
-  BotBaseState currentState;
+  private RaycastHit2D isGrounded;
+  private BotBaseState currentState;
 
   public BotFleeState botFleeState = new();
   public BotLookForWeaponState botLookForWeaponState = new();
@@ -36,15 +35,15 @@ public class BotPathfinding : NetworkBehaviour
   {
     base.OnStartServer();
 
-    if (nodes == null)
-    {
-      nodes = GameObject.FindGameObjectsWithTag("NavigationPoint");
-    }
+    nodes ??= GameObject.FindGameObjectsWithTag("NavigationPoint");
   }
 
-  void Start()
+  private void Start()
   {
-    if (!isServer) return;
+    if (!isServer)
+    {
+      return;
+    }
 
     seeker = GetComponent<Seeker>();
 
@@ -56,17 +55,23 @@ public class BotPathfinding : NetworkBehaviour
     seeker.pathCallback += OnPathComplete;
   }
 
-  void OnDestroy()
+  private void OnDestroy()
   {
     nodes = null;
     seeker.pathCallback -= OnPathComplete;
   }
 
-  void Update()
+  private void Update()
   {
-    if (Time.timeScale == 0 || botVars.damageController.dead || !isServer || !enablePathfinding) return;
+    if (Time.timeScale == 0 || botVars.damageController.dead || !isServer || !enablePathfinding)
+    {
+      return;
+    }
 
-    if (!botVars.lockMovement) PathFollow();
+    if (!botVars.lockMovement)
+    {
+      PathFollow();
+    }
 
     currentState.UpdateState(this);
   }
@@ -83,7 +88,10 @@ public class BotPathfinding : NetworkBehaviour
 
   private void UpdatePath()
   {
-    if (Time.timeScale == 0 || botVars.lockMovement || !isServer || !enablePathfinding) return;
+    if (Time.timeScale == 0 || botVars.lockMovement || !isServer || !enablePathfinding)
+    {
+      return;
+    }
 
     if (seeker.IsDone())
     {
@@ -91,7 +99,7 @@ public class BotPathfinding : NetworkBehaviour
     };
   }
 
-  bool doubleJumped = false;
+  private bool doubleJumped = false;
 
   private void PathFollow()
   {
@@ -99,7 +107,7 @@ public class BotPathfinding : NetworkBehaviour
     {
       // Add drag
       // https://forum.unity.com/threads/physics-drag-formula.252406/
-      botVars.rb.velocity = new Vector2(botVars.rb.velocity.x * (1 - Time.fixedDeltaTime * drag), botVars.rb.velocity.y);
+      botVars.rb.velocity = new Vector2(botVars.rb.velocity.x * (1 - (Time.fixedDeltaTime * drag)), botVars.rb.velocity.y);
 
       return;
     }
@@ -118,7 +126,10 @@ public class BotPathfinding : NetworkBehaviour
       botVars.bc.bounds.size, 0, Vector2.down,
       0.05f, groundLm);
 
-    if (isGrounded && doubleJumped) doubleJumped = false;
+    if (isGrounded && doubleJumped)
+    {
+      doubleJumped = false;
+    }
 
     // Direction Calculation
     Vector2 direction = ((Vector2)path.vectorPath[currentWaypoint] - botVars.rb.position).normalized;
@@ -154,7 +165,7 @@ public class BotPathfinding : NetworkBehaviour
 
     // Add drag
     // https://forum.unity.com/threads/physics-drag-formula.252406/
-    botVars.rb.velocity = new Vector2(botVars.rb.velocity.x * (1 - Time.fixedDeltaTime * drag), botVars.rb.velocity.y);
+    botVars.rb.velocity = new Vector2(botVars.rb.velocity.x * (1 - (Time.fixedDeltaTime * drag)), botVars.rb.velocity.y);
 
 
     // Next Waypoint

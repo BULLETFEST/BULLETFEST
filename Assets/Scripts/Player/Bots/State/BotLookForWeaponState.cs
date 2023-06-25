@@ -2,7 +2,7 @@ using UnityEngine;
 
 public class BotLookForWeaponState : BotBaseState
 {
-  GameObject nearestGun;
+  private GameObject nearestGun;
 
   public override void EnterState(BotPathfinding manager)
   {
@@ -11,7 +11,7 @@ public class BotLookForWeaponState : BotBaseState
     manager.OnReachTarget += ReachedTarget;
   }
 
-  bool pickedWeaponUp;
+  private bool pickedWeaponUp;
 
   public void ReachedTarget(BotPathfinding manager)
   {
@@ -22,7 +22,10 @@ public class BotLookForWeaponState : BotBaseState
       manager.botVars.botBehavior.SwitchWeapon(nearestGun);
       manager.SwitchState(manager.botHauntPlayerState);
     }
-    else pickedWeaponUp = false;
+    else
+    {
+      pickedWeaponUp = false;
+    }
   }
 
   public override void ExitState(BotPathfinding manager)
@@ -34,14 +37,22 @@ public class BotLookForWeaponState : BotBaseState
   {
     nearestGun = Utilities.FindNearest(manager.transform, "WeaponItem");
 
-    if (nearestGun == null && !pickedWeaponUp) manager.SwitchState(manager.botFleeState);
+    if (nearestGun == null && !pickedWeaponUp)
+    {
+      manager.SwitchState(manager.botFleeState);
+    }
   }
 
   public override void CalculatePath(BotPathfinding manager)
   {
     if (nearestGun != null)
-      manager.seeker.StartPath(manager.transform.position, nearestGun.transform.position);
+    {
+      _ = manager.seeker.StartPath(manager.transform.position, nearestGun.transform.position);
+    }
   }
 
-  public override float Timer() => 1.75f;
+  public override float Timer()
+  {
+    return 1.75f;
+  }
 }

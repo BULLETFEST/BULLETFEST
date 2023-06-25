@@ -10,7 +10,7 @@ public class Message : MonoBehaviour
 
   public static Button closeBtn;
 
-  void Start()
+  private void Start()
   {
     canvas = GetComponent<Canvas>();
 
@@ -20,8 +20,14 @@ public class Message : MonoBehaviour
 
     foreach (TMP_Text text in texts)
     {
-      if (text.gameObject.name == "Title") title = text;
-      else if (text.gameObject.name == "Content") content = text;
+      if (text.gameObject.name == "Title")
+      {
+        title = text;
+      }
+      else if (text.gameObject.name == "Content")
+      {
+        content = text;
+      }
     }
   }
 
@@ -74,12 +80,6 @@ public class Message : MonoBehaviour
     public int _alignment;
     public bool disconnect;
 
-    public HorizontalAlignmentOptions alignment
-    {
-      get
-      {
-        return (HorizontalAlignmentOptions)_alignment;
-      }
-    }
+    public readonly HorizontalAlignmentOptions alignment => (HorizontalAlignmentOptions)_alignment;
   }
 }

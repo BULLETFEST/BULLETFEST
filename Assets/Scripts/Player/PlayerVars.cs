@@ -43,7 +43,7 @@ public class PlayerVars : NetworkBehaviour
   public string displayName;
 
   // Start is called before the first frame update
-  void Awake()
+  private void Awake()
   {
     rb = GetComponent<Rigidbody2D>();
     bc = GetComponent<BoxCollider2D>();
@@ -64,13 +64,13 @@ public class PlayerVars : NetworkBehaviour
   }
 
   [Command]
-  void UpdateDisplayName(NetworkConnectionToClient conn)
+  private void UpdateDisplayName(NetworkConnectionToClient conn)
   {
     displayName = MyNetworkManager.instance.players[conn].displayName;
   }
 
   // [ServerCallback]
-  void HandleUpdateDisplayName(string oldName, string newName)
+  private void HandleUpdateDisplayName(string oldName, string newName)
   {
     uiName.text = newName;
 
@@ -78,7 +78,7 @@ public class PlayerVars : NetworkBehaviour
   }
 
   [ClientRpc]
-  void Rpc_UpdateDisplayName()
+  private void Rpc_UpdateDisplayName()
   {
     uiName.text = displayName;
     name = displayName;

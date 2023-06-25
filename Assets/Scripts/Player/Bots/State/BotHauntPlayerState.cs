@@ -3,26 +3,28 @@ using UnityEngine;
 
 public class BotHauntPlayerState : BotBaseState
 {
-  GameObject nearestPlayer;
+  private GameObject nearestPlayer;
 
   public override void EnterState(BotPathfinding manager)
   {
-    nearestPlayer = Utilities.FindNearest(manager.transform, GameObject.FindObjectsOfType<DamageController>());
+    nearestPlayer = Utilities.FindNearest(manager.transform, Object.FindObjectsOfType<DamageController>());
   }
 
   public void ReachedTarget(BotPathfinding manager)
   {
     if (nearestPlayer != null)
+    {
       manager.botVars.botBehavior.SwitchWeapon(nearestPlayer);
+    }
   }
 
   public override void ExitState(BotPathfinding manager) { }
 
-  bool haunt = false;
+  private bool haunt = false;
 
   public override void UpdateState(BotPathfinding manager)
   {
-    nearestPlayer = Utilities.FindNearest(manager.transform, GameObject.FindObjectsOfType<DamageController>().Where(x => x.gameObject != manager.gameObject && !x.dead).ToArray());
+    nearestPlayer = Utilities.FindNearest(manager.transform, Object.FindObjectsOfType<DamageController>().Where(x => x.gameObject != manager.gameObject && !x.dead).ToArray());
 
     if (nearestPlayer != null)
     {
@@ -38,21 +40,14 @@ public class BotHauntPlayerState : BotBaseState
         return;
       }
 
-      if (rh.collider.gameObject.tag == "Player" || rh.collider.gameObject.tag == "Bot")
+      if (rh.collider.gameObject.tag is "Player" or "Bot")
       {
         haunt = false;
 
         manager.path = null;
         manager.currentWaypoint = 0;
 
-        if (dir.x > 0)
-        {
-          manager.botVars.graphics.transform.rotation = Quaternion.Euler(0, 0, 0);
-        }
-        else
-        {
-          manager.botVars.graphics.transform.rotation = Quaternion.Euler(0, 180, 0);
-        }
+        manager.botVars.graphics.transform.rotation = dir.x > 0 ? Quaternion.Euler(0, 0, 0) : Quaternion.Euler(0, 180, 0);
 
         Vector2 playerPos = rh.collider.transform.position;
 
@@ -64,7 +59,10 @@ public class BotHauntPlayerState : BotBaseState
 
         manager.botVars.botBehavior.Fire(playerPos.x, angle);
 
-        if (manager.botVars.botWb.weapon.bulletsInMag <= 0) manager.SwitchState(manager.botFleeState);
+        if (manager.botVars.botWb.weapon.bulletsInMag <= 0)
+        {
+          manager.SwitchState(manager.botFleeState);
+        }
       }
       else
       {
@@ -76,8 +74,13 @@ public class BotHauntPlayerState : BotBaseState
   public override void CalculatePath(BotPathfinding manager)
   {
     if (nearestPlayer != null && haunt)
-      manager.seeker.StartPath(manager.transform.position, nearestPlayer.transform.position);
+    {
+      _ = manager.seeker.StartPath(manager.transform.position, nearestPlayer.transform.position);
+    }
   }
 
-  public override float Timer() => 0.15f;
+  public override float Timer()
+  {
+    return 0.15f;
+  }
 }

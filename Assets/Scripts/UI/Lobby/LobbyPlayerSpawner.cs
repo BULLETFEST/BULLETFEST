@@ -6,8 +6,7 @@ using UnityEngine.UI;
 public class LobbyPlayerSpawner : NetworkBehaviour
 {
   [SerializeField] private GameObject lobbyPlayer;
-
-  Color[] colors = new Color[] {
+  private Color[] colors = new Color[] {
     new Color(0.5882353f, 0.1137255f, 0.04313726f), // 961D0B
     new Color(0.0993236f, 0.4487756f, 0.6792453f), // 1972AD
     new Color(0.1027946f, 0.6226415f, 0.1877513f), // 1A9F30
@@ -40,10 +39,13 @@ public class LobbyPlayerSpawner : NetworkBehaviour
     LobbyPlayer card = player.GetComponent<LobbyPlayer>();
     card.DisplayNameUI.text = "Loading...";
 
-    if (conn != NetworkServer.localConnection) player.GetComponent<LobbyPlayer>().kickBtn.gameObject.SetActive(true);
+    if (conn != NetworkServer.localConnection)
+    {
+      player.GetComponent<LobbyPlayer>().kickBtn.gameObject.SetActive(true);
+    }
 
     NetworkServer.Spawn(player, conn);
-    NetworkServer.AddPlayerForConnection(conn, player);
+    _ = NetworkServer.AddPlayerForConnection(conn, player);
     NetworkServer.SetClientReady(conn);
 
     // CallPlayerJoined();
@@ -54,7 +56,9 @@ public class LobbyPlayerSpawner : NetworkBehaviour
     for (int i = 0; i < conns.Length; i++)
     {
       if (conns[i].identity != null)
+      {
         SyncPreviousPlayers(conn, conns[i].identity.gameObject, i, i == 0);
+      }
     }
 
   }
@@ -120,7 +124,10 @@ public class LobbyPlayerSpawner : NetworkBehaviour
     });
   }
 
-  public void PlayerDisconnect(NetworkConnectionToClient conn) => CallPlayerDisconnect();
+  public void PlayerDisconnect(NetworkConnectionToClient conn)
+  {
+    CallPlayerDisconnect();
+  }
 
   [ClientRpc]
   public void CallPlayerDisconnect()

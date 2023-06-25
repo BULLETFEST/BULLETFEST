@@ -42,20 +42,20 @@ public class Utilities : MonoBehaviour
 
   public static bool GetKeybind(string key)
   {
-    if (!SaveSystem.saveData.settings.keybinds.ContainsKey(key)) return false;
-    return Input.GetKey(StringToKeyCode(SaveSystem.saveData.settings.keybinds[key])) || Input.GetKey(StringToKeyCode(SaveSystem.saveData.settings.keybinds[key + "2"]));
+    return SaveSystem.saveData.settings.keybinds.ContainsKey(key)
+&& (Input.GetKey(StringToKeyCode(SaveSystem.saveData.settings.keybinds[key])) || Input.GetKey(StringToKeyCode(SaveSystem.saveData.settings.keybinds[key + "2"])));
   }
 
   public static bool GetKeybindDown(string key)
   {
-    if (!SaveSystem.saveData.settings.keybinds.ContainsKey(key)) return false;
-    return Input.GetKeyDown(StringToKeyCode(SaveSystem.saveData.settings.keybinds[key])) || Input.GetKeyDown(StringToKeyCode(SaveSystem.saveData.settings.keybinds[key + "2"]));
+    return SaveSystem.saveData.settings.keybinds.ContainsKey(key)
+&& (Input.GetKeyDown(StringToKeyCode(SaveSystem.saveData.settings.keybinds[key])) || Input.GetKeyDown(StringToKeyCode(SaveSystem.saveData.settings.keybinds[key + "2"])));
   }
 
   public static bool GetKeybindUp(string key)
   {
-    if (!SaveSystem.saveData.settings.keybinds.ContainsKey(key)) return false;
-    return Input.GetKeyUp(StringToKeyCode(SaveSystem.saveData.settings.keybinds[key])) || Input.GetKeyUp(StringToKeyCode(SaveSystem.saveData.settings.keybinds[key + "2"]));
+    return SaveSystem.saveData.settings.keybinds.ContainsKey(key)
+&& (Input.GetKeyUp(StringToKeyCode(SaveSystem.saveData.settings.keybinds[key])) || Input.GetKeyUp(StringToKeyCode(SaveSystem.saveData.settings.keybinds[key + "2"])));
   }
 
   public static string AddSpacesToString(string text)
@@ -94,7 +94,10 @@ public class Utilities : MonoBehaviour
   {
     dir = dir.normalized;
     float n = Mathf.Atan2(dir.y, dir.x) * Mathf.Rad2Deg;
-    if (n < 0) n += 360;
+    if (n < 0)
+    {
+      n += 360;
+    }
 
     return n;
   }

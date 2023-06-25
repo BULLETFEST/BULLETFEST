@@ -43,13 +43,18 @@ public class LobbyPlayer : NetworkBehaviour
 
 
   [Command]
-  void UpdateDisplayName(string dName)
+  private void UpdateDisplayName(string dName)
   {
-    if (dName.Length > 16) dName = dName.Substring(0, 16);
-
+    if (dName.Length > 16)
+    {
+      dName = dName[..16];
+    }
 
     if (MyNetworkManager.instance.players.ContainsKey(connectionToClient))
-      MyNetworkManager.instance.players.Remove(connectionToClient);
+    {
+      _ = MyNetworkManager.instance.players.Remove(connectionToClient);
+    }
+
     MyNetworkManager.instance.players.Add(connectionToClient, new PlayerData(dName));
 
     MyNetworkManager.instance.PlayerUpdate?.Invoke();
@@ -57,8 +62,7 @@ public class LobbyPlayer : NetworkBehaviour
     displayName = dName;
   }
 
-
-  void HandleUpdateName(string oldName, string newName)
+  private void HandleUpdateName(string oldName, string newName)
   {
     DisplayNameUI.text = newName;
   }

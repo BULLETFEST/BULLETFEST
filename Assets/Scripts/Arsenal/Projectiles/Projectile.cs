@@ -35,8 +35,15 @@ public class Projectile : NetworkBehaviour
   internal virtual void Start()
   {
     Server_DisableCollisionWith(owner);
-    if (destroySelf) StartCoroutine(DestroySelf());
-    if (modifyStartingRotation) transform.rotation = Quaternion.Euler(startingRotation);
+    if (destroySelf)
+    {
+      _ = StartCoroutine(DestroySelf());
+    }
+
+    if (modifyStartingRotation)
+    {
+      transform.rotation = Quaternion.Euler(startingRotation);
+    }
   }
 
   internal virtual IEnumerator DestroySelf()
@@ -56,21 +63,33 @@ public class Projectile : NetworkBehaviour
 
     DealDamage(other.gameObject);
 
-    if (!passThrough) NetworkServer.Destroy(gameObject);
+    if (!passThrough)
+    {
+      NetworkServer.Destroy(gameObject);
+    }
     else
     {
-      if (passedThrough >= passThroughAmount) NetworkServer.Destroy(gameObject);
+      if (passedThrough >= passThroughAmount)
+      {
+        NetworkServer.Destroy(gameObject);
+      }
+
       Server_DisableCollisionWith(other.gameObject);
       passedThrough++;
     }
   }
 
   [Command(requiresAuthority = false)]
-  internal void Server_DisableCollisionWith(GameObject other) => DisableCollisionWith(other);
+  internal void Server_DisableCollisionWith(GameObject other)
+  {
+    DisableCollisionWith(other);
+  }
 
   [ClientRpc]
-  internal void DisableCollisionWith(GameObject other) =>
+  internal void DisableCollisionWith(GameObject other)
+  {
     Physics2D.IgnoreCollision(GetComponent<Collider2D>(), other.GetComponent<Collider2D>());
+  }
 
   [Command(requiresAuthority = false)]
   internal void DealDamage(GameObject victim)

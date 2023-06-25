@@ -15,17 +15,14 @@ public class PlayerBehavior : NetworkBehaviour
   public PlayerUI uiController;
   [HideInInspector]
   public WeaponBehavior weaponBehavior;
-
-  bool shootKeyUp = true;
-
-  GameObject weaponToPickup;
+  private bool shootKeyUp = true;
+  private GameObject weaponToPickup;
 
   public GameObject gravestone, killfeed, killfeedItem;
-
-  System.Action<GameObject> PlayHitSoundAction;
+  private System.Action<GameObject> PlayHitSoundAction;
 
   // Start is called before the first frame update
-  void Start()
+  private void Start()
   {
     playerVars = GetComponent<PlayerVars>();
     uiController = GetComponent<PlayerUI>();
@@ -54,7 +51,7 @@ public class PlayerBehavior : NetworkBehaviour
     FetchTime();
   }
 
-  void OnDestroy()
+  private void OnDestroy()
   {
     playerVars.damageController.onDeath -= Server_Die;
     playerVars.damageController.onTakeDamage -= PlayHitSoundAction;
@@ -77,24 +74,40 @@ public class PlayerBehavior : NetworkBehaviour
   }
 
   [Command]
-  void FetchTime()
+  private void FetchTime()
   {
     playerVars.timeleft = FindObjectOfType<PlayerSpawnSystem>().timeStamp;
   }
 
   // Update is called once per frame
-  void Update()
+  private void Update()
   {
-    if (!isLocalPlayer) return;
+    if (!isLocalPlayer)
+    {
+      return;
+    }
 
-    if (SaveSystem.IsSettingsOpen) return;
+    if (SaveSystem.IsSettingsOpen)
+    {
+      return;
+    }
 
     weaponToPickup = FindClosestGun();
 
-    if (Utilities.GetKeybind("fire") && !playerVars.lockShooting) Fire();
-    if (Utilities.GetKeybindDown("altFire") && !playerVars.lockShooting) AltFire();
+    if (Utilities.GetKeybind("fire") && !playerVars.lockShooting)
+    {
+      Fire();
+    }
 
-    if (Utilities.GetKeybindUp("fire")) ShootKeyUp();
+    if (Utilities.GetKeybindDown("altFire") && !playerVars.lockShooting)
+    {
+      AltFire();
+    }
+
+    if (Utilities.GetKeybindUp("fire"))
+    {
+      ShootKeyUp();
+    }
 
     if (Utilities.GetKeybindDown("weaponPickup") && weaponToPickup != null)
     {
@@ -103,7 +116,7 @@ public class PlayerBehavior : NetworkBehaviour
     }
   }
 
-  GameObject FindClosestGun()
+  private GameObject FindClosestGun()
   {
     GameObject[] pickableGuns;
     pickableGuns = GameObject.FindGameObjectsWithTag("WeaponItem");
@@ -126,7 +139,7 @@ public class PlayerBehavior : NetworkBehaviour
   }
 
   [Command]
-  void SwitchWeapon(GameObject weapon)
+  private void SwitchWeapon(GameObject weapon)
   {
     if (weapon != null && !playerVars.lockMovement)
     {
@@ -137,27 +150,54 @@ public class PlayerBehavior : NetworkBehaviour
   }
 
   [ClientRpc]
-  void TargetRpc_SwitchWeapon(string WeaponID)
+  private void TargetRpc_SwitchWeapon(string WeaponID)
   {
     weaponBehavior.SwitchWeapon(WeaponID);
 
-    // if (playerVars.reloadRoutine != null) 
+    // if (playerVars.reloadRoutine != null)
   }
 
-  [Command] void ShootKeyUp() => shootKeyUp = true;
+  [Command]
+  private void ShootKeyUp()
+  {
+    shootKeyUp = true;
+  }
 
   [Command]
-  void Fire()
+  private void Fire()
   {
     WeaponClass weapon = playerVars.weaponBehavior.weapon;
 
-    if (playerVars.lockShooting) return;
-    if (weapon == null) return;
-    if (weapon.firingMode == WeaponClass.FireMode.Single && !shootKeyUp) return;
-    if (weapon.fireTimeout > NetworkTime.time) return;
-    if (weapon.bulletsInMag <= 0 && !weapon.isMelee) return;
+    if (playerVars.lockShooting)
+    {
+      return;
+    }
 
-    if (!weapon.isMelee) weapon.bulletsInMag--;
+    if (weapon == null)
+    {
+      return;
+    }
+
+    if (weapon.firingMode == WeaponClass.FireMode.Single && !shootKeyUp)
+    {
+      return;
+    }
+
+    if (weapon.fireTimeout > NetworkTime.time)
+    {
+      return;
+    }
+
+    if (weapon.bulletsInMag <= 0 && !weapon.isMelee)
+    {
+      return;
+    }
+
+    if (!weapon.isMelee)
+    {
+      weapon.bulletsInMag--;
+    }
+
     weapon.fireTimeout = (float)NetworkTime.time + (1f / weapon.fireRate);
 
     Rpc_AddForce(gameObject, weapon.shootSound);
@@ -174,9 +214,12 @@ public class PlayerBehavior : NetworkBehaviour
   }
 
   [Command]
-  void AltFire()
+  private void AltFire()
   {
-    if (playerVars.lockShooting) return;
+    if (playerVars.lockShooting)
+    {
+      return;
+    }
 
     print("Called explosion");
 
@@ -194,7 +237,7 @@ public class PlayerBehavior : NetworkBehaviour
   }
 
   [ClientRpc]
-  void Rpc_AddForce(GameObject target, string shootSound)
+  private void Rpc_AddForce(GameObject target, string shootSound)
   {
     if (playerVars.weaponBehavior.weapon.animateOnShot)
     {
@@ -203,13 +246,15 @@ public class PlayerBehavior : NetworkBehaviour
 
     playerVars.weaponBehavior.AddForce(target);
     if (shootSound != "")
+    {
       playerVars.audioSystem.PlaySound(shootSound);
+    }
   }
 
   [TargetRpc]
-  void Target_UpdateUI(int bulletsInMag)
+  private void Target_UpdateUI(int bulletsInMag)
   {
-    StartCoroutine(Camera.main.GetComponent<CameraShake>().Shake(playerVars.weaponBehavior.weapon.cameraShakeDuration,
+    _ = StartCoroutine(Camera.main.GetComponent<CameraShake>().Shake(playerVars.weaponBehavior.weapon.cameraShakeDuration,
                                                                  playerVars.weaponBehavior.weapon.cameraShakeIntensity));
     playerVars.weaponBehavior.weapon.bulletsInMag = bulletsInMag;
     uiController.UpdateAmmoText(bulletsInMag);
@@ -228,7 +273,10 @@ public class PlayerBehavior : NetworkBehaviour
   // }
 
   [TargetRpc]
-  void PlayHitSound(NetworkConnection conn) => playerVars.audioSystem.PlaySound("Hit");
+  private void PlayHitSound(NetworkConnection conn)
+  {
+    playerVars.audioSystem.PlaySound("Hit");
+  }
 
   // GameObject damageDealer = null;
   // public void OnDamageTaken(float oldHealth, float newHealth)
@@ -247,7 +295,10 @@ public class PlayerBehavior : NetworkBehaviour
 
     GameSettings.GameMode gm = MyNetworkManager.instance.settings.gameMode;
 
-    if (gm == GameSettings.GameMode.Deathmatch) playerVars.uiName.gameObject.SetActive(false);
+    if (gm == GameSettings.GameMode.Deathmatch)
+    {
+      playerVars.uiName.gameObject.SetActive(false);
+    }
 
     string killerName;
     string killedName = GetComponent<PlayerVars>().displayName;
@@ -260,8 +311,14 @@ public class PlayerBehavior : NetworkBehaviour
     {
       NetworkConnectionToClient killerIdentity = killer.GetComponent<NetworkIdentity>().connectionToClient;
 
-      if (killer == gameObject) MyNetworkManager.instance.players[killerIdentity].kills--;
-      else MyNetworkManager.instance.players[killerIdentity].kills++;
+      if (killer == gameObject)
+      {
+        MyNetworkManager.instance.players[killerIdentity].kills--;
+      }
+      else
+      {
+        MyNetworkManager.instance.players[killerIdentity].kills++;
+      }
 
       killerName = killer.GetComponent<PlayerVars>().displayName;
     }
@@ -284,7 +341,7 @@ public class PlayerBehavior : NetworkBehaviour
       }
     }
 
-    foreach (var player in NetworkServer.connections)
+    foreach (System.Collections.Generic.KeyValuePair<int, NetworkConnectionToClient> player in NetworkServer.connections)
     {
       UpdateKillfeed(player.Value, killerName, killedName, killer.GetComponentInChildren<WeaponBehavior>().weapon.GetComponentInChildren<SpriteRenderer>().sprite);
     }
@@ -307,7 +364,10 @@ public class PlayerBehavior : NetworkBehaviour
     PlayerVars localVars = conn.identity.gameObject.GetComponent<PlayerVars>();
     GameObject spawnedKillfeedItem = Instantiate(killfeedItem, Vector3.zero, Quaternion.Euler(0, 0, 0), localVars.killfeed.transform);
 
-    if (killer == killed) spawnedKillfeedItem.GetComponent<KillFeedItem>().killer.text = "";
+    if (killer == killed)
+    {
+      spawnedKillfeedItem.GetComponent<KillFeedItem>().killer.text = "";
+    }
     else
     {
       spawnedKillfeedItem.GetComponent<KillFeedItem>().killer.text = killer;

@@ -3,22 +3,21 @@ using UnityEngine;
 
 public class InputFieldEnter : MonoBehaviour
 {
-  TMP_InputField inputField;
+  private TMP_InputField inputField;
 
   public UnityEngine.Events.UnityEvent onSubmit;
-
-  bool allowSubmit;
+  private bool allowSubmit;
 
   public TMP_InputField nextField;
 
   // Start is called before the first frame update
-  void Start()
+  private void Start()
   {
     inputField = GetComponent<TMP_InputField>();
   }
 
   // Update is called once per frame
-  void Update()
+  private void Update()
   {
     if (allowSubmit)
     {

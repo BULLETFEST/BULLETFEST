@@ -6,14 +6,13 @@ public class OffscreenPointer : NetworkBehaviour
 {
   private List<RectTransform> pointerRectTransform = new();
 
-  [SerializeField] float borderSize = 25f;
+  [SerializeField] private float borderSize = 25f;
 
   [SerializeField]
   private GameObject arrowContainer,
                      arrowPrefab;
 
-
-  void Start()
+  private void Start()
   {
     if (!isLocalPlayer)
     {
@@ -30,7 +29,7 @@ public class OffscreenPointer : NetworkBehaviour
     }
   }
 
-  void FixedUpdate()
+  private void FixedUpdate()
   {
     PlayerNetworking[] players = FindObjectsOfType<PlayerNetworking>();
 
@@ -40,7 +39,7 @@ public class OffscreenPointer : NetworkBehaviour
     }
   }
 
-  void IfIsOffScreen(GameObject target, int idx)
+  private void IfIsOffScreen(GameObject target, int idx)
   {
 
     Vector3 targetPosition = target.transform.position;
@@ -55,10 +54,25 @@ public class OffscreenPointer : NetworkBehaviour
       RotatePointerTowardsTargetPosition(targetPosition, idx);
 
       Vector3 cappedTargetScreenPosition = targetPositionScreenPoint;
-      if (cappedTargetScreenPosition.x <= borderSize) cappedTargetScreenPosition.x = borderSize;
-      if (cappedTargetScreenPosition.x >= Screen.width - borderSize) cappedTargetScreenPosition.x = Screen.width - borderSize;
-      if (cappedTargetScreenPosition.y <= borderSize) cappedTargetScreenPosition.y = borderSize;
-      if (cappedTargetScreenPosition.y >= Screen.height - borderSize) cappedTargetScreenPosition.y = Screen.height - borderSize;
+      if (cappedTargetScreenPosition.x <= borderSize)
+      {
+        cappedTargetScreenPosition.x = borderSize;
+      }
+
+      if (cappedTargetScreenPosition.x >= Screen.width - borderSize)
+      {
+        cappedTargetScreenPosition.x = Screen.width - borderSize;
+      }
+
+      if (cappedTargetScreenPosition.y <= borderSize)
+      {
+        cappedTargetScreenPosition.y = borderSize;
+      }
+
+      if (cappedTargetScreenPosition.y >= Screen.height - borderSize)
+      {
+        cappedTargetScreenPosition.y = Screen.height - borderSize;
+      }
 
       Vector3 pointerWorldPosition = Camera.main.ScreenToWorldPoint(cappedTargetScreenPosition);
       pointerRectTransform[idx].position = pointerWorldPosition;

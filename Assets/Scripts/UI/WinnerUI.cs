@@ -8,8 +8,7 @@ public class WinnerUI : NetworkBehaviour
 {
   public TMP_Text winnerText;
   public Image playerImage;
-
-  MyNetworkManager nm;
+  private MyNetworkManager nm;
 
   private void Start()
   {
@@ -19,7 +18,7 @@ public class WinnerUI : NetworkBehaviour
 
   public void AnimationOver()
   {
-    StartCoroutine(SwitchScene());
+    _ = StartCoroutine(SwitchScene());
   }
 
   [ServerCallback]

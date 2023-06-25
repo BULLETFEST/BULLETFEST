@@ -2,14 +2,21 @@ using UnityEngine;
 
 public class Loading : MonoBehaviour
 {
-  static Canvas loadingCanvas;
+  private static Canvas loadingCanvas;
+
   // Start is called before the first frame update
-  void Start()
+  private void Start()
   {
     loadingCanvas = GetComponent<Canvas>();
   }
 
-  public static void Show() => loadingCanvas.enabled = true;
+  public static void Show()
+  {
+    loadingCanvas.enabled = true;
+  }
 
-  public static void Hide() => loadingCanvas.enabled = false;
+  public static void Hide()
+  {
+    loadingCanvas.enabled = false;
+  }
 }

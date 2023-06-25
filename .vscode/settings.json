@@ -60,7 +60,21 @@
   "omnisharp.enableRoslynAnalyzers": true,
   "omnisharp.enableEditorConfigSupport": true,
   "omnisharp.useModernNet": false,
-  "formatFiles.excludedFolders": ["node_modules", ".vscode", ".git", "dist", ".chrome", ".github", "Mirror"],
+  "omnisharp.useEditorFormattingSettings": true,
+  "formatFiles.excludedFolders": [
+    "node_modules",
+    ".vscode",
+    ".git",
+    "dist",
+    ".chrome",
+    ".github",
+    "Assets/Mirror",
+    "Library",
+    "Assets/AstarPathfindingProject",
+    "Assets/ParrelSync",
+    "Assets/Plugins",
+    "obj"
+  ],
   "formatFiles.useGitIgnore": true,
   "formatFiles.extensionsToInclude": ".cs"
 }

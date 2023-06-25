@@ -4,7 +4,7 @@ using UnityEngine;
 public class Friendlist : MonoBehaviour
 {
   [SerializeField]
-  GameObject friendPrefab,
+  private GameObject friendPrefab,
              friendsContainer;
 
   public void UpdateList()
