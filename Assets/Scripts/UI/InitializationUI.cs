@@ -100,11 +100,14 @@ public class InitializationUI : MonoBehaviour
       if (res.data)
       {
         SceneManager.LoadScene(1);
+        return;
+
       }
       else
       {
         SaveSystem.saveData.token = "";
         SaveSystem.SavePlayer(SaveSystem.saveData);
+        return;
       }
     }
 

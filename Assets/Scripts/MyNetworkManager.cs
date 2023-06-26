@@ -49,7 +49,7 @@ public class MyNetworkManager : NetworkManager
   public bool enableTestMode;
 
 #if UNITY_EDITOR
-  public static bool testMode = true;
+  public static bool testMode = false;
 #else
 public static readonly bool testMode = false;
 #endif
@@ -158,7 +158,6 @@ public static readonly bool testMode = false;
   public override void OnStartServer()
   {
     base.OnStartServer();
-    isHost = true;
     StartCoroutine(KeepAlive());
   }
 

@@ -16,6 +16,7 @@ public class LobbyUIManager : NetworkBehaviour
 
   private void Awake()
   {
+    print(nm.isHost);
     if (!nm.isHost)
     {
       startButton.gameObject.SetActive(false);

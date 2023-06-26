@@ -303,7 +303,9 @@ public class PlayerBehavior : NetworkBehaviour
     string killerName;
     string killedName = GetComponent<PlayerVars>().displayName;
 
-    if (killer.GetComponent<BotVars>())
+    bool botKiller = killer.GetComponent<BotVars>() != null;
+
+    if (botKiller)
     {
       killerName = "BOT";
     }
@@ -323,7 +325,7 @@ public class PlayerBehavior : NetworkBehaviour
       killerName = killer.GetComponent<PlayerVars>().displayName;
     }
 
-    ClientRpc_Die(killerName, killedName);
+    ClientRpc_Die();
 
     if (gm != GameSettings.GameMode.Deathmatch)
     {
@@ -343,14 +345,14 @@ public class PlayerBehavior : NetworkBehaviour
 
     foreach (System.Collections.Generic.KeyValuePair<int, NetworkConnectionToClient> player in NetworkServer.connections)
     {
-      UpdateKillfeed(player.Value, killerName, killedName, killer.GetComponentInChildren<WeaponBehavior>().weapon.GetComponentInChildren<SpriteRenderer>().sprite);
+      UpdateKillfeed(player.Value, killerName, killedName);
     }
 
     MyNetworkManager.instance.OnPlayerDie(connectionToClient);
   }
 
   [ClientRpc]
-  public void ClientRpc_Die(string killer, string killed)
+  public void ClientRpc_Die()
   {
     playerVars.graphics.DisableAll();
     playerVars.uiName.gameObject.SetActive(false);
@@ -359,20 +361,14 @@ public class PlayerBehavior : NetworkBehaviour
   }
 
   [TargetRpc]
-  public void UpdateKillfeed(NetworkConnection conn, string killer, string killed, Sprite weaponImage)
+  public void UpdateKillfeed(NetworkConnection conn, string killer, string killed)
   {
-    PlayerVars localVars = conn.identity.gameObject.GetComponent<PlayerVars>();
+    // print(gameObject);
+    PlayerVars localVars = gameObject.GetComponent<PlayerVars>();
     GameObject spawnedKillfeedItem = Instantiate(killfeedItem, Vector3.zero, Quaternion.Euler(0, 0, 0), localVars.killfeed.transform);
 
-    if (killer == killed)
-    {
-      spawnedKillfeedItem.GetComponent<KillFeedItem>().killer.text = "";
-    }
-    else
-    {
-      spawnedKillfeedItem.GetComponent<KillFeedItem>().killer.text = killer;
-      spawnedKillfeedItem.GetComponent<KillFeedItem>().weapon.sprite = weaponImage;
-    }
+
+    spawnedKillfeedItem.GetComponent<KillFeedItem>().killer.text = killer;
     spawnedKillfeedItem.GetComponent<KillFeedItem>().killed.text = killed;
   }
 }

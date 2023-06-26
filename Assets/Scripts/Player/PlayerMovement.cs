@@ -181,7 +181,7 @@ public class PlayerMovement : NetworkBehaviour
 
     if (transform.position.y is <= (-15) or >= 50)
     {
-      GetComponent<DamageController>().TakeDamage(9999999, null);
+      GetComponent<DamageController>().TakeDamage(9999999, gameObject);
     }
 
     xRaw = Mathf.Clamp(xRaw, -1, 1);

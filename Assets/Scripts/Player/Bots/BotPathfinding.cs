@@ -63,7 +63,7 @@ public class BotPathfinding : NetworkBehaviour
 
   private void Update()
   {
-    if (Time.timeScale == 0 || botVars.damageController.dead || !isServer || !enablePathfinding)
+    if (Time.timeScale == 0 || !isServer || botVars.damageController.dead || !enablePathfinding)
     {
       return;
     }
