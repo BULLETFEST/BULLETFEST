@@ -17,13 +17,14 @@ public class BotPathfinding : NetworkBehaviour
   private bool enablePathfinding = true;
 
   [HideInInspector] public int currentWaypoint = 0;
-  [HideInInspector] public bool dead;
   [HideInInspector] public Path path;
   [HideInInspector] public BotVars botVars;
   [HideInInspector] public Seeker seeker;
-  [HideInInspector] public static GameObject[] nodes;
+  [HideInInspector] public bool AvoidOthers = false;
+
   private RaycastHit2D isGrounded;
   private BotBaseState currentState;
+  private bool dead;
 
   public BotFleeState botFleeState = new();
   public BotLookForWeaponState botLookForWeaponState = new();
@@ -34,8 +35,6 @@ public class BotPathfinding : NetworkBehaviour
   public override void OnStartServer()
   {
     base.OnStartServer();
-
-    nodes ??= GameObject.FindGameObjectsWithTag("NavigationPoint");
   }
 
   private void Start()
@@ -57,7 +56,6 @@ public class BotPathfinding : NetworkBehaviour
 
   private void OnDestroy()
   {
-    nodes = null;
     seeker.pathCallback -= OnPathComplete;
   }
 
@@ -93,7 +91,7 @@ public class BotPathfinding : NetworkBehaviour
       return;
     }
 
-    if (seeker.IsDone())
+    if (path == null || seeker.IsDone())
     {
       currentState.CalculatePath(this);
     };
@@ -107,7 +105,7 @@ public class BotPathfinding : NetworkBehaviour
     {
       // Add drag
       // https://forum.unity.com/threads/physics-drag-formula.252406/
-      botVars.rb.velocity = new Vector2(botVars.rb.velocity.x * (1 - (Time.fixedDeltaTime * drag)), botVars.rb.velocity.y);
+      botVars.rb.velocity = new Vector2(botVars.rb.velocity.x * (1 - (Time.deltaTime * drag)), botVars.rb.velocity.y);
 
       return;
     }
@@ -117,6 +115,7 @@ public class BotPathfinding : NetworkBehaviour
     {
       OnReachTarget?.Invoke(this);
       path = null;
+      currentState.CalculatePath(this);
       return;
     }
 
@@ -134,10 +133,12 @@ public class BotPathfinding : NetworkBehaviour
     // Direction Calculation
     Vector2 direction = ((Vector2)path.vectorPath[currentWaypoint] - botVars.rb.position).normalized;
 
+    bool hasObstacle = Physics2D.BoxCast(transform.position, botVars.bc.bounds.size, 0, transform.right, Random.Range(0.01f, 0.5f), playerLm);
+
     // Jump
-    if (direction.y > jumpNodeHeightRequirement)
+    if (direction.y > jumpNodeHeightRequirement || hasObstacle)
     {
-      if (isGrounded)
+      if (isGrounded && botVars.rb.velocity.y < 0.5f)
       {
         botVars.rb.AddForce(Vector2.up * jumpForce);//speed * jumpModifier);
       }
@@ -152,7 +153,7 @@ public class BotPathfinding : NetworkBehaviour
     }
 
     // Movement
-    if (Mathf.Abs(direction.x) >= 0.45f)
+    if (Mathf.Abs(direction.x) >= 0.15f)
     {
       // Get Desired moving direction
       float targetSpeed = (direction.x > 0 ? 1 : -1) * speed;

@@ -9,6 +9,9 @@ public class GunSpawner : NetworkBehaviour
 
   public GameObject goldenGun;
 
+  [SerializeField] private GameObject specialSpawn;
+  [SerializeField] private bool b_specialSpawn;
+
   // const float spawnInterval = 8f;
 
   // Percent chance (1.0f = 10%, 2.5f = 25%, etc)
@@ -45,23 +48,27 @@ public class GunSpawner : NetworkBehaviour
     if (rndNum >= 10f - spawnChance || firstRound)
     {
       firstRound = false;
-      // if ()
-      GameObject spawnedGun = MyNetworkManager.instance.settings.goldenGun
-        ? Instantiate(goldenGun,
-                     new Vector2(Random.Range(spawnMinMax[0], spawnMinMax[1]), transform.position.y),
-                     Quaternion.Euler(0, 0, 0))
-        : Instantiate(weapons[Random.Range(0, weapons.Count)],
-                                            new Vector2(Random.Range(spawnMinMax[0], spawnMinMax[1]), transform.position.y),
-                                            Quaternion.Euler(0, 0, 0));
+
+      GameObject toSpawn;
+      GameObject spawnedGun;
+
+      toSpawn = MyNetworkManager.instance.settings.goldenGun
+        ? goldenGun
+        : b_specialSpawn ? specialSpawn : weapons[Random.Range(0, weapons.Count)];
+
+      spawnedGun = Instantiate(toSpawn, new Vector2(Random.Range(spawnMinMax[0], spawnMinMax[1]), transform.position.y), Quaternion.Euler(0, 0, 0));
+
       spawnedGun.GetComponent<Rigidbody2D>().AddTorque(Random.Range(0, 1) == 0 ? Random.Range(-20f, -80f) : Random.Range(20f, 80f));
 
-      // spawnedGun.GetComponent<Rigidbody2D>().angularVelocity = 10.0f;
       NetworkServer.Spawn(spawnedGun);
     }
 
+<<<<<<< Updated upstream
     yield return new WaitForSecondsRealtime(1.3f);
     // yield return new WaitForSecondsRealtime(spawnInterval);
+=======
+    yield return new WaitForSeconds(1.3f);
+>>>>>>> Stashed changes
     StartCoroutine(SpawnWeapon());
-    // }
   }
 }

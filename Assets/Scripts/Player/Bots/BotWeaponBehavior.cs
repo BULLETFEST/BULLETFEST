@@ -41,6 +41,9 @@ public class BotWeaponBehavior : MonoBehaviour
         break;
       case "rpg":
         throw new System.NotImplementedException();
+      case "mel":
+        StartCoroutine(Fire_Melee(shooter));
+        break;
       default:
         break;
     }
@@ -99,6 +102,25 @@ public class BotWeaponBehavior : MonoBehaviour
     botVars.lockMovement = false;
   }
 
+  public IEnumerator Fire_Melee(GameObject shooter)
+  {
+    yield return new WaitForSeconds(weapon.animationShotDamageDelay);
+    RaycastHit2D hit = Physics2D.Raycast(weapon.projectileSpawnPoint.transform.position, transform.right, weapon.meleeRange);
+    if (hit.collider == null)
+    {
+      yield break;
+    }
+
+    Debug.DrawLine(weapon.projectileSpawnPoint.transform.position, hit.point, Color.white, 2f);
+
+    if (!hit.collider.GetComponent<DamageController>())
+    {
+      yield break;
+    }
+
+    hit.collider.GetComponent<DamageController>().TakeDamage(weapon.damage, shooter);
+  }
+
   public void SwitchWeapon(string weaponID)
   {
     if (weapon != null)
@@ -117,5 +139,10 @@ public class BotWeaponBehavior : MonoBehaviour
     }
 
     botVars.graphics.sprites.Add(newWeapon.GetComponentInChildren<SpriteRenderer>());
+
+    if (weapon.animateOnShot)
+    {
+      botVars.weaponAnimator.animator = weapon.GetComponent<Animator>();
+    }
   }
 }

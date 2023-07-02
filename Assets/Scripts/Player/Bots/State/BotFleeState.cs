@@ -1,8 +1,9 @@
-using System.Linq;
+using Pathfinding;
 using UnityEngine;
 
 public class BotFleeState : BotBaseState
 {
+<<<<<<< Updated upstream
   private GameObject furthestNode;
   private GameObject nearestPlayer;
   private bool escaping;
@@ -23,6 +24,15 @@ public class BotFleeState : BotBaseState
   {
     escaping = false;
   }
+=======
+
+  public override void EnterState(BotPathfinding manager)
+  {
+    manager.OnReachTarget += ReachedTarget;
+  }
+
+  public void ReachedTarget(BotPathfinding manager) { }
+>>>>>>> Stashed changes
 
   public override void ExitState(BotPathfinding manager)
   {
@@ -31,9 +41,12 @@ public class BotFleeState : BotBaseState
 
   public override void UpdateState(BotPathfinding manager)
   {
+<<<<<<< Updated upstream
     furthestNode = Utilities.FindFurthest(manager.transform, "NavigationPoint");
     nearestPlayer = Utilities.FindNearest(manager.transform, Object.FindObjectsOfType<DamageController>().Where(x => x.gameObject != manager.gameObject && !x.dead).ToArray());
 
+=======
+>>>>>>> Stashed changes
     if (GameObject.FindGameObjectWithTag("WeaponItem"))
     {
       manager.SwitchState(manager.botLookForWeaponState);
@@ -42,6 +55,7 @@ public class BotFleeState : BotBaseState
 
   public override void CalculatePath(BotPathfinding manager)
   {
+<<<<<<< Updated upstream
     if (escaping)
     {
       manager.seeker.StartPath(manager.transform.position, tempFurthest.transform.position);
@@ -52,10 +66,14 @@ public class BotFleeState : BotBaseState
       tempFurthest = furthestNode;
       escaping = true;
     }
+=======
+    RandomPath path = RandomPath.Construct(manager.transform.position, 10 * 1000);
+    manager.seeker.StartPath(path);
+>>>>>>> Stashed changes
   }
 
   public override float Timer()
   {
-    return 0.15f;
+    return 2.25f;
   }
 }

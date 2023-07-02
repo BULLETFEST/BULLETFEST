@@ -9,6 +9,7 @@ public class BotVars : MonoBehaviour
   [HideInInspector] public SpriteGroup graphics;
   [HideInInspector] public BotBehavior botBehavior;
   [HideInInspector] public DamageController damageController;
+  [HideInInspector] public Mirror.NetworkAnimator weaponAnimator;
 
   public TMP_Text uiName;
 
@@ -25,5 +26,6 @@ public class BotVars : MonoBehaviour
     graphics = GetComponentInChildren<SpriteGroup>();
     botBehavior = GetComponent<BotBehavior>();
     damageController = GetComponent<DamageController>();
+    weaponAnimator = GetComponent<Mirror.NetworkAnimator>();
   }
 }

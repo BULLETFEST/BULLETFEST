@@ -118,14 +118,14 @@ public class Utilities : MonoBehaviour
     return diff.sqrMagnitude;
   }
 
-  public static GameObject FindNearest(Transform origin, string tag)
+  public static GameObject FindNearest(Transform origin, string tag, float maxDist = -1)
   {
     Transform[] objects = GameObject.FindGameObjectsWithTag(tag).Select(x => x.transform).ToArray();
 
     return FindNearest(origin, objects);
   }
 
-  public static GameObject FindNearest(Transform origin, Component[] objects)
+  public static GameObject FindNearest(Transform origin, Component[] objects, float maxDist = -1)
   {
     GameObject closest = null;
     float distance = Mathf.Infinity;
@@ -139,7 +139,9 @@ public class Utilities : MonoBehaviour
       }
     }
 
-    return closest;
+    // if maxDist bigger than -1: check if distance is smaller than maxDist if yes return closest otherwise null
+    // else return closest
+    return maxDist > -1 ? distance <= maxDist ? closest : null : closest;
   }
 
   public static GameObject FindFurthest(Transform origin, string tag)
@@ -156,6 +158,10 @@ public class Utilities : MonoBehaviour
     foreach (Component go in objects)
     {
       float curDistance = CalculateDistance(go.transform.position, origin.position);
+<<<<<<< Updated upstream
+=======
+      // print(curDistance);
+>>>>>>> Stashed changes
       if (curDistance > distance)
       {
         furthest = go.gameObject;
@@ -163,6 +169,11 @@ public class Utilities : MonoBehaviour
       }
     }
 
+<<<<<<< Updated upstream
+=======
+    // print(furthest);
+
+>>>>>>> Stashed changes
     return furthest;
   }
 

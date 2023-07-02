@@ -73,9 +73,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   sceneId: 0
+  _assetId: 1267945278
   serverOnly: 0
   visible: 0
-  m_AssetId: 1cd6fecd7fbaded44aa96f7c0367fef5
   hasSpawned: 0
 --- !u!114 &3801778096542937588
 MonoBehaviour:
@@ -89,6 +89,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 57cd960bc7caf34429d38f3e8a8a5a35, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  syncDirection: 0
   syncMode: 0
   syncInterval: 0.1
   weapons:
@@ -101,3 +102,5 @@ MonoBehaviour:
   - {fileID: 3075476997647957983, guid: 03addc5a30706fd42a09b0256267504e, type: 3}
   - {fileID: 3075476997647957983, guid: d7146960aa73de84992056a414dcb0fd, type: 3}
   goldenGun: {fileID: 3075476997647957983, guid: 60deb3cb8c34b2a4fb14080c0cd942be, type: 3}
+  specialSpawn: {fileID: 3075476997647957983, guid: 03addc5a30706fd42a09b0256267504e, type: 3}
+  b_specialSpawn: 0

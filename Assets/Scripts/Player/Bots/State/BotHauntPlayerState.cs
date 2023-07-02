@@ -12,10 +12,10 @@ public class BotHauntPlayerState : BotBaseState
 
   public void ReachedTarget(BotPathfinding manager)
   {
-    if (nearestPlayer != null)
-    {
-      manager.botVars.botBehavior.SwitchWeapon(nearestPlayer);
-    }
+    // if (nearestPlayer != null)
+    // {
+    //   manager.botVars.botBehavior.SwitchWeapon(nearestPlayer);
+    // }
   }
 
   public override void ExitState(BotPathfinding manager) { }
@@ -30,7 +30,7 @@ public class BotHauntPlayerState : BotBaseState
     {
       Vector2 dir = (nearestPlayer.transform.position - manager.transform.position).normalized;
 
-      RaycastHit2D rh = Physics2D.Raycast(manager.transform.position, dir, Mathf.Infinity);
+      RaycastHit2D rh = Physics2D.Raycast(manager.transform.position, dir, manager.botVars.botWb.weapon.isMelee ? manager.botVars.botWb.weapon.meleeRange : Mathf.Infinity);
 
       /*manager.botVars.botWb.transform.localRotation*/
 
@@ -40,7 +40,7 @@ public class BotHauntPlayerState : BotBaseState
         return;
       }
 
-      if (rh.collider.gameObject.tag is "Player" or "Bot")
+      if (rh.collider.gameObject.tag is "Player" or "Bot" && rh.distance <= 15)
       {
         haunt = false;
 
@@ -59,7 +59,7 @@ public class BotHauntPlayerState : BotBaseState
 
         manager.botVars.botBehavior.Fire(playerPos.x, angle);
 
-        if (manager.botVars.botWb.weapon.bulletsInMag <= 0)
+        if (manager.botVars.botWb.weapon.bulletsInMag <= 0 && !manager.botVars.botWb.weapon.isMelee)
         {
           manager.SwitchState(manager.botFleeState);
         }

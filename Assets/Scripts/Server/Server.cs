@@ -50,7 +50,7 @@ public class Server : NetworkBehaviour
   [TargetRpc]
   private void Rpc_UpdateTimer(NetworkConnection conn, string timeString)
   {
-    conn.identity.GetComponent<PlayerUI>().uiTimeLeft.text = timeString;
+    gameObject.GetComponent<PlayerUI>().uiTimeLeft.text = timeString;
   }
 
   private Color[] colors = new Color[] {

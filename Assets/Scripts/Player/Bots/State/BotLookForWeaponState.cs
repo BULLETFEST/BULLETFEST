@@ -35,7 +35,7 @@ public class BotLookForWeaponState : BotBaseState
 
   public override void UpdateState(BotPathfinding manager)
   {
-    nearestGun = Utilities.FindNearest(manager.transform, "WeaponItem");
+    nearestGun = Utilities.FindNearest(manager.transform, "WeaponItem", 10);
 
     if (nearestGun == null && !pickedWeaponUp)
     {

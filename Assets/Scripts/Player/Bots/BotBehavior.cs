@@ -48,7 +48,7 @@ public class BotBehavior : NetworkBehaviour
       return;
     }
 
-    if (weapon.bulletsInMag <= 0)
+    if (weapon.bulletsInMag <= 0 && !weapon.isMelee)
     {
       return;
     }
@@ -75,6 +75,11 @@ public class BotBehavior : NetworkBehaviour
   [ClientRpc]
   private void Rpc_AddForce(GameObject target, string shootSound)
   {
+    if (botVars.botWb.weapon.animateOnShot)
+    {
+      botVars.weaponAnimator.animator.Play("Fire");
+    }
+
     botVars.botWb.AddForce(target);
     if (shootSound != "")
     {

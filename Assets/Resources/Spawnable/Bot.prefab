@@ -621,6 +621,7 @@ GameObject:
   - component: {fileID: 3617098029652222943}
   - component: {fileID: 6904079059549820929}
   - component: {fileID: 4336460546197483805}
+  - component: {fileID: 2240998968008106235}
   m_Layer: 28
   m_Name: Bot
   m_TagString: Bot
@@ -738,7 +739,7 @@ MonoBehaviour:
   syncDirection: 0
   syncMode: 0
   syncInterval: 0.1
-  speed: 17.5
+  speed: 12.5
   drag: 17.5
   nextWaypointDistance: 3
   jumpNodeHeightRequirement: 0.1
@@ -746,15 +747,15 @@ MonoBehaviour:
   jumpCheckOffset: 0.1
   groundLm:
     serializedVersion: 2
-    m_Bits: 4160
+    m_Bits: 4026536000
   playerLm:
     serializedVersion: 2
-    m_Bits: 2147483647
+    m_Bits: 4026531840
   enablePathfinding: 1
   currentWaypoint: 0
-  dead: 0
   botVars: {fileID: 0}
   seeker: {fileID: 0}
+  AvoidOthers: 0
 --- !u!114 &4673171023595102494
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -773,6 +774,7 @@ MonoBehaviour:
   graphics: {fileID: 0}
   botBehavior: {fileID: 0}
   damageController: {fileID: 0}
+  weaponAnimator: {fileID: 0}
   uiName: {fileID: 6970322006210730000}
   lockMovement: 0
   lockShooting: 0
@@ -893,3 +895,20 @@ MonoBehaviour:
   positionSensitivity: 0.01
   rotationSensitivity: 0.01
   scaleSensitivity: 0.01
+--- !u!114 &2240998968008106235
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5449998184297253465}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7f6f3bf89aa97405989c802ba270f815, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  syncDirection: 0
+  syncMode: 0
+  syncInterval: 0
+  clientAuthority: 0
+  animator: {fileID: 0}
