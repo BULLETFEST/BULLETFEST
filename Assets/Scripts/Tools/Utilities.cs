@@ -158,22 +158,12 @@ public class Utilities : MonoBehaviour
     foreach (Component go in objects)
     {
       float curDistance = CalculateDistance(go.transform.position, origin.position);
-<<<<<<< Updated upstream
-=======
-      // print(curDistance);
->>>>>>> Stashed changes
       if (curDistance > distance)
       {
         furthest = go.gameObject;
         distance = curDistance;
       }
     }
-
-<<<<<<< Updated upstream
-=======
-    // print(furthest);
-
->>>>>>> Stashed changes
     return furthest;
   }
 

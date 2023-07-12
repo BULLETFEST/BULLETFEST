@@ -63,12 +63,7 @@ public class GunSpawner : NetworkBehaviour
       NetworkServer.Spawn(spawnedGun);
     }
 
-<<<<<<< Updated upstream
-    yield return new WaitForSecondsRealtime(1.3f);
-    // yield return new WaitForSecondsRealtime(spawnInterval);
-=======
     yield return new WaitForSeconds(1.3f);
->>>>>>> Stashed changes
     StartCoroutine(SpawnWeapon());
   }
 }
