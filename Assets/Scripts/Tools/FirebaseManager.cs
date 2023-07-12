@@ -10,7 +10,7 @@ public class FirebaseManager : MonoBehaviour
   public static string uid;
 
 #if UNITY_EDITOR
-  private static bool testMode = true;
+  private static bool testMode = false;
 #else
       static bool testMode = false;
 #endif

@@ -18,7 +18,7 @@ public class PlayerBehavior : NetworkBehaviour
   private bool shootKeyUp = true;
   private GameObject weaponToPickup;
 
-  public GameObject gravestone, killfeed, killfeedItem;
+  public GameObject gravestone, killfeed, killfeedItem, playerDeathParticles;
   private System.Action<GameObject> PlayHitSoundAction;
 
   // Start is called before the first frame update
@@ -32,7 +32,7 @@ public class PlayerBehavior : NetworkBehaviour
 
     PlayHitSoundAction = delegate (GameObject g) { PlayHitSound(connectionToClient); };
 
-    playerVars.damageController.onDeath += Server_Die;
+    // playerVars.damageController.onDeath += Server_Die;
     playerVars.damageController.onTakeDamage += PlayHitSoundAction;
 
     VideoPlayer v = Camera.main.gameObject.AddComponent<VideoPlayer>();
@@ -53,7 +53,7 @@ public class PlayerBehavior : NetworkBehaviour
 
   private void OnDestroy()
   {
-    playerVars.damageController.onDeath -= Server_Die;
+    // playerVars.damageController.onDeath -= Server_Die;
     playerVars.damageController.onTakeDamage -= PlayHitSoundAction;
   }
 
@@ -285,90 +285,4 @@ public class PlayerBehavior : NetworkBehaviour
   //   Server_Die(damageDealer ?? gameObject,
   //              gameObject);
   // }
-
-  [ServerCallback]
-  public void Server_Die(GameObject killer)
-  {
-    playerVars.lockMovement = true;
-    playerVars.lockShooting = true;
-    playerVars.lockWeapon = true;
-
-    GameSettings.GameMode gm = MyNetworkManager.instance.settings.gameMode;
-
-    if (gm == GameSettings.GameMode.Deathmatch)
-    {
-      playerVars.uiName.gameObject.SetActive(false);
-    }
-
-    string killerName;
-    string killedName = GetComponent<PlayerVars>().displayName;
-
-    bool botKiller = killer.GetComponent<BotVars>() != null;
-
-    if (botKiller)
-    {
-      killerName = "BOT";
-    }
-    else
-    {
-      NetworkConnectionToClient killerIdentity = killer.GetComponent<NetworkIdentity>().connectionToClient;
-
-      if (killer == gameObject)
-      {
-        MyNetworkManager.instance.players[killerIdentity].kills--;
-      }
-      else
-      {
-        MyNetworkManager.instance.players[killerIdentity].kills++;
-      }
-
-      killerName = killer.GetComponent<PlayerVars>().displayName;
-    }
-
-    ClientRpc_Die();
-
-    if (gm != GameSettings.GameMode.Deathmatch)
-    {
-      // GameObject spawnedGravestone = Instantiate(gravestone, new Vector2(transform.position.x,
-      //                                                       playerVars.bc.bounds.min.y + (gravestone.GetComponentInChildren<SpriteRenderer>().bounds.size.y / 2)), Quaternion.Euler(0, 0, 0));
-      // NetworkServer.Spawn(spawnedGravestone);
-      LayerMask lm = 1 << 6;
-      lm |= 1 << 12;
-
-      RaycastHit2D hit = Utilities.Grounded(transform, playerVars.bc, lm, 999999f);
-      if (hit.collider != null)
-      {
-        GameObject spawnedGravestone = Instantiate(gravestone, new Vector2(hit.point.x, hit.point.y + (gravestone.GetComponentInChildren<SpriteRenderer>().bounds.size.y / 2)), Quaternion.Euler(0, 0, 0));
-        NetworkServer.Spawn(spawnedGravestone);
-      }
-    }
-
-    foreach (System.Collections.Generic.KeyValuePair<int, NetworkConnectionToClient> player in NetworkServer.connections)
-    {
-      UpdateKillfeed(player.Value, killerName, killedName);
-    }
-
-    MyNetworkManager.instance.OnPlayerDie(connectionToClient);
-  }
-
-  [ClientRpc]
-  public void ClientRpc_Die()
-  {
-    playerVars.graphics.DisableAll();
-    playerVars.uiName.gameObject.SetActive(false);
-    gameObject.GetComponent<BoxCollider2D>().enabled = false;
-    gameObject.GetComponent<Rigidbody2D>().simulated = false;
-  }
-
-  [TargetRpc]
-  public void UpdateKillfeed(NetworkConnection conn, string killer, string killed)
-  {
-    // print(gameObject);
-    PlayerVars localVars = gameObject.GetComponent<PlayerVars>();
-    GameObject spawnedKillfeedItem = Instantiate(killfeedItem, Vector3.zero, Quaternion.Euler(0, 0, 0), localVars.killfeed.transform);
-
-
-    spawnedKillfeedItem.GetComponent<KillFeedItem>().killer.text = killer;
-    spawnedKillfeedItem.GetComponent<KillFeedItem>().killed.text = killed;
-  }
 }
