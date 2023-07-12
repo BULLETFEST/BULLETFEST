@@ -20,12 +20,12 @@ public class PlayerMovement : NetworkBehaviour
   // [SyncVar]
   // float maxSpeedX = 10;
 
-  public PlayerVars playerVars;
+  public PlayerRefs playerRefs;
   private LayerMask playerLm;
 
   private void Start()
   {
-    playerVars = GetComponent<PlayerVars>();
+    playerRefs = GetComponent<PlayerRefs>();
 
     playerLm = LayerMask.GetMask("Player");
   }
@@ -64,7 +64,7 @@ public class PlayerMovement : NetworkBehaviour
   [Command]
   private void Cmd_UpdateGun(Quaternion graphicsRotation, Quaternion gunRotation, Quaternion globalGunRotation)
   {
-    if (playerVars.lockWeapon)
+    if (playerRefs.lockWeapon)
     {
       return;
     }
@@ -75,20 +75,20 @@ public class PlayerMovement : NetworkBehaviour
   [ClientRpc]
   private void Rpc_UpdateGun(Quaternion graphicsRotation, Quaternion gunRotation, Quaternion globalGunRotation)
   {
-    if (playerVars == null)
+    if (playerRefs == null)
     {
       return;
     }
 
-    playerVars.graphics.transform.rotation = graphicsRotation;
+    playerRefs.graphics.transform.rotation = graphicsRotation;
 
-    playerVars.weaponBehavior.transform.localRotation = gunRotation;
+    playerRefs.weaponBehavior.transform.localRotation = gunRotation;
 
-    if (playerVars.weaponBehavior.weapon && playerVars.graphics.sprites.Count >= 3)
+    if (playerRefs.weaponBehavior.weapon && playerRefs.graphics.sprites.Count >= 3)
     {
-      if (!playerVars.weaponBehavior.weapon.rotateWithCursor)
+      if (!playerRefs.weaponBehavior.weapon.rotateWithCursor)
       {
-        playerVars.graphics.sprites[2].gameObject.transform.rotation = globalGunRotation;
+        playerRefs.graphics.sprites[2].gameObject.transform.rotation = globalGunRotation;
       }
     }
   }
@@ -100,7 +100,7 @@ public class PlayerMovement : NetworkBehaviour
       return;
     }
 
-    if (playerVars.lockMovement)
+    if (playerRefs.lockMovement)
     {
       return;
     }
@@ -129,9 +129,9 @@ public class PlayerMovement : NetworkBehaviour
     }
 
     bool grounded = false;
-    if (playerVars.bc != null)
+    if (playerRefs.bc != null)
     {
-      grounded = Utilities.Grounded(transform, playerVars.bc, groundLm).collider != null;
+      grounded = Utilities.Grounded(transform, playerRefs.bc, groundLm).collider != null;
     }
 
     if (Utilities.GetKeybindDown("jump") && (grounded || !doubleJumped))
@@ -139,21 +139,21 @@ public class PlayerMovement : NetworkBehaviour
       if (!grounded)
       {
         doubleJumped = true;
-        playerVars.rb.velocity = new Vector2(playerVars.rb.velocity.x, 0);
-        if (playerVars.rb.velocity.y > 0)
+        playerRefs.rb.velocity = new Vector2(playerRefs.rb.velocity.x, 0);
+        if (playerRefs.rb.velocity.y > 0)
         {
-          playerVars.rb.AddForce(new Vector2(0, jumpForce * 0.75f));
+          playerRefs.rb.AddForce(new Vector2(0, jumpForce * 0.75f));
         }
         else
         {
-          playerVars.rb.AddForce(new Vector2(0, jumpForce));
+          playerRefs.rb.AddForce(new Vector2(0, jumpForce));
         }
       }
       else
       {
-        playerVars.rb.AddForce(new Vector2(0, jumpForce));
+        playerRefs.rb.AddForce(new Vector2(0, jumpForce));
       }
-      playerVars.audioSystem.PlaySound("Jump");
+      playerRefs.audioSystem.PlaySound("Jump");
     }
 
     if (doubleJumped && grounded)
@@ -169,7 +169,7 @@ public class PlayerMovement : NetworkBehaviour
   [Command]
   private void ValidateMovement(float xRaw)
   {
-    if (playerVars.lockMovement)
+    if (playerRefs.lockMovement)
     {
       return;
     }
@@ -191,12 +191,12 @@ public class PlayerMovement : NetworkBehaviour
 
   private void HandleMovement(float xRaw)
   {
-    if (playerVars == null)
+    if (playerRefs == null)
     {
       return;
     }
 
-    if ((PlayersOnLeft(gameObject, playerVars.bc) && xRaw == -1) || (PlayersOnRight(gameObject, playerVars.bc) && xRaw == 1))
+    if ((PlayersOnLeft(gameObject, playerRefs.bc) && xRaw == -1) || (PlayersOnRight(gameObject, playerRefs.bc) && xRaw == 1))
     {
       xRaw = 0;
     }
@@ -207,14 +207,14 @@ public class PlayerMovement : NetworkBehaviour
       float targetSpeed = moveForce * xRaw;
 
       //Check difference between current speed and desired speed
-      float speedDiff = targetSpeed - Mathf.Clamp(playerVars.rb.velocity.x, -moveForce, moveForce);
+      float speedDiff = targetSpeed - Mathf.Clamp(playerRefs.rb.velocity.x, -moveForce, moveForce);
 
-      playerVars.rb.AddForce(new Vector2(speedDiff, 0), ForceMode2D.Impulse);
+      playerRefs.rb.AddForce(new Vector2(speedDiff, 0), ForceMode2D.Impulse);
     }
 
     // Add drag
     // https://forum.unity.com/threads/physics-drag-formula.252406/
-    playerVars.rb.velocity = new Vector2(playerVars.rb.velocity.x * (1 - (Time.fixedDeltaTime * (Utilities.Grounded(transform, playerVars.bc, groundLm).collider != null ? drag * 1.15f : drag))), playerVars.rb.velocity.y);
+    playerRefs.rb.velocity = new Vector2(playerRefs.rb.velocity.x * (1 - (Time.fixedDeltaTime * (Utilities.Grounded(transform, playerRefs.bc, groundLm).collider != null ? drag * 1.15f : drag))), playerRefs.rb.velocity.y);
 
     // playerVars.audioSystem.transform.position = gameObject.transform.position;
   }

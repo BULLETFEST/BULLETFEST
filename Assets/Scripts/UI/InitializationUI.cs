@@ -25,6 +25,21 @@ public class InitializationUI : MonoBehaviour
   {
     StartCoroutine(LoadingTextAnimation());
 
+    if (Debug.isDebugBuild)
+    {
+      EOSSDKComponent eos = FindObjectOfType<EOSSDKComponent>();
+
+      eos.authInterfaceLogin = true;
+      eos.authInterfaceCredentialType = Epic.OnlineServices.Auth.LoginCredentialType.Developer;
+      eos.connectInterfaceCredentialType = Epic.OnlineServices.ExternalCredentialType.Epic;
+      eos.devAuthToolPort = 1234;
+#if UNITY_EDITOR
+      eos.devAuthToolCredentialName = "E1";
+#else
+      eos.devAuthToolCredentialName = "E2";
+#endif
+    }
+
     EOSSDKComponent.Initialize();
 
     EOSSDKComponent.OnInitialized += RunChecks;

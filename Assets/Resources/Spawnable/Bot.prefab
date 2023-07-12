@@ -459,6 +459,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   weapon: {fileID: 0}
+  uiController: {fileID: 0}
+  refs: {fileID: 4673171023595102494}
   arsenal:
   - {fileID: 3366149238512663894, guid: 0a317f4ae61eaee4e986cecaa30d5046, type: 3}
   - {fileID: 3366149238512663894, guid: 5782fa51db3b6c446bbd752762f84548, type: 3}
@@ -613,9 +615,9 @@ GameObject:
   - component: {fileID: 3120188896167655879}
   - component: {fileID: 8631385485136129152}
   - component: {fileID: 7002485216491363599}
+  - component: {fileID: 4673171023595102494}
   - component: {fileID: 1548013740}
   - component: {fileID: 1548013739}
-  - component: {fileID: 4673171023595102494}
   - component: {fileID: 1015102264460988468}
   - component: {fileID: 4139013161569277563}
   - component: {fileID: 3617098029652222943}
@@ -696,6 +698,32 @@ Rigidbody2D:
   m_SleepingMode: 1
   m_CollisionDetection: 1
   m_Constraints: 4
+--- !u!114 &4673171023595102494
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5449998184297253465}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d96569174ee36454e8a96df7a70e0ac7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  syncDirection: 0
+  syncMode: 0
+  syncInterval: 0
+  rb: {fileID: 0}
+  bc: {fileID: 0}
+  weaponBehavior: {fileID: 0}
+  graphics: {fileID: 0}
+  damageController: {fileID: 0}
+  weaponAnimator: {fileID: 0}
+  uiName: {fileID: 6970322006210730000}
+  lockMovement: 0
+  lockShooting: 0
+  lockWeapon: 0
+  botBehavior: {fileID: 0}
 --- !u!114 &1548013740
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -753,32 +781,9 @@ MonoBehaviour:
     m_Bits: 4026531840
   enablePathfinding: 1
   currentWaypoint: 0
-  botVars: {fileID: 0}
+  botRefs: {fileID: 0}
   seeker: {fileID: 0}
   AvoidOthers: 0
---- !u!114 &4673171023595102494
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5449998184297253465}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: de893d58adcb0e44186a34cf5d5bb90b, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  rb: {fileID: 0}
-  bc: {fileID: 0}
-  botWb: {fileID: 0}
-  graphics: {fileID: 0}
-  botBehavior: {fileID: 0}
-  damageController: {fileID: 0}
-  weaponAnimator: {fileID: 0}
-  uiName: {fileID: 6970322006210730000}
-  lockMovement: 0
-  lockShooting: 0
-  lockWeapon: 0
 --- !u!114 &1015102264460988468
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -796,6 +801,9 @@ MonoBehaviour:
   syncInterval: 0.1
   health: 0
   maxHealth: 10
+  killfeedItem: {fileID: 7200907496177310357, guid: 1e94cb2ec6b3e19439dfa832a7f1d308, type: 3}
+  playerDeathParticles: {fileID: 1186898414058462494, guid: fa6de8122ef77fe49ad3875706864978, type: 3}
+  gravestone: {fileID: 6030231851616318269, guid: 57f25a84d55296a40bb69f685dc01911, type: 3}
   dead: 0
 --- !u!114 &4139013161569277563
 MonoBehaviour:

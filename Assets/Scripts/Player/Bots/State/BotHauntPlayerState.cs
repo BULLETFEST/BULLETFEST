@@ -30,7 +30,7 @@ public class BotHauntPlayerState : BotBaseState
     {
       Vector2 dir = (nearestPlayer.transform.position - manager.transform.position).normalized;
 
-      RaycastHit2D rh = Physics2D.Raycast(manager.transform.position, dir, manager.botVars.botWb.weapon.isMelee ? manager.botVars.botWb.weapon.meleeRange : Mathf.Infinity);
+      RaycastHit2D rh = Physics2D.Raycast(manager.transform.position, dir, manager.botRefs.weaponBehavior.weapon.isMelee ? manager.botRefs.weaponBehavior.weapon.meleeRange : Mathf.Infinity);
 
       /*manager.botVars.botWb.transform.localRotation*/
 
@@ -47,7 +47,7 @@ public class BotHauntPlayerState : BotBaseState
         manager.path = null;
         manager.currentWaypoint = 0;
 
-        manager.botVars.graphics.transform.rotation = dir.x > 0 ? Quaternion.Euler(0, 0, 0) : Quaternion.Euler(0, 180, 0);
+        manager.botRefs.graphics.transform.rotation = dir.x > 0 ? Quaternion.Euler(0, 0, 0) : Quaternion.Euler(0, 180, 0);
 
         Vector2 playerPos = rh.collider.transform.position;
 
@@ -57,9 +57,9 @@ public class BotHauntPlayerState : BotBaseState
         float angle = Mathf.Atan2(playerPos.y, playerPos.x) * Mathf.Rad2Deg;
         // manager.botVars.botWb.transform.LookAt(nearestPlayer.transform);
 
-        manager.botVars.botBehavior.Fire(playerPos.x, angle);
+        manager.botRefs.botBehavior.Fire(playerPos.x, angle);
 
-        if (manager.botVars.botWb.weapon.bulletsInMag <= 0 && !manager.botVars.botWb.weapon.isMelee)
+        if (manager.botRefs.weaponBehavior.weapon.bulletsInMag <= 0 && !manager.botRefs.weaponBehavior.weapon.isMelee)
         {
           manager.SwitchState(manager.botFleeState);
         }

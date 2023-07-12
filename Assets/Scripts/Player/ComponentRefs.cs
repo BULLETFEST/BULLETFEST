@@ -1,31 +1,30 @@
+using Mirror;
 using TMPro;
 using UnityEngine;
 
-public class BotVars : MonoBehaviour
+public class ComponentRefs : NetworkBehaviour
 {
   [HideInInspector] public Rigidbody2D rb;
   [HideInInspector] public BoxCollider2D bc;
-  [HideInInspector] public BotWeaponBehavior botWb;
+  [HideInInspector] public WeaponBehavior weaponBehavior;
   [HideInInspector] public SpriteGroup graphics;
-  [HideInInspector] public BotBehavior botBehavior;
   [HideInInspector] public DamageController damageController;
-  [HideInInspector] public Mirror.NetworkAnimator weaponAnimator;
-
+  [HideInInspector] public NetworkAnimator weaponAnimator;
   public TMP_Text uiName;
 
+  [SyncVar]
   [HideInInspector]
   public bool lockMovement = false,
             lockShooting = false,
             lockWeapon = false;
 
-  private void Awake()
+  protected virtual void Awake()
   {
     rb = GetComponent<Rigidbody2D>();
     bc = GetComponent<BoxCollider2D>();
-    botWb = GetComponentInChildren<BotWeaponBehavior>();
+    weaponBehavior = GetComponentInChildren<WeaponBehavior>();
     graphics = GetComponentInChildren<SpriteGroup>();
-    botBehavior = GetComponent<BotBehavior>();
     damageController = GetComponent<DamageController>();
-    weaponAnimator = GetComponent<Mirror.NetworkAnimator>();
+    weaponAnimator = GetComponent<NetworkAnimator>();
   }
 }

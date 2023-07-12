@@ -8,10 +8,9 @@ public class WeaponBehavior : MonoBehaviour
 {
   public WeaponClass weapon;
   public PlayerUI uiController;
-  public PlayerVars playerVars;
+  public ComponentRefs refs;
 
   public WeaponClass[] arsenal;
-  private Coroutine reloadRoutine;
 
   [HideInInspector]
   public List<Explosive> awaitingDetonation = new();
@@ -23,9 +22,11 @@ public class WeaponBehavior : MonoBehaviour
 
     // uiController.UpdateAmmoText(weapon.bulletsInMag, weapon.magazineSize);
     // uiController.UpdateWeaponUI(weapon);
+
+    // refs = transform.root.GetComponent<ComponentRefs>();
   }
 
-  public void Fire(string weaponId, NetworkConnection shooter)
+  public void Fire(string weaponId, GameObject shooter)
   {
     WeaponClass equippedWeapon = arsenal.Where(w => w.ID == weaponId).ToArray()[0];
 
@@ -62,15 +63,17 @@ public class WeaponBehavior : MonoBehaviour
       return;
     }
 
-    PlayerVars shooterVars = target.GetComponent<PlayerVars>();
-    shooterVars.rb.velocity = new Vector2(0, shooterVars.rb.velocity.y);
-    shooterVars.lockMovement = true;
-    Vector2 vel = shooterVars.weaponBehavior.weapon.shotPushback * -shooterVars.weaponBehavior.transform.right;
-    shooterVars.rb.AddForce(new Vector2(vel.x * 1.75f, vel.y / 1.55f), ForceMode2D.Impulse);
-    StartCoroutine(UnlockMovement(shooterVars.weaponBehavior.weapon.movementUnlockTime, shooterVars));
+    Rigidbody2D rb = target.GetComponent<Rigidbody2D>();
+
+
+    rb.velocity = new Vector2(0, rb.velocity.y);
+    target.GetComponent<ComponentRefs>().lockMovement = true;
+    Vector2 vel = weapon.shotPushback * -gameObject.transform.right;
+    rb.AddForce(new Vector2(vel.x * 1.75f, vel.y / 1.55f), ForceMode2D.Impulse);
+    StartCoroutine(UnlockMovement(weapon.movementUnlockTime, target.GetComponent<ComponentRefs>()));
   }
 
-  public IEnumerator Fire_Melee(NetworkConnection shooter)
+  public IEnumerator Fire_Melee(GameObject shooter)
   {
     yield return new WaitForSeconds(weapon.animationShotDamageDelay);
     RaycastHit2D hit = Physics2D.Raycast(weapon.projectileSpawnPoint.transform.position, transform.right, weapon.meleeRange);
@@ -86,19 +89,19 @@ public class WeaponBehavior : MonoBehaviour
       yield break;
     }
 
-    hit.collider.GetComponent<DamageController>().TakeDamage(weapon.damage, shooter.identity.gameObject);
+    hit.collider.GetComponent<DamageController>().TakeDamage(weapon.damage, shooter);
   }
 
-  public void Fire_Regular(NetworkConnection shooter)
+  public void Fire_Regular(GameObject shooter)
   {
     GameObject spawnedBullet = Instantiate(weapon.projectilePrefab, weapon.projectileSpawnPoint.transform.position, Quaternion.Euler(transform.rotation.eulerAngles.x, transform.rotation.eulerAngles.y, transform.rotation.eulerAngles.z + Random.Range(weapon.inaccuracyRange[0], weapon.inaccuracyRange[1])));
 
-    Physics2D.IgnoreCollision(spawnedBullet.GetComponent<Collider2D>(), shooter.identity.gameObject.GetComponent<Collider2D>());
+    Physics2D.IgnoreCollision(spawnedBullet.GetComponent<Collider2D>(), shooter.GetComponent<Collider2D>());
 
     spawnedBullet.GetComponent<Rigidbody2D>().velocity = weapon.projectileVelocity * spawnedBullet.transform.right;
     spawnedBullet.GetComponent<Rigidbody2D>().AddTorque(weapon.projectileTorque);
 
-    spawnedBullet.GetComponent<Projectile>().owner = shooter.identity.gameObject;
+    spawnedBullet.GetComponent<Projectile>().owner = shooter;
     spawnedBullet.GetComponent<Projectile>().damage = weapon.damage;
 
     if (spawnedBullet.GetComponent<Explosive>())
@@ -106,10 +109,17 @@ public class WeaponBehavior : MonoBehaviour
       awaitingDetonation.Add(spawnedBullet.GetComponent<Explosive>());
     }
 
-    NetworkServer.Spawn(spawnedBullet, shooter);
+    if (GetComponent<PlayerBehavior>())
+    {
+      NetworkServer.Spawn(spawnedBullet, shooter);
+    }
+    else
+    {
+      NetworkServer.Spawn(spawnedBullet);
+    }
   }
 
-  public void Fire_Pellets(NetworkConnection shooter)
+  public void Fire_Pellets(GameObject shooter)
   {
     for (int i = 0; i < weapon.pelletCount; i++)
     {
@@ -117,22 +127,22 @@ public class WeaponBehavior : MonoBehaviour
     }
   }
 
-  private IEnumerator UnlockMovement(float time, PlayerVars shooterVars)
+  public IEnumerator UnlockMovement(float time, ComponentRefs shooterVars)
   {
     yield return new WaitForSecondsRealtime(time);
     shooterVars.lockMovement = false;
   }
 
-  public void SwitchWeapon(string weaponID)
+  public virtual void SwitchWeapon(string weaponID)
   {
     if (weapon != null)
     {
       Destroy(weapon.gameObject);
     }
 
-    if (playerVars.graphics.sprites.Count > 2)
+    if (refs.graphics.sprites.Count > 2)
     {
-      playerVars.graphics.sprites.RemoveAt(2);
+      refs.graphics.sprites.RemoveAt(2);
     }
 
     if (weaponID != null)
@@ -146,24 +156,31 @@ public class WeaponBehavior : MonoBehaviour
       weapon.bulletsInMag = weapon.magazineSize;
       weapon.fireTimeout = 0;
 
-      uiController.UpdateAmmoText(weapon.magazineSize);
-      playerVars.graphics.sprites.Add(newWeapon.GetComponentInChildren<SpriteRenderer>());
-      playerVars.graphics.sprites[2].enabled = true;
+      if (uiController)
+      {
+        uiController.UpdateAmmoText(weapon.magazineSize);
+      }
+
+      refs.graphics.sprites.Add(newWeapon.GetComponentInChildren<SpriteRenderer>());
+      refs.graphics.sprites[2].enabled = true;
 
       if (weapon.animateOnShot)
       {
-        playerVars.weaponAnimator.animator = weapon.GetComponent<Animator>();
+        refs.weaponAnimator.animator = weapon.GetComponent<Animator>();
       }
     }
     else
     {
       // weapon = null;
-      if (playerVars.graphics.sprites.Count >= 3)
+      if (refs.graphics.sprites.Count >= 3)
       {
-        playerVars.graphics.sprites[2].enabled = false;
+        refs.graphics.sprites[2].enabled = false;
       }
 
-      uiController.UpdateAmmoText(-1);
+      if (uiController)
+      {
+        uiController.UpdateAmmoText(-1);
+      }
     }
   }
 }

@@ -11,7 +11,7 @@ public class PlayerUI : NetworkBehaviour
 
   public GameObject crosshair;
 
-  private PlayerVars playerVars;
+  private PlayerRefs playerRefs;
   private bool focusState;
 
   private void Start()
@@ -21,12 +21,15 @@ public class PlayerUI : NetworkBehaviour
       return;
     }
 
+    playerRefs = GetComponent<PlayerRefs>();
+
     mainCanvas.gameObject.SetActive(true);
     mainCanvas.worldCamera = Camera.main;
+    playerRefs.publicCanvas.gameObject.SetActive(true);
+
     crosshair.SetActive(true);
     Cursor.visible = false;
 
-    playerVars = GetComponent<PlayerVars>();
 
     // StartCoroutine(UpdateTime());
   }
@@ -46,13 +49,13 @@ public class PlayerUI : NetworkBehaviour
 
     Cursor.visible = !focusState && SaveSystem.IsSettingsOpen;
 
-    crosshair.SetActive(!playerVars.lockWeapon);
+    crosshair.SetActive(!playerRefs.lockWeapon);
 
     crosshair.transform.position = (Vector2)Camera.main.ScreenToWorldPoint(Input.mousePosition);
   }
 
   public void UpdateAmmoText(int bullets)
   {
-    uiGunAmmo.text = $"{(bullets == -1 ? "" : bullets)}";
+    uiGunAmmo.text = $"{(bullets <= -1 ? "" : bullets)}";
   }
 }

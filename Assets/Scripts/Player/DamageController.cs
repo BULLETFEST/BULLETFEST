@@ -10,6 +10,9 @@ public class DamageController : NetworkBehaviour
   public Action<GameObject> onTakeDamage;
   public Action<GameObject> onDeath;
 
+  public GameObject killfeedItem, playerDeathParticles, gravestone;
+  private ComponentRefs refs;
+
   [SyncVar]
   public bool dead = false;
   private GameObject damageDealer;
@@ -17,6 +20,7 @@ public class DamageController : NetworkBehaviour
   private void Start()
   {
     health = maxHealth;
+    refs = GetComponent<ComponentRefs>();
   }
 
   [Command(requiresAuthority = false)]
@@ -52,28 +56,30 @@ public class DamageController : NetworkBehaviour
 
     dead = true;
 
-    onDeath?.Invoke(damageDealer ?? gameObject);
+    // onDeath?.Invoke(damageDealer ?? gameObject);
+
+    Server_Die(damageDealer ?? gameObject);
   }
 
 
   [ServerCallback]
   public void Server_Die(GameObject killer)
   {
-    playerVars.lockMovement = true;
-    playerVars.lockShooting = true;
-    playerVars.lockWeapon = true;
+    refs.lockMovement = true;
+    refs.lockShooting = true;
+    refs.lockWeapon = true;
 
     GameSettings.GameMode gm = MyNetworkManager.instance.settings.gameMode;
 
     if (gm == GameSettings.GameMode.Deathmatch)
     {
-      playerVars.uiName.gameObject.SetActive(false);
+      refs.uiName.gameObject.SetActive(false);
     }
 
     string killerName;
-    string killedName = GetComponent<PlayerVars>().displayName;
+    string killedName = GetComponent<ComponentRefs>().uiName.text;
 
-    bool botKiller = killer.GetComponent<BotVars>() != null;
+    bool botKiller = killer.GetComponent<BotRefs>() != null;
 
     if (botKiller)
     {
@@ -92,20 +98,16 @@ public class DamageController : NetworkBehaviour
         MyNetworkManager.instance.players[killerIdentity].kills++;
       }
 
-      killerName = killer.GetComponent<PlayerVars>().displayName;
+      killerName = killer.GetComponent<ComponentRefs>().uiName.text;
     }
 
     ClientRpc_Die();
 
     if (gm != GameSettings.GameMode.Deathmatch)
     {
-      // GameObject spawnedGravestone = Instantiate(gravestone, new Vector2(transform.position.x,
-      //                                                       playerVars.bc.bounds.min.y + (gravestone.GetComponentInChildren<SpriteRenderer>().bounds.size.y / 2)), Quaternion.Euler(0, 0, 0));
-      // NetworkServer.Spawn(spawnedGravestone);
-      LayerMask lm = 1 << 6;
-      lm |= 1 << 12;
+      LayerMask lm = LayerMask.GetMask("Environment/Floor", "Bounds/Walls");
 
-      RaycastHit2D hit = Utilities.Grounded(transform, playerVars.bc, lm, 999999f);
+      RaycastHit2D hit = Physics2D.Raycast(transform.position, Vector2.down, Mathf.Infinity, lm);
       if (hit.collider != null)
       {
         GameObject spawnedGravestone = Instantiate(gravestone, new Vector2(hit.point.x, hit.point.y + (gravestone.GetComponentInChildren<SpriteRenderer>().bounds.size.y / 2)), Quaternion.Euler(0, 0, 0));
@@ -115,7 +117,7 @@ public class DamageController : NetworkBehaviour
 
     foreach (System.Collections.Generic.KeyValuePair<int, NetworkConnectionToClient> player in NetworkServer.connections)
     {
-      UpdateKillfeed(player.Value, killerName, killedName);
+      UpdateKillfeed(player.Value, killerName, killedName, player.Value.identity.gameObject);
     }
 
     MyNetworkManager.instance.OnPlayerDie(connectionToClient);
@@ -126,17 +128,17 @@ public class DamageController : NetworkBehaviour
   [ClientRpc]
   public void ClientRpc_Die()
   {
-    playerVars.graphics.DisableAll();
-    playerVars.uiName.gameObject.SetActive(false);
+    refs.graphics.DisableAll();
+    refs.uiName.gameObject.SetActive(false);
+
     gameObject.GetComponent<BoxCollider2D>().enabled = false;
     gameObject.GetComponent<Rigidbody2D>().simulated = false;
   }
 
   [TargetRpc]
-  public void UpdateKillfeed(NetworkConnection conn, string killer, string killed)
+  public void UpdateKillfeed(NetworkConnection conn, string killer, string killed, GameObject target)
   {
-    // print(gameObject);
-    PlayerVars localVars = gameObject.GetComponent<PlayerVars>();
+    PlayerRefs localVars = (PlayerRefs)target.GetComponent<ComponentRefs>();
     GameObject spawnedKillfeedItem = Instantiate(killfeedItem, Vector3.zero, Quaternion.Euler(0, 0, 0), localVars.killfeed.transform);
 
 

@@ -1021,7 +1021,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   weapon: {fileID: 0}
   uiController: {fileID: 6057913054904780200}
-  playerVars: {fileID: 957314521401609472}
+  refs: {fileID: 957314521401609472}
   arsenal:
   - {fileID: 3366149238512663894, guid: 5782fa51db3b6c446bbd752762f84548, type: 3}
   - {fileID: 3366149238512663894, guid: b0150a1c8ca1e994298ca8da3516d48a, type: 3}
@@ -1376,25 +1376,28 @@ MonoBehaviour:
   m_GameObject: {fileID: 5449998184297253465}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 92281e08ff2b6a54f80d03f800130f46, type: 3}
+  m_Script: {fileID: 11500000, guid: e4a541d07eec0d74f9d245589ecd3a32, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   syncDirection: 0
   syncMode: 0
-  syncInterval: 0.1
+  syncInterval: 0
+  rb: {fileID: 0}
+  bc: {fileID: 0}
+  weaponBehavior: {fileID: 0}
+  graphics: {fileID: 0}
+  damageController: {fileID: 0}
+  weaponAnimator: {fileID: 0}
   uiName: {fileID: 6970322006210730000}
-  publicCanvas: {fileID: 3410617926425116717}
-  killfeed: {fileID: 1038483244208179192}
-  crown: {fileID: 1989996935695145734}
   lockMovement: 0
   lockShooting: 0
   lockWeapon: 0
-  graphics: {fileID: 315762542858786891}
-  weaponBehavior: {fileID: 8402200740394793644}
+  publicCanvas: {fileID: 3410617926425116717}
+  killfeed: {fileID: 1531636564015115370}
+  crown: {fileID: 1989996935695145734}
+  playerName: 
   audioSystem: {fileID: 0}
-  weaponAnimator: {fileID: 7764119719476624490}
   playerMovement: {fileID: 0}
-  damageController: {fileID: 0}
   displayName: 
 --- !u!114 &2970595044478850307
 MonoBehaviour:
@@ -1417,7 +1420,7 @@ MonoBehaviour:
   moveForce: 17.5
   drag: 17.5
   jumpForce: 1150
-  playerVars: {fileID: 957314521401609472}
+  playerRefs: {fileID: 0}
 --- !u!114 &2728089404972226145
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1448,7 +1451,7 @@ MonoBehaviour:
   syncDirection: 0
   syncMode: 0
   syncInterval: 0.1
-  playerVars: {fileID: 0}
+  playerRefs: {fileID: 0}
   uiController: {fileID: 0}
   weaponBehavior: {fileID: 0}
   gravestone: {fileID: 6030231851616318269, guid: 57f25a84d55296a40bb69f685dc01911, type: 3}
@@ -1509,6 +1512,9 @@ MonoBehaviour:
   syncInterval: 0.1
   health: 0
   maxHealth: 10
+  killfeedItem: {fileID: 7200907496177310357, guid: 1e94cb2ec6b3e19439dfa832a7f1d308, type: 3}
+  playerDeathParticles: {fileID: 1186898414058462494, guid: fa6de8122ef77fe49ad3875706864978, type: 3}
+  gravestone: {fileID: 6030231851616318269, guid: 57f25a84d55296a40bb69f685dc01911, type: 3}
   dead: 0
 --- !u!114 &7764119719476624490
 MonoBehaviour:

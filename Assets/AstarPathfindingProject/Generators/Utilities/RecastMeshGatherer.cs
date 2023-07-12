@@ -1,6 +1,5 @@
 using UnityEngine;
 using System.Collections.Generic;
-// using UnityEngine;
 
 namespace Pathfinding.Recast {
 	using System;

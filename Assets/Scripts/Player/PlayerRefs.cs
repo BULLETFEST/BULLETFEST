@@ -1,60 +1,31 @@
 using Mirror;
-using TMPro;
 using UnityEngine;
 
-public class PlayerVars : NetworkBehaviour
+public class PlayerRefs : ComponentRefs
 {
   [SyncVar]
   public System.DateTime timeleft;
-
-  public TMP_Text uiName;
-
-  public Rigidbody2D rb { get; set; }
-  public BoxCollider2D bc { get; set; }
-
-  public string playerName { get; set; }
 
   public Canvas publicCanvas;
 
   public GameObject killfeed,
                     crown;
 
-
-  [HideInInspector]
-  [SyncVar]
-  public bool lockMovement = false,
-              lockShooting = false,
-              lockWeapon = false;
-
-  public SpriteGroup graphics;
-
-  public WeaponBehavior weaponBehavior;
-
-  public AudioSystem audioSystem;
-
-  public NetworkAnimator weaponAnimator;
-
+  [HideInInspector] public string playerName;
+  [HideInInspector] public AudioSystem audioSystem;
   [HideInInspector] public PlayerMovement playerMovement;
 
-  [HideInInspector] public DamageController damageController;
-
-  // [HideInInspector]
+  [HideInInspector]
   [SyncVar(hook = nameof(HandleUpdateDisplayName))]
   public string displayName;
 
   // Start is called before the first frame update
-  private void Awake()
+  protected override void Awake()
   {
-    rb = GetComponent<Rigidbody2D>();
-    bc = GetComponent<BoxCollider2D>();
+    base.Awake();
+
     playerMovement = GetComponent<PlayerMovement>();
-
-    // name = PlayerPrefs.GetString("PlayerName", "Guest");
-    // weaponBehavior = GetComponentInChildren<WeaponBehavior>();
-
     audioSystem = FindObjectOfType<AudioSystem>();
-
-    damageController = GetComponent<DamageController>();
   }
 
   public override void OnStartAuthority()

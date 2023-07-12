@@ -15,11 +15,19 @@ public class BotLookForWeaponState : BotBaseState
 
   public void ReachedTarget(BotPathfinding manager)
   {
+    Vector2 dir = (nearestGun.transform.position - manager.transform.position).normalized;
+    RaycastHit2D rh = Physics2D.Raycast(manager.transform.position, dir, 7f);
+
+    if (rh.collider == null || rh.distance > 6.5f)
+    {
+      return;
+    }
+
     pickedWeaponUp = true;
 
     if (nearestGun != null)
     {
-      manager.botVars.botBehavior.SwitchWeapon(nearestGun);
+      manager.botRefs.botBehavior.SwitchWeapon(nearestGun);
       manager.SwitchState(manager.botHauntPlayerState);
     }
     else
