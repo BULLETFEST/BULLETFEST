@@ -128,9 +128,9 @@ public class WeaponBehavior : MonoBehaviour
       Destroy(weapon.gameObject);
     }
 
-    if (refs.graphics.sprites.Count > 2)
+    if (refs.graphics.sprites.Count > 3)
     {
-      refs.graphics.sprites.RemoveAt(2);
+      refs.graphics.sprites.RemoveAt(3);
     }
 
     if (weaponID != null)
@@ -145,7 +145,7 @@ public class WeaponBehavior : MonoBehaviour
       weapon.fireTimeout = 0;
 
       refs.graphics.sprites.Add(newWeapon.GetComponentInChildren<SpriteRenderer>());
-      refs.graphics.sprites[2].enabled = true;
+      refs.graphics.sprites.Last().enabled = true;
 
       if (weapon.animateOnShot)
       {
@@ -155,9 +155,9 @@ public class WeaponBehavior : MonoBehaviour
     else
     {
       // weapon = null;
-      if (refs.graphics.sprites.Count >= 3)
+      if (refs.graphics.sprites.Count >= 4)
       {
-        refs.graphics.sprites[2].enabled = false;
+        refs.graphics.sprites.Last().enabled = false;
       }
     }
   }

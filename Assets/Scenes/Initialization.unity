@@ -1768,7 +1768,7 @@ MonoBehaviour:
   loginBtn: {fileID: 962535297}
   loginPanel: {fileID: 1902155525}
   whyNeedAccount: {fileID: 1092427489}
-  isDebug: 1
+  isDebug: 0
 --- !u!1 &278142969
 GameObject:
   m_ObjectHideFlags: 0

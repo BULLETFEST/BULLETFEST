@@ -190,6 +190,7 @@ public class PlayerBehavior : NetworkBehaviour
     playerRefs.weaponBehavior.Fire(weapon.ID, connectionToClient.identity.gameObject);
 
     Target_UpdateUI(weapon.bulletsInMag);
+    Target_ShakeScreen();
     shootKeyUp = false;
 
     if (weapon.bulletsInMag <= 0 && weapon.deleteOnEmpty)
@@ -240,10 +241,16 @@ public class PlayerBehavior : NetworkBehaviour
   [TargetRpc]
   private void Target_UpdateUI(int bulletsInMag)
   {
-    StartCoroutine(Camera.main.GetComponent<CameraShake>().Shake(playerRefs.weaponBehavior.weapon.cameraShakeDuration,
-                                                                 playerRefs.weaponBehavior.weapon.cameraShakeIntensity));
+
     playerRefs.weaponBehavior.weapon.bulletsInMag = bulletsInMag;
     playerRefs.uiController.UpdateAmmoText(bulletsInMag);
+  }
+
+  [TargetRpc]
+  private void Target_ShakeScreen()
+  {
+    StartCoroutine(Camera.main.GetComponent<CameraShake>().Shake(playerRefs.weaponBehavior.weapon.cameraShakeDuration,
+                                                                 playerRefs.weaponBehavior.weapon.cameraShakeIntensity));
   }
 
   [TargetRpc]
