@@ -21,11 +21,13 @@ public class InitializationUI : MonoBehaviour
 
   public GameObject loginPanel, whyNeedAccount;
 
+  public bool isDebug = false;
+
   private void Start()
   {
     StartCoroutine(LoadingTextAnimation());
 
-    if (Debug.isDebugBuild)
+    if (Debug.isDebugBuild && isDebug)
     {
       EOSSDKComponent eos = FindObjectOfType<EOSSDKComponent>();
 
