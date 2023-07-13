@@ -24,7 +24,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2123235757600240088}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0.825, y: 0.125, z: 0}
+  m_LocalPosition: {x: 0.75, y: -0.03, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -57,7 +57,7 @@ Transform:
   m_GameObject: {fileID: 2318460577565423013}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1.75, y: 1.75, z: 1}
+  m_LocalScale: {x: 2, y: 2, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 446163630103249763}
@@ -104,7 +104,7 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 1
-  m_Sprite: {fileID: 21300000, guid: 6a7be8b3718fdd14da67780753ef1d45, type: 3}
+  m_Sprite: {fileID: 676089159, guid: ecbc7caa34f9ebd49916458fd4e246e5, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -125,8 +125,9 @@ GameObject:
   m_Component:
   - component: {fileID: 446163630103249763}
   - component: {fileID: 3366149238512663894}
+  - component: {fileID: 2520710688681962653}
   m_Layer: 31
-  m_Name: Gewehr 98
+  m_Name: Nagant
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -161,32 +162,53 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 79cff5247a00f9440ba17186830d8908, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  weaponName: Gewehr 98
-  ID: SNR_Gewehr98
+  weaponName: Mosin Nagant
+  ID: SNR_Nagant
   rotateWithCursor: 1
   deleteOnEmpty: 0
   isShotgun: 0
   isMelee: 0
   pelletCount: 0
   meleeRange: 0
-  magazineSize: 5
+  magazineSize: 3
   inaccuracyRange:
-  - -0.25
-  - 0.25
-  shotPushback: 30
+  - -1
+  - 1
+  shotPushback: 50
   movementUnlockTime: 0.3
-  damage: 4
-  fireRate: 1.75
+  damage: 5
+  fireRate: 1.25
   cameraShakeIntensity: 1.5
   cameraShakeDuration: 0.15
   firingMode: 0
   projectilePrefab: {fileID: 7740076768845922023, guid: bd0cfe2c8625b2c4daefea4409372304, type: 3}
   projectileSpawnPoint: {fileID: 5449872525946486571}
-  projectileVelocity: 100
+  projectileVelocity: 125
   projectileTorque: 0
   shootSound: Shoot
-  weaponIcon: {fileID: 21300000, guid: 6a7be8b3718fdd14da67780753ef1d45, type: 3}
+  weaponIcon: {fileID: 676089159, guid: ecbc7caa34f9ebd49916458fd4e246e5, type: 3}
   fireTimeout: 90.863235
   bulletsInMag: 100
-  animateOnShot: 0
+  animateOnShot: 1
   animationShotDamageDelay: 0
+--- !u!95 &2520710688681962653
+Animator:
+  serializedVersion: 5
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3075476997647957983}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: 92c63ff26ec15a8498ee46ff65dab1d7, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_StabilizeFeet: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorStateOnDisable: 0
+  m_WriteDefaultValuesOnDisable: 0

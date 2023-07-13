@@ -7,24 +7,12 @@ using UnityEngine;
 public class WeaponBehavior : MonoBehaviour
 {
   public WeaponClass weapon;
-  public PlayerUI uiController;
   public ComponentRefs refs;
 
   public WeaponClass[] arsenal;
 
   [HideInInspector]
   public List<Explosive> awaitingDetonation = new();
-
-  private void Start()
-  {
-    // weapon.bulletsInMag = weapon.magazineSize;
-    // weapon.fireTimeout = 0;
-
-    // uiController.UpdateAmmoText(weapon.bulletsInMag, weapon.magazineSize);
-    // uiController.UpdateWeaponUI(weapon);
-
-    // refs = transform.root.GetComponent<ComponentRefs>();
-  }
 
   public void Fire(string weaponId, GameObject shooter)
   {
@@ -140,9 +128,9 @@ public class WeaponBehavior : MonoBehaviour
       Destroy(weapon.gameObject);
     }
 
-    if (refs.graphics.sprites.Count > 2)
+    if (refs.graphics.sprites.Count > 3)
     {
-      refs.graphics.sprites.RemoveAt(2);
+      refs.graphics.sprites.RemoveAt(3);
     }
 
     if (weaponID != null)
@@ -156,13 +144,8 @@ public class WeaponBehavior : MonoBehaviour
       weapon.bulletsInMag = weapon.magazineSize;
       weapon.fireTimeout = 0;
 
-      if (uiController)
-      {
-        uiController.UpdateAmmoText(weapon.magazineSize);
-      }
-
       refs.graphics.sprites.Add(newWeapon.GetComponentInChildren<SpriteRenderer>());
-      refs.graphics.sprites[2].enabled = true;
+      refs.graphics.sprites.Last().enabled = true;
 
       if (weapon.animateOnShot)
       {
@@ -172,14 +155,9 @@ public class WeaponBehavior : MonoBehaviour
     else
     {
       // weapon = null;
-      if (refs.graphics.sprites.Count >= 3)
+      if (refs.graphics.sprites.Count >= 4)
       {
-        refs.graphics.sprites[2].enabled = false;
-      }
-
-      if (uiController)
-      {
-        uiController.UpdateAmmoText(-1);
+        refs.graphics.sprites.Last().enabled = false;
       }
     }
   }

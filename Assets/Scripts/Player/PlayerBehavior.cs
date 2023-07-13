@@ -1,38 +1,24 @@
+using System.Linq;
 using Mirror;
 using UnityEngine;
 using UnityEngine.Video;
 
 public class PlayerBehavior : NetworkBehaviour
 {
-  // public float maxHealth = 10f;
-
-  // [SyncVar(hook = nameof(OnDamageTaken))]
-  // public float health = 1f;
-
   [HideInInspector]
   public PlayerRefs playerRefs;
-  [HideInInspector]
-  public PlayerUI uiController;
-  [HideInInspector]
-  public WeaponBehavior weaponBehavior;
   private bool shootKeyUp = true;
   private GameObject weaponToPickup;
 
-  public GameObject gravestone, killfeed, killfeedItem, playerDeathParticles;
   private System.Action<GameObject> PlayHitSoundAction;
 
   // Start is called before the first frame update
   private void Start()
   {
     playerRefs = GetComponent<PlayerRefs>();
-    uiController = GetComponent<PlayerUI>();
-    weaponBehavior = GetComponentInChildren<WeaponBehavior>();
-
-    // health = maxHealth;
 
     PlayHitSoundAction = delegate (GameObject g) { PlayHitSound(connectionToClient); };
 
-    // playerVars.damageController.onDeath += Server_Die;
     playerRefs.damageController.onTakeDamage += PlayHitSoundAction;
 
     VideoPlayer v = Camera.main.gameObject.AddComponent<VideoPlayer>();
@@ -143,18 +129,18 @@ public class PlayerBehavior : NetworkBehaviour
   {
     if (weapon != null && !playerRefs.lockMovement)
     {
-      TargetRpc_SwitchWeapon(weapon.GetComponent<WeaponItem>().WeaponID);
-      weaponBehavior.SwitchWeapon(weapon.GetComponent<WeaponItem>().WeaponID);
+      Rpc_SwitchWeapon(weapon.GetComponent<WeaponItem>().WeaponID);
+      playerRefs.weaponBehavior.SwitchWeapon(weapon.GetComponent<WeaponItem>().WeaponID);
       NetworkServer.Destroy(weapon);
+
+      Target_UpdateUI(playerRefs.weaponBehavior.arsenal.Where(x => x.ID == weapon.GetComponent<WeaponItem>().WeaponID).ToArray()[0].magazineSize);
     }
   }
 
   [ClientRpc]
-  private void TargetRpc_SwitchWeapon(string WeaponID)
+  private void Rpc_SwitchWeapon(string WeaponID)
   {
-    weaponBehavior.SwitchWeapon(WeaponID);
-
-    // if (playerVars.reloadRoutine != null)
+    playerRefs.weaponBehavior.SwitchWeapon(WeaponID);
   }
 
   [Command]
@@ -204,12 +190,13 @@ public class PlayerBehavior : NetworkBehaviour
     playerRefs.weaponBehavior.Fire(weapon.ID, connectionToClient.identity.gameObject);
 
     Target_UpdateUI(weapon.bulletsInMag);
+    Target_ShakeScreen();
     shootKeyUp = false;
 
     if (weapon.bulletsInMag <= 0 && weapon.deleteOnEmpty)
     {
-      TargetRpc_SwitchWeapon(null);
-      weaponBehavior.SwitchWeapon(null);
+      Rpc_SwitchWeapon(null);
+      playerRefs.weaponBehavior.SwitchWeapon(null);
     }
   }
 
@@ -254,10 +241,16 @@ public class PlayerBehavior : NetworkBehaviour
   [TargetRpc]
   private void Target_UpdateUI(int bulletsInMag)
   {
+
+    playerRefs.weaponBehavior.weapon.bulletsInMag = bulletsInMag;
+    playerRefs.uiController.UpdateAmmoText(bulletsInMag);
+  }
+
+  [TargetRpc]
+  private void Target_ShakeScreen()
+  {
     StartCoroutine(Camera.main.GetComponent<CameraShake>().Shake(playerRefs.weaponBehavior.weapon.cameraShakeDuration,
                                                                  playerRefs.weaponBehavior.weapon.cameraShakeIntensity));
-    playerRefs.weaponBehavior.weapon.bulletsInMag = bulletsInMag;
-    uiController.UpdateAmmoText(bulletsInMag);
   }
 
   [TargetRpc]

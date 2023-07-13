@@ -45,7 +45,7 @@ public class BotBehavior : NetworkBehaviour
     botRefs.weaponBehavior.transform.localRotation = Quaternion.Euler(playerPosX < 0 ? 180 : 0, playerPosX < 0 ? 180 : 0, ((playerPosX < 0 ? -1 : 1) * angle) + Random.Range(-25f, 25f));
 
     weapon.bulletsInMag--;
-    weapon.fireTimeout = (float)Time.time + (1f / weapon.fireRate * (weapon.firingMode == WeaponClass.FireMode.Single ? 1.65f : 1));
+    weapon.fireTimeout = (float)Time.time + (1f / weapon.fireRate);// * (weapon.firingMode == WeaponClass.FireMode.Single ? 1.65f : 1));
 
     Rpc_AddForce(gameObject, weapon.shootSound);
     botRefs.weaponBehavior.Fire(weapon.ID, gameObject);

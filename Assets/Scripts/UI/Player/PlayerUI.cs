@@ -25,7 +25,6 @@ public class PlayerUI : NetworkBehaviour
 
     mainCanvas.gameObject.SetActive(true);
     mainCanvas.worldCamera = Camera.main;
-    playerRefs.publicCanvas.gameObject.SetActive(true);
 
     crosshair.SetActive(true);
     Cursor.visible = false;

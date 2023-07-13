@@ -3,12 +3,7 @@ using UnityEngine;
 
 public class PlayerMovement : NetworkBehaviour
 {
-
-  #region Public Vars
-
   public LayerMask groundLm;
-
-  #endregion
 
   [SerializeField]
   [SyncVar]
@@ -16,9 +11,6 @@ public class PlayerMovement : NetworkBehaviour
                 drag = 5f,
                 jumpForce = 1500f;
   private bool doubleJumped;
-
-  // [SyncVar]
-  // float maxSpeedX = 10;
 
   public PlayerRefs playerRefs;
   private LayerMask playerLm;
