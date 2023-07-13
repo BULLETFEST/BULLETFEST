@@ -122,6 +122,11 @@ public class DamageController : NetworkBehaviour
 
     MyNetworkManager.instance.OnPlayerDie(connectionToClient);
     GameObject p = Instantiate(playerDeathParticles, gameObject.transform.position, Quaternion.identity);
+
+    ParticleSystem.MainModule s = p.GetComponent<ParticleSystem>().main;
+
+    s.startColor = new ParticleSystem.MinMaxGradient(GetComponent<ComponentRefs>().graphics.sprites[0].color);
+
     NetworkServer.Spawn(p);
   }
 

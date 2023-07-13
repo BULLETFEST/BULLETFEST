@@ -7,24 +7,12 @@ using UnityEngine;
 public class WeaponBehavior : MonoBehaviour
 {
   public WeaponClass weapon;
-  public PlayerUI uiController;
   public ComponentRefs refs;
 
   public WeaponClass[] arsenal;
 
   [HideInInspector]
   public List<Explosive> awaitingDetonation = new();
-
-  private void Start()
-  {
-    // weapon.bulletsInMag = weapon.magazineSize;
-    // weapon.fireTimeout = 0;
-
-    // uiController.UpdateAmmoText(weapon.bulletsInMag, weapon.magazineSize);
-    // uiController.UpdateWeaponUI(weapon);
-
-    // refs = transform.root.GetComponent<ComponentRefs>();
-  }
 
   public void Fire(string weaponId, GameObject shooter)
   {
@@ -156,11 +144,6 @@ public class WeaponBehavior : MonoBehaviour
       weapon.bulletsInMag = weapon.magazineSize;
       weapon.fireTimeout = 0;
 
-      if (uiController)
-      {
-        uiController.UpdateAmmoText(weapon.magazineSize);
-      }
-
       refs.graphics.sprites.Add(newWeapon.GetComponentInChildren<SpriteRenderer>());
       refs.graphics.sprites[2].enabled = true;
 
@@ -175,11 +158,6 @@ public class WeaponBehavior : MonoBehaviour
       if (refs.graphics.sprites.Count >= 3)
       {
         refs.graphics.sprites[2].enabled = false;
-      }
-
-      if (uiController)
-      {
-        uiController.UpdateAmmoText(-1);
       }
     }
   }

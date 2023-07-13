@@ -80,7 +80,7 @@ MonoBehaviour:
   weaponName: Throwable Knife
   ID: THRW_Knife
   rotateWithCursor: 1
-  deleteOnEmpty: 0
+  deleteOnEmpty: 1
   isShotgun: 0
   isMelee: 0
   pelletCount: 3

@@ -6,14 +6,12 @@ public class PlayerRefs : ComponentRefs
   [SyncVar]
   public System.DateTime timeleft;
 
-  public Canvas publicCanvas;
-
   public GameObject killfeed,
                     crown;
 
   [HideInInspector] public string playerName;
   [HideInInspector] public AudioSystem audioSystem;
-  [HideInInspector] public PlayerMovement playerMovement;
+  [HideInInspector] public PlayerUI uiController;
 
   [HideInInspector]
   [SyncVar(hook = nameof(HandleUpdateDisplayName))]
@@ -24,8 +22,8 @@ public class PlayerRefs : ComponentRefs
   {
     base.Awake();
 
-    playerMovement = GetComponent<PlayerMovement>();
     audioSystem = FindObjectOfType<AudioSystem>();
+    uiController = GetComponent<PlayerUI>();
   }
 
   public override void OnStartAuthority()
