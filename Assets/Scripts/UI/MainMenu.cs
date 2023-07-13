@@ -37,7 +37,7 @@ public class MainMenu : MonoBehaviour
     nm = FindObjectOfType<MyNetworkManager>();
     playerName.text = PlayerPrefs.GetString("PlayerName", "");
 
-    Application.targetFrameRate = Screen.currentResolution.refreshRate;
+    Application.targetFrameRate = (int)Screen.currentResolution.refreshRateRatio.value;
 
     nm.networkAddress = EOSSDKComponent.LocalUserProductIdString;//localIp;
 
