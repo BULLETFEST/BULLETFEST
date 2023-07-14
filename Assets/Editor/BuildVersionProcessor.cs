@@ -14,7 +14,7 @@ public class BuildVersionProcessor : IPreprocessBuildWithReport
     PlayerSettings.SplashScreen.show = false;
 
 #if UNITY_STANDALONE_OSX
-    UnityEditor.OSXStandalone.UserBuildSettings.architecture = UnityEditor.OSXStandalone.MacOSArchitecture.x64ARM64;
+    UnityEditor.OSXStandalone.UserBuildSettings.architecture = OSArchitecture.x64ARM64;
 #endif
   }
 
