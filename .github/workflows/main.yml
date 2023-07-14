@@ -54,6 +54,7 @@ jobs:
           buildName: BULLETFEST #_${{ matrix.targetPlatform }}
           #buildsPath: build_${{ matrix.targetPlatform }}
           versioning: None
+          unityVersion: 2022.3.4f1
           #customParameters: -CompressWithLz4HC
 
       - name: Get Build Version
