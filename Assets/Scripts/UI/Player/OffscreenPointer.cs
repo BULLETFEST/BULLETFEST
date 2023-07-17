@@ -21,7 +21,6 @@ public class OffscreenPointer : NetworkBehaviour
     }
     // pointerRectTransform = new RectTransform[NetworkServer.connections.Count];
 
-    print(FindObjectsOfType<DamageController>().Length);
     for (int i = 0; i < FindObjectsOfType<PlayerNetworking>().Length; i++)
     {
       pointerRectTransform.Add(Instantiate(arrowPrefab, Vector3.zero, Quaternion.identity, arrowContainer.transform).GetComponent<RectTransform>());

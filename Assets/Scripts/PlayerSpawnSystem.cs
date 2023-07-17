@@ -8,6 +8,9 @@ public class PlayerSpawnSystem : NetworkBehaviour
 {
   private GameObject[] spawnPoints;
 
+  [SerializeField]
+  GameObject botPrefab;
+
   [SyncVar]
   public System.DateTime timeStamp;
   private MyNetworkManager nm = MyNetworkManager.instance;
@@ -32,7 +35,7 @@ public class PlayerSpawnSystem : NetworkBehaviour
     for (int i = 0; i < nm.players.Count; i++)
     {
       NetworkConnectionToClient conn = nm.players.ElementAt(i).Key;
-      GameObject playerInstance = Instantiate(nm.PlayerPrefab, spawnPoints[i].transform.position, Quaternion.Euler(0, 0, 0));
+      GameObject playerInstance = Instantiate(nm.playerPrefab, spawnPoints[i].transform.position, Quaternion.Euler(0, 0, 0));
       // playerInstance.GetComponent<PlayerVars>().uiName.text = displayName;
       // NetworkServer.Spawn(playerInstance, Room.players.ElementAt(i).Key);
       // playerInstance.GetComponent<PlayerVars>().timeleft = timeStamp;
@@ -49,7 +52,7 @@ public class PlayerSpawnSystem : NetworkBehaviour
     {
       for (int i = 0; i < nm.settings.lobbySize - nm.players.Count; i++)
       {
-        GameObject bot = Instantiate(nm.BotPrefab, spawnPoints[spawnPoints.Length - 1 - i].transform.position, Quaternion.identity);
+        GameObject bot = Instantiate(botPrefab, spawnPoints[spawnPoints.Length - 1 - i].transform.position, Quaternion.identity);
         bot.name = "BOT" + i;
         NetworkServer.Spawn(bot);
         Rpc_SetPlayerColor(bot, i + nm.players.Count);
@@ -76,50 +79,26 @@ public class PlayerSpawnSystem : NetworkBehaviour
   }
 
   [Server]
-  public IEnumerator Cmd_RespawnPlayer(NetworkConnection conn)
+  public IEnumerator Cmd_RespawnPlayer(GameObject player)
   {
-    Rpc_SetPlayerPosition(conn.identity.gameObject);
+    Rpc_SetPlayerPosition(player);
     yield return new WaitForSecondsRealtime(5);
 
-    PlayerBehavior pb = conn.identity.gameObject.GetComponent<PlayerBehavior>();
+    ComponentRefs refs = player.GetComponent<ComponentRefs>();
 
-    pb.playerRefs.damageController.dead = false;
-    pb.playerRefs.lockMovement = false;
-    pb.playerRefs.lockShooting = false;
-    pb.playerRefs.lockWeapon = false;
+    refs.damageController.dead = false;
+    refs.lockMovement = false;
+    refs.lockShooting = false;
+    refs.lockWeapon = false;
 
-    Rpc_RespawnPlayer(conn.identity.gameObject);
-    conn.identity.gameObject.GetComponent<DamageController>().health = conn.identity.gameObject.GetComponent<DamageController>().maxHealth;
-  }
-
-  [Server]
-  public IEnumerator Cmd_RespawnBot(GameObject bot)
-  {
-    Rpc_SetPlayerPosition(bot);
-    yield return new WaitForSecondsRealtime(5);
-
-    BotRefs botRefs = bot.GetComponent<BotRefs>();
-
-    botRefs.damageController.dead = false;
-    botRefs.lockMovement = false;
-    botRefs.lockShooting = false;
-    botRefs.lockWeapon = false;
-
-    Rpc_RespawnPlayer(bot);
-    bot.GetComponent<DamageController>().health = bot.GetComponent<DamageController>().maxHealth;
+    Rpc_RespawnPlayer(player);
+    player.GetComponent<DamageController>().health = player.GetComponent<DamageController>().maxHealth;
   }
 
   [ClientRpc]
   private void Rpc_SetPlayerColor(GameObject player, int idx)
   {
-    if (player.tag == "Player")
-    {
-      player.GetComponent<PlayerRefs>().graphics.sprites[0].color = colors[idx % 4];
-    }
-    else if (player.tag == "Bot")
-    {
-      player.GetComponent<BotRefs>().graphics.sprites[0].color = colors[idx % 4];
-    }
+    player.GetComponent<ComponentRefs>().graphics.sprites[0].color = colors[idx % 4];
   }
 
   [ClientRpc]
@@ -133,35 +112,12 @@ public class PlayerSpawnSystem : NetworkBehaviour
   [ClientRpc]
   private void Rpc_RespawnPlayer(GameObject player)
   {
-    if (player.tag == "Bot")
-    {
-      BotRefs botRefs = player.GetComponent<BotRefs>();
+    ComponentRefs refs = player.GetComponent<ComponentRefs>();
 
-      botRefs.rb.velocity = Vector2.zero;
-
-      botRefs.uiName.gameObject.SetActive(true);
-
-      // pb.health = pb.maxHealth;
-
-      botRefs.graphics.EnableAll();
-      botRefs.uiName.gameObject.SetActive(true);
-      player.GetComponent<BoxCollider2D>().enabled = true;
-      player.GetComponent<Rigidbody2D>().simulated = true;
-    }
-    else
-    {
-      PlayerBehavior pb = player.GetComponent<PlayerBehavior>();
-
-      pb.playerRefs.rb.velocity = Vector2.zero;
-
-      pb.playerRefs.uiName.gameObject.SetActive(true);
-
-      // pb.health = pb.maxHealth;
-
-      pb.playerRefs.graphics.EnableAll();
-      pb.playerRefs.uiName.gameObject.SetActive(true);
-      player.GetComponent<BoxCollider2D>().enabled = true;
-      player.GetComponent<Rigidbody2D>().simulated = true;
-    }
+    refs.rb.velocity = Vector2.zero;
+    refs.uiName.gameObject.SetActive(true);
+    refs.graphics.EnableAll();
+    refs.bc.enabled = true;
+    refs.rb.simulated = true;
   }
 }

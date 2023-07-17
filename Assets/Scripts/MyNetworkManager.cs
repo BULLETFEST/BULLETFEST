@@ -13,11 +13,11 @@ public class MyNetworkManager : NetworkManager
   private string[] queuedScenes;
 
   [SerializeField]
-  public GameObject PlayerSpawnSystemPrefab,
-                    GunSpawnerPrefab,
-                    WinnerPanelPrefab,
-                    PlayerPrefab,
-                    BotPrefab;
+  GameObject PlayerSpawnSystemPrefab,
+             GunSpawnerPrefab,
+             WinnerPanelPrefab;
+
+  public ChatManager Chat;
 
   [HideInInspector]
   public GameObject botWinner;
@@ -163,11 +163,7 @@ public static readonly bool testMode = false;
 
   private IEnumerator KeepAlive()
   {
-    try
-    {
-      FirebaseManager.KeepAlive();
-    }
-    catch { }
+    FirebaseManager.KeepAlive();
 
     yield return new WaitForSecondsRealtime(120f);
 
@@ -205,6 +201,8 @@ public static readonly bool testMode = false;
       return;
     }
 
+
+
     PlayerConnect?.Invoke(conn);
 
     FirebaseManager.UpdateLobby(NetworkServer.connections.Count);
@@ -236,6 +234,7 @@ public static readonly bool testMode = false;
         go.GetComponent<BoxCollider2D>().size = new Vector2(Camera.main.orthographicSize * Camera.main.aspect * 1.75f, 1);
         NetworkServer.Spawn(go);
       }
+
     }
     if (sceneName == "Lobby")
     {
@@ -252,11 +251,17 @@ public static readonly bool testMode = false;
 
     if (players.ContainsKey(conn))
     {
+
+      if (Utilities.FindWithType(out ChatManager chatManager))
+      {
+        chatManager.messages.Add($"R|{players[conn].displayName} has left the game");
+      }
+
       players.Remove(conn);
 
       FirebaseManager.UpdateLobby(NetworkServer.connections.Count);
 
-      PlayerUpdate?.Invoke();
+      // PlayerUpdate?.Invoke();
 
       if (gameStarted)
       {
@@ -266,7 +271,7 @@ public static readonly bool testMode = false;
         }
 
         deadPlayers--;
-        OnPlayerDie(conn);
+        OnPlayerDie(conn.identity.gameObject);
       }
     }
 
@@ -276,7 +281,7 @@ public static readonly bool testMode = false;
   private int deadPlayers = 0;
 
   [Server]
-  public void OnPlayerDie(NetworkConnectionToClient conn)
+  public void OnPlayerDie(GameObject player)
   {
     BotPathfinding[] bots = FindObjectsOfType<BotPathfinding>();
 
@@ -294,10 +299,7 @@ public static readonly bool testMode = false;
     }
     else
     {
-      if (conn != null)
-      {
-        StartCoroutine(FindObjectOfType<PlayerSpawnSystem>().Cmd_RespawnPlayer(conn));
-      }
+      StartCoroutine(FindObjectOfType<PlayerSpawnSystem>().Cmd_RespawnPlayer(player));
     }
   }
 
@@ -480,6 +482,11 @@ public static readonly bool testMode = false;
 
   public void Disconnect()
   {
+    if (Utilities.FindWithType(out ChatManager cm))
+    {
+      Destroy(cm.gameObject);
+    }
+
     if (mode == NetworkManagerMode.ServerOnly)
     {
       FirebaseManager.CloseLobby();

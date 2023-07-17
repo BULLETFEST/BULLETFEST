@@ -208,8 +208,6 @@ public class PlayerBehavior : NetworkBehaviour
       return;
     }
 
-    print("Called explosion");
-
     WeaponBehavior weapon = playerRefs.weaponBehavior;
 
     if (weapon.awaitingDetonation.Count > 0)

@@ -14,9 +14,15 @@ public class LobbyUIManager : NetworkBehaviour
   public Toggle privacy, enableBots;
   private MyNetworkManager nm = MyNetworkManager.instance;
 
-  private void Awake()
+  public override void OnStartClient()
   {
-    print(nm.isHost);
+    base.OnStartClient();
+
+    roomCode.text = $"Room code: {nm.roomCode}";
+  }
+
+  private void Start()
+  {
     if (!nm.isHost)
     {
       startButton.gameObject.SetActive(false);
@@ -96,6 +102,8 @@ public class LobbyUIManager : NetworkBehaviour
     }
 
     FirebaseManager.UpdateLobby(NetworkServer.connections.Count);
+
+    nm.Chat.messages.Add($"W|Gamemode changed to {nm.settings.gameMode}");
   }
 
   public void TogglePrivate(bool option)
@@ -103,6 +111,8 @@ public class LobbyUIManager : NetworkBehaviour
     nm.settings.privacyType = option ? GameSettings.PrivacyType.Private : GameSettings.PrivacyType.Public;
 
     FirebaseManager.UpdateLobby(NetworkServer.connections.Count);
+
+    nm.Chat.messages.Add($"W|Lobby visibility changed to {nm.settings.privacyType}");
   }
 
   public void ToggleBots(bool option)
@@ -110,11 +120,14 @@ public class LobbyUIManager : NetworkBehaviour
     nm.settings.enableBots = option;
 
     UpdateMapsList();
+
+    nm.Chat.messages.Add($"W|Bots changed to {(option ? "Enabled" : "Disabled")}");
   }
 
   public void ChangeRoundCount(string count)
   {
     nm.settings.rounds = int.Parse(count);
+    nm.Chat.messages.Add($"W|Rounds changed to {count}");
   }
 
   public void ChangeDeathmatchTime(int option)
@@ -150,6 +163,8 @@ public class LobbyUIManager : NetworkBehaviour
         nm.settings.deathmatchLength = 5;
         break;
     }
+
+    nm.Chat.messages.Add($"W|Deathmatch time changed to {nm.settings.deathmatchLength} minutes");
   }
 
   public int DeathmatchTimeToOption(float t)
@@ -198,6 +213,7 @@ public class LobbyUIManager : NetworkBehaviour
 
     UpdateMapsList();
     FirebaseManager.UpdateLobby(NetworkServer.connections.Count);
+    nm.Chat.messages.Add($"W|Lobby size changed to {nm.settings.lobbySize}");
   }
 
   public void UpdateMapsList()
@@ -245,5 +261,7 @@ public class LobbyUIManager : NetworkBehaviour
   public void ToggleGoldenGun(bool option)
   {
     nm.settings.goldenGun = option;
+    nm.Chat.messages.Add($"W|Golden gun changed to {(option ? "Enabled" : "Disabled")}");
+
   }
 }

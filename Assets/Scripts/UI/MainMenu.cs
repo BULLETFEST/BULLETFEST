@@ -177,7 +177,7 @@ public class MainMenu : MonoBehaviour
       {
         code = match.code;
         Connect();
-        FindObjectOfType<AudioSystem>().PlaySound("Select");
+        PlaySelectSound();
       });
     }
 

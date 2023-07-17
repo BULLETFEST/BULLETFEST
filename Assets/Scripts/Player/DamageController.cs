@@ -120,14 +120,10 @@ public class DamageController : NetworkBehaviour
       UpdateKillfeed(player.Value, killerName, killedName, player.Value.identity.gameObject);
     }
 
-    MyNetworkManager.instance.OnPlayerDie(connectionToClient);
-    GameObject p = Instantiate(playerDeathParticles, gameObject.transform.position, Quaternion.identity);
+    MyNetworkManager.instance.OnPlayerDie(gameObject);
 
-    ParticleSystem.MainModule s = p.GetComponent<ParticleSystem>().main;
 
-    s.startColor = new ParticleSystem.MinMaxGradient(GetComponent<ComponentRefs>().graphics.sprites[0].color);
-
-    NetworkServer.Spawn(p);
+    // NetworkServer.Spawn(p);
   }
 
   [ClientRpc]
@@ -138,6 +134,14 @@ public class DamageController : NetworkBehaviour
 
     gameObject.GetComponent<BoxCollider2D>().enabled = false;
     gameObject.GetComponent<Rigidbody2D>().simulated = false;
+
+    GameObject p = Instantiate(playerDeathParticles, transform.position, Quaternion.identity);
+
+    ParticleSystem.MainModule s = p.GetComponent<ParticleSystem>().main;
+    ParticleSystem.TrailModule t = p.GetComponent<ParticleSystem>().trails;
+
+    s.startColor = new ParticleSystem.MinMaxGradient(refs.graphics.sprites[0].color);
+    t.colorOverLifetime = refs.graphics.sprites[0].color;
   }
 
   [TargetRpc]

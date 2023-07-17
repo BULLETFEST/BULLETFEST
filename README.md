@@ -2,7 +2,7 @@
 
 ## Developing:
 
-Required Unity Version: `2021.3.27f1` \
+Required Unity Version: `2022.3.4f1` \
 Recommended IDE: `Visual Studio Code` \
 If you're using VSCode, follow [this](https://code.visualstudio.com/docs/other/unity) setup.
 

@@ -5,7 +5,8 @@ using UnityEngine.UI;
 
 public class LobbyPlayerSpawner : NetworkBehaviour
 {
-  [SerializeField] private GameObject lobbyPlayer;
+  [SerializeField] private GameObject lobbyPlayer, chatPrefab;
+
   private Color[] colors = new Color[] {
     new Color(0.5882353f, 0.1137255f, 0.04313726f), // 961D0B
     new Color(0.0993236f, 0.4487756f, 0.6792453f), // 1972AD
@@ -16,6 +17,11 @@ public class LobbyPlayerSpawner : NetworkBehaviour
   public override void OnStartServer()
   {
     base.OnStartServer();
+
+    if (!FindObjectOfType<ChatManager>())
+    {
+      NetworkServer.Spawn(Instantiate(chatPrefab, Vector3.zero, Quaternion.identity));
+    }
 
     for (int i = 0; i < NetworkServer.connections.Count; i++)
     {
@@ -92,22 +98,6 @@ public class LobbyPlayerSpawner : NetworkBehaviour
     playerObj.transform.localScale = Vector3.one;
     playerObj.GetComponent<Image>().color = colors[idx % 4];
 
-    // GameObject[] lobbyPlayers = GameObject.FindGameObjectsWithTag("LobbyPlayer");
-    // for (int i = 0; i < lobbyPlayers.Length; i++)
-    // {
-    //   lobbyPlayers[i].transform.SetParent(lobbyPlayersContainer.transform);
-    //   lobbyPlayers[i].transform.localScale = Vector3.one;
-    //   lobbyPlayers[i].GetComponent<Image>().color = colors[i];
-
-    //   if (lobbyPlayers[i].GetComponent<NetworkIdentity>().netId == 0)
-    //   {
-    //     RectTransform rt = lobbyPlayers[i].GetComponent<LobbyPlayer>().DisplayNameUI.GetComponent<RectTransform>();
-    //     rt.anchoredPosition = new Vector3(0, 90, rt.localPosition.z);
-
-    //     lobbyPlayers[i].GetComponent<LobbyPlayer>().crown.gameObject.SetActive(true);
-    //   }
-    // }
-
     DiscordController.UpdateActivity(new Discord.Activity
     {
       State = "In a lobby",
@@ -132,18 +122,9 @@ public class LobbyPlayerSpawner : NetworkBehaviour
   [ClientRpc]
   public void CallPlayerDisconnect()
   {
-    foreach (GameObject card in GameObject.FindGameObjectsWithTag("LobbyPlayer"))
+    foreach (GameObject player in GameObject.FindGameObjectsWithTag("LobbyPlayer"))
     {
-      card.GetComponent<LobbyPlayer>().OnPlayerDisconnect();
+      player.GetComponent<LobbyPlayer>().OnPlayerDisconnect();
     }
   }
-
-  // [ClientRpc]
-  // void CallPlayerJoined()
-  // {
-  //   foreach (GameObject card in GameObject.FindGameObjectsWithTag("LobbyPlayer"))
-  //   {
-  //     card.GetComponent<LobbyPlayer>().OnPlayerJoin();
-  //   }
-  // }
 }

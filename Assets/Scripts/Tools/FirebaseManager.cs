@@ -36,7 +36,6 @@ public class FirebaseManager : MonoBehaviour
     {
       if (method == HTTPMethod.Post)
       {
-        Debug.Log(method.ToString().ToUpper());
         _res = await wc.UploadValuesTaskAsync(testMode ? $"http://localhost:3000/{endpoint}" : $"https://joobot.glitch.me/{endpoint}", method.ToString().ToUpper(), data);
       }
       else if (method == HTTPMethod.Get)
@@ -105,15 +104,7 @@ public class FirebaseManager : MonoBehaviour
       ["token"] = SaveSystem.saveData.token
     };
 
-    try
-    {
-      WebClient wc = CreateWebClient();
-
-      wc.UploadValuesTaskAsync(new System.Uri(testMode ? "http://localhost:3000/keepLobbyAlive" : "https://joobot.glitch.me/keepLobbyAlive"), "POST", data);
-
-      wc.Dispose();
-    }
-    catch { }
+    _ = CreateRequest<Response<string>>("keepLobbyAlive", data, HTTPMethod.Post);
   }
 
   public static async Task<Match[]> GetLobbies()
@@ -143,7 +134,7 @@ public class FirebaseManager : MonoBehaviour
       ["token"] = SaveSystem.saveData.token
     };
 
-    CreateRequest<string>("closeLobby", data, HTTPMethod.Post);
+    _ = CreateRequest<string>("closeLobby", data, HTTPMethod.Post);
   }
 
   public static async Task<Response<string>> CheckServerStatus()
