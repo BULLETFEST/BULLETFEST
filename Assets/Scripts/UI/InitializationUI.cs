@@ -10,18 +10,18 @@ public class InitializationUI : MonoBehaviour
   public TMP_Text loadingText;
 
   [Header("Signup UI Elements")]
-  public TMP_InputField s_Email;
-  public TMP_InputField s_Pass;
-  public Button signupBtn;
+  [SerializeField] private TMP_InputField s_Email;
+  [SerializeField] private TMP_InputField s_Pass;
+  [SerializeField] private Button signupBtn;
 
   [Header("Login UI Elements")]
-  public TMP_InputField l_Email;
-  public TMP_InputField l_Pass;
-  public Button loginBtn;
+  [SerializeField] private TMP_InputField l_Email;
+  [SerializeField] private TMP_InputField l_Pass;
+  [SerializeField] private Button loginBtn;
 
-  public GameObject loginPanel, whyNeedAccount;
+  [SerializeField] private GameObject loginPanel, whyNeedAccount;
 
-  public bool isDebug = false;
+  [SerializeField] private bool isDebug = false;
 
   private void Start()
   {

@@ -2,7 +2,7 @@ using UnityEngine;
 
 public class BotRefs : ComponentRefs
 {
-  [HideInInspector] public BotBehavior botBehavior;
+  public BotBehavior botBehavior { get; private set; }
 
   protected override void Awake()
   {

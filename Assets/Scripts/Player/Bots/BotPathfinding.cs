@@ -5,13 +5,13 @@ using UnityEngine;
 public class BotPathfinding : NetworkBehaviour
 {
   [Header("Physics")]
-  public float speed = 13f;
-  public float drag = 17.5f;
-  public float nextWaypointDistance = 3f;
-  public float jumpNodeHeightRequirement = 0.8f;
-  public float jumpForce = 20f;
-  public float jumpCheckOffset = 0.1f;
-  public LayerMask groundLm, playerLm;
+  [SerializeField] private float speed = 13f;
+  [SerializeField] private float drag = 17.5f;
+  [SerializeField] private float nextWaypointDistance = 3f;
+  [SerializeField] private float jumpNodeHeightRequirement = 0.8f;
+  [SerializeField] private float jumpForce = 20f;
+  [SerializeField] private float jumpCheckOffset = 0.1f;
+  [SerializeField] private LayerMask groundLm, playerLm;
 
   [SerializeField]
   private bool enablePathfinding = true;
@@ -26,9 +26,9 @@ public class BotPathfinding : NetworkBehaviour
   private BotBaseState currentState;
   private bool dead;
 
-  public BotFleeState botFleeState = new();
-  public BotLookForWeaponState botLookForWeaponState = new();
-  public BotHauntPlayerState botHauntPlayerState = new();
+  public BotFleeState botFleeState { get; private set; } = new();
+  public BotLookForWeaponState botLookForWeaponState { get; private set; } = new();
+  public BotHauntPlayerState botHauntPlayerState { get; private set; } = new();
 
   public System.Action<BotPathfinding> OnReachTarget;
 

@@ -7,7 +7,7 @@ public class GunSpawner : NetworkBehaviour
 {
   public List<GameObject> weapons;
 
-  public GameObject goldenGun;
+  [SerializeField] GameObject goldenGun;
 
   [SerializeField] private GameObject specialSpawn;
   [SerializeField] private bool b_specialSpawn;

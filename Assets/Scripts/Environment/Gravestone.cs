@@ -3,8 +3,8 @@ using UnityEngine;
 
 public class Gravestone : NetworkBehaviour
 {
-  public GameObject dirt;
-  public ParticleSystem ps;
+  [SerializeField] private GameObject dirt;
+  [SerializeField] private ParticleSystem ps;
 
   [SyncVar]
   private bool played = false;

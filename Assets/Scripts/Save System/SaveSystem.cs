@@ -7,7 +7,7 @@ using UnityEngine;
 
 public class SaveSystem : MonoBehaviour
 {
-  public static SaveDataStructure saveData;
+  public static SaveDataStructure saveData { get; private set; }
   private static Dictionary<string, string> defaultBinds;
   private static string appDataPath;
 

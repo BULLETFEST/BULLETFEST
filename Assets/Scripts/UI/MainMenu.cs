@@ -17,14 +17,14 @@ public class MainMenu : MonoBehaviour
   // public string playerName;
 
   [Header("UI Elements")]
-  public Button connectBtn;
-  public Button joinBtn;
-  public Button hostBtn;
-  public Button refreshBtn;
-  public Button serverBrowserBtn;
-  public TMP_Text buildNumber;
-  public TMP_InputField playerName;
-  public GameObject serverBrowser, serversContainer;
+  [SerializeField] private Button connectBtn;
+  [SerializeField] private Button joinBtn;
+  [SerializeField] private Button hostBtn;
+  [SerializeField] private Button refreshBtn;
+  [SerializeField] private Button serverBrowserBtn;
+  [SerializeField] private TMP_Text buildNumber;
+  [SerializeField] private TMP_InputField playerName;
+  [SerializeField] private GameObject serverBrowser, serversContainer;
 
   public GameObject gameCard;
   private bool isConnecting = false;

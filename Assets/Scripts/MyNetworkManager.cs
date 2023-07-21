@@ -7,7 +7,7 @@ using UnityEngine.SceneManagement;
 
 public class MyNetworkManager : NetworkManager
 {
-  public static MyNetworkManager instance;
+  public static MyNetworkManager instance { get; private set; }
 
   public GameSettings settings = new();
   private string[] queuedScenes;
@@ -19,8 +19,7 @@ public class MyNetworkManager : NetworkManager
 
   public ChatManager Chat;
 
-  [HideInInspector]
-  public GameObject botWinner;
+  private GameObject botWinner;
 
   public Dictionary<NetworkConnectionToClient, PlayerData> players { get; } = new Dictionary<NetworkConnectionToClient, PlayerData>();
 
@@ -38,7 +37,9 @@ public class MyNetworkManager : NetworkManager
   [HideInInspector]
   public string roomCode;
 
-  public static int playableScenesCount = 0, menuScenesCount = 0;
+  public static int playableScenesCount { get; private set; } = 0;
+
+  private int menuScenesCount = 0;
 
   [Scene] public string[] _4Players, _6Players, _8Players, _BotSupport;
 
@@ -46,7 +47,8 @@ public class MyNetworkManager : NetworkManager
   private bool hasFiredReadyEvent;
   private static bool firstInit = true;
 
-  public bool enableTestMode;
+  [SerializeField]
+  bool enableTestMode;
 
 #if UNITY_EDITOR
   public static bool testMode = false;

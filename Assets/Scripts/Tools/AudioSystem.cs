@@ -7,7 +7,7 @@ public class AudioSystem : MonoBehaviour
   private AudioSource source;
 
   // Start is called before the first frame update
-  private void Start()
+  private void Awake()
   {
     AudioClip[] temp = Resources.LoadAll<AudioClip>("Sounds");
     foreach (AudioClip clip in temp)

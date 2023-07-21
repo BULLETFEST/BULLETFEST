@@ -5,18 +5,20 @@ using UnityEngine.Video;
 
 public class PlayerBehavior : NetworkBehaviour
 {
-  [HideInInspector]
-  public PlayerRefs playerRefs;
+  private PlayerRefs playerRefs;
   private bool shootKeyUp = true;
   private GameObject weaponToPickup;
 
   private System.Action<GameObject> PlayHitSoundAction;
 
   // Start is called before the first frame update
-  private void Start()
+  void Awake()
   {
     playerRefs = GetComponent<PlayerRefs>();
+  }
 
+  private void Start()
+  {
     PlayHitSoundAction = delegate (GameObject g) { PlayHitSound(connectionToClient); };
 
     playerRefs.damageController.onTakeDamage += PlayHitSoundAction;

@@ -6,7 +6,7 @@ using UnityEngine;
 
 public class WeaponBehavior : MonoBehaviour
 {
-  public WeaponClass weapon;
+  public WeaponClass weapon { get; private set; }
   public ComponentRefs refs;
 
   public WeaponClass[] arsenal;

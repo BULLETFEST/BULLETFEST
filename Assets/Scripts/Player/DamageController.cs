@@ -10,7 +10,7 @@ public class DamageController : NetworkBehaviour
   public Action<GameObject> onTakeDamage;
   public Action<GameObject> onDeath;
 
-  public GameObject killfeedItem, playerDeathParticles, gravestone;
+  [SerializeField] private GameObject killfeedItem, playerDeathParticles, gravestone;
   private ComponentRefs refs;
 
   [SyncVar]

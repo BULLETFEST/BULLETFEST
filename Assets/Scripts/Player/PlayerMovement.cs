@@ -3,7 +3,8 @@ using UnityEngine;
 
 public class PlayerMovement : NetworkBehaviour
 {
-  public LayerMask groundLm;
+  [SerializeField]
+  private LayerMask groundLm;
 
   [SerializeField]
   [SyncVar]
@@ -12,7 +13,7 @@ public class PlayerMovement : NetworkBehaviour
                 jumpForce = 1500f;
   private bool doubleJumped;
 
-  public PlayerRefs playerRefs;
+  private PlayerRefs playerRefs;
   private LayerMask playerLm;
 
   private void Start()

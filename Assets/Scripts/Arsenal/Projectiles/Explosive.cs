@@ -9,14 +9,12 @@ public class Explosive : Projectile
   public GameObject explosionParticle;
 
   [SyncVar]
-  [HideInInspector]
-  public bool detonated;
+  bool detonated;
 
-  public bool stickOnCollision;
+  [SerializeField] bool stickOnCollision;
+  [SerializeField] float radius;
 
-  public float radius;
-
-  internal override void OnCollisionEnter2D(Collision2D other)
+  protected override void OnCollisionEnter2D(Collision2D other)
   {
     if (detonateOnImpact && !detonated)
     {

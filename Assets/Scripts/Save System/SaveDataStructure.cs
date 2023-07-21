@@ -1,7 +1,7 @@
 [System.Serializable]
 public class SaveDataStructure
 {
-  public SettingsClass settings;
+  public SettingsClass settings { get; private set; }
   public string token;
 
   public SaveDataStructure(SettingsClass settings, string token)

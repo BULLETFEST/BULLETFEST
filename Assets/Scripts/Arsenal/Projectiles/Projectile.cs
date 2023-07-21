@@ -11,28 +11,32 @@ public class Projectile : NetworkBehaviour
   [HideInInspector]
   public GameObject owner;
 
-  [HideInInspector]
   [SyncVar]
-  public bool passThrough = false;
+  [SerializeField]
+  protected bool passThrough = false;
 
-  [HideInInspector]
   [SyncVar]
-  public int passThroughAmount = 0;
+  [SerializeField]
+  protected int passThroughAmount = 0;
 
-  internal int passedThrough = 0;
+  int passedThrough = 0;
 
-  public bool destroySelf = true;
+  [SerializeField]
+  bool destroySelf = true;
 
   [DrawIf("destroySelf", true)]
-  public float destroySelfTime = 5f;
+  [SerializeField]
+  float destroySelfTime = 5f;
 
-  public bool modifyStartingRotation;
+  [SerializeField]
+  protected bool modifyStartingRotation;
 
   [DrawIf("modifyStartingRotation", true)]
-  public Vector3 startingRotation;
+  [SerializeField]
+  protected Vector3 startingRotation;
 
   [ServerCallback]
-  internal virtual void Start()
+  protected virtual void Start()
   {
     Server_DisableCollisionWith(owner);
     if (destroySelf)
@@ -46,14 +50,14 @@ public class Projectile : NetworkBehaviour
     }
   }
 
-  internal virtual IEnumerator DestroySelf()
+  protected virtual IEnumerator DestroySelf()
   {
     yield return new WaitForSeconds(destroySelfTime);
     NetworkServer.Destroy(gameObject);
   }
 
   [ServerCallback]
-  internal virtual void OnCollisionEnter2D(Collision2D other)
+  protected virtual void OnCollisionEnter2D(Collision2D other)
   {
     if (!other.gameObject.GetComponent<DamageController>())
     {
@@ -80,19 +84,19 @@ public class Projectile : NetworkBehaviour
   }
 
   [Command(requiresAuthority = false)]
-  internal void Server_DisableCollisionWith(GameObject other)
+  protected void Server_DisableCollisionWith(GameObject other)
   {
     DisableCollisionWith(other);
   }
 
   [ClientRpc]
-  internal void DisableCollisionWith(GameObject other)
+  protected void DisableCollisionWith(GameObject other)
   {
     Physics2D.IgnoreCollision(GetComponent<Collider2D>(), other.GetComponent<Collider2D>());
   }
 
   [Command(requiresAuthority = false)]
-  internal void DealDamage(GameObject victim)
+  protected void DealDamage(GameObject victim)
   {
     victim.GetComponent<DamageController>().TakeDamage(damage, owner);
   }
