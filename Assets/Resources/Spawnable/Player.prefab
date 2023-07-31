@@ -367,7 +367,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b3346e2f73bbc1148b0e4ec0a02fd38b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  weapon: {fileID: 0}
   refs: {fileID: 4424612045805755857}
   arsenal:
   - {fileID: 3366149238512663894, guid: 5782fa51db3b6c446bbd752762f84548, type: 3}
@@ -998,7 +997,6 @@ MonoBehaviour:
   moveForce: 17.5
   drag: 17.5
   jumpForce: 1150
-  playerRefs: {fileID: 0}
 --- !u!114 &6912769623936390573
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1029,7 +1027,6 @@ MonoBehaviour:
   syncDirection: 0
   syncMode: 0
   syncInterval: 0.1
-  playerRefs: {fileID: 0}
 --- !u!114 &8276199771473266534
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1143,7 +1140,7 @@ MonoBehaviour:
   syncRotation: 1
   syncScale: 0
   interpolatePosition: 1
-  interpolateRotation: 1
+  interpolateRotation: 0
   interpolateScale: 0
   sendIntervalMultiplier: 3
   timelineOffset: 0

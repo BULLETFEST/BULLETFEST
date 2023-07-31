@@ -35,7 +35,10 @@ public class SaveSystem : MonoBehaviour
       {"rgt2", "RightArrow"},
 
       {"lft", "A"},
-      {"lft2", "LeftArrow"}
+      {"lft2", "LeftArrow"},
+
+      {"scoreboard", "Tab"},
+      {"scoreboard2", "None"}
     };
 
     if (saveData == null || saveData.settings == null)
@@ -47,7 +50,7 @@ public class SaveSystem : MonoBehaviour
       saveData.settings.keybinds ??= new Dictionary<string, string>();
     }
 
-    for (int i = 0; i < defaultBinds.Count - 1; i++)
+    for (int i = 0; i < defaultBinds.Count; i++)
     {
       if (!saveData.settings.keybinds.ContainsKey(defaultBinds.ElementAt(i).Key))
       {

@@ -15,7 +15,8 @@ public class MyNetworkManager : NetworkManager
   [SerializeField]
   GameObject PlayerSpawnSystemPrefab,
              GunSpawnerPrefab,
-             WinnerPanelPrefab;
+             WinnerPanelPrefab,
+             ScoreboardManagerPrefab;
 
   public ChatManager Chat;
 
@@ -234,6 +235,12 @@ public static readonly bool testMode = false;
 
         go.transform.position = Camera.main.ScreenToWorldPoint(new Vector3(Screen.width / 2, Screen.height + 50, 10));
         go.GetComponent<BoxCollider2D>().size = new Vector2(Camera.main.orthographicSize * Camera.main.aspect * 1.75f, 1);
+        NetworkServer.Spawn(go);
+      }
+
+      if (!FindObjectOfType<ScoreboardManager>())
+      {
+        GameObject go = Instantiate(ScoreboardManagerPrefab);
         NetworkServer.Spawn(go);
       }
 

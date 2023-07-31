@@ -36,7 +36,7 @@ public class InitializationUI : MonoBehaviour
       eos.connectInterfaceCredentialType = Epic.OnlineServices.ExternalCredentialType.Epic;
       eos.devAuthToolPort = 1234;
 #if UNITY_EDITOR
-      eos.devAuthToolCredentialName = "E1";
+      eos.devAuthToolCredentialName = ParrelSync.ClonesManager.IsClone() ? "E2" : "E1";
 #else
       eos.devAuthToolCredentialName = "E2";
 #endif

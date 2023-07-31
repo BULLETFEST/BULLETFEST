@@ -37,9 +37,9 @@ namespace Mirror
         public bool autoConnectClientBuild;
 
         /// <summary>Server Update frequency, per second. Use around 60Hz for fast paced games like Counter-Strike to minimize latency. Use around 30Hz for games like WoW to minimize computations. Use around 1-10Hz for slow paced games like EVE.</summary>
-        [Tooltip("Server & Client send rate per second. Use around 60Hz for fast paced games like Counter-Strike to minimize latency. Use around 30Hz for games like WoW to minimize computations. Use around 1-10Hz for slow paced games like EVE.")]
+        [Tooltip("Server & Client send rate per second. Use 60-100Hz for fast paced games like Counter-Strike to minimize latency. Use around 30Hz for games like WoW to minimize computations. Use around 1-10Hz for slow paced games like EVE.")]
         [FormerlySerializedAs("serverTickRate")]
-        public int sendRate = 30;
+        public int sendRate = 60;
 
         // Deprecated 2022-10-31
         [Obsolete("NetworkManager.serverTickRate was renamed to sendRate because that's what it configures for both server & client now.")]
@@ -87,6 +87,15 @@ namespace Mirror
         [FormerlySerializedAs("m_MaxConnections")]
         [Tooltip("Maximum number of concurrent connections.")]
         public int maxConnections = 100;
+
+        // Mirror global disconnect inactive option, independent of Transport.
+        // not all Transports do this properly, and it's easiest to configure this just once.
+        // this is very useful for some projects, keep it.
+        [Tooltip("When enabled, the server automatically disconnects inactive connections after the configured timeout.")]
+        public bool disconnectInactiveConnections;
+
+        [Tooltip("Timeout in seconds for server to automatically disconnect inactive connections if 'disconnectInactiveConnections' is enabled.")]
+        public float disconnectInactiveTimeout = 60f;
 
         [Header("Authentication")]
         [Tooltip("Authentication component attached to this object")]
@@ -322,6 +331,9 @@ namespace Mirror
             }
 
             ConfigureHeadlessFrameRate();
+
+            NetworkServer.disconnectInactiveConnections = disconnectInactiveConnections;
+            NetworkServer.disconnectInactiveTimeout = disconnectInactiveTimeout;
 
             // start listening to network connections
             NetworkServer.Listen(maxConnections);

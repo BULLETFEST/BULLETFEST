@@ -101,6 +101,11 @@ public class DamageController : NetworkBehaviour
       killerName = killer.GetComponent<ComponentRefs>().uiName.text;
     }
 
+    // ScoreboardManager.instance.data.IndexOf(ScoreboardManager.instance.data.Find(x => x.connId == killer.GetComponent<NetworkIdentity>().connectionToClient.connectionId));
+
+    if (!GetComponent<BotRefs>())
+      MyNetworkManager.instance.players[connectionToClient].deaths++;
+
     ClientRpc_Die();
 
     if (gm != GameSettings.GameMode.Deathmatch)
@@ -114,6 +119,14 @@ public class DamageController : NetworkBehaviour
         NetworkServer.Spawn(spawnedGravestone);
       }
     }
+
+    ScoreboardManager.instance.data.Clear();
+
+    foreach (System.Collections.Generic.KeyValuePair<NetworkConnectionToClient, PlayerData> dt in MyNetworkManager.instance.players)
+    {
+      ScoreboardManager.instance.data.Add(dt.Value);
+    }
+
 
     foreach (System.Collections.Generic.KeyValuePair<int, NetworkConnectionToClient> player in NetworkServer.connections)
     {

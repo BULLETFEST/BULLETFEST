@@ -362,6 +362,8 @@ MonoBehaviour:
   transport: {fileID: 0}
   networkAddress: localhost
   maxConnections: 15
+  disconnectInactiveConnections: 0
+  disconnectInactiveTimeout: 60
   authenticator: {fileID: 0}
   playerPrefab: {fileID: 6625492776251815654, guid: 11ab8712550f3cf4f80acdecd8357203, type: 3}
   autoCreatePlayer: 0
@@ -383,9 +385,8 @@ MonoBehaviour:
   PlayerSpawnSystemPrefab: {fileID: 4884974567067367211, guid: eb13bd46980ae664896b09b867e63736, type: 3}
   GunSpawnerPrefab: {fileID: 3801778096542937584, guid: 1cd6fecd7fbaded44aa96f7c0367fef5, type: 3}
   WinnerPanelPrefab: {fileID: 851980100229403897, guid: d14c3c1291aaad94baf59dd68bc9675f, type: 3}
-  BotPrefab: {fileID: 5449998184297253465, guid: cd1b4683432beb646b14260618c1ce90, type: 3}
-  ChatPrefab: {fileID: 3648448378456464646, guid: 283dc604fe6780649941123b33b50466, type: 3}
-  botWinner: {fileID: 0}
+  ScoreboardManagerPrefab: {fileID: 1522818164405552334, guid: ed6da1c2db272a94398497b99e6d2374, type: 3}
+  Chat: {fileID: 0}
   gameStarted: 0
   isHost: 0
   roomCode: 

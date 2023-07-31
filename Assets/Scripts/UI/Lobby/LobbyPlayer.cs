@@ -55,7 +55,7 @@ public class LobbyPlayer : NetworkBehaviour
       MyNetworkManager.instance.players.Remove(connectionToClient);
     }
 
-    MyNetworkManager.instance.players.Add(connectionToClient, new PlayerData(dName));
+    MyNetworkManager.instance.players.Add(connectionToClient, new PlayerData(dName, connectionToClient.connectionId));
 
     MyNetworkManager.instance.PlayerUpdate?.Invoke();
 

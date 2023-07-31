@@ -102,6 +102,16 @@ public class PlayerBehavior : NetworkBehaviour
       SwitchWeapon(weaponToPickup);
       weaponToPickup = null;
     }
+
+    if (Utilities.GetKeybindDown("scoreboard"))
+    {
+      ScoreboardManager.instance.GetComponent<CanvasGroup>().alpha = 1;
+    }
+    if (Utilities.GetKeybindUp("scoreboard"))
+    {
+      ScoreboardManager.instance.GetComponent<CanvasGroup>().alpha = 0;
+    }
+
   }
 
   private GameObject FindClosestGun()
