@@ -78,11 +78,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   weaponName: Pistol
-  ID: HDG_Pistol
-  rotateWithCursor: 1
-  deleteOnEmpty: 0
-  isShotgun: 0
-  isMelee: 0
+  uniqueID: Pistol
+  weaponType: 0
   pelletCount: 0
   meleeRange: 0
   magazineSize: 7
@@ -93,19 +90,21 @@ MonoBehaviour:
   movementUnlockTime: 0.05
   damage: 2
   fireRate: 7
+  firingMode: 0
   cameraShakeIntensity: 0.075
   cameraShakeDuration: 0.05
-  firingMode: 0
   projectilePrefab: {fileID: 7740076768845922023, guid: bd0cfe2c8625b2c4daefea4409372304, type: 3}
   projectileSpawnPoint: {fileID: 5449872525946486571}
   projectileVelocity: 25
   projectileTorque: 0
+  soundOnShoot: 1
   shootSound: Shoot
-  weaponIcon: {fileID: 1275859677, guid: 426f6200e188d1241b9d9fcb1d9780f6, type: 3}
-  fireTimeout: 187.58855
-  bulletsInMag: 6
   animateOnShot: 0
   animationShotDamageDelay: 0
+  rotateWithCursor: 1
+  deleteOnEmpty: 0
+  fireTimeout: 187.58855
+  bulletsInMag: 6
 --- !u!1 &3309130001094873767
 GameObject:
   m_ObjectHideFlags: 0

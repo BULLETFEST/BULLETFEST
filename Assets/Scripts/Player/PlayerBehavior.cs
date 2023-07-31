@@ -145,7 +145,7 @@ public class PlayerBehavior : NetworkBehaviour
       playerRefs.weaponBehavior.SwitchWeapon(weapon.GetComponent<WeaponItem>().WeaponID);
       NetworkServer.Destroy(weapon);
 
-      Target_UpdateUI(playerRefs.weaponBehavior.arsenal.Where(x => x.ID == weapon.GetComponent<WeaponItem>().WeaponID).ToArray()[0].magazineSize);
+      Target_UpdateUI(playerRefs.weaponBehavior.arsenal.Where(x => x.uniqueID == weapon.GetComponent<WeaponItem>().WeaponID).ToArray()[0].magazineSize);
     }
   }
 
@@ -198,8 +198,8 @@ public class PlayerBehavior : NetworkBehaviour
 
     weapon.fireTimeout = (float)Time.time + (1f / weapon.fireRate);
 
-    Rpc_AddForce(gameObject, weapon.shootSound);
-    playerRefs.weaponBehavior.Fire(weapon.ID, connectionToClient.identity.gameObject);
+    Rpc_AddForce(gameObject);
+    playerRefs.weaponBehavior.Fire(weapon.uniqueID, connectionToClient.identity.gameObject);
 
     Target_UpdateUI(weapon.bulletsInMag);
     Target_ShakeScreen();
@@ -234,7 +234,7 @@ public class PlayerBehavior : NetworkBehaviour
   }
 
   [ClientRpc]
-  private void Rpc_AddForce(GameObject target, string shootSound)
+  private void Rpc_AddForce(GameObject target)
   {
     if (playerRefs.weaponBehavior.weapon.animateOnShot)
     {
@@ -242,9 +242,9 @@ public class PlayerBehavior : NetworkBehaviour
     }
 
     playerRefs.weaponBehavior.AddForce(target);
-    if (shootSound != "")
+    if (playerRefs.weaponBehavior.weapon.soundOnShoot)
     {
-      playerRefs.audioSystem.PlaySound(shootSound);
+      playerRefs.audioSystem.PlaySound(playerRefs.weaponBehavior.weapon.shootSound);
     }
   }
 

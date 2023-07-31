@@ -162,11 +162,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   weaponName: Mac-10
-  ID: SMG_Mac10
-  rotateWithCursor: 1
-  deleteOnEmpty: 0
-  isShotgun: 0
-  isMelee: 0
+  uniqueID: Mac10
+  weaponType: 3
   pelletCount: 0
   meleeRange: 0
   magazineSize: 15
@@ -177,16 +174,18 @@ MonoBehaviour:
   movementUnlockTime: 0.2
   damage: 3
   fireRate: 20
+  firingMode: 2
   cameraShakeIntensity: 0.05
   cameraShakeDuration: 0.03
-  firingMode: 2
   projectilePrefab: {fileID: 7740076768845922023, guid: bd0cfe2c8625b2c4daefea4409372304, type: 3}
   projectileSpawnPoint: {fileID: 5449872525946486571}
   projectileVelocity: 35
   projectileTorque: 0
+  soundOnShoot: 1
   shootSound: Shoot
-  weaponIcon: {fileID: -1454497904, guid: cce83fdaf70387641a662afe9fdffe74, type: 3}
-  fireTimeout: 134.44652
-  bulletsInMag: 0
   animateOnShot: 0
   animationShotDamageDelay: 0
+  rotateWithCursor: 1
+  deleteOnEmpty: 0
+  fireTimeout: 134.44652
+  bulletsInMag: 0

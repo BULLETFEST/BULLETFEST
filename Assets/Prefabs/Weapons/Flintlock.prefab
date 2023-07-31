@@ -163,11 +163,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   weaponName: Flintlock
-  ID: STG_Flintlock
-  rotateWithCursor: 1
-  deleteOnEmpty: 0
-  isShotgun: 1
-  isMelee: 0
+  uniqueID: Flintlock
+  weaponType: 0
   pelletCount: 1
   meleeRange: 0
   magazineSize: 1
@@ -178,19 +175,21 @@ MonoBehaviour:
   movementUnlockTime: 0.1
   damage: 3
   fireRate: 1
+  firingMode: 0
   cameraShakeIntensity: 0.35
   cameraShakeDuration: 0.05
-  firingMode: 0
   projectilePrefab: {fileID: 7740076768845922023, guid: d1ded02507b0b3e4abd73d70d7397f60, type: 3}
   projectileSpawnPoint: {fileID: 5449872525946486571}
   projectileVelocity: 85
   projectileTorque: 0
+  soundOnShoot: 1
   shootSound: Shoot
-  weaponIcon: {fileID: 207683648, guid: e109f56f2d951c947adf790f02a82c92, type: 3}
-  fireTimeout: 65.9566
-  bulletsInMag: 2
   animateOnShot: 1
   animationShotDamageDelay: 0
+  rotateWithCursor: 1
+  deleteOnEmpty: 0
+  fireTimeout: 65.9566
+  bulletsInMag: 2
 --- !u!95 &7513420416371424270
 Animator:
   serializedVersion: 5

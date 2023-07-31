@@ -59,7 +59,7 @@ public class BotHauntPlayerState : BotBaseState
 
         manager.botRefs.botBehavior.Fire(playerPos.x, angle);
 
-        if (manager.botRefs.weaponBehavior.weapon.bulletsInMag <= 0 && !manager.botRefs.weaponBehavior.weapon.isMelee)
+        if (manager.botRefs.weaponBehavior.weapon.bulletsInMag <= 0 && manager.botRefs.weaponBehavior.weapon.weaponType != WeaponClass.WeaponType.MLE)
         {
           manager.SwitchState(manager.botFleeState);
         }

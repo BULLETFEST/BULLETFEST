@@ -163,11 +163,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   weaponName: Mosin Nagant
-  ID: SNR_Nagant
-  rotateWithCursor: 1
-  deleteOnEmpty: 0
-  isShotgun: 0
-  isMelee: 0
+  uniqueID: Nagant
+  weaponType: 6
   pelletCount: 0
   meleeRange: 0
   magazineSize: 3
@@ -178,19 +175,21 @@ MonoBehaviour:
   movementUnlockTime: 0.3
   damage: 5
   fireRate: 1.25
+  firingMode: 0
   cameraShakeIntensity: 1.5
   cameraShakeDuration: 0.15
-  firingMode: 0
   projectilePrefab: {fileID: 7740076768845922023, guid: bd0cfe2c8625b2c4daefea4409372304, type: 3}
   projectileSpawnPoint: {fileID: 5449872525946486571}
   projectileVelocity: 125
   projectileTorque: 0
+  soundOnShoot: 1
   shootSound: Shoot
-  weaponIcon: {fileID: 676089159, guid: ecbc7caa34f9ebd49916458fd4e246e5, type: 3}
-  fireTimeout: 90.863235
-  bulletsInMag: 100
   animateOnShot: 1
   animationShotDamageDelay: 0
+  rotateWithCursor: 1
+  deleteOnEmpty: 0
+  fireTimeout: 90.863235
+  bulletsInMag: 100
 --- !u!95 &2520710688681962653
 Animator:
   serializedVersion: 5

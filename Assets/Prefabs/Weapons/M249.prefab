@@ -162,11 +162,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   weaponName: M249
-  ID: LMG_M249
-  rotateWithCursor: 1
-  deleteOnEmpty: 0
-  isShotgun: 0
-  isMelee: 0
+  uniqueID: M249
+  weaponType: 4
   pelletCount: 0
   meleeRange: 0
   magazineSize: 50
@@ -177,16 +174,18 @@ MonoBehaviour:
   movementUnlockTime: 0.25
   damage: 2
   fireRate: 30
+  firingMode: 2
   cameraShakeIntensity: 0.3
   cameraShakeDuration: 0.05
-  firingMode: 2
   projectilePrefab: {fileID: 7740076768845922023, guid: bd0cfe2c8625b2c4daefea4409372304, type: 3}
   projectileSpawnPoint: {fileID: 5449872525946486571}
   projectileVelocity: 45
   projectileTorque: 0
+  soundOnShoot: 1
   shootSound: Shoot
-  weaponIcon: {fileID: -1035430623, guid: 45c1defb9b321b94ca6253261ce2492f, type: 3}
-  fireTimeout: 90.863235
-  bulletsInMag: 100
   animateOnShot: 0
   animationShotDamageDelay: 0
+  rotateWithCursor: 1
+  deleteOnEmpty: 0
+  fireTimeout: 90.863235
+  bulletsInMag: 100

@@ -48,7 +48,7 @@ public class BotBehavior : NetworkBehaviour
     weapon.fireTimeout = (float)Time.time + (1f / weapon.fireRate);// * (weapon.firingMode == WeaponClass.FireMode.Single ? 1.65f : 1));
 
     Rpc_AddForce(gameObject, weapon.shootSound);
-    botRefs.weaponBehavior.Fire(weapon.ID, gameObject);
+    botRefs.weaponBehavior.Fire(weapon.uniqueID, gameObject);
 
     if (botRefs.weaponBehavior.awaitingDetonation.Count >= 3)
     {

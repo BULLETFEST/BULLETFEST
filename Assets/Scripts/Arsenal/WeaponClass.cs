@@ -16,34 +16,33 @@ public class WeaponClass : MonoBehaviour
     Shells
   }
 
-  [Header("Base Weapon Information")]
+  public enum WeaponType
+  {
+    HDG,
+    RPG,
+    THRW,
+    SMG,
+    LMG,
+    STG,
+    SNR,
+    MLE,
+  }
+
+  [Header("Basic Weapon Information")]
   public string weaponName;
-  [Tooltip(
-  @"Valid weapon IDs:
-  HDG - Handgun
-  RPG - Rocket Propelled Grenade
-  THRW - Throwable
-  SMG - Sub-Machine Gun
-  LMG - Light Machine Gun
-  STG - Shotgun
-  SNR - Sniper Rifle
-  MEL - Melee
-  ")]
-  public string ID;
+  public string uniqueID;
+  public WeaponType weaponType;
 
-  public bool rotateWithCursor = true;
-  public bool deleteOnEmpty = false;
 
-  public bool isShotgun = false;
+  [Header("Weapon Stats")]
 
-  public bool isMelee = false;
-
-  [DrawIf("isShotgun", true)]
+  [DrawIf("weaponType", WeaponType.STG)]
   public int pelletCount;
 
-  [DrawIf("isMelee", true)]
+  [DrawIf("weaponType", WeaponType.MLE)]
   public float meleeRange;
 
+  [DrawIf("weaponType", WeaponType.MLE, true)]
   public int magazineSize;
 
   public float[] inaccuracyRange = new float[] { 0, 0 };
@@ -52,50 +51,38 @@ public class WeaponClass : MonoBehaviour
   public float movementUnlockTime;
 
   public float damage;
+
   public float fireRate;
-
-  public float cameraShakeIntensity,
-               cameraShakeDuration;
-
   public FireMode firingMode;
 
-  // public ReloadType reloadType;
+  [Header("Camera")]
+  public float cameraShakeIntensity;
+  public float cameraShakeDuration;
 
   [Header("Projectile")]
+
+  [DrawIf("weaponType", WeaponType.MLE, true)]
   public GameObject projectilePrefab;
   public Transform projectileSpawnPoint;
+  [DrawIf("weaponType", WeaponType.MLE, true)]
   public float projectileVelocity;
+  [DrawIf("weaponType", WeaponType.MLE, true)]
   public float projectileTorque;
 
-  [Header("")]
+  [Header("Sound")]
+  public bool soundOnShoot = false;
+
+  [DrawIf("soundOnShoot", true)]
   public string shootSound = "Shoot";
 
-  public Sprite weaponIcon;
+  [Header("Animation")]
+  public bool animateOnShot = false;
+  [DrawIf("animateOnShot", true)]
+  public float animationShotDamageDelay = 0f;
 
-
-  // Copied over from DWAG2 Code
-  //   public WeaponClass(int magSize, int pelletCount, int[] inAccRange,
-  //                      float reloadTime, float shootPushback, float range,
-  //                      float damage, float bulletVel, string ID,
-  //                      string weaponName, FireType fireType, ReloadType reloadType,
-  //                      float fireRate, GameObject bulletPrefab, Vector2 bulletSpawnPoint)
-  //   {
-  //     this.magSize = magSize;
-  //     this.pelletCount = pelletCount;
-  //     this.inAccRange = inAccRange;
-  //     this.reloadTime = reloadTime;
-  //     this.shootPushback = shootPushback;
-  //     this.range = range;
-  //     this.damage = damage;
-  //     this.weaponName = weaponName;
-  //     this.fireType = fireType;
-  //     this.fireRate = fireRate;
-  //     this.bulletPrefab = bulletPrefab;
-  //     this.bulletVel = bulletVel;
-  //     this.ID = ID;
-  //     this.reloadType = reloadType;
-  //     this.bulletSpawnPoint = bulletSpawnPoint;
-  //   }
+  [Header("Misc")]
+  public bool rotateWithCursor = true;
+  public bool deleteOnEmpty = false;
 
   [HideInInspector]
   public float fireTimeout = 0;
@@ -103,6 +90,6 @@ public class WeaponClass : MonoBehaviour
   [HideInInspector]
   public int bulletsInMag;
 
-  public bool animateOnShot = false;
-  public float animationShotDamageDelay = 0f;
+  [HideInInspector]
+  public bool isMelee { get => weaponType == WeaponType.MLE; }
 }

@@ -16,26 +16,26 @@ public class WeaponBehavior : MonoBehaviour
 
   public void Fire(string weaponId, GameObject shooter)
   {
-    WeaponClass equippedWeapon = arsenal.Where(w => w.ID == weaponId).ToArray()[0];
+    WeaponClass equippedWeapon = arsenal.Where(w => w.uniqueID == weaponId).ToArray()[0];
 
     // Get the weapon prefix ID (stg, hdg, etc)
-    string weaponType = equippedWeapon.ID.Split("_")[0].ToLower();
+    // string weaponType = equippedWeapon.uniqueID.Split("_")[0].ToLower();
 
-    switch (weaponType)
+    switch (equippedWeapon.weaponType)
     {
-      case "hdg":
-      case "smg":
-      case "lmg":
-      case "snr":
-      case "thrw":
+      case WeaponClass.WeaponType.HDG:
+      case WeaponClass.WeaponType.SMG:
+      case WeaponClass.WeaponType.LMG:
+      case WeaponClass.WeaponType.SNR:
+      case WeaponClass.WeaponType.THRW:
         Fire_Regular(shooter);
         break;
-      case "stg":
+      case WeaponClass.WeaponType.STG:
         Fire_Pellets(shooter);
         break;
-      case "rpg":
+      case WeaponClass.WeaponType.RPG:
         throw new System.NotImplementedException();
-      case "mel":
+      case WeaponClass.WeaponType.MLE:
         StartCoroutine(Fire_Melee(shooter));
         break;
       default:
@@ -135,7 +135,7 @@ public class WeaponBehavior : MonoBehaviour
 
     if (weaponID != null)
     {
-      GameObject chosenWeapon = arsenal.Where(w => w.ID == weaponID).ToArray()[0].gameObject;
+      GameObject chosenWeapon = arsenal.Where(w => w.uniqueID == weaponID).ToArray()[0].gameObject;
       GameObject newWeapon = Instantiate(chosenWeapon, transform.position, transform.rotation, transform);
       transform.localPosition = chosenWeapon.transform.position;
       transform.localRotation = chosenWeapon.transform.rotation;
