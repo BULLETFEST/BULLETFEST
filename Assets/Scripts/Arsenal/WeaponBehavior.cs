@@ -46,7 +46,7 @@ public class WeaponBehavior : MonoBehaviour
   // Add recoil to the user
   public void AddForce(GameObject target)
   {
-    if (weapon?.shotPushback == 0)
+    if (weapon && weapon.shotPushback == 0)
     {
       return;
     }
@@ -137,8 +137,7 @@ public class WeaponBehavior : MonoBehaviour
     {
       GameObject chosenWeapon = arsenal.Where(w => w.uniqueID == weaponID).ToArray()[0].gameObject;
       GameObject newWeapon = Instantiate(chosenWeapon, transform.position, transform.rotation, transform);
-      transform.localPosition = chosenWeapon.transform.position;
-      transform.localRotation = chosenWeapon.transform.rotation;
+      transform.SetLocalPositionAndRotation(chosenWeapon.transform.position, chosenWeapon.transform.rotation);
 
       weapon = newWeapon.GetComponent<WeaponClass>();
       weapon.bulletsInMag = weapon.magazineSize;

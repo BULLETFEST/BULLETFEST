@@ -80,8 +80,8 @@ public class BotPathfinding : NetworkBehaviour
     currentState = state;
     currentState.EnterState(this);
 
-    CancelInvoke("UpdatePath");
-    InvokeRepeating("UpdatePath", 1f, state.Timer());
+    CancelInvoke(nameof(UpdatePath));
+    InvokeRepeating(nameof(UpdatePath), 1f, state.Timer());
   }
 
   private void UpdatePath()

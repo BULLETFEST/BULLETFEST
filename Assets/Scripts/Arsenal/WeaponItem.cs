@@ -7,7 +7,7 @@ public class WeaponItem : NetworkBehaviour
 
   private void OnCollisionEnter2D(Collision2D other)
   {
-    if (other.collider.tag == "Spike")
+    if (other.collider.CompareTag("Spike"))
     {
       NetworkServer.Destroy(gameObject);
     }

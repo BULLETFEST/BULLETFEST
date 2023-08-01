@@ -1,5 +1,3 @@
-using UnityEngine;
-
 public class BotRefs : ComponentRefs
 {
   public BotBehavior botBehavior { get; private set; }

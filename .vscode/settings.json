@@ -59,8 +59,7 @@
   "omnisharp.organizeImportsOnFormat": true,
   "omnisharp.enableRoslynAnalyzers": true,
   "omnisharp.enableEditorConfigSupport": true,
-  "omnisharp.useModernNet": false,
-  "omnisharp.useEditorFormattingSettings": true,
+  "omnisharp.useModernNet": true,
   "formatFiles.excludedFolders": [
     "node_modules",
     ".vscode",

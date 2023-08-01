@@ -6,6 +6,8 @@ public class AudioSystem : MonoBehaviour
   private Dictionary<string, AudioClip> clips = new();
   private AudioSource source;
 
+  public static AudioSystem Instance { get; private set; }
+
   // Start is called before the first frame update
   private void Awake()
   {
@@ -17,14 +19,21 @@ public class AudioSystem : MonoBehaviour
     }
 
     source = GetComponent<AudioSource>();
+
+    Instance = this;
   }
 
-  public void PlaySound(string name)
+  public void PlaySound(string name, bool interruptPrevious = false, bool varyPitch = false)
   {
     if (clips.ContainsKey(name))
     {
+      if (interruptPrevious)
+      {
+        source.Stop();
+      }
+
       source.clip = clips[name];
-      source.pitch = Random.Range(0.9f, 1.1f);
+      source.pitch = varyPitch ? Random.Range(0.9f, 1.1f) : 1;
       source.Play();
     }
     else

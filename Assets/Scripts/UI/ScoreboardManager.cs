@@ -7,11 +7,11 @@ using UnityEngine;
 public class ScoreboardManager : NetworkBehaviour
 {
   [SerializeField]
-  GameObject itemPrefab, content;
+  private GameObject itemPrefab, content;
   [SerializeField]
-  TextMeshProUGUI title;
+  private TextMeshProUGUI title;
 
-  public static ScoreboardManager instance { get; private set; }
+  public static ScoreboardManager Instance { get; private set; }
 
 
   public readonly SyncList<PlayerData> data = new();
@@ -23,20 +23,22 @@ public class ScoreboardManager : NetworkBehaviour
 
   }
 
-  void Awake()
+  private void Awake()
   {
-    instance = this;
+    Instance = this;
     data.Callback += UpdateScoreboard;
   }
 
-  void Start()
+  private void Start()
   {
     if (isServer)
+    {
       InitializeScoreboard();
+    }
   }
 
   [Command(requiresAuthority = false)]
-  void InitializeScoreboard()
+  private void InitializeScoreboard()
   {
     foreach (PlayerData pd in MyNetworkManager.instance.players.Values)
     {
@@ -44,7 +46,7 @@ public class ScoreboardManager : NetworkBehaviour
     }
   }
 
-  void UpdateScoreboard(SyncList<PlayerData>.Operation op, int index, PlayerData oldItem, PlayerData newItem)
+  private void UpdateScoreboard(SyncList<PlayerData>.Operation op, int index, PlayerData oldItem, PlayerData newItem)
   {
     for (int i = 0; i < content.transform.childCount; i++)
     {
@@ -68,10 +70,4 @@ public class ScoreboardManager : NetworkBehaviour
       scoreboardItem.t_Deaths.text = dt.deaths.ToString();
     }
   }
-  // public override void OnStartClient()
-  // {
-  //   base.OnStartClient();
-
-
-  // }
 }

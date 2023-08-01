@@ -2,7 +2,7 @@
   "RoslynExtensionsOptions": {
     "EnableAnalyzersSupport": true,
     "EnableEditorConfigSupport": true,
-    "LocationPaths": ["./NuGet/Microsoft.Unity.Analyzers.dll"]
+    "LocationPaths": ["./NuGet/microsoft.unity.analyzers.1.17.0/analyzers/dotnet/cs/"]
   },
   "FileOptions": {
     "ExcludeSearchPatterns": ["Assets/Mirror/**/*"]

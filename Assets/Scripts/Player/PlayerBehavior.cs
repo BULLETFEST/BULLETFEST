@@ -12,7 +12,7 @@ public class PlayerBehavior : NetworkBehaviour
   private System.Action<GameObject> PlayHitSoundAction;
 
   // Start is called before the first frame update
-  void Awake()
+  private void Awake()
   {
     playerRefs = GetComponent<PlayerRefs>();
   }
@@ -105,11 +105,11 @@ public class PlayerBehavior : NetworkBehaviour
 
     if (Utilities.GetKeybindDown("scoreboard"))
     {
-      ScoreboardManager.instance.GetComponent<CanvasGroup>().alpha = 1;
+      ScoreboardManager.Instance.GetComponent<CanvasGroup>().alpha = 1;
     }
     if (Utilities.GetKeybindUp("scoreboard"))
     {
-      ScoreboardManager.instance.GetComponent<CanvasGroup>().alpha = 0;
+      ScoreboardManager.Instance.GetComponent<CanvasGroup>().alpha = 0;
     }
 
   }

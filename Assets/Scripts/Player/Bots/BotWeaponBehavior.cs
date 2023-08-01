@@ -1,11 +1,11 @@
 public class BotWeaponBehavior : WeaponBehavior
 {
-  private BotRefs botRefs;
+  // private BotRefs botRefs;
 
   private void Start()
   {
     arsenal = FindObjectOfType<PlayerBehavior>().gameObject.GetComponentInChildren<WeaponBehavior>().arsenal;
-    botRefs = GetComponentInParent<BotRefs>();
+    // botRefs = GetComponentInParent<BotRefs>();
   }
 
   // public override void SwitchWeapon(string weaponID)

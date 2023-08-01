@@ -1,3 +1,4 @@
+using System.Collections;
 using System.Text.RegularExpressions;
 using EpicTransport;
 using TMPro;
@@ -26,6 +27,8 @@ public class MainMenu : MonoBehaviour
   [SerializeField] private TMP_InputField playerName;
   [SerializeField] private GameObject serverBrowser, serversContainer;
 
+  [SerializeField] private RectTransform[] beans;
+
   public GameObject gameCard;
   private bool isConnecting = false;
   private bool isHosting = false;
@@ -42,6 +45,18 @@ public class MainMenu : MonoBehaviour
     nm.networkAddress = EOSSDKComponent.LocalUserProductIdString;//localIp;
 
     EOSSDKComponent.Initialize();
+
+    for (int i = 0; i < beans.Length; i++)
+    {
+      StartCoroutine(RotateBean(beans[i]));
+    }
+  }
+
+  private IEnumerator RotateBean(RectTransform bean)
+  {
+    yield return new WaitForSecondsRealtime(Random.Range(1.0f, 5.0f));
+    bean.rotation = Quaternion.Euler(0, bean.rotation.y == 0 ? 180 : 0, 0);
+    StartCoroutine(RotateBean(bean));
   }
 
   private void Update()

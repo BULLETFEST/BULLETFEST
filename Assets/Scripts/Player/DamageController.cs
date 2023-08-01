@@ -58,7 +58,7 @@ public class DamageController : NetworkBehaviour
 
     // onDeath?.Invoke(damageDealer ?? gameObject);
 
-    Server_Die(damageDealer ?? gameObject);
+    Server_Die(damageDealer != null ? damageDealer : gameObject);
   }
 
 
@@ -104,7 +104,9 @@ public class DamageController : NetworkBehaviour
     // ScoreboardManager.instance.data.IndexOf(ScoreboardManager.instance.data.Find(x => x.connId == killer.GetComponent<NetworkIdentity>().connectionToClient.connectionId));
 
     if (!GetComponent<BotRefs>())
+    {
       MyNetworkManager.instance.players[connectionToClient].deaths++;
+    }
 
     ClientRpc_Die();
 
@@ -120,11 +122,11 @@ public class DamageController : NetworkBehaviour
       }
     }
 
-    ScoreboardManager.instance.data.Clear();
+    ScoreboardManager.Instance.data.Clear();
 
     foreach (System.Collections.Generic.KeyValuePair<NetworkConnectionToClient, PlayerData> dt in MyNetworkManager.instance.players)
     {
-      ScoreboardManager.instance.data.Add(dt.Value);
+      ScoreboardManager.Instance.data.Add(dt.Value);
     }
 
 

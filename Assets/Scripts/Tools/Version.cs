@@ -77,29 +77,12 @@ public class Version
         }
         else if (minor == other.minor)
         {
-          if (patch > other.patch)
-          {
-            return true;
-          }
-          else
-          {
-            return patch == other.patch ? build > other.build : false;
-          }
-        }
-        else
-        {
-          return false;
+          return patch > other.patch || (patch == other.patch && build > other.build);
         }
       }
-      else
-      {
-        return false;
-      }
     }
-    else
-    {
-      return false;
-    }
+
+    return false;
   }
 
 
