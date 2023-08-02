@@ -13,7 +13,7 @@ public class MyNetworkManager : NetworkManager
   private string[] queuedScenes;
 
   [SerializeField]
-  GameObject PlayerSpawnSystemPrefab,
+  private GameObject PlayerSpawnSystemPrefab,
              GunSpawnerPrefab,
              WinnerPanelPrefab,
              ScoreboardManagerPrefab;
@@ -49,7 +49,7 @@ public class MyNetworkManager : NetworkManager
   private static bool firstInit = true;
 
   [SerializeField]
-  bool enableTestMode;
+  private bool enableTestMode;
 
 #if UNITY_EDITOR
   public static bool testMode = false;
@@ -219,31 +219,7 @@ public static readonly bool testMode = false;
 
     if (SceneManager.GetActiveScene().buildIndex > menuScenesCount - 1)
     {
-      if (!FindObjectOfType<PlayerSpawnSystem>())
-      {
-        GameObject go = Instantiate(PlayerSpawnSystemPrefab);
-        if (settings.gameMode == GameSettings.GameMode.Deathmatch)
-        {
-          go.GetComponent<PlayerSpawnSystem>().timeStamp = System.DateTime.UtcNow.AddMinutes(settings.deathmatchLength);
-        }
-        NetworkServer.Spawn(go);
-      }
-
-      if (!FindObjectOfType<GunSpawner>())
-      {
-        GameObject go = Instantiate(GunSpawnerPrefab);
-
-        go.transform.position = Camera.main.ScreenToWorldPoint(new Vector3(Screen.width / 2, Screen.height + 50, 10));
-        go.GetComponent<BoxCollider2D>().size = new Vector2(Camera.main.orthographicSize * Camera.main.aspect * 1.75f, 1);
-        NetworkServer.Spawn(go);
-      }
-
-      if (!FindObjectOfType<ScoreboardManager>())
-      {
-        GameObject go = Instantiate(ScoreboardManagerPrefab);
-        NetworkServer.Spawn(go);
-      }
-
+      GameManager.Instance.InitializeScene();
     }
     if (sceneName == "Lobby")
     {
@@ -278,90 +254,11 @@ public static readonly bool testMode = false;
         {
           queuedScenes = new string[0];
         }
-
-        deadPlayers--;
-        OnPlayerDie(conn.identity.gameObject);
+        GameManager.Instance.OnPlayerDie(conn.identity.gameObject.GetComponent<DamageController>());
       }
     }
 
     PlayerDisconnect?.Invoke(conn);
-  }
-
-  private int deadPlayers = 0;
-
-  [Server]
-  public void OnPlayerDie(GameObject player)
-  {
-    BotPathfinding[] bots = FindObjectsOfType<BotPathfinding>();
-
-    if (NetworkServer.connections.Count == 1 && bots.Length <= 0)
-    {
-      AnnounceWinner(bots);
-    }
-    else if (settings.gameMode == GameSettings.GameMode.Elimination)
-    {
-      deadPlayers++;
-      if (deadPlayers == NetworkServer.connections.Count + bots.Length - 1)
-      {
-        AnnounceWinner(bots);
-      }
-    }
-    else
-    {
-      StartCoroutine(FindObjectOfType<PlayerSpawnSystem>().Cmd_RespawnPlayer(player));
-    }
-  }
-
-  [Server]
-  public void AnnounceWinner(BotPathfinding[] bots)
-  {
-    winner = null;
-    botWinner = null;
-
-    if (Utilities.FindWithType(out PlayerSpawnSystem go))
-    {
-      NetworkServer.Destroy(go.gameObject);
-    }
-
-    // If all players have left, choose host to be the winner
-    if (players.Count == 1 && bots.Length <= 0)
-    {
-      winner = players.ElementAt(0).Key;
-    }
-    // If gamemode is elimination, choose last player alive
-    else if (settings.gameMode == 0)
-    {
-      GameObject[] alivePlayers = FindObjectsOfType<PlayerBehavior>().Where(x => !x.GetComponent<DamageController>().dead).Select(x => x.gameObject).ToArray();
-
-      winner = alivePlayers.Length <= 0 ? null : alivePlayers[0].GetComponent<NetworkIdentity>().connectionToClient;
-
-      if (winner == null)
-      {
-        botWinner = GameObject.FindGameObjectsWithTag("Bot").Where(x => !x.GetComponent<DamageController>().dead).ToArray()[0];
-      }
-    }
-    // If gamemode is deathmatch, choose player with most kills
-    else
-    {
-      // https://stackoverflow.com/a/1332/11420492
-      //winner = (from entry in players orderby entry.Value descending select entry).First().Key;
-
-      // https://stackoverflow.com/a/4157151/11420492
-      winner = players.OrderBy(x => x.Value.kills).ToList().Last().Key;
-    }
-
-    if (botWinner == null)
-    {
-      players[winner].wins++;
-    }
-
-    GameObject winnerUi = Instantiate(WinnerPanelPrefab);
-    NetworkServer.Spawn(winnerUi);
-
-    string winnerName = botWinner != null ? "BOT" : players[winner].displayName;
-    int winnerIdx = botWinner != null ? -1 : System.Array.IndexOf(NetworkServer.connections.Values.ToArray(), winner);
-
-    FindObjectOfType<Server>().SetWinnerText($"{winnerName} won the round!", winnerIdx);
   }
 
   [Server]
@@ -384,43 +281,39 @@ public static readonly bool testMode = false;
         break;
     }
 
-    print(testMode);
-
-    if (!testMode)
+    if (settings.enableBots)
     {
-      if (settings.enableBots)
+      _scenes = _BotSupport.Where(x => _scenes.Contains(x)).ToList();
+    }
+
+    if (settings.gameMode == GameSettings.GameMode.Elimination)
+    {
+      settings.rounds = Mathf.Clamp(settings.rounds, 1, playableScenesCount);
+      while (_scenes.Count > settings.rounds)
       {
-        _scenes = _BotSupport.Where(x => _scenes.Contains(x)).ToList();
-      }
-
-      if (settings.gameMode == GameSettings.GameMode.Elimination)
-      {
-        settings.rounds = Mathf.Clamp(settings.rounds, 1, playableScenesCount);
-        while (_scenes.Count > settings.rounds)
-        {
-          _scenes.RemoveAt(Random.Range(0, _scenes.Count));
-        }
-      }
-      else
-      {
-        List<string> temp = new();
-        if (settings.chosenMap == 0)
-        {
-          int chosenMapIdx = Random.Range(0, _scenes.Count);
-
-          temp.Add(_scenes[chosenMapIdx]);
-
-          _scenes = temp;
-        }
-        else
-        {
-          temp.Add(_scenes[settings.chosenMap - 1]);
-
-          _scenes = temp;
-        }
+        _scenes.RemoveAt(Random.Range(0, _scenes.Count));
       }
     }
     else
+    {
+      List<string> temp = new();
+      if (settings.chosenMap == 0)
+      {
+        int chosenMapIdx = Random.Range(0, _scenes.Count);
+
+        temp.Add(_scenes[chosenMapIdx]);
+
+        _scenes = temp;
+      }
+      else
+      {
+        temp.Add(_scenes[settings.chosenMap - 1]);
+
+        _scenes = temp;
+      }
+    }
+
+    if (testMode)
     {
       _scenes = new()
       {
@@ -440,8 +333,6 @@ public static readonly bool testMode = false;
   [Server]
   public void CycleMap()
   {
-    deadPlayers = 0;
-
     if (queuedScenes.Length == 0)// || gameMode == GameMode.Deathmatch)
     {
       gameStarted = false;
@@ -486,7 +377,6 @@ public static readonly bool testMode = false;
   {
     base.OnStopClient();
     players.Clear();
-    // if (SceneManager.GetActiveScene().name != "MainMenu") SceneManager.LoadScene(1);
   }
 
   public void Disconnect()
@@ -494,6 +384,11 @@ public static readonly bool testMode = false;
     if (Utilities.FindWithType(out ChatManager cm))
     {
       Destroy(cm.gameObject);
+    }
+
+    if (Utilities.FindWithType(out GameManager gm))
+    {
+      Destroy(gm.gameObject);
     }
 
     if (mode == NetworkManagerMode.ServerOnly)
@@ -510,7 +405,5 @@ public static readonly bool testMode = false;
     {
       StopClient();
     }
-
-    // SceneManager.LoadSceneAsync("MainMenu");
   }
 }

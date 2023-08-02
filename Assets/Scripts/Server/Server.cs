@@ -35,7 +35,7 @@ public class Server : NetworkBehaviour
       yield return new WaitForSeconds(1);
     }
 
-    FindObjectOfType<MyNetworkManager>().AnnounceWinner(FindObjectsOfType<BotPathfinding>());
+    GameManager.Instance.AnnounceWinner(null, false);
   }
 
   [Command(requiresAuthority = false)]
@@ -51,20 +51,5 @@ public class Server : NetworkBehaviour
   private void Rpc_UpdateTimer(NetworkConnection conn, string timeString)
   {
     gameObject.GetComponent<PlayerUI>().uiTimeLeft.text = timeString;
-  }
-
-  private Color[] colors = new Color[] {
-    new Color(0.5882353f, 0.1137255f, 0.04313726f), // 961D0B
-    new Color(0.0993236f, 0.4487756f, 0.6792453f), // 1972AD
-    new Color(0.1027946f, 0.6226415f, 0.1877513f), // 1A9F30
-    new Color(0.6235294f, 0.6018561f, 0.1019608f), // 9F991A
-  };
-
-  [ClientRpc]
-  public void SetWinnerText(string text, int idx)
-  {
-    FindObjectOfType<WinnerUI>().winnerText.text = text;
-
-    FindObjectOfType<WinnerUI>().playerImage.color = idx != -1 ? colors[idx % 4] : new Color(0.3936009f, 0.5186465f, 0.5754717f);
   }
 }

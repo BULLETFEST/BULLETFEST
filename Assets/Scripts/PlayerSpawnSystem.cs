@@ -9,7 +9,7 @@ public class PlayerSpawnSystem : NetworkBehaviour
   private GameObject[] spawnPoints;
 
   [SerializeField]
-  GameObject botPrefab;
+  private GameObject botPrefab;
 
   [SyncVar]
   public System.DateTime timeStamp;
@@ -30,7 +30,7 @@ public class PlayerSpawnSystem : NetworkBehaviour
   public override void OnStartServer()
   {
     base.OnStartServer();
-
+    GameManager.Instance._damageControllers.Clear();
     GameObject winningPlayer = null;
     for (int i = 0; i < nm.players.Count; i++)
     {
@@ -42,7 +42,8 @@ public class PlayerSpawnSystem : NetworkBehaviour
       NetworkServer.Spawn(playerInstance);
       NetworkServer.ReplacePlayerForConnection(conn, playerInstance);
       NetworkServer.SetClientReady(conn);
-      if (conn == nm.winner)
+      GameManager.Instance._damageControllers.Add(playerInstance.GetComponent<DamageController>());
+      if (conn == GameManager.Instance._winner)
       {
         winningPlayer = playerInstance; //playerInstance.GetComponent<PlayerVars>().crown.SetActive(true);
       }
@@ -55,6 +56,7 @@ public class PlayerSpawnSystem : NetworkBehaviour
         GameObject bot = Instantiate(botPrefab, spawnPoints[spawnPoints.Length - 1 - i].transform.position, Quaternion.identity);
         bot.name = "BOT" + i;
         NetworkServer.Spawn(bot);
+        GameManager.Instance._damageControllers.Add(bot.GetComponent<DamageController>());
         Rpc_SetPlayerColor(bot, i + nm.players.Count);
       }
     }

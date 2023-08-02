@@ -135,7 +135,7 @@ public class DamageController : NetworkBehaviour
       UpdateKillfeed(player.Value, killerName, killedName, player.Value.identity.gameObject);
     }
 
-    MyNetworkManager.instance.OnPlayerDie(gameObject);
+    GameManager.Instance.OnPlayerDie(this);
 
 
     // NetworkServer.Spawn(p);
