@@ -1,6 +1,8 @@
 using Mirror;
 using TMPro;
 using UnityEngine;
+using System.Linq;
+using System.Collections.Generic;
 
 public class LeaderboardItem : NetworkBehaviour
 {
@@ -38,11 +40,13 @@ public class LeaderboardItem : NetworkBehaviour
   [Command]
   private void UpdateStats(NetworkConnectionToClient conn)
   {
-    displayName = MyNetworkManager.instance.players[conn].displayName;
-    kills = MyNetworkManager.instance.players[conn].kills.ToString();
-    wins = MyNetworkManager.instance.players[conn].wins.ToString();
+    displayName = GameManager.Instance.players[conn.connectionId].displayName;
+    kills = GameManager.Instance.players[conn.connectionId].kills.ToString();
+    wins = GameManager.Instance.players[conn.connectionId].wins.ToString();
 
-    place = System.Array.IndexOf(MyNetworkManager.instance.sortedPlayerList, conn);
+    List<PlayerData> sortedList = GameManager.Instance.players.Values.ToList();
+    sortedList.Sort((a, b) => a.kills.CompareTo(b.kills));
+    place = sortedList.FindIndex(x => x.connId == conn.connectionId);
     ChangeItemIndex(conn.identity.gameObject, place);
   }
 

@@ -6,25 +6,22 @@ public class LeaderboardItemSpawner : NetworkBehaviour
 {
   private GameObject leaderboard;
   private GameObject leaderboardItem;
-  private MyNetworkManager Room;
 
   private void Awake()
   {
     leaderboard = GameObject.FindGameObjectWithTag("Leaderboard");
     leaderboardItem = (GameObject)Resources.Load("Spawnable/LeaderboardItem");
-
-    Room = MyNetworkManager.instance;
   }
 
   [Server]
   public override void OnStartServer()
   {
     base.OnStartServer();
-    for (int i = 0; i < Room.players.Count; i++)
+    for (int i = 0; i < GameManager.Instance.players.Count; i++)
     {
       GameObject lbItem = Instantiate(leaderboardItem, Vector3.zero, Quaternion.Euler(0, 0, 0), leaderboard.transform);
-      NetworkServer.Spawn(lbItem, Room.players.ElementAt(i).Key);
-      NetworkServer.ReplacePlayerForConnection(Room.players.ElementAt(i).Key, lbItem);
+      NetworkServer.Spawn(lbItem, NetworkServer.connections[GameManager.Instance.players.ElementAt(i).Key]);
+      NetworkServer.ReplacePlayerForConnection(NetworkServer.connections[GameManager.Instance.players.ElementAt(i).Key], lbItem);
     }
   }
 }

@@ -1,6 +1,8 @@
 using System;
+using System.Diagnostics;
 using Mirror;
 using UnityEngine;
+using UnityEngine.Events;
 
 public class DamageController : NetworkBehaviour
 {
@@ -8,7 +10,7 @@ public class DamageController : NetworkBehaviour
   public float health, maxHealth;
 
   public Action<GameObject> onTakeDamage;
-  public Action<GameObject> onDeath;
+  // public Action<GameObject> onDeath;
 
   [SerializeField] private GameObject killfeedItem, playerDeathParticles, gravestone;
   private ComponentRefs refs;
@@ -16,6 +18,8 @@ public class DamageController : NetworkBehaviour
   [SyncVar]
   public bool dead = false;
   private GameObject damageDealer;
+
+  [SerializeField] public UnityEvent onDie;
 
   private void Start()
   {
@@ -42,13 +46,17 @@ public class DamageController : NetworkBehaviour
   {
     if (health <= 0)
     {
-      Die();
+      // Die();
+      onDie?.Invoke();
     }
   }
 
   [Command(requiresAuthority = false)]
-  public void Die()
+  public void PlayerDie()
   {
+    StackFrame frame = new(1);
+    if (frame.GetMethod().DeclaringType != typeof(DamageController)) return;
+
     if (health > 0 || dead)
     {
       return;
@@ -58,13 +66,8 @@ public class DamageController : NetworkBehaviour
 
     // onDeath?.Invoke(damageDealer ?? gameObject);
 
-    Server_Die(damageDealer != null ? damageDealer : gameObject);
-  }
+    GameObject killer = damageDealer ?? gameObject;
 
-
-  [ServerCallback]
-  public void Server_Die(GameObject killer)
-  {
     refs.lockMovement = true;
     refs.lockShooting = true;
     refs.lockWeapon = true;
@@ -91,21 +94,25 @@ public class DamageController : NetworkBehaviour
 
       if (killer == gameObject)
       {
-        MyNetworkManager.instance.players[killerIdentity].kills--;
+        GameManager.Instance.players[killerIdentity.connectionId].kills--;
       }
       else
       {
-        MyNetworkManager.instance.players[killerIdentity].kills++;
+        GameManager.Instance.players[killerIdentity.connectionId].kills++;
       }
 
       killerName = killer.GetComponent<ComponentRefs>().uiName.text;
-    }
 
-    // ScoreboardManager.instance.data.IndexOf(ScoreboardManager.instance.data.Find(x => x.connId == killer.GetComponent<NetworkIdentity>().connectionToClient.connectionId));
+      // I have to set the Value to itself because SyncDictionary cannot listen to changes on properties of value classes
+      GameManager.Instance.players[killerIdentity.connectionId] = GameManager.Instance.players[killerIdentity.connectionId];
+    }
 
     if (!GetComponent<BotRefs>())
     {
-      MyNetworkManager.instance.players[connectionToClient].deaths++;
+      GameManager.Instance.players[connectionToClient.connectionId].deaths++;
+
+      // Same as I've mentioned before
+      GameManager.Instance.players[connectionToClient.connectionId] = GameManager.Instance.players[connectionToClient.connectionId];
     }
 
     ClientRpc_Die();
@@ -120,13 +127,6 @@ public class DamageController : NetworkBehaviour
         GameObject spawnedGravestone = Instantiate(gravestone, new Vector2(hit.point.x, hit.point.y + (gravestone.GetComponentInChildren<SpriteRenderer>().bounds.size.y / 2)), Quaternion.Euler(0, 0, 0));
         NetworkServer.Spawn(spawnedGravestone);
       }
-    }
-
-    ScoreboardManager.Instance.data.Clear();
-
-    foreach (System.Collections.Generic.KeyValuePair<NetworkConnectionToClient, PlayerData> dt in MyNetworkManager.instance.players)
-    {
-      ScoreboardManager.Instance.data.Add(dt.Value);
     }
 
 

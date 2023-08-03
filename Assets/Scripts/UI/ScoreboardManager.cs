@@ -14,7 +14,7 @@ public class ScoreboardManager : NetworkBehaviour
   public static ScoreboardManager Instance { get; private set; }
 
 
-  public readonly SyncList<PlayerData> data = new();
+  // public readonly SyncList<PlayerData> data = new();
 
   public override void OnStartServer()
   {
@@ -26,34 +26,36 @@ public class ScoreboardManager : NetworkBehaviour
   private void Awake()
   {
     Instance = this;
-    data.Callback += UpdateScoreboard;
+    GameManager.Instance.players.Callback += UpdateScoreboard;
   }
 
   private void Start()
   {
+    UpdateScoreboard(SyncIDictionary<int, PlayerData>.Operation.OP_ADD, 0, null);
     if (isServer)
     {
-      InitializeScoreboard();
+      // InitializeScoreboard();
     }
   }
 
-  [Command(requiresAuthority = false)]
-  private void InitializeScoreboard()
-  {
-    foreach (PlayerData pd in MyNetworkManager.instance.players.Values)
-    {
-      data.Add(pd);
-    }
-  }
+  // [Command(requiresAuthority = false)]
+  // private void InitializeScoreboard()
+  // {
+  //   foreach (PlayerData pd in GameManager.Instance.players.Values)
+  //   {
+  //     data.Add(pd);
+  //   }
+  // }
 
-  private void UpdateScoreboard(SyncList<PlayerData>.Operation op, int index, PlayerData oldItem, PlayerData newItem)
+
+  private void UpdateScoreboard(SyncIDictionary<int, PlayerData>.Operation op, int key, PlayerData changedItem)
   {
     for (int i = 0; i < content.transform.childCount; i++)
     {
       Destroy(content.transform.GetChild(i).gameObject);
     }
 
-    List<PlayerData> t = data.OrderBy(x => x.kills).ToList();
+    List<PlayerData> t = GameManager.Instance.players.Values.OrderBy(x => x.kills).ToList();
 
     t.Sort((a, b) => a.kills.CompareTo(b.kills));
 

@@ -50,12 +50,12 @@ public class LobbyPlayer : NetworkBehaviour
       dName = dName[..16];
     }
 
-    if (MyNetworkManager.instance.players.ContainsKey(connectionToClient))
+    if (GameManager.Instance.players.ContainsKey(connectionToClient.connectionId))
     {
-      MyNetworkManager.instance.players.Remove(connectionToClient);
+      GameManager.Instance.players.Remove(connectionToClient.connectionId);
     }
 
-    MyNetworkManager.instance.players.Add(connectionToClient, new PlayerData(dName, connectionToClient.connectionId));
+    GameManager.Instance.players.Add(connectionToClient.connectionId, new PlayerData(dName, connectionToClient.connectionId));
 
     MyNetworkManager.instance.PlayerUpdate?.Invoke();
 

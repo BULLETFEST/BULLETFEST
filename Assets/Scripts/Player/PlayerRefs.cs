@@ -35,7 +35,7 @@ public class PlayerRefs : ComponentRefs
   [Command]
   private void UpdateDisplayName(NetworkConnectionToClient conn)
   {
-    displayName = MyNetworkManager.instance.players[conn].displayName;
+    displayName = GameManager.Instance.players[conn.connectionId].displayName;
   }
 
   // [ServerCallback]

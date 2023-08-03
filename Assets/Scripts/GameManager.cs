@@ -28,17 +28,21 @@ public class GameManager : NetworkBehaviour
 
   public NetworkConnectionToClient _winner { get; private set; }
 
-  private void Start()
+  private void Awake()
   {
     if (Instance == null)
     {
       Instance = this;
-      DontDestroyOnLoad(gameObject);
     }
     else
     {
       Destroy(gameObject);
     }
+  }
+
+  private void Start()
+  {
+    DontDestroyOnLoad(gameObject);
   }
 
   [ServerCallback]
@@ -89,6 +93,11 @@ public class GameManager : NetworkBehaviour
       }
     }
 
+    if (lastAlive == null)
+    {
+      lastAlive = _damageControllers[0];
+    }
+
     if (aliveCount <= 1)
     {
       AnnounceWinner(lastAlive, lastAlive.gameObject.GetComponent<BotRefs>() != null);
@@ -112,6 +121,9 @@ public class GameManager : NetworkBehaviour
     {
       connId = winner.gameObject.GetComponent<NetworkIdentity>().connectionToClient.connectionId;
       players[connId].wins++;
+
+      // As mentioned in DamageController.cs -> ServerDie()
+      players[connId] = players[connId];
     }
 
     if (!isBot)
@@ -124,7 +136,7 @@ public class GameManager : NetworkBehaviour
 
 
     UpdateWinnerCanvas(winnerCanvas.GetComponent<WinnerUI>(),
-                       isBot ? "BOT" : players[connId].displayName + " won the round!",
+                       (isBot ? "BOT" : players[connId].displayName) + " won the round!",
                        isBot ? -1 : System.Array.IndexOf(NetworkServer.connections.Keys.ToArray(), connId));
   }
 
@@ -134,11 +146,5 @@ public class GameManager : NetworkBehaviour
     winnerCanvas.winnerText.text = playerName;
 
     winnerCanvas.playerImage.color = colorIdx == -1 ? new Color(0.3936009f, 0.5186465f, 0.5754717f) : colors[colorIdx % colors.Length];
-  }
-
-  // Update is called once per frame
-  private void Update()
-  {
-
   }
 }

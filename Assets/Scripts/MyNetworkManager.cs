@@ -12,19 +12,9 @@ public class MyNetworkManager : NetworkManager
   public GameSettings settings = new();
   private string[] queuedScenes;
 
-  [SerializeField]
-  private GameObject PlayerSpawnSystemPrefab,
-             GunSpawnerPrefab,
-             WinnerPanelPrefab,
-             ScoreboardManagerPrefab;
-
   public ChatManager Chat;
 
-  private GameObject botWinner;
-
-  public Dictionary<NetworkConnectionToClient, PlayerData> players { get; } = new Dictionary<NetworkConnectionToClient, PlayerData>();
-
-  public NetworkConnectionToClient[] sortedPlayerList = new NetworkConnectionToClient[4];
+  // public int[] sortedPlayerList = new int[4];
 
   public NetworkConnectionToClient winner;
 
@@ -48,15 +38,6 @@ public class MyNetworkManager : NetworkManager
   private bool hasFiredReadyEvent;
   private static bool firstInit = true;
 
-  [SerializeField]
-  private bool enableTestMode;
-
-#if UNITY_EDITOR
-  public static bool testMode = false;
-#else
-public static readonly bool testMode = false;
-#endif
-
   public override void Awake()
   {
     base.Awake();
@@ -66,13 +47,6 @@ public static readonly bool testMode = false;
       settings.rounds = playableScenesCount;
       return;
     }
-
-#if UNITY_EDITOR
-    if (testMode)
-    {
-      testMode = enableTestMode;
-    }
-#endif
 
     for (int i = 0; i < SceneManager.sceneCountInBuildSettings; i++)
     {
@@ -234,15 +208,15 @@ public static readonly bool testMode = false;
       base.OnServerDisconnect(conn);
     }
 
-    if (players.ContainsKey(conn))
+    if (GameManager.Instance.players.ContainsKey(conn.connectionId))
     {
 
       if (Utilities.FindWithType(out ChatManager chatManager))
       {
-        chatManager.messages.Add($"R|{players[conn].displayName} has left the game");
+        chatManager.messages.Add($"R|{GameManager.Instance.players[conn.connectionId].displayName} has left the game");
       }
 
-      players.Remove(conn);
+      GameManager.Instance.players.Remove(conn.connectionId);
 
       FirebaseManager.UpdateLobby(NetworkServer.connections.Count);
 
@@ -250,7 +224,7 @@ public static readonly bool testMode = false;
 
       if (gameStarted)
       {
-        if (players.Count == 1)
+        if (GameManager.Instance.players.Count == 1)
         {
           queuedScenes = new string[0];
         }
@@ -265,7 +239,6 @@ public static readonly bool testMode = false;
   public void StartGame()
   {
     winner = null;
-    botWinner = null;
 
     int sceneCount = SceneManager.sceneCountInBuildSettings;
     List<string> _scenes = new();
@@ -313,7 +286,7 @@ public static readonly bool testMode = false;
       }
     }
 
-    if (testMode)
+    if (Globals._testMode)
     {
       _scenes = new()
       {
@@ -336,14 +309,14 @@ public static readonly bool testMode = false;
     if (queuedScenes.Length == 0)// || gameMode == GameMode.Deathmatch)
     {
       gameStarted = false;
-      List<KeyValuePair<NetworkConnectionToClient, PlayerData>> temp = players.ToList();
+      List<KeyValuePair<int, PlayerData>> temp = GameManager.Instance.players.ToList();
 
-      temp.Sort(delegate (KeyValuePair<NetworkConnectionToClient, PlayerData> a, KeyValuePair<NetworkConnectionToClient, PlayerData> b)
+      temp.Sort(delegate (KeyValuePair<int, PlayerData> a, KeyValuePair<int, PlayerData> b)
       {
         return -a.Value.kills.CompareTo(b.Value.kills);
       });
 
-      sortedPlayerList = temp.ToDictionary(x => x.Key, x => x.Value).Keys.ToArray();
+      // sortedPlayerList = temp.ToDictionary(x => x.Key, x => x.Value).Keys.ToArray();
 
       ServerChangeScene("End");
       return;
@@ -366,7 +339,7 @@ public static readonly bool testMode = false;
   {
     base.OnStopHost();
     isHost = false;
-    players.Clear();
+    GameManager.Instance.players.Clear();
     if (SceneManager.GetActiveScene().name != "MainMenu")
     {
       SceneManager.LoadScene(1);
@@ -376,7 +349,7 @@ public static readonly bool testMode = false;
   public override void OnStopClient()
   {
     base.OnStopClient();
-    players.Clear();
+    GameManager.Instance.players.Clear();
   }
 
   public void Disconnect()

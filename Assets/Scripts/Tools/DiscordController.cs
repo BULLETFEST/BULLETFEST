@@ -18,15 +18,9 @@ public class DiscordController : MonoBehaviour
 
   public static readonly ulong applicationId = 1009938773137694800U;
 
-#if UNITY_EDITOR
-  private bool debugMode = true;
-#else
-  bool debugMode = false;
-#endif
-
   private void Awake()
   {
-    if (debugMode)
+    if (Application.isEditor)
     {
       return;
     }
@@ -155,7 +149,7 @@ public class DiscordController : MonoBehaviour
 
   private void OnApplicationQuit()
   {
-    if (debugMode)
+    if (Application.isEditor)
     {
       return;
     }

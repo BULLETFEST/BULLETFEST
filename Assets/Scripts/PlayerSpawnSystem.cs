@@ -32,9 +32,9 @@ public class PlayerSpawnSystem : NetworkBehaviour
     base.OnStartServer();
     GameManager.Instance._damageControllers.Clear();
     GameObject winningPlayer = null;
-    for (int i = 0; i < nm.players.Count; i++)
+    for (int i = 0; i < GameManager.Instance.players.Count; i++)
     {
-      NetworkConnectionToClient conn = nm.players.ElementAt(i).Key;
+      NetworkConnectionToClient conn = NetworkServer.connections[GameManager.Instance.players.ElementAt(i).Key];
       GameObject playerInstance = Instantiate(nm.playerPrefab, spawnPoints[i].transform.position, Quaternion.Euler(0, 0, 0));
       // playerInstance.GetComponent<PlayerVars>().uiName.text = displayName;
       // NetworkServer.Spawn(playerInstance, Room.players.ElementAt(i).Key);
@@ -51,19 +51,19 @@ public class PlayerSpawnSystem : NetworkBehaviour
 
     if (nm.settings.enableBots && nm._BotSupport.Contains(SceneManager.GetActiveScene().path))
     {
-      for (int i = 0; i < nm.settings.lobbySize - nm.players.Count; i++)
+      for (int i = 0; i < nm.settings.lobbySize - GameManager.Instance.players.Count; i++)
       {
         GameObject bot = Instantiate(botPrefab, spawnPoints[spawnPoints.Length - 1 - i].transform.position, Quaternion.identity);
         bot.name = "BOT" + i;
         NetworkServer.Spawn(bot);
         GameManager.Instance._damageControllers.Add(bot.GetComponent<DamageController>());
-        Rpc_SetPlayerColor(bot, i + nm.players.Count);
+        Rpc_SetPlayerColor(bot, i + GameManager.Instance.players.Count);
       }
     }
 
-    for (int i = 0; i < nm.players.Count; i++)
+    for (int i = 0; i < GameManager.Instance.players.Count; i++)
     {
-      NetworkConnectionToClient conn = nm.players.ElementAt(i).Key;
+      NetworkConnectionToClient conn = NetworkServer.connections[GameManager.Instance.players.ElementAt(i).Key];
       Rpc_SetPlayerColor(conn.identity.gameObject, i);
     }
 

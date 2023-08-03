@@ -9,12 +9,6 @@ public class FirebaseManager : MonoBehaviour
 {
   public static string uid;
 
-#if UNITY_EDITOR
-  private static bool testMode = false;
-#else
-      static bool testMode = false;
-#endif
-
   /* UTILITY METHODS */
 
   private static WebClient CreateWebClient()
@@ -36,11 +30,11 @@ public class FirebaseManager : MonoBehaviour
     {
       if (method == HTTPMethod.Post)
       {
-        _res = await wc.UploadValuesTaskAsync(testMode ? $"http://localhost:3000/{endpoint}" : $"https://joobot.glitch.me/{endpoint}", method.ToString().ToUpper(), data);
+        _res = await wc.UploadValuesTaskAsync(Globals._testMode ? $"http://localhost:3000/{endpoint}" : $"https://joobot.glitch.me/{endpoint}", method.ToString().ToUpper(), data);
       }
       else if (method == HTTPMethod.Get)
       {
-        _res = await wc.DownloadDataTaskAsync(testMode ? $"http://localhost:3000/{endpoint}" : $"https://joobot.glitch.me/{endpoint}");
+        _res = await wc.DownloadDataTaskAsync(Globals._testMode ? $"http://localhost:3000/{endpoint}" : $"https://joobot.glitch.me/{endpoint}");
       }
     }
     catch (System.Exception e)
