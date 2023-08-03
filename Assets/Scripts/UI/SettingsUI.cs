@@ -268,4 +268,10 @@ public class SettingsUI : MonoBehaviour
     sfx.SetFloat("SFX_Vol", v);
     SaveSystem.saveData.settings.sfxVolume = v;
   }
+
+  public void CloseSettings()
+  {
+    GetComponent<Canvas>().enabled = false;
+    SaveSystem.IsSettingsOpen = false;
+  }
 }

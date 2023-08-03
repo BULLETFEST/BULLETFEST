@@ -10,7 +10,7 @@ public class LeaderboardItemSpawner : NetworkBehaviour
   private void Awake()
   {
     leaderboard = GameObject.FindGameObjectWithTag("Leaderboard");
-    leaderboardItem = (GameObject)Resources.Load("Spawnable/LeaderboardItem");
+    leaderboardItem = (GameObject)Resources.Load("Spawnable/UI/LeaderboardItem");
   }
 
   [Server]

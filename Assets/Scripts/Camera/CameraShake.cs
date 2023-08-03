@@ -35,7 +35,7 @@ public class CameraShake : NetworkBehaviour
   }
 
   [ClientRpc]
-  private void ShakeAll(float duration, float magnitude)
+  public void ShakeAll(float duration, float magnitude)
   {
     StartCoroutine(Shake(duration, magnitude));
   }

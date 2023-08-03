@@ -30,11 +30,11 @@ public class FirebaseManager : MonoBehaviour
     {
       if (method == HTTPMethod.Post)
       {
-        _res = await wc.UploadValuesTaskAsync(Globals._testMode ? $"http://localhost:3000/{endpoint}" : $"https://joobot.glitch.me/{endpoint}", method.ToString().ToUpper(), data);
+        _res = await wc.UploadValuesTaskAsync(Globals._firebaseTestMode ? $"http://localhost:3000/{endpoint}" : $"https://joobot.glitch.me/{endpoint}", method.ToString().ToUpper(), data);
       }
       else if (method == HTTPMethod.Get)
       {
-        _res = await wc.DownloadDataTaskAsync(Globals._testMode ? $"http://localhost:3000/{endpoint}" : $"https://joobot.glitch.me/{endpoint}");
+        _res = await wc.DownloadDataTaskAsync(Globals._firebaseTestMode ? $"http://localhost:3000/{endpoint}" : $"https://joobot.glitch.me/{endpoint}");
       }
     }
     catch (System.Exception e)

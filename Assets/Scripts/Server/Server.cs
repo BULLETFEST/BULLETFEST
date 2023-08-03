@@ -22,6 +22,19 @@ public class Server : NetworkBehaviour
     }
   }
 
+  [ClientRpc]
+  public void PlaySoundAll(string sound, bool interrupt, bool varyPitch)
+  {
+    AudioSystem.Instance.PlaySound(sound, interrupt, varyPitch);
+  }
+
+
+  [ClientRpc]
+  public void PlaySoundAll(string sound)
+  {
+    AudioSystem.Instance.PlaySound(sound);
+  }
+
   private IEnumerator CalcTimeLeft()
   {
     TimeSpan timeSpan = new(0, 5, 0);

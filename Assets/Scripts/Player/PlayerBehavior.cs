@@ -23,19 +23,6 @@ public class PlayerBehavior : NetworkBehaviour
 
     playerRefs.damageController.onTakeDamage += PlayHitSoundAction;
 
-    VideoPlayer v = Camera.main.gameObject.AddComponent<VideoPlayer>();
-    v.clip = Resources.Load<VideoClip>("glitch");
-    v.isLooping = true;
-    v.playOnAwake = true;
-    v.waitForFirstFrame = true;
-    v.playbackSpeed = 1.75f;
-    v.targetCameraAlpha = 0.222f;
-    v.aspectRatio = VideoAspectRatio.FitInside;
-    v.audioOutputMode = VideoAudioOutputMode.None;
-    v.renderMode = VideoRenderMode.CameraFarPlane;
-
-    v.Play();
-
     FetchTime();
   }
 
@@ -228,7 +215,6 @@ public class PlayerBehavior : NetworkBehaviour
       {
         explosive.Detonate();
       }
-
       weapon.awaitingDetonation.Clear();
     }
   }

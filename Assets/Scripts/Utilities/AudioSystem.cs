@@ -32,20 +32,12 @@ public class AudioSystem : MonoBehaviour
         source.Stop();
       }
 
-      source.clip = clips[name];
       source.pitch = varyPitch ? Random.Range(0.9f, 1.1f) : 1;
-      source.Play();
+      source.PlayOneShot(clips[name]);
     }
     else
     {
       Debug.LogWarning("This sound does not exist!");
     }
-  }
-
-  public void PlaySound(AudioClip sound)
-  {
-    source.clip = sound;
-    source.pitch = Random.Range(0.9f, 1.1f);
-    source.Play();
   }
 }

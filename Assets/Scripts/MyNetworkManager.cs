@@ -12,6 +12,7 @@ public class MyNetworkManager : NetworkManager
   public GameSettings settings = new();
   private string[] queuedScenes;
 
+  [HideInInspector]
   public ChatManager Chat;
 
   // public int[] sortedPlayerList = new int[4];
@@ -32,7 +33,11 @@ public class MyNetworkManager : NetworkManager
 
   private int menuScenesCount = 0;
 
-  [Scene] public string[] _4Players, _6Players, _8Players, _BotSupport;
+  [Header("Custom Variables")]
+  [Scene] public string[] _4Players;
+  [Scene] public string[] _6Players;
+  [Scene] public string[] _8Players;
+  [Scene] public string[] _BotSupport;
 
   [Scene] public string TESTING_SCENE;
   private bool hasFiredReadyEvent;

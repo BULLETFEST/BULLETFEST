@@ -50,6 +50,8 @@ public class ScoreboardManager : NetworkBehaviour
 
   private void UpdateScoreboard(SyncIDictionary<int, PlayerData>.Operation op, int key, PlayerData changedItem)
   {
+    if (content == null) return;
+
     for (int i = 0; i < content.transform.childCount; i++)
     {
       Destroy(content.transform.GetChild(i).gameObject);
