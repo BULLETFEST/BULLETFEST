@@ -26,6 +26,6 @@ public class WinnerUI : NetworkBehaviour
   {
     yield return new WaitForSecondsRealtime(5);
 
-    MyNetworkManager.instance.CycleMap();
+    GameManager.Instance.CycleMap();
   }
 }

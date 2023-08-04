@@ -57,11 +57,11 @@ public class DiscordController : MonoBehaviour
       }
 
       string[] secret = _secret.Split("|||");
-      MyNetworkManager.instance.networkAddress = secret[0];
-      MyNetworkManager.instance.roomCode = secret[1];
+      MyNetworkManager.Instance.networkAddress = secret[0];
+      MyNetworkManager.Instance.roomCode = secret[1];
       partyId = secret[2];
 
-      MyNetworkManager.instance.StartClient();
+      MyNetworkManager.Instance.StartClient();
     };
 
     activityManager.OnActivityInvite += (ActivityActionType Type, ref User user, ref Activity activity2) =>

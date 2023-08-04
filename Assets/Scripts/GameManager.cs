@@ -2,13 +2,25 @@ using System.Collections.Generic;
 using System.Linq;
 using Mirror;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class GameManager : NetworkBehaviour
 {
+  public enum GameState
+  {
+    Lobby,
+    Started,
+    Ended
+  }
 
   public readonly SyncDictionary<int, PlayerData> players = new();
 
   public static GameManager Instance;
+
+  [SyncVar]
+  private readonly GameSettings _settings = new();
+
+  public static GameSettings settings { get; private set; }
 
   public static readonly Color[] colors = new Color[] {
     new Color(0.5882353f, 0.1137255f, 0.04313726f), // 961D0B
@@ -17,7 +29,7 @@ public class GameManager : NetworkBehaviour
     new Color(0.6235294f, 0.6018561f, 0.1019608f), // 9F991A
   };
 
-  private MyNetworkManager nm => MyNetworkManager.instance;
+  private MyNetworkManager nm => MyNetworkManager.Instance;
 
   [SerializeField]
   private GameObject PlayerSpawnSystemPrefab,
@@ -25,8 +37,11 @@ public class GameManager : NetworkBehaviour
            WinnerPanelPrefab,
            ScoreboardManagerPrefab;
 
-
   public NetworkConnectionToClient _winner { get; private set; }
+
+  public GameState state = GameState.Lobby;
+
+  private string[] queuedScenes;
 
   private void Awake()
   {
@@ -38,11 +53,15 @@ public class GameManager : NetworkBehaviour
     {
       Destroy(gameObject);
     }
+
+    settings = _settings;
   }
 
   private void Start()
   {
     DontDestroyOnLoad(gameObject);
+
+    settings.rounds = MyNetworkManager.playableScenesCount;
   }
 
   [ServerCallback]
@@ -50,9 +69,9 @@ public class GameManager : NetworkBehaviour
   {
     // Instantiate PlayerSpawner
     GameObject go = Instantiate(PlayerSpawnSystemPrefab);
-    if (nm.settings.gameMode == GameSettings.GameMode.Deathmatch)
+    if (settings.gameMode == GameSettings.GameMode.Deathmatch)
     {
-      go.GetComponent<PlayerSpawnSystem>().timeStamp = System.DateTime.UtcNow.AddMinutes(nm.settings.deathmatchLength);
+      go.GetComponent<PlayerSpawnSystem>().timeStamp = System.DateTime.UtcNow.AddMinutes(settings.deathmatchLength);
     }
     NetworkServer.Spawn(go);
 
@@ -77,7 +96,7 @@ public class GameManager : NetworkBehaviour
     int aliveCount = 0;
     DamageController lastAlive = null;
 
-    if (nm.settings.gameMode == GameSettings.GameMode.Deathmatch)
+    if (settings.gameMode == GameSettings.GameMode.Deathmatch)
     {
       StartCoroutine(FindObjectOfType<PlayerSpawnSystem>().Cmd_RespawnPlayer(player.gameObject));
       return;
@@ -113,7 +132,7 @@ public class GameManager : NetworkBehaviour
 
     int connId = 0;
 
-    if (nm.settings.gameMode == GameSettings.GameMode.Deathmatch)
+    if (settings.gameMode == GameSettings.GameMode.Deathmatch)
     {
       connId = players.OrderBy(x => x.Value.kills).ToList().Last().Key;
     }
@@ -147,4 +166,102 @@ public class GameManager : NetworkBehaviour
 
     winnerCanvas.playerImage.color = colorIdx == -1 ? new Color(0.3936009f, 0.5186465f, 0.5754717f) : colors[colorIdx % colors.Length];
   }
+
+
+  #region SCENE LOGIC
+
+  [Server]
+  public void StartGame()
+  {
+    int sceneCount = SceneManager.sceneCountInBuildSettings;
+    List<string> _scenes = new();
+
+    switch (settings.lobbySize)
+    {
+      case 4:
+      default:
+        _scenes = nm._4Players.ToList();
+        break;
+      case 6:
+        _scenes = nm._6Players.ToList();
+        break;
+    }
+
+    if (settings.enableBots)
+    {
+      _scenes = nm._BotSupport.Where(x => _scenes.Contains(x)).ToList();
+    }
+
+    if (settings.gameMode == GameSettings.GameMode.Elimination)
+    {
+      settings.rounds = Mathf.Clamp(settings.rounds, 1, MyNetworkManager.playableScenesCount);
+      while (_scenes.Count > settings.rounds)
+      {
+        _scenes.RemoveAt(Random.Range(0, _scenes.Count));
+      }
+    }
+    else
+    {
+      List<string> temp = new();
+      if (settings.chosenMap == 0)
+      {
+        int chosenMapIdx = Random.Range(0, _scenes.Count);
+
+        temp.Add(_scenes[chosenMapIdx]);
+
+        _scenes = temp;
+      }
+      else
+      {
+        temp.Add(_scenes[settings.chosenMap - 1]);
+
+        _scenes = temp;
+      }
+    }
+
+    if (Globals._testMode)
+    {
+      _scenes = new()
+      {
+        nm.TESTING_SCENE
+      };
+    }
+
+    queuedScenes = _scenes.ToArray();
+
+    state = GameState.Started;
+
+    FirebaseManager.UpdateLobby(NetworkServer.connections.Count);
+
+    CycleMap();
+  }
+
+  [Server]
+  public void CycleMap()
+  {
+    if (queuedScenes.Length == 0) { EndGame(); return; }
+
+    int chosenScene = Random.Range(0, queuedScenes.Length);
+
+    string chosenSceneId = queuedScenes[chosenScene];
+
+    List<string> _scenes = queuedScenes.ToList();
+
+    _scenes.Remove(chosenSceneId);
+
+    queuedScenes = _scenes.ToArray();
+
+    nm.ServerChangeScene(chosenSceneId);
+  }
+
+  [Server]
+  public void EndGame()
+  {
+    state = GameState.Ended;
+    nm.ServerChangeScene("End");
+
+    queuedScenes = new string[0];
+  }
+
+  #endregion
 }

@@ -29,7 +29,7 @@ public class LobbyPlayer : NetworkBehaviour
     {
       State = "In a lobby",
       Secrets = {
-        Join = (isServer ? EpicTransport.EOSSDKComponent.LocalUserProductIdString : MyNetworkManager.instance.networkAddress) + "|||" + MyNetworkManager.instance.roomCode + "|||" + DiscordController.partyId,
+        Join = (isServer ? EpicTransport.EOSSDKComponent.LocalUserProductIdString : MyNetworkManager.Instance.networkAddress) + "|||" + MyNetworkManager.Instance.roomCode + "|||" + DiscordController.partyId,
       },
       Party = {
         Size = {
@@ -57,7 +57,7 @@ public class LobbyPlayer : NetworkBehaviour
 
     GameManager.Instance.players.Add(connectionToClient.connectionId, new PlayerData(dName, connectionToClient.connectionId));
 
-    MyNetworkManager.instance.PlayerUpdate?.Invoke();
+    MyNetworkManager.Instance.PlayerUpdate?.Invoke();
 
     displayName = dName;
   }

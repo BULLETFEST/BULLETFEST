@@ -72,7 +72,7 @@ public class DamageController : NetworkBehaviour
     refs.lockShooting = true;
     refs.lockWeapon = true;
 
-    GameSettings.GameMode gm = MyNetworkManager.instance.settings.gameMode;
+    GameSettings.GameMode gm = GameManager.settings.gameMode;
 
     if (gm == GameSettings.GameMode.Deathmatch)
     {

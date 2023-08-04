@@ -7924,7 +7924,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ecca269fdde811943b00fea5af81108a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  enableTestMode: 1
+  enableTestMode: 0
   enableFirebaseTestMode: 0
 --- !u!1 &929073244
 GameObject:

@@ -23,14 +23,14 @@ public class LobbyPlayerSpawner : NetworkBehaviour
       SpawnLobbyPlayer(NetworkServer.connections.ElementAt(i).Value);
     }
 
-    MyNetworkManager.instance.PlayerConnect += SpawnLobbyPlayer;
-    MyNetworkManager.instance.PlayerDisconnect += PlayerDisconnect;
+    MyNetworkManager.Instance.PlayerConnect += SpawnLobbyPlayer;
+    MyNetworkManager.Instance.PlayerDisconnect += PlayerDisconnect;
   }
 
   private void OnDestroy()
   {
-    MyNetworkManager.instance.PlayerConnect -= SpawnLobbyPlayer;
-    MyNetworkManager.instance.PlayerDisconnect -= PlayerDisconnect;
+    MyNetworkManager.Instance.PlayerConnect -= SpawnLobbyPlayer;
+    MyNetworkManager.Instance.PlayerDisconnect -= PlayerDisconnect;
   }
 
   public void SpawnLobbyPlayer(NetworkConnectionToClient conn)
@@ -97,7 +97,7 @@ public class LobbyPlayerSpawner : NetworkBehaviour
     {
       State = "In a lobby",
       Secrets = {
-        Join = (isServer ? EpicTransport.EOSSDKComponent.LocalUserProductIdString : MyNetworkManager.instance.networkAddress) + "|||" + MyNetworkManager.instance.roomCode + "|||" + DiscordController.partyId,
+        Join = (isServer ? EpicTransport.EOSSDKComponent.LocalUserProductIdString : MyNetworkManager.Instance.networkAddress) + "|||" + MyNetworkManager.Instance.roomCode + "|||" + DiscordController.partyId,
       },
       Party = {
         Size = {

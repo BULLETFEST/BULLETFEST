@@ -1,6 +1,7 @@
 using TMPro;
 using UnityEngine;
 using UnityEngine.EventSystems;
+using UnityEngine.UI;
 
 [RequireComponent(typeof(EventTrigger))]
 public class ButtonManager : MonoBehaviour
@@ -10,17 +11,38 @@ public class ButtonManager : MonoBehaviour
   [SerializeField] private bool soundOnHover;
   [SerializeField] private bool soundOnClick;
   [SerializeField] private bool colorOnHover;
+  [SerializeField] private bool imageOnHover;
 
   [DrawIf(nameof(colorOnHover), true)]
   [SerializeField] private Color color;
+
+  [DrawIf(nameof(soundOnHover), true)]
+  [SerializeField] private string hoverSound = "Hover";
+
+  [DrawIf(nameof(imageOnHover), true)]
+  [SerializeField] private Sprite onHoverImage;
+  private Sprite originalImage;
+
   private TextMeshProUGUI text;
   private Color originalColor;
 
+  private Image image;
+
   private void Awake()
   {
+    image = GetComponent<Image>();
     eventTrigger = GetComponent<EventTrigger>();
     text = GetComponentInChildren<TextMeshProUGUI>();
-    originalColor = text.color;
+
+    if (text != null)
+    {
+      originalColor = text.color;
+    }
+
+    if (image != null)
+    {
+      originalImage = image.sprite;
+    }
 
     EventTrigger.Entry entry = new()
     {
@@ -56,11 +78,24 @@ public class ButtonManager : MonoBehaviour
     {
       text.color = color;
     }
+
+    if (imageOnHover)
+    {
+      image.sprite = onHoverImage;
+    }
   }
 
   private void PointerExit(BaseEventData eventData)
   {
-    text.color = originalColor;
+    if (colorOnHover)
+    {
+      text.color = originalColor;
+    }
+
+    if (imageOnHover)
+    {
+      image.sprite = originalImage;
+    }
   }
 
   private void PointerClick(BaseEventData eventData)

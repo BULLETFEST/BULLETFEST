@@ -13,7 +13,7 @@ public class PlayerSpawnSystem : NetworkBehaviour
 
   [SyncVar]
   public System.DateTime timeStamp;
-  private MyNetworkManager nm = MyNetworkManager.instance;
+  private MyNetworkManager nm = MyNetworkManager.Instance;
   private Color[] colors => Globals.colors;
 
   private void Awake()
@@ -31,22 +31,20 @@ public class PlayerSpawnSystem : NetworkBehaviour
     {
       NetworkConnectionToClient conn = NetworkServer.connections[GameManager.Instance.players.ElementAt(i).Key];
       GameObject playerInstance = Instantiate(nm.playerPrefab, spawnPoints[i].transform.position, Quaternion.Euler(0, 0, 0));
-      // playerInstance.GetComponent<PlayerVars>().uiName.text = displayName;
-      // NetworkServer.Spawn(playerInstance, Room.players.ElementAt(i).Key);
-      // playerInstance.GetComponent<PlayerVars>().timeleft = timeStamp;
+
       NetworkServer.Spawn(playerInstance);
       NetworkServer.ReplacePlayerForConnection(conn, playerInstance);
       NetworkServer.SetClientReady(conn);
       GameManager.Instance._damageControllers.Add(playerInstance.GetComponent<DamageController>());
       if (conn == GameManager.Instance._winner)
       {
-        winningPlayer = playerInstance; //playerInstance.GetComponent<PlayerVars>().crown.SetActive(true);
+        winningPlayer = playerInstance;
       }
     }
 
-    if (nm.settings.enableBots && nm._BotSupport.Contains(SceneManager.GetActiveScene().path))
+    if (GameManager.settings.enableBots && nm._BotSupport.Contains(SceneManager.GetActiveScene().path))
     {
-      for (int i = 0; i < nm.settings.lobbySize - GameManager.Instance.players.Count; i++)
+      for (int i = 0; i < GameManager.settings.lobbySize - GameManager.Instance.players.Count; i++)
       {
         GameObject bot = Instantiate(botPrefab, spawnPoints[spawnPoints.Length - 1 - i].transform.position, Quaternion.identity);
         bot.name = "BOT" + i;

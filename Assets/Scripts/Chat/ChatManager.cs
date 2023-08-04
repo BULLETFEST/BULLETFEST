@@ -20,7 +20,7 @@ public class ChatManager : NetworkBehaviour
 
   private void Awake()
   {
-    MyNetworkManager.instance.Chat = this;
+    MyNetworkManager.Instance.Chat = this;
     messages.Callback += OnCollectionChanged;
   }
 
@@ -28,12 +28,12 @@ public class ChatManager : NetworkBehaviour
   {
     base.OnStartServer();
 
-    MyNetworkManager.instance.PlayerUpdate += NotifyJoin;
+    MyNetworkManager.Instance.PlayerUpdate += NotifyJoin;
   }
 
   private void OnDestroy()
   {
-    MyNetworkManager.instance.PlayerUpdate -= NotifyJoin;
+    MyNetworkManager.Instance.PlayerUpdate -= NotifyJoin;
     messages.Callback -= OnCollectionChanged;
   }
 

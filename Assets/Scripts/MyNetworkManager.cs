@@ -1,30 +1,20 @@
 using System.Collections;
-using System.Collections.Generic;
-using System.Linq;
 using Mirror;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
 public class MyNetworkManager : NetworkManager
 {
-  public static MyNetworkManager instance { get; private set; }
-
-  public GameSettings settings = new();
-  private string[] queuedScenes;
+  public static MyNetworkManager Instance { get; private set; }
 
   [HideInInspector]
   public ChatManager Chat;
 
-  // public int[] sortedPlayerList = new int[4];
-
-  public NetworkConnectionToClient winner;
-
-  public System.Action PlayerUpdate, AllClientsReady;
+  public System.Action PlayerUpdate;
   public System.Action<NetworkConnectionToClient> PlayerConnect, PlayerDisconnect, PlayerSpawn;
 
   [HideInInspector]
-  public bool gameStarted = false,
-              isHost = false;
+  public bool isHost { get; private set; } = false;
 
   [HideInInspector]
   public string roomCode;
@@ -40,18 +30,10 @@ public class MyNetworkManager : NetworkManager
   [Scene] public string[] _BotSupport;
 
   [Scene] public string TESTING_SCENE;
-  private bool hasFiredReadyEvent;
-  private static bool firstInit = true;
 
   public override void Awake()
   {
     base.Awake();
-
-    if (!firstInit)
-    {
-      settings.rounds = playableScenesCount;
-      return;
-    }
 
     for (int i = 0; i < SceneManager.sceneCountInBuildSettings; i++)
     {
@@ -66,10 +48,6 @@ public class MyNetworkManager : NetworkManager
         menuScenesCount++;
       }
     }
-
-    settings.rounds = playableScenesCount;
-
-    firstInit = false;
   }
 
   public override void OnServerAddPlayer(NetworkConnectionToClient conn)
@@ -83,17 +61,14 @@ public class MyNetworkManager : NetworkManager
   {
     base.Start();
 
-    if (instance == null)
+    if (Instance == null)
     {
-      instance = this;
+      Instance = this;
     }
-    else if (instance != this)
+    else if (Instance != this)
     {
       Destroy(gameObject);
     }
-
-    // transport = gameObject.AddComponent<EpicTransport.EosTransport>();
-    // FindObjectOfType<NetworkManager>().transport = transport;
 
     foreach (GameObject prefab in Resources.LoadAll<GameObject>("Spawnable"))
     {
@@ -101,31 +76,6 @@ public class MyNetworkManager : NetworkManager
     }
 
     NetworkClient.RegisterHandler<Message.ServerMessge>(OnServerMessage);
-  }
-
-  public override void LateUpdate()
-  {
-    base.LateUpdate();
-
-    if (isHost && !hasFiredReadyEvent)
-    {
-      bool allReady = true;
-
-      for (int i = 0; i < NetworkServer.connections.Count; i++)
-      {
-        if (NetworkServer.connections.ElementAt(i).Value.identity == null)
-        {
-          allReady = false;
-          break;
-        }
-      }
-
-      if (allReady)
-      {
-        AllClientsReady?.Invoke();
-        hasFiredReadyEvent = true;
-      }
-    }
   }
 
   private void OnServerMessage(Message.ServerMessge msg)
@@ -141,6 +91,8 @@ public class MyNetworkManager : NetworkManager
   {
     base.OnStartServer();
     StartCoroutine(KeepAlive());
+
+    isHost = true;
   }
 
   private IEnumerator KeepAlive()
@@ -157,7 +109,7 @@ public class MyNetworkManager : NetworkManager
   {
     base.OnServerConnect(conn);
 
-    if (NetworkServer.connections.Count > settings.lobbySize)
+    if (NetworkServer.connections.Count > GameManager.settings.lobbySize)
     {
       conn.Send(new Message.ServerMessge
       {
@@ -192,8 +144,6 @@ public class MyNetworkManager : NetworkManager
 
   public override void OnServerSceneChanged(string sceneName)
   {
-    hasFiredReadyEvent = false;
-
     base.OnServerSceneChanged(sceneName);
 
     if (SceneManager.GetActiveScene().buildIndex > menuScenesCount - 1)
@@ -227,117 +177,17 @@ public class MyNetworkManager : NetworkManager
 
       // PlayerUpdate?.Invoke();
 
-      if (gameStarted)
+      if (GameManager.Instance.state == GameManager.GameState.Started)
       {
         if (GameManager.Instance.players.Count == 1)
         {
-          queuedScenes = new string[0];
+          GameManager.Instance.EndGame();
         }
         GameManager.Instance.OnPlayerDie(conn.identity.gameObject.GetComponent<DamageController>());
       }
     }
 
     PlayerDisconnect?.Invoke(conn);
-  }
-
-  [Server]
-  public void StartGame()
-  {
-    winner = null;
-
-    int sceneCount = SceneManager.sceneCountInBuildSettings;
-    List<string> _scenes = new();
-
-    switch (settings.lobbySize)
-    {
-      case 4:
-      default:
-        _scenes = _4Players.ToList();
-        break;
-      case 6:
-        _scenes = _6Players.ToList();
-        break;
-    }
-
-    if (settings.enableBots)
-    {
-      _scenes = _BotSupport.Where(x => _scenes.Contains(x)).ToList();
-    }
-
-    if (settings.gameMode == GameSettings.GameMode.Elimination)
-    {
-      settings.rounds = Mathf.Clamp(settings.rounds, 1, playableScenesCount);
-      while (_scenes.Count > settings.rounds)
-      {
-        _scenes.RemoveAt(Random.Range(0, _scenes.Count));
-      }
-    }
-    else
-    {
-      List<string> temp = new();
-      if (settings.chosenMap == 0)
-      {
-        int chosenMapIdx = Random.Range(0, _scenes.Count);
-
-        temp.Add(_scenes[chosenMapIdx]);
-
-        _scenes = temp;
-      }
-      else
-      {
-        temp.Add(_scenes[settings.chosenMap - 1]);
-
-        _scenes = temp;
-      }
-    }
-
-    if (Globals._testMode)
-    {
-      _scenes = new()
-      {
-        TESTING_SCENE
-      };
-    }
-
-    queuedScenes = _scenes.ToArray();
-
-    gameStarted = true;
-
-    FirebaseManager.UpdateLobby(NetworkServer.connections.Count);
-
-    CycleMap();
-  }
-
-  [Server]
-  public void CycleMap()
-  {
-    if (queuedScenes.Length == 0)// || gameMode == GameMode.Deathmatch)
-    {
-      gameStarted = false;
-      List<KeyValuePair<int, PlayerData>> temp = GameManager.Instance.players.ToList();
-
-      temp.Sort(delegate (KeyValuePair<int, PlayerData> a, KeyValuePair<int, PlayerData> b)
-      {
-        return -a.Value.kills.CompareTo(b.Value.kills);
-      });
-
-      // sortedPlayerList = temp.ToDictionary(x => x.Key, x => x.Value).Keys.ToArray();
-
-      ServerChangeScene("End");
-      return;
-    }
-
-    int chosenScene = Random.Range(0, queuedScenes.Length);
-
-    string chosenSceneId = queuedScenes[chosenScene];
-
-    List<string> _scenes = queuedScenes.ToList();
-
-    _scenes.Remove(chosenSceneId);
-
-    queuedScenes = _scenes.ToArray();
-
-    ServerChangeScene(chosenSceneId);
   }
 
   public override void OnStopHost()

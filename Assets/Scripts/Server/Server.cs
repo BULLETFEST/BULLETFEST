@@ -6,7 +6,7 @@ using UnityEngine;
 
 public class Server : NetworkBehaviour
 {
-  private Coroutine timerRoutine;
+  PlayerSpawnSystem system;
 
   public override void OnStartAuthority()
   {
@@ -16,10 +16,12 @@ public class Server : NetworkBehaviour
       // Destroy(GetComponent<PlayerVars>().publicCanvas.gameObject);
       Destroy(GetComponent<Server>());
     }
-    if (MyNetworkManager.instance.settings.gameMode == GameSettings.GameMode.Deathmatch)
+    if (GameManager.settings.gameMode == GameSettings.GameMode.Deathmatch)
     {
-      timerRoutine = StartCoroutine(CalcTimeLeft());
+      StartCoroutine(CalcTimeLeft());
     }
+
+    system = FindObjectOfType<PlayerSpawnSystem>();
   }
 
   [ClientRpc]
@@ -40,10 +42,8 @@ public class Server : NetworkBehaviour
     TimeSpan timeSpan = new(0, 5, 0);
     while (timeSpan.TotalSeconds >= 0)
     {
-      timeSpan = FindObjectOfType<PlayerSpawnSystem>().timeStamp.Subtract(DateTime.UtcNow);//FindObjectOfType<PlayerSpawnSystem>().timeStamp.Subtract(DateTime.Now);
-      // int secondsLeft = (int)timeSpan.Minutes;
-      // uiTimeLeft.text = $"{Mathf.Floor(secondsLeft / 60)}:{Mathf.Floor(secondsLeft / Mathf.Floor(secondsLeft / 60))}";
-      Cmd_UpdateTimer($"{timeSpan.Minutes}:{(timeSpan.Seconds < 10 ? "0" + timeSpan.Seconds.ToString() : timeSpan.Seconds)}");
+      timeSpan = system.timeStamp.Subtract(DateTime.UtcNow);
+      UpdateTimer($"{timeSpan.Minutes}:{(timeSpan.Seconds < 10 ? "0" + timeSpan.Seconds.ToString() : timeSpan.Seconds)}");
 
       yield return new WaitForSeconds(1);
     }
@@ -52,7 +52,7 @@ public class Server : NetworkBehaviour
   }
 
   [Command(requiresAuthority = false)]
-  private void Cmd_UpdateTimer(string timeString)
+  private void UpdateTimer(string timeString)
   {
     foreach (NetworkConnectionToClient conn in NetworkServer.connections.Values.ToArray())
     {

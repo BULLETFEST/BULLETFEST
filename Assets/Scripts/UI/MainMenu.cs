@@ -131,7 +131,6 @@ public class MainMenu : MonoBehaviour
       nm.roomCode = res.data;
       // nm.rounds = int.Parse(rounds.text == "" ? "11" : rounds.text);
       DiscordController.partyId = DiscordController.now.ToUnixTimeMilliseconds().ToString();
-      nm.isHost = true;
       nm.StartHost();
     }
     else

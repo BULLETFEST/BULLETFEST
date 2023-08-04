@@ -52,7 +52,7 @@ public class GunSpawner : NetworkBehaviour
       GameObject toSpawn;
       GameObject spawnedGun;
 
-      toSpawn = MyNetworkManager.instance.settings.goldenGun
+      toSpawn = GameManager.settings.goldenGun
         ? goldenGun
         : b_specialSpawn ? specialSpawn : weapons[Random.Range(0, weapons.Count)];
 

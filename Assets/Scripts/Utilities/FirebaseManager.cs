@@ -110,12 +110,12 @@ public class FirebaseManager : MonoBehaviour
   {
     NameValueCollection data = new()
     {
-      ["gameMode"] = MyNetworkManager.instance.settings.gameMode.ToString(),
+      ["gameMode"] = GameManager.settings.gameMode.ToString(),
       ["playerCount"] = playerCount.ToString(),
       ["token"] = SaveSystem.saveData.token,
-      ["type"] = MyNetworkManager.instance.settings.privacyType.ToString().ToLower(),
-      ["started"] = MyNetworkManager.instance.gameStarted.ToString(),
-      ["lobbySize"] = MyNetworkManager.instance.settings.lobbySize.ToString()
+      ["type"] = GameManager.settings.privacyType.ToString().ToLower(),
+      ["started"] = (GameManager.Instance.state == GameManager.GameState.Started).ToString(),
+      ["lobbySize"] = GameManager.settings.lobbySize.ToString()
     };
 
     await CreateRequest<string>("updateLobby", data, HTTPMethod.Post);

@@ -11,7 +11,7 @@ public class EndScreenUI : NetworkBehaviour
   // Start is called before the first frame update
   private void Awake()
   {
-    Room = MyNetworkManager.instance;
+    Room = MyNetworkManager.Instance;
     Cursor.visible = true;
   }
 
@@ -37,7 +37,7 @@ public class EndScreenUI : NetworkBehaviour
 
   public void Exit()
   {
-    MyNetworkManager.instance.Disconnect();
+    MyNetworkManager.Instance.Disconnect();
     FindObjectOfType<AudioSystem>().PlaySound("Select");
   }
 }
