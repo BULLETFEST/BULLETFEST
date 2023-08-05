@@ -7926,7 +7926,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   enableTestMode: 1
   enableFirebaseTestMode: 0
-  enableTestMap: 0
+  enableTestMap: 1
 --- !u!1 &929073244
 GameObject:
   m_ObjectHideFlags: 0

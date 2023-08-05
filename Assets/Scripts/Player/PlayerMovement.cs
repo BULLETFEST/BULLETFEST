@@ -75,13 +75,15 @@ public class PlayerMovement : NetworkBehaviour
 
     playerRefs.graphics.transform.rotation = graphicsRotation;
 
+    if (playerRefs.weaponBehavior.weapon == null) return;
+
     playerRefs.weaponBehavior.transform.localRotation = gunRotation;
 
-    if (playerRefs.weaponBehavior.weapon && playerRefs.graphics.sprites.Count >= 3)
+    if (playerRefs.graphics.sprites.Count >= 4)
     {
       if (!playerRefs.weaponBehavior.weapon.rotateWithCursor)
       {
-        playerRefs.graphics.sprites[2].gameObject.transform.rotation = globalGunRotation;
+        playerRefs.graphics.sprites[3].gameObject.transform.rotation = globalGunRotation;
       }
     }
   }
