@@ -3,6 +3,7 @@ using System.Linq;
 using Mirror;
 using TMPro;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class ScoreboardManager : NetworkBehaviour
 {
@@ -13,16 +14,6 @@ public class ScoreboardManager : NetworkBehaviour
 
   public static ScoreboardManager Instance { get; private set; }
 
-
-  // public readonly SyncList<PlayerData> data = new();
-
-  public override void OnStartServer()
-  {
-    base.OnStartServer();
-
-
-  }
-
   private void Awake()
   {
     Instance = this;
@@ -32,20 +23,8 @@ public class ScoreboardManager : NetworkBehaviour
   private void Start()
   {
     UpdateScoreboard(SyncIDictionary<int, PlayerData>.Operation.OP_ADD, 0, null);
-    if (isServer)
-    {
-      // InitializeScoreboard();
-    }
+    UpdateTitle();
   }
-
-  // [Command(requiresAuthority = false)]
-  // private void InitializeScoreboard()
-  // {
-  //   foreach (PlayerData pd in GameManager.Instance.players.Values)
-  //   {
-  //     data.Add(pd);
-  //   }
-  // }
 
 
   private void UpdateScoreboard(SyncIDictionary<int, PlayerData>.Operation op, int key, PlayerData changedItem)
@@ -73,5 +52,11 @@ public class ScoreboardManager : NetworkBehaviour
       scoreboardItem.t_Wins.text = dt.wins.ToString();
       scoreboardItem.t_Deaths.text = dt.deaths.ToString();
     }
+  }
+
+  [ClientRpc]
+  void UpdateTitle()
+  {
+    title.text = GameManager.settings.gameMode.ToString() + " - " + SceneManager.GetActiveScene().name.Replace("_", " ");
   }
 }

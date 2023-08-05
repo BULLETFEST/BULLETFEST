@@ -3,12 +3,13 @@ using UnityEngine;
 public class Globals : MonoBehaviour
 {
   [SerializeField]
-  private bool enableTestMode = false, enableFirebaseTestMode = false;
+  private bool enableTestMode = false, enableFirebaseTestMode = false, enableTestMap = false;
 
   public static Globals Instance { get; private set; }
 
   public static bool _testMode { get; private set; }
   public static bool _firebaseTestMode { get; private set; }
+  public static bool _testMap { get; private set; }
 
   public static Color[] colors = new Color[] {
     new Color(0.5882353f, 0.1137255f, 0.04313726f), // 961D0B
@@ -30,5 +31,6 @@ public class Globals : MonoBehaviour
 
     _testMode = enableTestMode && Debug.isDebugBuild;
     _firebaseTestMode = enableFirebaseTestMode && Debug.isDebugBuild;
+    _testMap = enableTestMap && Debug.isDebugBuild;
   }
 }

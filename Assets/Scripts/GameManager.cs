@@ -219,7 +219,7 @@ public class GameManager : NetworkBehaviour
       }
     }
 
-    if (Globals._testMode)
+    if (Globals._testMap)
     {
       _scenes = new()
       {
