@@ -826,7 +826,7 @@ MonoBehaviour:
   syncMode: 0
   syncInterval: 0.1
   health: 0
-  maxHealth: 10
+  maxHealth: 20
   killfeedItem: {fileID: 7200907496177310357, guid: 1e94cb2ec6b3e19439dfa832a7f1d308, type: 3}
   playerDeathParticles: {fileID: 1186898414058462494, guid: fa6de8122ef77fe49ad3875706864978, type: 3}
   gravestone: {fileID: 6030231851616318269, guid: 57f25a84d55296a40bb69f685dc01911, type: 3}

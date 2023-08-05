@@ -29,6 +29,8 @@ public class SettingsUI : MonoBehaviour
   public bool waitingForKey;
   private List<string> resolutionsList = new();
 
+  public static bool IsSettingsOpen = false;
+
   private void Awake()
   {
     SettingsClass settings = SaveSystem.saveData.settings;
@@ -102,18 +104,37 @@ public class SettingsUI : MonoBehaviour
 
   private void Update()
   {
-    // if (Input.GetKeyDown(KeyCode.Escape) && !waitingForKey)
-    // {
-    //   Time.timeScale = Time.timeScale == 0 ? 1 : 0;
-    //   thisCanvas.enabled = !thisCanvas.enabled;
-    //   isPaused = !isPaused;
-    //   if (!isPaused)
-    //   {
-    //     SaveSystem.SavePlayer(new SaveDataStructure(SaveSystem.saveData.settings));
-    //   }
-    // }
-
     btnLine.rectTransform.anchoredPosition = new Vector2(Mathf.Lerp(btnLine.rectTransform.anchoredPosition.x, 0, Time.unscaledDeltaTime * lineMoveT), btnLine.rectTransform.anchoredPosition.y);
+
+
+    if (Input.GetKeyDown(KeyCode.Escape))
+    {
+      if (!IsSettingsOpen)
+      {
+        if (Utilities.FindWithTag("SettingsBlocker", out GameObject gameObject))
+        {
+          if (gameObject.activeSelf)
+          {
+            gameObject.SetActive(false);
+            return;
+          }
+        }
+        GetComponent<Canvas>().enabled = true;
+        IsSettingsOpen = true;
+      }
+      else
+      {
+        if (waitingForKey)
+        {
+          return;
+        }
+
+        SaveSystem.SavePlayer(new SaveDataStructure(SaveSystem.saveData.settings, SaveSystem.saveData.token));
+        GetComponent<Canvas>().enabled = false;
+        IsSettingsOpen = false;
+
+      }
+    }
   }
 
   public void MoveLine(RectTransform btn)
@@ -272,6 +293,6 @@ public class SettingsUI : MonoBehaviour
   public void CloseSettings()
   {
     GetComponent<Canvas>().enabled = false;
-    SaveSystem.IsSettingsOpen = false;
+    IsSettingsOpen = false;
   }
 }

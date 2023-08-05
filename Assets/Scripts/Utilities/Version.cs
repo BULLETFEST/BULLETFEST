@@ -63,19 +63,22 @@ public class Version
     {
       return true;
     }
-    else if (versionType == other.versionType)
+
+    if (versionType == other.versionType)
     {
       if (major > other.major)
       {
         return true;
       }
-      else if (major == other.major)
+
+      if (major == other.major)
       {
         if (minor > other.minor)
         {
           return true;
         }
-        else if (minor == other.minor)
+
+        if (minor == other.minor)
         {
           return patch > other.patch || (patch == other.patch && build > other.build);
         }

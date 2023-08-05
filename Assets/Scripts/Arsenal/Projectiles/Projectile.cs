@@ -11,22 +11,22 @@ public class Projectile : NetworkBehaviour
   [HideInInspector]
   public GameObject owner;
 
-  [SyncVar]
   [SerializeField]
   protected bool passThrough = false;
 
   [SyncVar]
   [SerializeField]
+  [DrawIf(nameof(passThrough), true)]
   protected int passThroughAmount = 0;
 
   int passedThrough = 0;
 
   [SerializeField]
-  bool destroySelf = true;
+  bool selfDestruct = true;
 
-  [DrawIf("destroySelf", true)]
+  [DrawIf(nameof(selfDestruct), true)]
   [SerializeField]
-  float destroySelfTime = 5f;
+  float selfDestructTime = 5f;
 
   [SerializeField]
   protected bool modifyStartingRotation;
@@ -39,7 +39,7 @@ public class Projectile : NetworkBehaviour
   protected virtual void Start()
   {
     Server_DisableCollisionWith(owner);
-    if (destroySelf)
+    if (selfDestruct)
     {
       StartCoroutine(DestroySelf());
     }
@@ -52,7 +52,7 @@ public class Projectile : NetworkBehaviour
 
   protected virtual IEnumerator DestroySelf()
   {
-    yield return new WaitForSeconds(destroySelfTime);
+    yield return new WaitForSeconds(selfDestructTime);
     NetworkServer.Destroy(gameObject);
   }
 

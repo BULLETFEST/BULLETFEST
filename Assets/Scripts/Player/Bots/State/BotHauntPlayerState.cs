@@ -10,13 +10,7 @@ public class BotHauntPlayerState : BotBaseState
     nearestPlayer = Utilities.FindNearest(manager.transform, Object.FindObjectsOfType<DamageController>());
   }
 
-  public void ReachedTarget(BotPathfinding manager)
-  {
-    // if (nearestPlayer != null)
-    // {
-    //   manager.botVars.botBehavior.SwitchWeapon(nearestPlayer);
-    // }
-  }
+  public void ReachedTarget(BotPathfinding manager) { }
 
   public override void ExitState(BotPathfinding manager) { }
 

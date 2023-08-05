@@ -14,9 +14,6 @@ public class MainMenu : MonoBehaviour
   [HideInInspector]
   public string code = "0000";
 
-  // [HideInInspector]
-  // public string playerName;
-
   [Header("UI Elements")]
   [SerializeField] private Button connectBtn;
   [SerializeField] private Button joinBtn;
@@ -148,8 +145,8 @@ public class MainMenu : MonoBehaviour
 
   public void OpenSettings()
   {
-    SaveSystem.settingsUI.GetComponent<Canvas>().enabled = true;
-    SaveSystem.IsSettingsOpen = true;
+    FindObjectOfType<SettingsUI>().GetComponent<Canvas>().enabled = true;
+    SettingsUI.IsSettingsOpen = true;
   }
 
   public void OpenCredits()

@@ -52,8 +52,6 @@ public class MyNetworkManager : NetworkManager
 
   public override void OnServerAddPlayer(NetworkConnectionToClient conn)
   {
-    // base.OnServerAddPlayer(conn);
-
     PlayerSpawn?.Invoke(conn);
   }
 
@@ -174,8 +172,6 @@ public class MyNetworkManager : NetworkManager
       GameManager.Instance.players.Remove(conn.connectionId);
 
       FirebaseManager.UpdateLobby(NetworkServer.connections.Count);
-
-      // PlayerUpdate?.Invoke();
 
       if (GameManager.Instance.state == GameManager.GameState.Started)
       {

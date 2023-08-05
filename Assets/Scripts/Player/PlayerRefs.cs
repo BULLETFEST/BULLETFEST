@@ -38,12 +38,9 @@ public class PlayerRefs : ComponentRefs
     displayName = GameManager.Instance.players[conn.connectionId].displayName;
   }
 
-  // [ServerCallback]
   private void HandleUpdateDisplayName(string oldName, string newName)
   {
     uiName.text = newName;
-
-    // Rpc_UpdateDisplayName();
   }
 
   [ClientRpc]

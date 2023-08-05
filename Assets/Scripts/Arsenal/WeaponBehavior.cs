@@ -18,9 +18,6 @@ public class WeaponBehavior : MonoBehaviour
   {
     WeaponClass equippedWeapon = arsenal.Where(w => w.uniqueID == weaponId).ToArray()[0];
 
-    // Get the weapon prefix ID (stg, hdg, etc)
-    // string weaponType = equippedWeapon.uniqueID.Split("_")[0].ToLower();
-
     switch (equippedWeapon.weaponType)
     {
       case WeaponClass.WeaponType.HDG:
@@ -153,7 +150,6 @@ public class WeaponBehavior : MonoBehaviour
     }
     else
     {
-      // weapon = null;
       if (refs.graphics.sprites.Count >= 4)
       {
         refs.graphics.sprites.Last().enabled = false;

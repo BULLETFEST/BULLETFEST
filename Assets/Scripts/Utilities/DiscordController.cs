@@ -137,13 +137,6 @@ public class DiscordController : MonoBehaviour
       {
         print(res);
       }
-      // else
-      // {
-      //   // print(JsonUtility.ToJson(activity, true));
-      //   // print(JsonUtility.ToJson(activity.Party, true));
-      //   // print(JsonUtility.ToJson(activity.Party.Size, true));
-      //   // print(JsonUtility.ToJson(activity.Secrets, true));
-      // }
     });
   }
 

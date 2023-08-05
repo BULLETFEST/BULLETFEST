@@ -1,7 +1,6 @@
 using System.Linq;
 using Mirror;
 using UnityEngine;
-using UnityEngine.Video;
 
 public class PlayerBehavior : NetworkBehaviour
 {
@@ -62,7 +61,7 @@ public class PlayerBehavior : NetworkBehaviour
       return;
     }
 
-    if (SaveSystem.IsSettingsOpen)
+    if (SettingsUI.IsSettingsOpen)
     {
       return;
     }

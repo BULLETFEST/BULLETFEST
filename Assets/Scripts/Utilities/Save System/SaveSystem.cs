@@ -11,8 +11,6 @@ public class SaveSystem : MonoBehaviour
   private static Dictionary<string, string> defaultBinds;
   private static string appDataPath;
 
-  public static bool IsSettingsOpen;
-
   private void Awake()
   {
     appDataPath = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData);
@@ -55,48 +53,6 @@ public class SaveSystem : MonoBehaviour
       if (!saveData.settings.keybinds.ContainsKey(defaultBinds.ElementAt(i).Key))
       {
         saveData.settings.keybinds[defaultBinds.ElementAt(i).Key] = defaultBinds.ElementAt(i).Value;
-      }
-    }
-
-    settingsUI = FindObjectOfType<SettingsUI>();
-  }
-
-  public static SettingsUI settingsUI;
-
-  private void Update()
-  {
-    if (Input.GetKeyDown(KeyCode.Escape))
-    {
-      if (!IsSettingsOpen)
-      {
-        if (Utilities.FindWithTag("SettingsBlocker", out GameObject gameObject))
-        {
-          if (gameObject.activeSelf)
-          {
-            gameObject.SetActive(false);
-            return;
-          }
-        }
-        // SceneManager.LoadSceneAsync("Settings", LoadSceneMode.Additive);
-
-        settingsUI.GetComponent<Canvas>().enabled = true;
-        IsSettingsOpen = true;
-
-        //Cursor.visible = true;
-      }
-      else
-      {
-        if (settingsUI.waitingForKey)
-        {
-          return;
-        }
-
-        SavePlayer(new SaveDataStructure(saveData.settings, saveData.token));
-        // SceneManager.UnloadSceneAsync("Settings");
-        settingsUI.GetComponent<Canvas>().enabled = false;
-        IsSettingsOpen = false;
-        //if (SceneManager.GetActiveScene().buildIndex > MyNetworkManager.menuScenes - 1) Cursor.visible = false;
-
       }
     }
   }

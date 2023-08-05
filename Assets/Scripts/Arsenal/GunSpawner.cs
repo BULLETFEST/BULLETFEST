@@ -22,12 +22,6 @@ public class GunSpawner : NetworkBehaviour
 
   private void Start()
   {
-    // weapons = Resources.LoadAll<GameObject>("Spawnable/Weapons").ToList();
-
-    // goldenGun = weapons.Where(x => x.name == "Golden Gun").ToArray()[0];
-
-    // weapons.Remove(goldenGun);
-
     boxCollider2D = GetComponent<BoxCollider2D>();
 
     float bcSize = boxCollider2D.bounds.extents.x;
@@ -41,8 +35,6 @@ public class GunSpawner : NetworkBehaviour
   [ServerCallback]
   private IEnumerator SpawnWeapon()
   {
-    // while (true)
-    // {
     float rndNum = float.Parse(Random.Range(0.0f, 10.0f).ToString()[..3]);
 
     if (rndNum >= 10f - spawnChance || firstRound)

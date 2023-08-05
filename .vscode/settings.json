@@ -75,5 +75,6 @@
     "obj"
   ],
   "formatFiles.useGitIgnore": true,
-  "formatFiles.extensionsToInclude": ".cs"
+  "formatFiles.extensionsToInclude": ".cs",
+  "dotnet.defaultSolution": "BULLETFEST.sln"
 }

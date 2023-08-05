@@ -4,7 +4,12 @@
 
 Required Unity Version: `2022.3.6f1` \
 Recommended IDE: `Visual Studio Code` \
-If you're using VSCode, follow [this](https://code.visualstudio.com/docs/other/unity) setup.
+If you're using VSCode, follow [this](https://code.visualstudio.com/docs/other/unity) setup. \
+`Requires VSCode Extensions:`
+
+- Unity (visualstudiotoolsforunity.vstuc)
+- C# (ms-dotnettools.csharp)
+- C# DevKit (ms-dotnettools.csdevkit)
 
 ## Branches & Pushes
 
@@ -21,7 +26,7 @@ Once we hit 1.0, we will follow [SemVer](https://semver.org/). Until then here's
 - X - `Major`: a change to this number indicates a big change, usually breaking.
 - Y - `Minor`: not a huge change but sizeable enough
 - Z - `Patch`: small updates, usually very small features, bug fixes, etc.
-- `STAGE`: currently `alpha`, later on `beta`, and when release hits, this section will be removed.
+- `STAGE`: currently on `beta`, and when release hits, this section will be removed.
 - `BUILD`: The build number of the current version. This number is increased automatically every time the game builds.
 
 ## Testing

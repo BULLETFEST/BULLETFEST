@@ -45,14 +45,6 @@ public class LobbyUIManager : NetworkBehaviour
 
     startButton.onClick.AddListener(delegate { StartGame(); });
 
-    // List<string> mapNames = new();
-
-    // for (int i = MyNetworkManager.menuScenesCount; i < SceneManager.sceneCountInBuildSettings; i++)
-    // {
-    //   mapNames.Add(System.IO.Path.GetFileNameWithoutExtension(SceneUtility.GetScenePathByBuildIndex(i)).Replace("_", " "));
-    // }
-    // maps.AddOptions(nm._4Players.ToList());
-
     UpdateMapsList();
 
     maps.onValueChanged.AddListener(delegate { SelectMap(maps.value); });

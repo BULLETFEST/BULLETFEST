@@ -19,7 +19,7 @@ public class DamageController : NetworkBehaviour
   public bool dead = false;
   private GameObject damageDealer;
 
-  [SerializeField] public UnityEvent onDie;
+  [SerializeField] UnityEvent onDie;
 
   private void Start()
   {
@@ -64,9 +64,7 @@ public class DamageController : NetworkBehaviour
 
     dead = true;
 
-    // onDeath?.Invoke(damageDealer ?? gameObject);
-
-    GameObject killer = damageDealer ?? gameObject;
+    GameObject killer = damageDealer != null ? damageDealer : gameObject;
 
     refs.lockMovement = true;
     refs.lockShooting = true;

@@ -3,16 +3,24 @@ using UnityEngine;
 
 public class Explosive : Projectile
 {
-  [SyncVar]
-  public bool detonateOnImpact;
+  [SerializeField]
+  bool detonateOnImpact;
 
-  public GameObject explosionParticle;
+  [SerializeField]
+  GameObject explosionParticle;
 
-  [SyncVar]
   bool detonated;
 
   [SerializeField] bool stickOnCollision;
-  [SerializeField] float radius;
+  [SerializeField] float explosionRadius;
+
+  [SerializeField] bool shakeOnExplode;
+
+  [DrawIf(nameof(shakeOnExplode), true)]
+  [SerializeField] float shakeDuration;
+
+  [DrawIf(nameof(shakeOnExplode), true)]
+  [SerializeField] float shakeMagnitude;
 
   protected override void OnCollisionEnter2D(Collision2D other)
   {
@@ -75,7 +83,7 @@ public class Explosive : Projectile
     {
       float dist = Utilities.CalculateDistance(transform.position, controller.transform.position);
 
-      if (dist <= radius)
+      if (dist <= explosionRadius)
       {
         controller.TakeDamage(damage, owner);
       }
@@ -88,7 +96,7 @@ public class Explosive : Projectile
     }
 
     FindObjectOfType<Server>().PlaySoundAll("Explosion", false, true);
-    Camera.main.GetComponent<CameraShake>().ShakeAll(0.35f, 1.1f);
+    Camera.main.GetComponent<CameraShake>().ShakeAll(shakeDuration, shakeMagnitude);
 
     NetworkServer.Destroy(gameObject);
   }
