@@ -1,7 +1,7 @@
 public class GameSettings
 {
-  public bool goldenGun,
-              enableBots;
+  public bool goldenGun = false,
+              enableBots = false;
 
   public int lobbySize = 4,
              rounds,

@@ -12,11 +12,12 @@ public class LobbyPlayerSpawner : NetworkBehaviour
   public override void OnStartServer()
   {
     base.OnStartServer();
+    // SceneManager.LoadScene(4, LoadSceneMode.Additive);
 
-    if (!FindObjectOfType<ChatManager>())
-    {
-      NetworkServer.Spawn(Instantiate(chatPrefab, Vector3.zero, Quaternion.identity));
-    }
+    // if (!FindObjectOfType<ChatManager>())
+    // {
+    //   NetworkServer.Spawn(Instantiate(chatPrefab, Vector3.zero, Quaternion.identity));
+    // }
 
     for (int i = 0; i < NetworkServer.connections.Count; i++)
     {

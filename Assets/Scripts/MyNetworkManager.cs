@@ -19,7 +19,7 @@ public class MyNetworkManager : NetworkManager
   [HideInInspector]
   public string roomCode;
 
-  public static int playableScenesCount { get; private set; } = 0;
+  public static int playableScenesCount { get; private set; } = -1;
 
   private int menuScenesCount = 0;
 
@@ -87,10 +87,18 @@ public class MyNetworkManager : NetworkManager
 
   public override void OnStartServer()
   {
+    // SceneManager.LoadScene(4, LoadSceneMode.Additive);
+
     base.OnStartServer();
     StartCoroutine(KeepAlive());
 
     isHost = true;
+    // StartCoroutine(LoadAdditive());
+  }
+
+  IEnumerator LoadAdditive()
+  {
+    yield return SceneManager.LoadSceneAsync(4, LoadSceneMode.Additive);
   }
 
   private IEnumerator KeepAlive()
@@ -107,7 +115,13 @@ public class MyNetworkManager : NetworkManager
   {
     base.OnServerConnect(conn);
 
-    if (NetworkServer.connections.Count > GameManager.settings.lobbySize)
+    int lobbySize = 4;
+    if (GameManager.settings != null)
+    {
+      lobbySize = GameManager.settings.lobbySize;
+    }
+
+    if (NetworkServer.connections.Count > lobbySize)
     {
       conn.Send(new Message.ServerMessge
       {
@@ -133,7 +147,7 @@ public class MyNetworkManager : NetworkManager
     {
       GameManager.Instance.InitializeScene();
     }
-    if (sceneName == "Lobby")
+    if (sceneName == onlineScene)
     {
       FirebaseManager.UpdateLobby(NetworkServer.connections.Count);
     }

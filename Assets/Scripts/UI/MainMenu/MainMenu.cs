@@ -199,9 +199,6 @@ public class MainMenu : MonoBehaviour
 
   public void PlaySelectSound()
   {
-    if (Utilities.FindWithType(out AudioSystem audioSystem))
-    {
-      audioSystem.PlaySound("Select");
-    }
+    AudioSystem.Instance.PlaySound("Select");
   }
 }

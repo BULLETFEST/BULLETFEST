@@ -153,6 +153,6 @@ public class PlayerBehavior : Behavior
   [TargetRpc]
   private void PlayHitSound(NetworkConnection conn)
   {
-    ((PlayerRefs)componentRefs).audioSystem.PlaySound("Hit");
+    AudioSystem.Instance.PlaySound("Hit");
   }
 }

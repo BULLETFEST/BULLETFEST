@@ -148,7 +148,7 @@ public class PlayerMovement : NetworkBehaviour
       {
         playerRefs.rb.AddForce(new Vector2(0, jumpForce));
       }
-      playerRefs.audioSystem.PlaySound("Jump");
+      AudioSystem.Instance.PlaySound("Jump");
     }
 
     if (doubleJumped && grounded)
@@ -210,8 +210,6 @@ public class PlayerMovement : NetworkBehaviour
     // Add drag
     // https://forum.unity.com/threads/physics-drag-formula.252406/
     playerRefs.rb.velocity = new Vector2(playerRefs.rb.velocity.x * (1 - (Time.fixedDeltaTime * (Utilities.Grounded(transform, playerRefs.bc, groundLm).collider != null ? drag * 1.15f : drag))), playerRefs.rb.velocity.y);
-
-    // playerVars.audioSystem.transform.position = gameObject.transform.position;
   }
 
   private bool PlayersOnRight(GameObject player, BoxCollider2D bc)

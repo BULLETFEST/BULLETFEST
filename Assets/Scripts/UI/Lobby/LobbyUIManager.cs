@@ -32,7 +32,6 @@ public class LobbyUIManager : NetworkBehaviour
 
 
     gameModeDrowpdown.value = (int)settings.gameMode;
-    rounds.text = settings.rounds.ToString();
     deathmatchTime.value = DeathmatchTimeToOption(settings.deathmatchLength);
     maps.value = settings.chosenMap;
     privacy.isOn = settings.privacyType == GameSettings.PrivacyType.Private;
@@ -68,13 +67,13 @@ public class LobbyUIManager : NetworkBehaviour
   private void StartGame()
   {
     GameManager.Instance.StartGame();
-    FindObjectOfType<AudioSystem>().PlaySound("Select");
+    AudioSystem.Instance.PlaySound("Select");
   }
 
   public void Quit()
   {
     nm.Disconnect();
-    FindObjectOfType<AudioSystem>().PlaySound("Select");
+    AudioSystem.Instance.PlaySound("Select");
   }
 
   public void ChangeGameMode(int option)
@@ -235,6 +234,8 @@ public class LobbyUIManager : NetworkBehaviour
     maps.ClearOptions();
 
     maps.AddOptions(n);
+
+    rounds.text = (n.Count - 1).ToString();
   }
 
   /*

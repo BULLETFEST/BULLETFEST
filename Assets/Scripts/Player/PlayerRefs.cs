@@ -9,7 +9,6 @@ public class PlayerRefs : ComponentRefs
   public GameObject killfeed,
                     crown;
 
-  [HideInInspector] public AudioSystem audioSystem;
   [HideInInspector] public PlayerUI uiController;
 
   [HideInInspector]
@@ -20,8 +19,6 @@ public class PlayerRefs : ComponentRefs
   protected override void Awake()
   {
     base.Awake();
-
-    audioSystem = FindObjectOfType<AudioSystem>();
     uiController = GetComponent<PlayerUI>();
   }
 
@@ -46,6 +43,7 @@ public class PlayerRefs : ComponentRefs
     GameManager.Instance.players.Add(connectionToClient.connectionId, new PlayerData(tempName, connectionToClient.connectionId));
 
     displayName = tempName;
+    Message.HideMessage();
   }
 
   private void HandleUpdateDisplayName(string oldName, string newName)

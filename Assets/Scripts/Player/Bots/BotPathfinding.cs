@@ -10,7 +10,6 @@ public class BotPathfinding : NetworkBehaviour
   [SerializeField] private float nextWaypointDistance = 3f;
   [SerializeField] private float jumpNodeHeightRequirement = 0.8f;
   [SerializeField] private float jumpForce = 20f;
-  [SerializeField] private float jumpCheckOffset = 0.1f;
   [SerializeField] private LayerMask groundLm, playerLm;
 
   [SerializeField]

@@ -530,7 +530,10 @@ MonoBehaviour:
   soundOnHover: 1
   soundOnClick: 1
   colorOnHover: 1
+  imageOnHover: 0
   color: {r: 0.99215686, g: 0.57254905, b: 0.18039216, a: 1}
+  hoverSound: Hover
+  onHoverImage: {fileID: 0}
 --- !u!114 &150356119
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1113,8 +1116,6 @@ MonoBehaviour:
   connectionQualityInterval: 3
   timeInterpolationGui: 0
   Chat: {fileID: 0}
-  gameStarted: 0
-  isHost: 0
   roomCode: 
   _4Players:
   - Assets/Scenes/GameScenes/World_1.unity
@@ -1131,6 +1132,7 @@ MonoBehaviour:
   - Assets/Scenes/GameScenes/World_12.unity
   - Assets/Scenes/GameScenes/World_13.unity
   - Assets/Scenes/GameScenes/World_14.unity
+  - Assets/Scenes/GameScenes/World_15.unity
   _6Players:
   - Assets/Scenes/GameScenes/World_6.unity
   - Assets/Scenes/GameScenes/World_12.unity
@@ -1835,7 +1837,10 @@ MonoBehaviour:
   soundOnHover: 1
   soundOnClick: 1
   colorOnHover: 1
+  imageOnHover: 0
   color: {r: 0.99215686, g: 0.57254905, b: 0.18039216, a: 1}
+  hoverSound: Hover
+  onHoverImage: {fileID: 0}
 --- !u!114 &519519129
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -4794,7 +4799,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0.5}
   m_AnchorMax: {x: 0, y: 0.5}
-  m_AnchoredPosition: {x: 241.14, y: 227.5}
+  m_AnchoredPosition: {x: 241.14001, y: 227.5}
   m_SizeDelta: {x: 382.27002, y: 60}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1355091130
@@ -5450,7 +5455,10 @@ MonoBehaviour:
   soundOnHover: 1
   soundOnClick: 1
   colorOnHover: 1
+  imageOnHover: 0
   color: {r: 0.99215686, g: 0.57254905, b: 0.18039216, a: 1}
+  hoverSound: Hover
+  onHoverImage: {fileID: 0}
 --- !u!114 &1561687028
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5777,7 +5785,10 @@ MonoBehaviour:
   soundOnHover: 1
   soundOnClick: 1
   colorOnHover: 1
+  imageOnHover: 0
   color: {r: 0.99215686, g: 0.57254905, b: 0.18039216, a: 1}
+  hoverSound: Hover
+  onHoverImage: {fileID: 0}
 --- !u!114 &1668635237
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -6776,7 +6787,10 @@ MonoBehaviour:
   soundOnHover: 1
   soundOnClick: 1
   colorOnHover: 1
+  imageOnHover: 0
   color: {r: 0.99215686, g: 0.57254905, b: 0.18039216, a: 1}
+  hoverSound: Hover
+  onHoverImage: {fileID: 0}
 --- !u!114 &1876703728
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -8395,7 +8409,10 @@ MonoBehaviour:
   soundOnHover: 1
   soundOnClick: 1
   colorOnHover: 1
+  imageOnHover: 0
   color: {r: 0.99215686, g: 0.57254905, b: 0.18039216, a: 1}
+  hoverSound: Hover
+  onHoverImage: {fileID: 0}
 --- !u!114 &2100170343
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -8662,7 +8679,10 @@ MonoBehaviour:
   soundOnHover: 1
   soundOnClick: 1
   colorOnHover: 1
+  imageOnHover: 0
   color: {r: 0.99215686, g: 0.57254905, b: 0.18039216, a: 1}
+  hoverSound: Hover
+  onHoverImage: {fileID: 0}
 --- !u!114 &2114639796
 MonoBehaviour:
   m_ObjectHideFlags: 0

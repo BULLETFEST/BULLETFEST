@@ -26,7 +26,7 @@ public class EndScreenUI : NetworkBehaviour
       playAgain.onClick.AddListener(delegate
       {
         Room.ServerChangeScene("Lobby");
-        FindObjectOfType<AudioSystem>().PlaySound("Select");
+        AudioSystem.Instance.PlaySound("Select");
       });
     }
     else
@@ -38,6 +38,6 @@ public class EndScreenUI : NetworkBehaviour
   public void Exit()
   {
     MyNetworkManager.Instance.Disconnect();
-    FindObjectOfType<AudioSystem>().PlaySound("Select");
+    AudioSystem.Instance.PlaySound("Select");
   }
 }
