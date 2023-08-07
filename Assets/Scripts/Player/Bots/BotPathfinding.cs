@@ -37,13 +37,8 @@ public class BotPathfinding : NetworkBehaviour
     base.OnStartServer();
   }
 
-  private void Start()
+  private void Awake()
   {
-    if (!isServer)
-    {
-      return;
-    }
-
     seeker = GetComponent<Seeker>();
 
     botRefs = GetComponent<BotRefs>();

@@ -2,33 +2,25 @@ using System.Linq;
 using Mirror;
 using UnityEngine;
 
-public class PlayerBehavior : NetworkBehaviour
+public class PlayerBehavior : Behavior
 {
-  private PlayerRefs playerRefs;
   private bool shootKeyUp = true;
   private GameObject weaponToPickup;
 
   private System.Action<GameObject> PlayHitSoundAction;
 
-  // Start is called before the first frame update
-  private void Awake()
-  {
-    playerRefs = GetComponent<PlayerRefs>();
-  }
-
   private void Start()
   {
     PlayHitSoundAction = delegate (GameObject g) { PlayHitSound(connectionToClient); };
 
-    playerRefs.damageController.onTakeDamage += PlayHitSoundAction;
+    componentRefs.damageController.onTakeDamage += PlayHitSoundAction;
 
     FetchTime();
   }
 
   private void OnDestroy()
   {
-    // playerVars.damageController.onDeath -= Server_Die;
-    playerRefs.damageController.onTakeDamage -= PlayHitSoundAction;
+    componentRefs.damageController.onTakeDamage -= PlayHitSoundAction;
   }
 
   public override void OnStartAuthority()
@@ -50,42 +42,39 @@ public class PlayerBehavior : NetworkBehaviour
   [Command]
   private void FetchTime()
   {
-    playerRefs.timeleft = FindObjectOfType<PlayerSpawnSystem>().timeStamp;
+    ((PlayerRefs)componentRefs).timeleft = FindObjectOfType<PlayerSpawnSystem>().timeStamp;
   }
 
   // Update is called once per frame
-  private void Update()
+  protected override void Update()
   {
-    if (!isLocalPlayer)
+    base.Update();
+
+    if (!isLocalPlayer) return;
+    if (SettingsUI.IsSettingsOpen) return;
+
+    if (Utilities.GetKeybind("fire") && !componentRefs.lockShooting)
     {
-      return;
+      Cmd_Fire();
     }
 
-    if (SettingsUI.IsSettingsOpen)
+    if (Utilities.GetKeybindDown("altFire") && !componentRefs.lockShooting)
     {
-      return;
-    }
-
-    weaponToPickup = FindClosestGun();
-
-    if (Utilities.GetKeybind("fire") && !playerRefs.lockShooting)
-    {
-      Fire();
-    }
-
-    if (Utilities.GetKeybindDown("altFire") && !playerRefs.lockShooting)
-    {
-      AltFire();
+      Cmd_AltFire();
     }
 
     if (Utilities.GetKeybindUp("fire"))
     {
-      ShootKeyUp();
+      Cmd_ShootKeyUp();
     }
 
-    if (Utilities.GetKeybindDown("weaponPickup") && weaponToPickup != null)
+    if (Utilities.GetKeybindDown("weaponPickup"))
     {
-      SwitchWeapon(weaponToPickup);
+      weaponToPickup = Utilities.FindNearest(transform, "WeaponItem", 6.5f);
+
+      if (weaponToPickup == null) return;
+
+      Cmd_SwitchWeapon(weaponToPickup);
       weaponToPickup = null;
     }
 
@@ -100,113 +89,42 @@ public class PlayerBehavior : NetworkBehaviour
 
   }
 
-  private GameObject FindClosestGun()
-  {
-    GameObject[] pickableGuns;
-    pickableGuns = GameObject.FindGameObjectsWithTag("WeaponItem");
-    GameObject closest = null;
-    float distance = Mathf.Infinity;
-    Vector3 position = transform.position;
-    foreach (GameObject go in pickableGuns)
-    {
-      Vector3 diff = go.transform.position - position;
-      float curDistance = diff.sqrMagnitude;
-      if (curDistance < distance)
-      {
-        //if pickable can be inserted here ~Toast
-        closest = go;
-        distance = curDistance;
-      }
-    }
 
-    return distance <= 6.5f ? closest : null;
+  [Command]
+  protected override void Cmd_SwitchWeapon(GameObject weapon)
+  {
+    base.Cmd_SwitchWeapon(weapon);
+
+    Target_UpdateUI(componentRefs.weaponBehavior.arsenal.Where(x => x.uniqueID == weapon.GetComponent<WeaponItem>().WeaponID).ToArray()[0].magazineSize);
   }
 
   [Command]
-  private void SwitchWeapon(GameObject weapon)
-  {
-    if (weapon != null && !playerRefs.lockMovement)
-    {
-      Rpc_SwitchWeapon(weapon.GetComponent<WeaponItem>().WeaponID);
-      playerRefs.weaponBehavior.SwitchWeapon(weapon.GetComponent<WeaponItem>().WeaponID);
-      NetworkServer.Destroy(weapon);
-
-      Target_UpdateUI(playerRefs.weaponBehavior.arsenal.Where(x => x.uniqueID == weapon.GetComponent<WeaponItem>().WeaponID).ToArray()[0].magazineSize);
-    }
-  }
-
-  [ClientRpc]
-  private void Rpc_SwitchWeapon(string WeaponID)
-  {
-    playerRefs.weaponBehavior.SwitchWeapon(WeaponID);
-  }
-
-  [Command]
-  private void ShootKeyUp()
+  private void Cmd_ShootKeyUp()
   {
     shootKeyUp = true;
   }
 
   [Command]
-  private void Fire()
+  protected override void Cmd_Fire()
   {
-    WeaponClass weapon = playerRefs.weaponBehavior.weapon;
+    base.Cmd_Fire();
 
-    if (playerRefs.lockShooting)
+    if (componentRefs.weaponBehavior.weapon.firingMode == WeaponClass.FireMode.Single && !shootKeyUp)
     {
       return;
     }
 
-    if (weapon == null)
-    {
-      return;
-    }
-
-    if (weapon.firingMode == WeaponClass.FireMode.Single && !shootKeyUp)
-    {
-      return;
-    }
-
-    if (weapon.fireTimeout > Time.time)
-    {
-      return;
-    }
-
-    if (weapon.bulletsInMag <= 0 && !weapon.isMelee)
-    {
-      return;
-    }
-
-    if (!weapon.isMelee)
-    {
-      weapon.bulletsInMag--;
-    }
-
-    weapon.fireTimeout = (float)Time.time + (1f / weapon.fireRate);
-
-    Rpc_AddForce(gameObject);
-    playerRefs.weaponBehavior.Fire(weapon.uniqueID, connectionToClient.identity.gameObject);
-
-    Target_UpdateUI(weapon.bulletsInMag);
+    Target_UpdateUI(componentRefs.weaponBehavior.weapon.bulletsInMag);
     Target_ShakeScreen();
     shootKeyUp = false;
-
-    if (weapon.bulletsInMag <= 0 && weapon.deleteOnEmpty)
-    {
-      Rpc_SwitchWeapon(null);
-      playerRefs.weaponBehavior.SwitchWeapon(null);
-    }
   }
 
   [Command]
-  private void AltFire()
+  private void Cmd_AltFire()
   {
-    if (playerRefs.lockShooting)
-    {
-      return;
-    }
+    if (componentRefs.lockShooting) return;
 
-    WeaponBehavior weapon = playerRefs.weaponBehavior;
+    WeaponBehavior weapon = componentRefs.weaponBehavior;
 
     if (weapon.awaitingDetonation.Count > 0)
     {
@@ -218,39 +136,23 @@ public class PlayerBehavior : NetworkBehaviour
     }
   }
 
-  [ClientRpc]
-  private void Rpc_AddForce(GameObject target)
-  {
-    if (playerRefs.weaponBehavior.weapon.animateOnShot)
-    {
-      playerRefs.weaponAnimator.animator.Play("Fire");
-    }
-
-    playerRefs.weaponBehavior.AddForce(target);
-    if (playerRefs.weaponBehavior.weapon.soundOnShoot)
-    {
-      playerRefs.audioSystem.PlaySound(playerRefs.weaponBehavior.weapon.shootSound);
-    }
-  }
-
   [TargetRpc]
   private void Target_UpdateUI(int bulletsInMag)
   {
-
-    playerRefs.weaponBehavior.weapon.bulletsInMag = bulletsInMag;
-    playerRefs.uiController.UpdateAmmoText(bulletsInMag);
+    componentRefs.weaponBehavior.weapon.bulletsInMag = bulletsInMag;
+    ((PlayerRefs)componentRefs).uiController.UpdateAmmoText(bulletsInMag);
   }
 
   [TargetRpc]
   private void Target_ShakeScreen()
   {
-    StartCoroutine(Camera.main.GetComponent<CameraShake>().Shake(playerRefs.weaponBehavior.weapon.cameraShakeDuration,
-                                                                 playerRefs.weaponBehavior.weapon.cameraShakeIntensity));
+    StartCoroutine(Camera.main.GetComponent<CameraShake>().Shake(componentRefs.weaponBehavior.weapon.cameraShakeDuration,
+                                                                 componentRefs.weaponBehavior.weapon.cameraShakeIntensity));
   }
 
   [TargetRpc]
   private void PlayHitSound(NetworkConnection conn)
   {
-    playerRefs.audioSystem.PlaySound("Hit");
+    ((PlayerRefs)componentRefs).audioSystem.PlaySound("Hit");
   }
 }

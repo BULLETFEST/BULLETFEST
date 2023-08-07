@@ -739,7 +739,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   syncDirection: 0
   syncMode: 0
-  syncInterval: 0
+  syncInterval: 0.1
   rb: {fileID: 0}
   bc: {fileID: 0}
   weaponBehavior: {fileID: 0}

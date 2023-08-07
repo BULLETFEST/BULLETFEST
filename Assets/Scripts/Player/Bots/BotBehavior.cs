@@ -1,96 +1,39 @@
 using Mirror;
 using UnityEngine;
 
-public class BotBehavior : NetworkBehaviour
+public class BotBehavior : Behavior
 {
-  private BotRefs botRefs;
 
-  private void Start()
-  {
-    botRefs = GetComponent<BotRefs>();
-  }
-
-  private void Update()
+  protected override void Update()
   {
     if (!isServer)
     {
       return;
     }
 
-    if (transform.position.y is <= (-15) or >= 50)
-    {
-      botRefs.damageController.TakeDamage(9999999, null);
-    }
+    base.Update();
   }
 
+  [Server]
   public void Fire(float playerPosX, float angle)
   {
-    WeaponClass weapon = botRefs.weaponBehavior.weapon;
-
-    if (weapon == null)
+    if (componentRefs.weaponBehavior.awaitingDetonation.Count >= 3)
     {
-      return;
-    }
-
-    if (weapon.fireTimeout > Time.time)
-    {
-      return;
-    }
-
-    if (weapon.bulletsInMag <= 0 && !weapon.isMelee)
-    {
-      return;
-    }
-
-    botRefs.weaponBehavior.transform.localRotation = Quaternion.Euler(playerPosX < 0 ? 180 : 0, playerPosX < 0 ? 180 : 0, ((playerPosX < 0 ? -1 : 1) * angle) + Random.Range(-25f, 25f));
-
-    weapon.bulletsInMag--;
-    weapon.fireTimeout = (float)Time.time + (1f / weapon.fireRate);// * (weapon.firingMode == WeaponClass.FireMode.Single ? 1.65f : 1));
-
-    Rpc_AddForce(gameObject, weapon.shootSound);
-    botRefs.weaponBehavior.Fire(weapon.uniqueID, gameObject);
-
-    if (botRefs.weaponBehavior.awaitingDetonation.Count >= 3)
-    {
-      foreach (Explosive explosive in botRefs.weaponBehavior.awaitingDetonation)
+      foreach (Explosive explosive in componentRefs.weaponBehavior.awaitingDetonation)
       {
         explosive.Detonate();
       }
 
-      botRefs.weaponBehavior.awaitingDetonation.Clear();
-    }
-  }
+      componentRefs.weaponBehavior.awaitingDetonation.Clear();
 
-  [ClientRpc]
-  private void Rpc_AddForce(GameObject target, string shootSound)
-  {
-    if (botRefs.weaponBehavior.weapon.animateOnShot)
-    {
-      botRefs.weaponAnimator.animator.Play("Fire");
+      return;
     }
 
-    botRefs.weaponBehavior.AddForce(target);
-    if (shootSound != "")
-    {
-      FindObjectOfType<AudioSystem>().PlaySound(shootSound);
-    }
+    componentRefs.weaponBehavior.transform.localRotation = Quaternion.Euler(playerPosX < 0 ? 180 : 0, playerPosX < 0 ? 180 : 0, ((playerPosX < 0 ? -1 : 1) * angle) + Random.Range(-25f, 25f));
+
+    base.Cmd_Fire();
   }
 
-  public void SwitchWeapon(GameObject weapon)
-  {
-    if (weapon != null && !botRefs.lockMovement)
-    {
-      WeaponItem weaponItem = weapon.GetComponent<WeaponItem>();
-
-      botRefs.weaponBehavior.SwitchWeapon(weaponItem.WeaponID);
-      TargetRpc_SwitchWeapon(weaponItem.WeaponID);
-      NetworkServer.Destroy(weapon);
-    }
-  }
-
-  [ClientRpc]
-  private void TargetRpc_SwitchWeapon(string WeaponID)
-  {
-    botRefs.weaponBehavior.SwitchWeapon(WeaponID);
-  }
+  [Command(requiresAuthority = false)]
+  public void SwitchWeapon(GameObject weapon) => base.Cmd_SwitchWeapon(weapon);
 }

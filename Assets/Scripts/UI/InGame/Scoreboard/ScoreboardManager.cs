@@ -42,8 +42,6 @@ public class ScoreboardManager : NetworkBehaviour
 
     foreach (PlayerData dt in t)
     {
-      print(dt.displayName);
-
       GameObject item = Instantiate(itemPrefab, Vector3.zero, Quaternion.identity, content.transform);
       ScoreboardItem scoreboardItem = item.GetComponent<ScoreboardItem>();
 

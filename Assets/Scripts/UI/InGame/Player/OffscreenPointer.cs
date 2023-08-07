@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using Mirror;
 using UnityEngine;
+using System.Linq;
 
 public class OffscreenPointer : NetworkBehaviour
 {
@@ -31,6 +32,13 @@ public class OffscreenPointer : NetworkBehaviour
   private void FixedUpdate()
   {
     PlayerNetworking[] players = FindObjectsOfType<PlayerNetworking>();
+
+    while (players.Length > pointerRectTransform.Count)
+    {
+      pointerRectTransform.Add(Instantiate(arrowPrefab, Vector3.zero, Quaternion.identity, arrowContainer.transform).GetComponent<RectTransform>());
+      pointerRectTransform.Last().gameObject.SetActive(false);
+
+    }
 
     for (int i = 0; i < players.Length; i++)
     {

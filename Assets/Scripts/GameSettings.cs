@@ -13,6 +13,8 @@ public class GameSettings
 
   public float deathmatchLength = 1;
 
+  public bool allowLateJoin = false;
+
   public enum GameMode
   {
     Elimination = 0,

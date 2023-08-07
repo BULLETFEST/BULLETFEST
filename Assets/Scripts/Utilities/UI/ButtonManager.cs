@@ -71,7 +71,7 @@ public class ButtonManager : MonoBehaviour
   {
     if (soundOnHover)
     {
-      AudioSystem.Instance.PlaySound("Hover", true);
+      AudioSystem.Instance.PlaySound(hoverSound, true);
     }
 
     if (colorOnHover)

@@ -30,12 +30,7 @@ public class PlayerSpawnSystem : NetworkBehaviour
     for (int i = 0; i < GameManager.Instance.players.Count; i++)
     {
       NetworkConnectionToClient conn = NetworkServer.connections[GameManager.Instance.players.ElementAt(i).Key];
-      GameObject playerInstance = Instantiate(nm.playerPrefab, spawnPoints[i].transform.position, Quaternion.Euler(0, 0, 0));
-
-      NetworkServer.Spawn(playerInstance);
-      NetworkServer.ReplacePlayerForConnection(conn, playerInstance);
-      NetworkServer.SetClientReady(conn);
-      GameManager.Instance._damageControllers.Add(playerInstance.GetComponent<DamageController>());
+      GameObject playerInstance = SpawnPlayer(conn, i);
       if (conn == GameManager.Instance._winner)
       {
         winningPlayer = playerInstance;
@@ -48,7 +43,10 @@ public class PlayerSpawnSystem : NetworkBehaviour
       {
         GameObject bot = Instantiate(botPrefab, spawnPoints[spawnPoints.Length - 1 - i].transform.position, Quaternion.identity);
         bot.name = "BOT" + i;
-        NetworkServer.Spawn(bot);
+
+        // Set host player to have authority over bots
+        NetworkServer.Spawn(bot, NetworkServer.connections[0]);
+
         GameManager.Instance._damageControllers.Add(bot.GetComponent<DamageController>());
         Rpc_SetPlayerColor(bot, i + GameManager.Instance.players.Count);
       }
@@ -64,6 +62,16 @@ public class PlayerSpawnSystem : NetworkBehaviour
     {
       EnableCrown(winningPlayer);
     }
+  }
+
+  [Server]
+  public GameObject SpawnPlayer(NetworkConnectionToClient conn, int spawnPoint = 0)
+  {
+    GameObject playerInstance = Instantiate(nm.playerPrefab, spawnPoints[spawnPoint].transform.position, Quaternion.Euler(0, 0, 0));
+    NetworkServer.AddPlayerForConnection(conn, playerInstance);
+    GameManager.Instance._damageControllers.Add(playerInstance.GetComponent<DamageController>());
+
+    return playerInstance;
   }
 
   [ClientRpc]

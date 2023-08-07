@@ -9,7 +9,6 @@ public class PlayerRefs : ComponentRefs
   public GameObject killfeed,
                     crown;
 
-  [HideInInspector] public string playerName;
   [HideInInspector] public AudioSystem audioSystem;
   [HideInInspector] public PlayerUI uiController;
 
@@ -29,13 +28,24 @@ public class PlayerRefs : ComponentRefs
   public override void OnStartAuthority()
   {
     base.OnStartAuthority();
-    UpdateDisplayName(connectionToClient);
+    UpdateDisplayName(PlayerPrefs.GetString("PlayerName", "Guest"));
   }
 
   [Command]
-  private void UpdateDisplayName(NetworkConnectionToClient conn)
+  private void UpdateDisplayName(string fallbackName)
   {
-    displayName = GameManager.Instance.players[conn.connectionId].displayName;
+    if (GameManager.Instance.players.ContainsKey(connectionToClient.connectionId))
+    {
+      displayName = GameManager.Instance.players[connectionToClient.connectionId].displayName;
+      return;
+    }
+
+    string tempName = fallbackName;
+    if (tempName.Length > 16) tempName = tempName[..16];
+    if (string.IsNullOrEmpty(tempName)) tempName = "Guest";
+    GameManager.Instance.players.Add(connectionToClient.connectionId, new PlayerData(tempName, connectionToClient.connectionId));
+
+    displayName = tempName;
   }
 
   private void HandleUpdateDisplayName(string oldName, string newName)

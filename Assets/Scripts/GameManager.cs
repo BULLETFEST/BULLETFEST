@@ -50,6 +50,7 @@ public class GameManager : NetworkBehaviour
     }
 
     settings = _settings;
+    MyNetworkManager.Instance.PlayerConnect += OnPlayerJoin;
   }
 
   private void Start()
@@ -84,6 +85,35 @@ public class GameManager : NetworkBehaviour
   }
 
   public readonly List<DamageController> _damageControllers = new();
+
+  [Server]
+  public void OnPlayerJoin(NetworkConnectionToClient conn)
+  {
+    if (state == GameState.Started)
+    {
+      LateJoin(conn);
+    }
+  }
+
+  void LateJoin(NetworkConnectionToClient conn)
+  {
+    if (!settings.allowLateJoin)
+    {
+      conn.Send(new Message.ServerMessge
+      {
+        titleText = "Disconnected",
+        contentText = "Game has started",
+        _alignment = 2,
+        disconnect = true
+      });
+      conn.Disconnect();
+      return;
+    }
+
+    FindObjectOfType<PlayerSpawnSystem>().SpawnPlayer(conn);
+
+
+  }
 
   [Server]
   public void OnPlayerDie(DamageController player)

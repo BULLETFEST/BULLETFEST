@@ -120,21 +120,6 @@ public class MyNetworkManager : NetworkManager
       return;
     }
 
-    if (SceneManager.GetActiveScene().name != "Lobby")
-    {
-      conn.Send(new Message.ServerMessge
-      {
-        titleText = "Disconnected",
-        contentText = "Game has started",
-        _alignment = 2,
-        disconnect = true
-      });
-      conn.Disconnect();
-      return;
-    }
-
-
-
     PlayerConnect?.Invoke(conn);
 
     FirebaseManager.UpdateLobby(NetworkServer.connections.Count);

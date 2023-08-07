@@ -50,6 +50,8 @@ public class LobbyPlayer : NetworkBehaviour
       dName = dName[..16];
     }
 
+    if (string.IsNullOrEmpty(dName)) dName = "Guest";
+
     if (GameManager.Instance.players.ContainsKey(connectionToClient.connectionId))
     {
       GameManager.Instance.players.Remove(connectionToClient.connectionId);
