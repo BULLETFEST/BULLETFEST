@@ -26,6 +26,7 @@ public class PlayerRefs : ComponentRefs
   {
     base.OnStartAuthority();
     UpdateDisplayName(PlayerPrefs.GetString("PlayerName", "Guest"));
+    Message.HideMessage();
   }
 
   [Command]

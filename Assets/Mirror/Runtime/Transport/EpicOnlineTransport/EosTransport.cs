@@ -14,7 +14,7 @@ namespace EpicTransport {
     public class EosTransport : Transport {
         private const string EPIC_SCHEME = "epic";
 
-        private Client client;
+        public CustomEOSClient client {get; private set;}
         private Server server;
 
         private Common activeNode;
@@ -128,7 +128,7 @@ namespace EpicTransport {
             if (!ClientActive() || client.Error) {
                 Debug.Log($"Starting client, target address {address}.");
 
-                client = Client.CreateClient(this, address);
+                client = CustomEOSClient.CreateClient(this, address);
                 activeNode = client;
 
                 if (EOSSDKComponent.CollectPlayerMetrics) {

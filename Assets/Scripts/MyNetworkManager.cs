@@ -1,5 +1,6 @@
 using System.Collections;
 using Mirror;
+using EpicTransport;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -30,6 +31,11 @@ public class MyNetworkManager : NetworkManager
   [Scene] public string[] _BotSupport;
 
   [Scene] public string TESTING_SCENE;
+
+  [Scene] public string EndScene;
+
+  [SerializeField]
+  GameObject GameManagerPrefab, ChatManagerPrefab;
 
   public override void Awake()
   {
@@ -153,9 +159,17 @@ public class MyNetworkManager : NetworkManager
     }
   }
 
+  // public override void OnClientSceneChanged()
+  // {
+  //   base.OnClientSceneChanged();
+
+  //   if (!FindObjectOfType<GameManager>()) Instantiate(GameManagerPrefab, Vector3.zero, Quaternion.identity);
+  //   if (!FindObjectOfType<ChatManager>()) Instantiate(ChatManagerPrefab, Vector3.zero, Quaternion.identity);
+  // }
+
   public override void OnServerDisconnect(NetworkConnectionToClient conn)
   {
-    if (SceneManager.GetActiveScene().name != "End")
+    if (SceneManager.GetActiveScene().name != EndScene)
     {
       base.OnServerDisconnect(conn);
     }
@@ -189,17 +203,23 @@ public class MyNetworkManager : NetworkManager
   {
     base.OnStopHost();
     isHost = false;
-    GameManager.Instance.players.Clear();
     if (SceneManager.GetActiveScene().name != "MainMenu")
     {
       SceneManager.LoadScene(1);
     }
   }
 
-  public override void OnStopClient()
+  public override void OnStartClient()
   {
-    base.OnStopClient();
-    GameManager.Instance.players.Clear();
+    base.OnStartClient();
+
+    if (Utilities.FindWithType(out EosTransport t))
+    {
+      t.client.onConnectionFailed += () =>
+      {
+        Message.DisplayMessage("Failed to connect to server!", "Connection timed out.", true, TMPro.HorizontalAlignmentOptions.Center);
+      };
+    }
   }
 
   public void Disconnect()

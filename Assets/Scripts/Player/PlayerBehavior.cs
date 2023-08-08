@@ -16,11 +16,13 @@ public class PlayerBehavior : Behavior
     componentRefs.damageController.onTakeDamage += PlayHitSoundAction;
 
     FetchTime();
+    afterFire += AfterFire;
   }
 
   private void OnDestroy()
   {
     componentRefs.damageController.onTakeDamage -= PlayHitSoundAction;
+    afterFire -= AfterFire;
   }
 
   public override void OnStartAuthority()
@@ -107,13 +109,22 @@ public class PlayerBehavior : Behavior
   [Command]
   protected override void Cmd_Fire()
   {
-    base.Cmd_Fire();
+    if (componentRefs.weaponBehavior.weapon == null)
+    {
+      return;
+    }
 
     if (componentRefs.weaponBehavior.weapon.firingMode == WeaponClass.FireMode.Single && !shootKeyUp)
     {
       return;
     }
 
+    base.Cmd_Fire();
+  }
+
+  [Server]
+  void AfterFire()
+  {
     Target_UpdateUI(componentRefs.weaponBehavior.weapon.bulletsInMag);
     Target_ShakeScreen();
     shootKeyUp = false;

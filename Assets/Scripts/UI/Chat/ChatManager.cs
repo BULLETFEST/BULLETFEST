@@ -20,7 +20,10 @@ public class ChatManager : NetworkBehaviour
 
   private void Awake()
   {
-    MyNetworkManager.Instance.Chat = this;
+    if (MyNetworkManager.Instance.Chat == null)
+      MyNetworkManager.Instance.Chat = this;
+    else NetworkServer.Destroy(gameObject);
+
     messages.Callback += OnCollectionChanged;
   }
 

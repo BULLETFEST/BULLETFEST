@@ -89,7 +89,7 @@ MonoBehaviour:
   shotPushback: 0
   movementUnlockTime: 0
   damage: 3
-  fireRate: 10
+  fireRate: 1.5
   firingMode: 0
   cameraShakeIntensity: 0
   cameraShakeDuration: 0

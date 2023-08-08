@@ -51,10 +51,10 @@ public class WeaponBehavior : MonoBehaviour
     Rigidbody2D rb = target.GetComponent<Rigidbody2D>();
 
 
-    rb.velocity = new Vector2(0, rb.velocity.y);
+    rb.velocity = new Vector2(0, rb.velocity.y * 0.15f);
     target.GetComponent<ComponentRefs>().lockMovement = true;
     Vector2 vel = weapon.shotPushback * -gameObject.transform.right;
-    rb.AddForce(new Vector2(vel.x * 1.75f, vel.y / 1.55f), ForceMode2D.Impulse);
+    rb.AddForce(new Vector2(vel.x * 1.85f, vel.y * 1.15f), ForceMode2D.Impulse);
     StartCoroutine(UnlockMovement(weapon.movementUnlockTime, target.GetComponent<ComponentRefs>()));
   }
 

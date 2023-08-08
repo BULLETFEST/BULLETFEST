@@ -15,8 +15,8 @@ namespace EpicTransport {
         public bool Connected { get; private set; }
         public bool Error { get; private set; }
 
-        private event Action<byte[], int> OnReceivedData;
-        private event Action OnConnected;
+        protected event Action<byte[], int> OnReceivedData;
+        protected event Action OnConnected;
         public event Action OnDisconnected;
 
         private TimeSpan ConnectionTimeout;
@@ -27,7 +27,7 @@ namespace EpicTransport {
         private TaskCompletionSource<Task> connectedComplete;
         private CancellationTokenSource cancelToken;
 
-        private Client(EosTransport transport) : base(transport) {
+        protected Client(EosTransport transport) : base(transport) {
             ConnectionTimeout = TimeSpan.FromSeconds(Math.Max(1, transport.timeout));
         }
 

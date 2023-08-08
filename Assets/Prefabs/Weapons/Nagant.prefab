@@ -171,7 +171,7 @@ MonoBehaviour:
   inaccuracyRange:
   - -1
   - 1
-  shotPushback: 50
+  shotPushback: 35
   movementUnlockTime: 0.3
   damage: 5
   fireRate: 1.25

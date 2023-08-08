@@ -47,6 +47,7 @@ public class MainMenu : MonoBehaviour
     {
       StartCoroutine(RotateBean(beans[i]));
     }
+
   }
 
   private IEnumerator RotateBean(RectTransform bean)
@@ -89,6 +90,12 @@ public class MainMenu : MonoBehaviour
     {
       nm.roomCode = code;
       nm.networkAddress = res.data;
+
+      if (string.IsNullOrWhiteSpace(nm.networkAddress))
+      {
+        Message.DisplayMessage("Failed not connect to server!", "Invalid Server Address.", true, HorizontalAlignmentOptions.Center);
+        return;
+      }
       nm.StartClient();
     }
     else

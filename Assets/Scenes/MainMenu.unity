@@ -1153,6 +1153,9 @@ MonoBehaviour:
   - Assets/Scenes/GameScenes/World_12.unity
   - Assets/Scenes/GameScenes/World_14.unity
   TESTING_SCENE: Assets/Scenes/GameScenes/TESTING.unity
+  EndScene: Assets/Scenes/End.unity
+  GameManagerPrefab: {fileID: 4740808419566080345, guid: 6732f0af0a015b24fb8f75129ad7e6ed, type: 3}
+  ChatManagerPrefab: {fileID: 3648448378456464646, guid: 283dc604fe6780649941123b33b50466, type: 3}
 --- !u!4 &329895678
 Transform:
   m_ObjectHideFlags: 0

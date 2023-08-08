@@ -46,7 +46,7 @@ public class GameManager : NetworkBehaviour
     }
     else
     {
-      Destroy(gameObject);
+      NetworkServer.Destroy(gameObject);
     }
 
     settings = _settings;

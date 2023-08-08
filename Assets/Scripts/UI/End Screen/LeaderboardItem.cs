@@ -8,6 +8,7 @@ public class LeaderboardItem : NetworkBehaviour
 {
   public TMP_Text uiDisplayname;
   public TMP_Text uiKills;
+  public TMP_Text uiDeaths;
   public TMP_Text uiWins;
 
   [SyncVar(hook = nameof(UpdateRichPresence))]
@@ -18,6 +19,9 @@ public class LeaderboardItem : NetworkBehaviour
 
   [SyncVar(hook = nameof(HandleUpdateKills))]
   [HideInInspector] public string kills;
+
+  [SyncVar(hook = nameof(HandleUpdateDeaths))]
+  [HideInInspector] public string deaths;
 
   [SyncVar(hook = nameof(HandleUpdateWins))]
   [HideInInspector] public string wins;
@@ -43,9 +47,10 @@ public class LeaderboardItem : NetworkBehaviour
     displayName = GameManager.Instance.players[conn.connectionId].displayName;
     kills = GameManager.Instance.players[conn.connectionId].kills.ToString();
     wins = GameManager.Instance.players[conn.connectionId].wins.ToString();
+    deaths = GameManager.Instance.players[conn.connectionId].deaths.ToString();
 
     List<PlayerData> sortedList = GameManager.Instance.players.Values.ToList();
-    sortedList.Sort((a, b) => a.kills.CompareTo(b.kills));
+    sortedList.Sort((a, b) => -a.kills.CompareTo(b.kills));
     place = sortedList.FindIndex(x => x.connId == conn.connectionId);
     ChangeItemIndex(conn.identity.gameObject, place);
   }
@@ -73,6 +78,11 @@ public class LeaderboardItem : NetworkBehaviour
   private void HandleUpdateKills(string oldKills, string newKills)
   {
     uiKills.text = newKills;
+  }
+
+  private void HandleUpdateDeaths(string oldDeaths, string newDeaths)
+  {
+    uiDeaths.text = newDeaths;
   }
 
   private void HandleUpdateWins(string oldWins, string newWins)

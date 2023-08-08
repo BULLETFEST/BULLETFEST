@@ -166,14 +166,14 @@ MonoBehaviour:
   weaponType: 3
   pelletCount: 0
   meleeRange: 0
-  magazineSize: 15
+  magazineSize: 10
   inaccuracyRange:
   - -5
   - 5
   shotPushback: 6
   movementUnlockTime: 0.2
-  damage: 3
-  fireRate: 20
+  damage: 2
+  fireRate: 12.5
   firingMode: 2
   cameraShakeIntensity: 0.05
   cameraShakeDuration: 0.03

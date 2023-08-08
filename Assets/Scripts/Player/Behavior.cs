@@ -1,11 +1,14 @@
 using UnityEngine;
 using Mirror;
+using System;
 
 public class Behavior : NetworkBehaviour
 {
   protected ComponentRefs componentRefs;
 
-  void Awake()
+  protected Action afterFire;
+
+  private void Awake()
   {
     componentRefs = GetComponent<ComponentRefs>();
   }
@@ -63,6 +66,8 @@ public class Behavior : NetworkBehaviour
     {
       FindObjectOfType<Server>().PlaySoundAll(componentRefs.weaponBehavior.weapon.shootSound);
     }
+
+    afterFire?.Invoke();
   }
 
   [ClientRpc]

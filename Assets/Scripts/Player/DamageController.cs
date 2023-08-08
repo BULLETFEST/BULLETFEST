@@ -148,7 +148,7 @@ public class DamageController : NetworkBehaviour
     gameObject.GetComponent<BoxCollider2D>().enabled = false;
     gameObject.GetComponent<Rigidbody2D>().simulated = false;
 
-    GameObject p = Instantiate(playerDeathParticles, transform.position, Quaternion.identity);
+    GameObject p = Instantiate(playerDeathParticles, new Vector2(transform.position.x, transform.position.y + 2.5f), Quaternion.identity);
 
     ParticleSystem.MainModule s = p.GetComponent<ParticleSystem>().main;
     ParticleSystem.TrailModule t = p.GetComponent<ParticleSystem>().trails;
