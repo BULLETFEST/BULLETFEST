@@ -27,7 +27,7 @@ namespace EpicTransport {
         private TaskCompletionSource<Task> connectedComplete;
         private CancellationTokenSource cancelToken;
 
-        protected Client(EosTransport transport) : base(transport) {
+        public Client(EosTransport transport) : base(transport) {
             ConnectionTimeout = TimeSpan.FromSeconds(Math.Max(1, transport.timeout));
         }
 
@@ -123,15 +123,14 @@ namespace EpicTransport {
                 return;
             }
 
-            if (hostProductId == result.RemoteUserId)
-            {
-                var temp = new AcceptConnectionOptions()
-                {
+            if (hostProductId == result.RemoteUserId) {
+                var acceptConnectionOptions = new AcceptConnectionOptions() {
                     LocalUserId = EOSSDKComponent.LocalUserProductId,
                     RemoteUserId = result.RemoteUserId,
                     SocketId = result.SocketId
                 };
-                EOSSDKComponent.GetP2PInterface().AcceptConnection(ref temp);
+                EOSSDKComponent.GetP2PInterface().AcceptConnection(
+                    ref acceptConnectionOptions);
             } else {
                 Debug.LogError("P2P Acceptance Request from unknown host ID.");
             }

@@ -86,111 +86,115 @@ namespace EpicTransport {
 
             switch (result.Reason) {
                 case ConnectionClosedReason.ClosedByLocalUser:
-                    throw new Exception("Connection cLosed: The Connection was gracecfully closed by the local user.");
+                    Debug.Log("Connection closed: The Connection was gracefully closed by the local user.");
+                    break;
                 case ConnectionClosedReason.ClosedByPeer:
-                    throw new Exception("Connection closed: The connection was gracefully closed by remote user.");
+                    Debug.Log("Connection closed: The connection was gracefully closed by remote user.");
+                    break;
                 case ConnectionClosedReason.ConnectionClosed:
-                    throw new Exception("Connection closed: The connection was unexpectedly closed.");
+                    Debug.LogWarning("Connection closed: The connection was unexpectedly closed.");
+                    break;
                 case ConnectionClosedReason.ConnectionFailed:
-                    throw new Exception("Connection failed: Failled to establish connection.");
+                    Debug.LogError("Connection failed: Failed to establish connection.");
+                    break;
                 case ConnectionClosedReason.InvalidData:
-                    throw new Exception("Connection failed: The remote user sent us invalid data..");
+                    Debug.LogError("Connection failed: The remote user sent us invalid data..");
+                    break;
                 case ConnectionClosedReason.InvalidMessage:
-                    throw new Exception("Connection failed: The remote user sent us an invalid message.");
+                    Debug.LogError("Connection failed: The remote user sent us an invalid message.");
+                    break;
                 case ConnectionClosedReason.NegotiationFailed:
-                    throw new Exception("Connection failed: Negotiation failed.");
+                    Debug.LogError("Connection failed: Negotiation failed.");
+                    break;
                 case ConnectionClosedReason.TimedOut:
-                    throw new Exception("Connection failed: Timeout.");
+                    Debug.LogError("Connection failed: Timeout.");
+                    break;
                 case ConnectionClosedReason.TooManyConnections:
-                    throw new Exception("Connection failed: Too many connections.");
+                    Debug.LogError("Connection failed: Too many connections.");
+                    break;
                 case ConnectionClosedReason.UnexpectedError:
-                    throw new Exception("Unexpected Error, connection will be closed");
+                    Debug.LogError("Unexpected Error, connection will be closed");
+                    break;
                 case ConnectionClosedReason.Unknown:
                 default:
-                    throw new Exception("Unknown Error, connection has been closed.");
+                    Debug.LogError("Unknown Error, connection has been closed.");
+                    break;
             }
         }
 
-        protected void SendInternal(ProductUserId target, SocketId socketId, InternalMessages type)
-        {
-            var sendpacketOptation = new SendPacketOptions()
-            {
+        protected void SendInternal(ProductUserId target, SocketId socketId, InternalMessages type) {
+            var sendPacketOptions = new SendPacketOptions() {
                 AllowDelayedDelivery = true,
-                Channel = (byte) internal_ch,
-                Data = new byte[] {(byte) type},
+                Channel = (byte)internal_ch,
+                Data = new ArraySegment<byte>(new byte[] { (byte)type }),
                 LocalUserId = EOSSDKComponent.LocalUserProductId,
                 Reliability = PacketReliability.ReliableOrdered,
                 RemoteUserId = target,
                 SocketId = socketId
             };
-            var result = EOSSDKComponent.GetP2PInterface().SendPacket(ref sendpacketOptation);
-            if(result != Result.Success) {
-                Debug.LogError("Send failed " + result);
-            }
-            else
-            {
-                Debug.Log($"---------Send-----{type}------{1}");  
-            }
+            EOSSDKComponent.GetP2PInterface().SendPacket(ref sendPacketOptions);
         }
 
 
-        protected void Send(ProductUserId host, SocketId socketId, byte[] msgBuffer, byte channel)
-        {
-            var sendOptation = new SendPacketOptions()
-            {
+        protected void Send(ProductUserId host, SocketId socketId, byte[] msgBuffer, byte channel) {
+            var sendPacketOptions = new SendPacketOptions() {
                 AllowDelayedDelivery = true,
                 Channel = channel,
-                Data = msgBuffer,
+                Data = new ArraySegment<byte>(msgBuffer),
                 LocalUserId = EOSSDKComponent.LocalUserProductId,
                 Reliability = channels[channel],
                 RemoteUserId = host,
                 SocketId = socketId
             };
-            Result result = EOSSDKComponent.GetP2PInterface().SendPacket(ref sendOptation);
+            Result result = EOSSDKComponent.GetP2PInterface().SendPacket(ref sendPacketOptions);
 
             if(result != Result.Success) {
                 Debug.LogError("Send failed " + result);
             }
-            else
-            {
-             //   Debug.Log($"---------Send-----{msgBuffer.ToHexString()}------{msgBuffer.Length}");  
-            }
         }
 
-        private bool Receive(out ProductUserId clientProductUserId, out SocketId socketId, out byte[] data, byte channel)
-        {
-            ReceivePacketOptions receivePacketOptions = new ReceivePacketOptions()
-            {
+        private bool Receive(out ProductUserId clientProductUserId, out SocketId socketId, out byte[] receiveBuffer, byte channel) {
+            var receivePacketOptions = new ReceivePacketOptions() {
                 LocalUserId = EOSSDKComponent.LocalUserProductId,
                 MaxDataSizeBytes = P2PInterface.MaxPacketSize,
                 RequestedChannel = channel
             };
-            uint bytewrittion;  
-            var getNextReceivedPacketSizeOptions = new GetNextReceivedPacketSizeOptions
-            {
+            
+            var getNextReceivedPacketSizeOptions = new GetNextReceivedPacketSizeOptions() {
                 LocalUserId = EOSSDKComponent.LocalUserProductId,
                 RequestedChannel = channel
             };
-            Result result = EOSSDKComponent.GetP2PInterface().GetNextReceivedPacketSize(ref getNextReceivedPacketSizeOptions, out uint nextPacketSizeBytes);
-            if (result != Result.Success)
-            {
-                data =null;
-                socketId = new SocketId();
-                clientProductUserId =null;
-               return false;
+            Result getPacketSizeResult = EOSSDKComponent.GetP2PInterface()
+                .GetNextReceivedPacketSize(ref getNextReceivedPacketSizeOptions, out var packetSize);
+
+            if (getPacketSizeResult != Result.Success) {
+                receiveBuffer = null;
+                clientProductUserId = null;
+                socketId = default;
+                return false;
             }
-            data = new byte[nextPacketSizeBytes];
-            var dataSegment = new ArraySegment<byte>(data);
-            result = EOSSDKComponent.GetP2PInterface().ReceivePacket(ref receivePacketOptions, out clientProductUserId, out socketId, out channel, dataSegment,out bytewrittion);
-            if (result == Result.Success) { 
+            
+            uint bytesWritten = 0;
+            receiveBuffer = new byte[packetSize];
+            Result result = EOSSDKComponent.GetP2PInterface().ReceivePacket(
+                ref receivePacketOptions, 
+                out clientProductUserId, 
+                out socketId, 
+                out channel, 
+                new ArraySegment<byte>(receiveBuffer),
+                out bytesWritten);
+
+            if (result == Result.Success) {
                 return true;
-            } 
+            }
+
+            receiveBuffer = null;
             clientProductUserId = null;
             return false;
         }
 
         protected virtual void CloseP2PSessionWithUser(ProductUserId clientUserID, SocketId socketId) {
-            if (string.IsNullOrEmpty(socketId.SocketName)) {
+            if (socketId.Equals(default(SocketId))) {
                 Debug.LogWarning("Socket ID == null | " + ignoreAllMessages);
                 return;
             }
@@ -217,7 +221,7 @@ namespace EpicTransport {
         public void ReceiveData() {
             try {
                 // Internal Channel, no fragmentation here
-                SocketId socketId;
+                SocketId socketId = new SocketId();
                 while (transport.enabled && Receive(out ProductUserId clientUserID, out socketId, out byte[] internalMessage, (byte) internal_ch)) {
                     if (internalMessage.Length == 1) {
                         OnReceiveInternalData((InternalMessages) internalMessage[0], clientUserID, socketId);
@@ -294,9 +298,8 @@ namespace EpicTransport {
                                 dataIndex += keyValuePair.Value[packetList][packet].data.Length;
                             }
 
-                           // Debug.Log($"OnReceiveData  ----------{data.ToHexString()}-----------------------------{keyValuePair.Key.productUserId}-----------{keyValuePair.Key.channel}-");
                             OnReceiveData(data, keyValuePair.Key.productUserId, keyValuePair.Key.channel);
-                          
+
                             if(transport.ServerActive() || transport.ClientActive())
                                 emptyPacketLists.Add(keyValuePair.Value[packetList]);
                         }

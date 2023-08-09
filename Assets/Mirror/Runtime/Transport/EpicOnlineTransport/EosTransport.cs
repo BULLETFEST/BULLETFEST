@@ -1,4 +1,6 @@
-using System; 
+using System;
+using System.Collections.Generic;
+using System.IO;
 using UnityEngine;
 using Epic.OnlineServices.P2P;
 using Epic.OnlineServices;
@@ -14,7 +16,7 @@ namespace EpicTransport {
     public class EosTransport : Transport {
         private const string EPIC_SCHEME = "epic";
 
-        public CustomEOSClient client {get; private set;}
+        public CustomEOSClient client { get; private set; }
         private Server server;
 
         private Common activeNode;
@@ -55,10 +57,7 @@ namespace EpicTransport {
         }
 
         public override void ClientEarlyUpdate() {
-            if (EOSSDKComponent.Initialized)
-            {
-                EOSSDKComponent.Tick();
-            }
+            EOSSDKComponent.Tick();
 
             if (activeNode != null) {
                 ignoreCachedMessagesTimer += Time.deltaTime;
@@ -88,10 +87,7 @@ namespace EpicTransport {
         public override void ClientLateUpdate() {}
 
         public override void ServerEarlyUpdate() {
-            if (EOSSDKComponent.Initialized)
-            {
-                EOSSDKComponent.Tick();
-            }
+            EOSSDKComponent.Tick();
 
             if (activeNode != null) {
                 ignoreCachedMessagesTimer += Time.deltaTime;

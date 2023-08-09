@@ -2,13 +2,15 @@
 using Epic.OnlineServices.P2P;
 using System;
 using System.Collections.Generic;
-using Mirror;
 using UnityEngine;
+using Mirror;
 
-namespace EpicTransport {
-    public class Server : Common {
+namespace EpicTransport
+{
+    public class Server : Common
+    {
         private event Action<int> OnConnected;
-        private event Action<int, ArraySegment<byte>, int> OnReceivedData;
+        private event Action<int, byte[], int> OnReceivedData;
         private event Action<int> OnDisconnected;
         private event Action<int, TransportError, string> OnReceivedError;
 
@@ -17,59 +19,66 @@ namespace EpicTransport {
         private int maxConnections;
         private int nextConnectionID;
 
-        public static Server CreateServer(EosTransport transport, int maxConnections) {
+        public static Server CreateServer(EosTransport transport, int maxConnections)
+        {
             Server s = new Server(transport, maxConnections);
 
             s.OnConnected += (id) => transport.OnServerConnected.Invoke(id);
             s.OnDisconnected += (id) => transport.OnServerDisconnected.Invoke(id);
-            s.OnReceivedData += (id, data, channel) => transport.OnServerDataReceived.Invoke(id,data, channel);
+            s.OnReceivedData += (id, data, channel) => transport.OnServerDataReceived.Invoke(id, data, channel);
             s.OnReceivedError += (id, _transport, exception) => transport.OnServerError.Invoke(id, _transport, exception);
 
-            if (!EOSSDKComponent.Initialized) {
+            if (!EOSSDKComponent.Initialized)
+            {
                 Debug.LogError("EOS not initialized.");
             }
 
             return s;
         }
 
-        private Server(EosTransport transport, int maxConnections) : base(transport) {
+        private Server(EosTransport transport, int maxConnections) : base(transport)
+        {
             this.maxConnections = maxConnections;
             epicToMirrorIds = new BidirectionalDictionary<ProductUserId, int>();
             epicToSocketIds = new Dictionary<ProductUserId, SocketId>();
             nextConnectionID = 1;
         }
 
-        protected override void OnNewConnection(ref OnIncomingConnectionRequestInfo result) {
-            if (ignoreAllMessages) {
+        protected override void OnNewConnection(ref OnIncomingConnectionRequestInfo result)
+        {
+            if (ignoreAllMessages)
+            {
                 return;
             }
 
-            if (deadSockets.Contains(result.SocketId?.SocketName)) {
+            if (deadSockets.Contains(result.SocketId?.SocketName))
+            {
                 Debug.LogError("Received incoming connection request from dead socket");
                 return;
             }
 
-            var opations = new AcceptConnectionOptions()
+            var acceptConnectionOptions = new AcceptConnectionOptions()
             {
                 LocalUserId = EOSSDKComponent.LocalUserProductId,
                 RemoteUserId = result.RemoteUserId,
                 SocketId = result.SocketId
             };
-            var acceptConnectionResult =  EOSSDKComponent.GetP2PInterface().AcceptConnection(ref opations);
-            if (acceptConnectionResult != Result.Success)
-            {
-                Debug.Log("----------------------- EOSSDKComponent.GetP2PInterface().AcceptConnection(----------------------------------"+acceptConnectionResult);
-            }
+            EOSSDKComponent.GetP2PInterface().AcceptConnection(
+                ref acceptConnectionOptions);
         }
 
-        protected override void OnReceiveInternalData(InternalMessages type, ProductUserId clientUserId, SocketId socketId) {
-            if (ignoreAllMessages) {
+        protected override void OnReceiveInternalData(InternalMessages type, ProductUserId clientUserId, SocketId socketId)
+        {
+            if (ignoreAllMessages)
+            {
                 return;
             }
 
-            switch (type) {
+            switch (type)
+            {
                 case InternalMessages.CONNECT:
-                    if (epicToMirrorIds.Count >= maxConnections) {
+                    if (epicToMirrorIds.Count >= maxConnections)
+                    {
                         Debug.LogError("Reached max connections");
                         //CloseP2PSessionWithUser(clientUserId, socketId);
                         SendInternal(clientUserId, socketId, InternalMessages.DISCONNECT);
@@ -88,14 +97,17 @@ namespace EpicTransport {
                     Debug.Log($"Client with Product User ID {clientUserIdString} connected. Assigning connection id {connectionId}");
                     break;
                 case InternalMessages.DISCONNECT:
-                    if (epicToMirrorIds.TryGetValue(clientUserId, out int connId)) {
+                    if (epicToMirrorIds.TryGetValue(clientUserId, out int connId))
+                    {
                         OnDisconnected.Invoke(connId);
                         //CloseP2PSessionWithUser(clientUserId, socketId);
                         epicToMirrorIds.Remove(clientUserId);
                         epicToSocketIds.Remove(clientUserId);
                         Debug.Log($"Client with Product User ID {clientUserId} disconnected.");
-                    } else {
-                        OnReceivedError.Invoke(-1, TransportError.InvalidReceive,  ("ERROR Unknown Product User ID"));
+                    }
+                    else
+                    {
+                        OnReceivedError.Invoke(-1, TransportError.InvalidReceive, "ERROR Unknown Product User ID");
                     }
 
                     break;
@@ -105,14 +117,19 @@ namespace EpicTransport {
             }
         }
 
-        protected override void OnReceiveData(byte[] data, ProductUserId clientUserId, int channel) {
-            if (ignoreAllMessages) {
+        protected override void OnReceiveData(byte[] data, ProductUserId clientUserId, int channel)
+        {
+            if (ignoreAllMessages)
+            {
                 return;
             }
 
-            if (epicToMirrorIds.TryGetValue(clientUserId, out int connectionId)) {
+            if (epicToMirrorIds.TryGetValue(clientUserId, out int connectionId))
+            {
                 OnReceivedData.Invoke(connectionId, data, channel);
-            } else {
+            }
+            else
+            {
                 SocketId socketId;
                 epicToSocketIds.TryGetValue(clientUserId, out socketId);
                 CloseP2PSessionWithUser(clientUserId, socketId);
@@ -121,24 +138,30 @@ namespace EpicTransport {
                 clientUserId.ToString(out productId);
 
                 Debug.LogError("Data received from epic client thats not known " + productId);
-                OnReceivedError.Invoke(-1, TransportError.Unexpected, ("ERROR Unknown product ID"));
+                OnReceivedError.Invoke(-1, TransportError.InvalidReceive, "ERROR Unknown product ID");
             }
         }
 
-        public void Disconnect(int connectionId) {
-            if (epicToMirrorIds.TryGetValue(connectionId, out ProductUserId userId)) {
+        public void Disconnect(int connectionId)
+        {
+            if (epicToMirrorIds.TryGetValue(connectionId, out ProductUserId userId))
+            {
                 SocketId socketId;
                 epicToSocketIds.TryGetValue(userId, out socketId);
                 SendInternal(userId, socketId, InternalMessages.DISCONNECT);
                 epicToMirrorIds.Remove(userId);
                 epicToSocketIds.Remove(userId);
-            } else {
+            }
+            else
+            {
                 Debug.LogWarning("Trying to disconnect unknown connection id: " + connectionId);
             }
         }
 
-        public void Shutdown() {
-            foreach (KeyValuePair<ProductUserId, int> client in epicToMirrorIds) {
+        public void Shutdown()
+        {
+            foreach (KeyValuePair<ProductUserId, int> client in epicToMirrorIds)
+            {
                 Disconnect(client.Value);
                 SocketId socketId;
                 epicToSocketIds.TryGetValue(client.Key, out socketId);
@@ -151,32 +174,42 @@ namespace EpicTransport {
             Dispose();
         }
 
-        public void SendAll(int connectionId, byte[] data, int channelId) {
-            if (epicToMirrorIds.TryGetValue(connectionId, out ProductUserId userId)) {
+        public void SendAll(int connectionId, byte[] data, int channelId)
+        {
+            if (epicToMirrorIds.TryGetValue(connectionId, out ProductUserId userId))
+            {
                 SocketId socketId;
                 epicToSocketIds.TryGetValue(userId, out socketId);
                 Send(userId, socketId, data, (byte)channelId);
-            } else {
+            }
+            else
+            {
                 Debug.LogError("Trying to send on unknown connection: " + connectionId);
-                OnReceivedError.Invoke(connectionId, TransportError.Unexpected,  ("ERROR Unknown Connection"));
+                OnReceivedError.Invoke(connectionId, TransportError.InvalidReceive, "ERROR Unknown Connection");
             }
 
         }
 
-        public string ServerGetClientAddress(int connectionId) {
-            if (epicToMirrorIds.TryGetValue(connectionId, out ProductUserId userId)) {
+        public string ServerGetClientAddress(int connectionId)
+        {
+            if (epicToMirrorIds.TryGetValue(connectionId, out ProductUserId userId))
+            {
                 Utf8String userIdString;
                 userId.ToString(out userIdString);
                 return userIdString;
-            } else {
+            }
+            else
+            {
                 Debug.LogError("Trying to get info on unknown connection: " + connectionId);
-                OnReceivedError.Invoke(connectionId, TransportError.Unexpected,  ("ERROR Unknown Connection"));
+                OnReceivedError.Invoke(connectionId, TransportError.InvalidReceive, "ERROR Unknown Connection");
                 return string.Empty;
             }
         }
 
-        protected override void OnConnectionFailed(ProductUserId remoteId) {
-            if (ignoreAllMessages) {
+        protected override void OnConnectionFailed(ProductUserId remoteId)
+        {
+            if (ignoreAllMessages)
+            {
                 return;
             }
 
