@@ -1,5 +1,6 @@
 using TMPro;
 using UnityEngine;
+using UnityEngine.Events;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
@@ -12,6 +13,8 @@ public class ButtonManager : MonoBehaviour
   [SerializeField] private bool soundOnClick;
   [SerializeField] private bool colorOnHover;
   [SerializeField] private bool imageOnHover;
+  [SerializeField] private bool codeOnMouseDown;
+  [SerializeField] private bool codeOnMouseUp;
 
   [DrawIf(nameof(colorOnHover), true)]
   [SerializeField] private Color color;
@@ -25,6 +28,9 @@ public class ButtonManager : MonoBehaviour
 
   private TextMeshProUGUI text;
   private Color originalColor;
+
+
+
 
   private Image image;
 

@@ -1,5 +1,6 @@
 using Mirror;
 using UnityEngine;
+using System.Linq;
 
 public class PlayerMovement : NetworkBehaviour
 {
@@ -40,6 +41,24 @@ public class PlayerMovement : NetworkBehaviour
       return;
     }
 
+
+#if UNITY_IOS || UNITY_ANDROID
+    if (playerRefs.weaponBehavior.weapon != null) {
+      GameObject nearestPlayer;
+      nearestPlayer = Utilities.FindNearest(transform, FindObjectsOfType<DamageController>().Where(x => x.gameObject != gameObject && !x.dead).ToArray());
+
+      Vector2 playerPos = nearestPlayer.transform.position;
+
+      playerPos.x -= transform.position.x;
+      playerPos.y -= transform.position.y;
+
+      float angle = Mathf.Atan2(playerPos.y, playerPos.x) * Mathf.Rad2Deg;
+
+      Cmd_UpdateGun(Quaternion.Euler(0, xRaw < 0 ? 180 : 0, 0),
+                    Quaternion.Euler(xRaw < 0 ? 180 : 0, xRaw < 0 ? 180 : 0, (xRaw < 0 ? -1 : 1) * angle),
+                    Quaternion.Euler(0, xRaw < 0 ? 180 : 0, 0));
+    }
+#else
     Vector3 mousePos = Input.mousePosition;
     mousePos.z = 5.23f;
 
@@ -52,6 +71,8 @@ public class PlayerMovement : NetworkBehaviour
     Cmd_UpdateGun(Quaternion.Euler(0, mousePos.x < 0 ? 180 : 0, 0),
                   Quaternion.Euler(mousePos.x < 0 ? 180 : 0, mousePos.x < 0 ? 180 : 0, (mousePos.x < 0 ? -1 : 1) * angle),
                   Quaternion.Euler(0, mousePos.x < 0 ? 180 : 0, 0));
+#endif
+
   }
 
   [Command]
@@ -88,6 +109,14 @@ public class PlayerMovement : NetworkBehaviour
     }
   }
 
+  public void SetDir(int dir)
+  {
+    xRaw = dir;
+  }
+
+  int xRaw = 0;
+  bool grounded = false;
+
   private void Update()
   {
     if (!isLocalPlayer)
@@ -101,20 +130,22 @@ public class PlayerMovement : NetworkBehaviour
     }
 
     // if (Input.GetKeyDown(KeyCode.X)) GetComponent<DamageController>().TakeDamage(5f, null);
-
-    int xRaw = 0;
-    if (Utilities.GetKeybind("lft") && Utilities.GetKeybind("rgt"))
-    {
-      xRaw = 0;
-    }
-    else if (Utilities.GetKeybind("lft"))
-    {
-      xRaw = -1;
-    }
-    else if (Utilities.GetKeybind("rgt"))
-    {
-      xRaw = 1;
-    }
+    // #if !UNITY_IOS && !UNITY_ANDROID
+    //     xRaw = 0;
+    //     grounded = false;
+    //     if (Utilities.GetKeybind("lft") && Utilities.GetKeybind("rgt"))
+    //     {
+    //       xRaw = 0;
+    //     }
+    //     else if (Utilities.GetKeybind("lft"))
+    //     {
+    //       xRaw = -1;
+    //     }
+    //     else if (Utilities.GetKeybind("rgt"))
+    //     {
+    //       xRaw = 1;
+    //     }
+    // #endif
 
     xRaw = Mathf.Clamp(xRaw, -1, 1);
 
@@ -123,32 +154,14 @@ public class PlayerMovement : NetworkBehaviour
       xRaw *= -1;
     }
 
-    bool grounded = false;
     if (playerRefs.bc != null)
     {
       grounded = Utilities.Grounded(transform, playerRefs.bc, groundLm).collider != null;
     }
 
-    if (Utilities.GetKeybindDown("jump") && (grounded || !doubleJumped))
+    if (Utilities.GetKeybindDown("jump"))
     {
-      if (!grounded)
-      {
-        doubleJumped = true;
-        playerRefs.rb.velocity = new Vector2(playerRefs.rb.velocity.x, 0);
-        if (playerRefs.rb.velocity.y > 0)
-        {
-          playerRefs.rb.AddForce(new Vector2(0, jumpForce * 0.75f));
-        }
-        else
-        {
-          playerRefs.rb.AddForce(new Vector2(0, jumpForce));
-        }
-      }
-      else
-      {
-        playerRefs.rb.AddForce(new Vector2(0, jumpForce));
-      }
-      AudioSystem.Instance.PlaySound("Jump");
+      Jump();
     }
 
     if (doubleJumped && grounded)
@@ -158,6 +171,30 @@ public class PlayerMovement : NetworkBehaviour
 
     ValidateMovement(xRaw);
     HandleMovement(xRaw);
+  }
+
+  public void Jump()
+  {
+    if (!grounded && !doubleJumped)
+    {
+      doubleJumped = true;
+      playerRefs.rb.velocity = new Vector2(playerRefs.rb.velocity.x, 0);
+      if (playerRefs.rb.velocity.y > 0)
+      {
+        playerRefs.rb.AddForce(new Vector2(0, jumpForce * 0.75f));
+      }
+      else
+      {
+        playerRefs.rb.AddForce(new Vector2(0, jumpForce));
+      }
+    }
+    else if (grounded)
+    {
+      playerRefs.rb.AddForce(new Vector2(0, jumpForce));
+    }
+    else return;
+
+    AudioSystem.Instance.PlaySound("Jump");
   }
 
 

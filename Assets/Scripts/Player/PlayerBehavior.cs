@@ -55,10 +55,10 @@ public class PlayerBehavior : Behavior
     if (!isLocalPlayer) return;
     if (SettingsUI.IsSettingsOpen) return;
 
-    if (Utilities.GetKeybind("fire") && !componentRefs.lockShooting)
-    {
-      Cmd_Fire();
-    }
+    // if (Utilities.GetKeybind("fire") && !componentRefs.lockShooting)
+    // {
+    //   Cmd_Fire();
+    // }
 
     if (Utilities.GetKeybindDown("altFire") && !componentRefs.lockShooting)
     {
@@ -88,8 +88,20 @@ public class PlayerBehavior : Behavior
     {
       ScoreboardManager.Instance.GetComponent<CanvasGroup>().alpha = 0;
     }
-
   }
+
+  public void Fire() => Cmd_Fire();
+  public void AltFire() => Cmd_AltFire();
+  public void SwitchWeapon()
+  {
+    weaponToPickup = Utilities.FindNearest(transform, "WeaponItem", 6.5f);
+
+    if (weaponToPickup == null) return;
+
+    Cmd_SwitchWeapon(weaponToPickup);
+    weaponToPickup = null;
+  }
+  public void SetShootKeyUp() => Cmd_ShootKeyUp();
 
 
   [Command]

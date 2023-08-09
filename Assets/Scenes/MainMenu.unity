@@ -531,6 +531,8 @@ MonoBehaviour:
   soundOnClick: 1
   colorOnHover: 1
   imageOnHover: 0
+  codeOnMouseDown: 0
+  codeOnMouseUp: 0
   color: {r: 0.99215686, g: 0.57254905, b: 0.18039216, a: 1}
   hoverSound: Hover
   onHoverImage: {fileID: 0}
@@ -1841,6 +1843,8 @@ MonoBehaviour:
   soundOnClick: 1
   colorOnHover: 1
   imageOnHover: 0
+  codeOnMouseDown: 0
+  codeOnMouseUp: 0
   color: {r: 0.99215686, g: 0.57254905, b: 0.18039216, a: 1}
   hoverSound: Hover
   onHoverImage: {fileID: 0}
@@ -5459,6 +5463,8 @@ MonoBehaviour:
   soundOnClick: 1
   colorOnHover: 1
   imageOnHover: 0
+  codeOnMouseDown: 0
+  codeOnMouseUp: 0
   color: {r: 0.99215686, g: 0.57254905, b: 0.18039216, a: 1}
   hoverSound: Hover
   onHoverImage: {fileID: 0}
@@ -5789,6 +5795,8 @@ MonoBehaviour:
   soundOnClick: 1
   colorOnHover: 1
   imageOnHover: 0
+  codeOnMouseDown: 0
+  codeOnMouseUp: 0
   color: {r: 0.99215686, g: 0.57254905, b: 0.18039216, a: 1}
   hoverSound: Hover
   onHoverImage: {fileID: 0}
@@ -6629,9 +6637,9 @@ RectTransform:
   m_Father: {fileID: 1144503010}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: -14.5}
   m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: -842.5801, y: -2.7199707}
-  m_SizeDelta: {x: -1252.76, y: 432.84998}
+  m_AnchorMax: {x: 0, y: 1}
+  m_AnchoredPosition: {x: 130.91992, y: 4.7800293}
+  m_SizeDelta: {x: 694.24, y: 447.84998}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1847818549
 MonoBehaviour:
@@ -6791,6 +6799,8 @@ MonoBehaviour:
   soundOnClick: 1
   colorOnHover: 1
   imageOnHover: 0
+  codeOnMouseDown: 0
+  codeOnMouseUp: 0
   color: {r: 0.99215686, g: 0.57254905, b: 0.18039216, a: 1}
   hoverSound: Hover
   onHoverImage: {fileID: 0}
@@ -8413,6 +8423,8 @@ MonoBehaviour:
   soundOnClick: 1
   colorOnHover: 1
   imageOnHover: 0
+  codeOnMouseDown: 0
+  codeOnMouseUp: 0
   color: {r: 0.99215686, g: 0.57254905, b: 0.18039216, a: 1}
   hoverSound: Hover
   onHoverImage: {fileID: 0}
@@ -8683,6 +8695,8 @@ MonoBehaviour:
   soundOnClick: 1
   colorOnHover: 1
   imageOnHover: 0
+  codeOnMouseDown: 0
+  codeOnMouseUp: 0
   color: {r: 0.99215686, g: 0.57254905, b: 0.18039216, a: 1}
   hoverSound: Hover
   onHoverImage: {fileID: 0}

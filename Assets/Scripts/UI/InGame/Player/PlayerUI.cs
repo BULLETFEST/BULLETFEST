@@ -24,7 +24,7 @@ public class PlayerUI : NetworkBehaviour
     playerRefs = GetComponent<PlayerRefs>();
 
     mainCanvas.gameObject.SetActive(true);
-    mainCanvas.worldCamera = Camera.main;
+    // mainCanvas.worldCamera = Camera.main;
 
     crosshair.SetActive(true);
     Cursor.visible = false;
@@ -42,6 +42,11 @@ public class PlayerUI : NetworkBehaviour
   private void Update()
   {
     if (!isLocalPlayer)
+    {
+      return;
+    }
+
+    if (SystemInfo.deviceType == DeviceType.Handheld)
     {
       return;
     }
