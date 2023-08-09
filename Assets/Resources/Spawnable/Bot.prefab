@@ -798,7 +798,6 @@ MonoBehaviour:
   nextWaypointDistance: 3
   jumpNodeHeightRequirement: 0.1
   jumpForce: 1150
-  jumpCheckOffset: 0.1
   groundLm:
     serializedVersion: 2
     m_Bits: 4026536000
@@ -901,6 +900,7 @@ MonoBehaviour:
   interpolatePosition: 0
   interpolateRotation: 1
   interpolateScale: 0
+  coordinateSpace: 0
   sendIntervalMultiplier: 1
   timelineOffset: 0
   showGizmos: 0
@@ -932,8 +932,9 @@ MonoBehaviour:
   syncRotation: 1
   syncScale: 0
   interpolatePosition: 1
-  interpolateRotation: 1
+  interpolateRotation: 0
   interpolateScale: 0
+  coordinateSpace: 0
   sendIntervalMultiplier: 1
   timelineOffset: 0
   showGizmos: 0
