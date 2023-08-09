@@ -95,7 +95,7 @@ public class Explosive : Projectile
       NetworkServer.Spawn(spawned);
     }
 
-    FindObjectOfType<Server>().PlaySoundAll("Explosion", false, true);
+    FindObjectOfType<Server>().Rpc_PlaySoundAll("Explosion", false, true);
     Camera.main.GetComponent<CameraShake>().ShakeAll(shakeDuration, shakeMagnitude);
 
     NetworkServer.Destroy(gameObject);

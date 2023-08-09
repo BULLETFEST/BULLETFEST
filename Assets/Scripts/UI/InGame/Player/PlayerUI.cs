@@ -4,12 +4,14 @@ using UnityEngine;
 
 public class PlayerUI : NetworkBehaviour
 {
-  public TMP_Text uiGunAmmo;
-  public TMP_Text uiTimeLeft;
+  [SerializeField] TMP_Text uiGunAmmo;
+  [SerializeField] TMP_Text uiTimeLeft;
 
-  public Canvas mainCanvas;
+  [SerializeField] Canvas uiMainCanvas;
 
-  public GameObject crosshair;
+  [SerializeField] GameObject uiCrosshair;
+  [SerializeField] GameObject uiMobileControls;
+  [SerializeField] GameObject uiAltFire;
 
   private PlayerRefs playerRefs;
   private bool focusState;
@@ -23,11 +25,14 @@ public class PlayerUI : NetworkBehaviour
 
     playerRefs = GetComponent<PlayerRefs>();
 
-    mainCanvas.gameObject.SetActive(true);
+    uiMainCanvas.gameObject.SetActive(true);
     // mainCanvas.worldCamera = Camera.main;
 
-    crosshair.SetActive(true);
+    uiCrosshair.SetActive(true);
     Cursor.visible = false;
+
+    if (SystemInfo.deviceType == DeviceType.Handheld) uiMobileControls.SetActive(true);
+
 
 
     // StartCoroutine(UpdateTime());
@@ -53,13 +58,23 @@ public class PlayerUI : NetworkBehaviour
 
     Cursor.visible = !focusState && SettingsUI.IsSettingsOpen;
 
-    crosshair.SetActive(!playerRefs.lockWeapon);
+    uiCrosshair.SetActive(!playerRefs.lockWeapon);
 
-    crosshair.transform.position = (Vector2)Camera.main.ScreenToWorldPoint(Input.mousePosition);
+    uiCrosshair.transform.position = (Vector2)Camera.main.ScreenToWorldPoint(Input.mousePosition);
   }
 
   public void UpdateAmmoText(int bullets)
   {
     uiGunAmmo.text = $"{(bullets <= -1 ? "" : bullets)}";
+  }
+
+  public void UpdateTimer(string timeString)
+  {
+    uiTimeLeft.text = timeString;
+  }
+
+  public void AltFireBtnVisibility(bool visible)
+  {
+    uiAltFire.SetActive(visible);
   }
 }

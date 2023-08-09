@@ -2115,8 +2115,10 @@ MonoBehaviour:
   syncInterval: 0.1
   uiGunAmmo: {fileID: 6789106885405520092}
   uiTimeLeft: {fileID: 647970437230902951}
-  mainCanvas: {fileID: 4700570128363081026}
-  crosshair: {fileID: 7849272042760420662}
+  uiMainCanvas: {fileID: 4700570128363081026}
+  uiCrosshair: {fileID: 7849272042760420662}
+  uiMobileControls: {fileID: 7574963355838771675}
+  uiAltFire: {fileID: 7346655394484334041}
 --- !u!114 &7085602541274931755
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2769,7 +2771,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &4820926687632465277
 RectTransform:
   m_ObjectHideFlags: 0

@@ -55,10 +55,10 @@ public class PlayerBehavior : Behavior
     if (!isLocalPlayer) return;
     if (SettingsUI.IsSettingsOpen) return;
 
-    // if (Utilities.GetKeybind("fire") && !componentRefs.lockShooting)
-    // {
-    //   Cmd_Fire();
-    // }
+    if (Utilities.GetKeybind("fire") && !componentRefs.lockShooting)
+    {
+      Cmd_Fire();
+    }
 
     if (Utilities.GetKeybindDown("altFire") && !componentRefs.lockShooting)
     {
@@ -88,6 +88,15 @@ public class PlayerBehavior : Behavior
     {
       ScoreboardManager.Instance.GetComponent<CanvasGroup>().alpha = 0;
     }
+
+#if UNITY_IOS || UNITY_ANDROID
+    if (componentRefs.weaponBehavior.awaitingDetonation.Count > 0) {
+      ((PlayerRefs)componentRefs).uiController.AltFireBtnVisibility(true);
+    }
+    else {
+      ((PlayerRefs)componentRefs).uiController.AltFireBtnVisibility(false);
+    }
+#endif
   }
 
   public void Fire() => Cmd_Fire();
@@ -121,12 +130,12 @@ public class PlayerBehavior : Behavior
   [Command]
   protected override void Cmd_Fire()
   {
-    if (componentRefs.weaponBehavior.weapon == null)
+    if (componentRefs.weapon == null)
     {
       return;
     }
 
-    if (componentRefs.weaponBehavior.weapon.firingMode == WeaponClass.FireMode.Single && !shootKeyUp)
+    if (componentRefs.weapon.firingMode == WeaponClass.FireMode.Single && !shootKeyUp)
     {
       return;
     }
@@ -137,7 +146,7 @@ public class PlayerBehavior : Behavior
   [Server]
   void AfterFire()
   {
-    Target_UpdateUI(componentRefs.weaponBehavior.weapon.bulletsInMag);
+    Target_UpdateUI(componentRefs.weapon.bulletsInMag);
     Target_ShakeScreen();
     shootKeyUp = false;
   }
@@ -162,15 +171,15 @@ public class PlayerBehavior : Behavior
   [TargetRpc]
   private void Target_UpdateUI(int bulletsInMag)
   {
-    componentRefs.weaponBehavior.weapon.bulletsInMag = bulletsInMag;
+    componentRefs.weapon.bulletsInMag = bulletsInMag;
     ((PlayerRefs)componentRefs).uiController.UpdateAmmoText(bulletsInMag);
   }
 
   [TargetRpc]
   private void Target_ShakeScreen()
   {
-    StartCoroutine(Camera.main.GetComponent<CameraShake>().Shake(componentRefs.weaponBehavior.weapon.cameraShakeDuration,
-                                                                 componentRefs.weaponBehavior.weapon.cameraShakeIntensity));
+    StartCoroutine(Camera.main.GetComponent<CameraShake>().Shake(componentRefs.weapon.cameraShakeDuration,
+                                                                 componentRefs.weapon.cameraShakeIntensity));
   }
 
   [TargetRpc]

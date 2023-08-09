@@ -1,5 +1,7 @@
 using Mirror;
 using UnityEngine;
+
+// This one is required :)
 using System.Linq;
 
 public class PlayerMovement : NetworkBehaviour
@@ -43,7 +45,7 @@ public class PlayerMovement : NetworkBehaviour
 
 
 #if UNITY_IOS || UNITY_ANDROID
-    if (playerRefs.weaponBehavior.weapon != null) {
+    if (playerRefs.weapon != null) {
       GameObject nearestPlayer;
       nearestPlayer = Utilities.FindNearest(transform, FindObjectsOfType<DamageController>().Where(x => x.gameObject != gameObject && !x.dead).ToArray());
 
@@ -96,13 +98,13 @@ public class PlayerMovement : NetworkBehaviour
 
     playerRefs.graphics.transform.rotation = graphicsRotation;
 
-    if (playerRefs.weaponBehavior.weapon == null) return;
+    if (playerRefs.weapon == null) return;
 
-    playerRefs.weaponBehavior.transform.localRotation = gunRotation;
+    playerRefs.transform.localRotation = gunRotation;
 
     if (playerRefs.graphics.sprites.Count >= 4)
     {
-      if (!playerRefs.weaponBehavior.weapon.rotateWithCursor)
+      if (!playerRefs.weapon.rotateWithCursor)
       {
         playerRefs.graphics.sprites[3].gameObject.transform.rotation = globalGunRotation;
       }
@@ -130,22 +132,22 @@ public class PlayerMovement : NetworkBehaviour
     }
 
     // if (Input.GetKeyDown(KeyCode.X)) GetComponent<DamageController>().TakeDamage(5f, null);
-    // #if !UNITY_IOS && !UNITY_ANDROID
-    //     xRaw = 0;
-    //     grounded = false;
-    //     if (Utilities.GetKeybind("lft") && Utilities.GetKeybind("rgt"))
-    //     {
-    //       xRaw = 0;
-    //     }
-    //     else if (Utilities.GetKeybind("lft"))
-    //     {
-    //       xRaw = -1;
-    //     }
-    //     else if (Utilities.GetKeybind("rgt"))
-    //     {
-    //       xRaw = 1;
-    //     }
-    // #endif
+#if !UNITY_IOS && !UNITY_ANDROID
+    xRaw = 0;
+    grounded = false;
+    if (Utilities.GetKeybind("lft") && Utilities.GetKeybind("rgt"))
+    {
+      xRaw = 0;
+    }
+    else if (Utilities.GetKeybind("lft"))
+    {
+      xRaw = -1;
+    }
+    else if (Utilities.GetKeybind("rgt"))
+    {
+      xRaw = 1;
+    }
+#endif
 
     xRaw = Mathf.Clamp(xRaw, -1, 1);
 

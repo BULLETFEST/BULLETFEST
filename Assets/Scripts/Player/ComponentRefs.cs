@@ -10,6 +10,7 @@ public class ComponentRefs : NetworkBehaviour
   [HideInInspector] public SpriteGroup graphics;
   [HideInInspector] public DamageController damageController;
   [HideInInspector] public NetworkAnimator weaponAnimator;
+  [HideInInspector] public WeaponClass weapon => weaponBehavior.weapon;
   public TMP_Text uiName;
 
   [SyncVar]

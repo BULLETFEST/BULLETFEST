@@ -24,7 +24,7 @@ public class Behavior : NetworkBehaviour
   [Command]
   protected virtual void Cmd_Fire()
   {
-    WeaponClass weapon = componentRefs.weaponBehavior.weapon;
+    WeaponClass weapon = componentRefs.weapon;
 
     if (componentRefs.lockShooting)
     {
@@ -62,9 +62,9 @@ public class Behavior : NetworkBehaviour
       componentRefs.weaponBehavior.SwitchWeapon(null);
     }
 
-    if (componentRefs.weaponBehavior.weapon.soundOnShoot)
+    if (componentRefs.weapon.soundOnShoot)
     {
-      FindObjectOfType<Server>().PlaySoundAll(componentRefs.weaponBehavior.weapon.shootSound);
+      FindObjectOfType<Server>().Rpc_PlaySoundAll(componentRefs.weapon.shootSound);
     }
 
     afterFire?.Invoke();
@@ -73,7 +73,7 @@ public class Behavior : NetworkBehaviour
   [ClientRpc]
   protected virtual void Rpc_AddForce(GameObject target)
   {
-    if (componentRefs.weaponBehavior.weapon.animateOnShot)
+    if (componentRefs.weapon.animateOnShot)
     {
       componentRefs.weaponAnimator.animator.Play("Fire");
     }
