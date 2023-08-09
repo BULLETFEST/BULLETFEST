@@ -504,7 +504,7 @@ namespace EpicTransport {
                 Bindings.Unhook();
 
                 // Free until the module ref count is 0
-                while (FreeLibrary(libraryPointer) != 0) { }
+                // while (FreeLibrary(libraryPointer) != 0) { }
 
                 libraryPointer = IntPtr.Zero;
             }

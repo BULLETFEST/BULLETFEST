@@ -57,7 +57,8 @@ namespace EpicTransport {
         }
 
         public override void ClientEarlyUpdate() {
-            EOSSDKComponent.Tick();
+            if (EOSSDKComponent.Initialized)
+                EOSSDKComponent.Tick();
 
             if (activeNode != null) {
                 ignoreCachedMessagesTimer += Time.deltaTime;
@@ -87,7 +88,8 @@ namespace EpicTransport {
         public override void ClientLateUpdate() {}
 
         public override void ServerEarlyUpdate() {
-            EOSSDKComponent.Tick();
+            if (EOSSDKComponent.Initialized)
+                EOSSDKComponent.Tick();
 
             if (activeNode != null) {
                 ignoreCachedMessagesTimer += Time.deltaTime;
