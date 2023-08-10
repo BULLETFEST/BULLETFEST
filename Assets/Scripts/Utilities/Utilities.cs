@@ -114,7 +114,7 @@ public class Utilities : MonoBehaviour
   {
     Transform[] objects = GameObject.FindGameObjectsWithTag(tag).Select(x => x.transform).ToArray();
 
-    return FindNearest(origin, objects);
+    return FindNearest(origin, objects, maxDist);
   }
 
   public static GameObject FindNearest(Transform origin, Component[] objects, float maxDist = -1)

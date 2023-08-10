@@ -55,6 +55,7 @@ public class PlayerBehavior : Behavior
     if (!isLocalPlayer) return;
     if (SettingsUI.IsSettingsOpen) return;
 
+#if !UNITY_IOS && !UNITY_ANDROID
     if (Utilities.GetKeybind("fire") && !componentRefs.lockShooting)
     {
       Cmd_Fire();
@@ -79,6 +80,7 @@ public class PlayerBehavior : Behavior
       Cmd_SwitchWeapon(weaponToPickup);
       weaponToPickup = null;
     }
+#endif
 
     if (Utilities.GetKeybindDown("scoreboard"))
     {
@@ -90,10 +92,12 @@ public class PlayerBehavior : Behavior
     }
 
 #if UNITY_IOS || UNITY_ANDROID
-    if (componentRefs.weaponBehavior.awaitingDetonation.Count > 0) {
+    if (componentRefs.weaponBehavior.awaitingDetonation.Count > 0)
+    {
       ((PlayerRefs)componentRefs).uiController.AltFireBtnVisibility(true);
     }
-    else {
+    else
+    {
       ((PlayerRefs)componentRefs).uiController.AltFireBtnVisibility(false);
     }
 #endif

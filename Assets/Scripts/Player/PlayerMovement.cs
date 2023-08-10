@@ -61,6 +61,12 @@ public class PlayerMovement : NetworkBehaviour
                     Quaternion.Euler(playerPos.x < 0 ? 180 : 0, playerPos.x < 0 ? 180 : 0, (playerPos.x < 0 ? -1 : 1) * angle),
                     Quaternion.Euler(0, playerPos.x < 0 ? 180 : 0, 0));
     }
+    else
+    {
+      Cmd_UpdateGun(Quaternion.Euler(0, lastDir < 0 ? 180 : 0, 0),
+                    Quaternion.Euler(lastDir < 0 ? 180 : 0, lastDir < 0 ? 180 : 0, (lastDir < 0 ? -1 : 1) * 1),
+                    Quaternion.Euler(0, lastDir < 0 ? 180 : 0, 0));
+    }
 #else
     Vector3 mousePos = Input.mousePosition;
     mousePos.z = 5.23f;
@@ -101,7 +107,7 @@ public class PlayerMovement : NetworkBehaviour
 
     if (playerRefs.weapon == null) return;
 
-    playerRefs.transform.localRotation = gunRotation;
+    playerRefs.weaponBehavior.transform.localRotation = gunRotation;
 
     if (playerRefs.graphics.sprites.Count >= 4)
     {
@@ -115,9 +121,11 @@ public class PlayerMovement : NetworkBehaviour
   public void SetDir(int dir)
   {
     xRaw = dir;
+    if (dir != 0) lastDir = dir;
   }
 
   int xRaw = 0;
+  int lastDir = 0;
   bool grounded = false;
 
   private void Update()
