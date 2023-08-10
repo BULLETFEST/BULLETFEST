@@ -25,6 +25,8 @@ public class DiscordController : MonoBehaviour
       return;
     }
 
+    if (SystemInfo.deviceType == DeviceType.Handheld) return;
+
     discord = new Discord.Discord((long)applicationId, (ulong)CreateFlags.NoRequireDiscord);
     activityManager = discord.GetActivityManager();
     relationshipManager = discord.GetRelationshipManager();
