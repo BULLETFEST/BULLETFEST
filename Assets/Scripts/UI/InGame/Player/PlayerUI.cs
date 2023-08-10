@@ -28,10 +28,10 @@ public class PlayerUI : NetworkBehaviour
     uiMainCanvas.gameObject.SetActive(true);
     // mainCanvas.worldCamera = Camera.main;
 
-    uiCrosshair.SetActive(true);
     Cursor.visible = false;
 
     if (SystemInfo.deviceType == DeviceType.Handheld) uiMobileControls.SetActive(true);
+    else uiCrosshair.SetActive(true);
 
 
 

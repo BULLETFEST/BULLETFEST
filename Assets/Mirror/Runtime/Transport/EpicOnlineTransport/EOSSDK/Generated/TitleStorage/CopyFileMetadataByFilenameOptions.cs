@@ -44,7 +44,7 @@ namespace Epic.OnlineServices.TitleStorage
 
 		public void Set(ref CopyFileMetadataByFilenameOptions other)
 		{
-			m_ApiVersion = TitleStorageInterface.CopyfilemetadatabyfilenameApiLatest;
+			m_ApiVersion = TitleStorageInterface.CopyfilemetadatabyfilenameoptionsApiLatest;
 			LocalUserId = other.LocalUserId;
 			Filename = other.Filename;
 		}
@@ -53,7 +53,7 @@ namespace Epic.OnlineServices.TitleStorage
 		{
 			if (other.HasValue)
 			{
-				m_ApiVersion = TitleStorageInterface.CopyfilemetadatabyfilenameApiLatest;
+				m_ApiVersion = TitleStorageInterface.CopyfilemetadatabyfilenameoptionsApiLatest;
 				LocalUserId = other.Value.LocalUserId;
 				Filename = other.Value.Filename;
 			}

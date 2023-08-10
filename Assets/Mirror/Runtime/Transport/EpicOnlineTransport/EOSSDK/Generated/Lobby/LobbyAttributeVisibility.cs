@@ -9,11 +9,11 @@ namespace Epic.OnlineServices.Lobby
 	public enum LobbyAttributeVisibility : int
 	{
 		/// <summary>
-		/// Data is visible to lobby members, searchable and visible in search results.
+		/// Data is visible outside the lobby
 		/// </summary>
 		Public = 0,
 		/// <summary>
-		/// Data is only visible to the user setting the data. Data is not visible to lobby members, not searchable, and not visible in search results.
+		/// Only members in the lobby can see this data
 		/// </summary>
 		Private = 1
 	}

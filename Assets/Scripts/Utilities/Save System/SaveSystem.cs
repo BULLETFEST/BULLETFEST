@@ -13,7 +13,7 @@ public class SaveSystem : MonoBehaviour
 
   private void Awake()
   {
-    appDataPath = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData);
+    appDataPath = Application.persistentDataPath;//Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData);
     saveData = LoadPlayer();
 
     defaultBinds = new Dictionary<string, string>() {

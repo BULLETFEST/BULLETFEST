@@ -14,34 +14,19 @@ namespace Epic.OnlineServices.TitleStorage
 		}
 
 		/// <summary>
-		/// The most recent version of the <see cref="CopyFileMetadataAtIndex" /> API.
+		/// The most recent version of the <see cref="CopyFileMetadataAtIndexOptions" /> API.
 		/// </summary>
-		public const int CopyfilemetadataatindexApiLatest = 1;
+		public const int CopyfilemetadataatindexoptionsApiLatest = 1;
 
 		/// <summary>
-		/// DEPRECATED! Use <see cref="CopyfilemetadataatindexApiLatest" /> instead.
+		/// The most recent version of the <see cref="CopyFileMetadataByFilenameOptions" /> API.
 		/// </summary>
-		public const int CopyfilemetadataatindexoptionsApiLatest = CopyfilemetadataatindexApiLatest;
+		public const int CopyfilemetadatabyfilenameoptionsApiLatest = 1;
 
 		/// <summary>
-		/// The most recent version of the <see cref="CopyFileMetadataByFilename" /> API.
+		/// The most recent version of the <see cref="DeleteCacheOptions" /> API.
 		/// </summary>
-		public const int CopyfilemetadatabyfilenameApiLatest = 1;
-
-		/// <summary>
-		/// DEPRECATED! Use <see cref="CopyfilemetadatabyfilenameApiLatest" /> instead.
-		/// </summary>
-		public const int CopyfilemetadatabyfilenameoptionsApiLatest = CopyfilemetadatabyfilenameApiLatest;
-
-		/// <summary>
-		/// The most recent version of the <see cref="DeleteCache" /> API.
-		/// </summary>
-		public const int DeletecacheApiLatest = 1;
-
-		/// <summary>
-		/// DEPRECATED! Use <see cref="DeletecacheApiLatest" /> instead.
-		/// </summary>
-		public const int DeletecacheoptionsApiLatest = DeletecacheApiLatest;
+		public const int DeletecacheoptionsApiLatest = 1;
 
 		/// <summary>
 		/// The most recent version of the <see cref="FileMetadata" /> API.
@@ -54,44 +39,24 @@ namespace Epic.OnlineServices.TitleStorage
 		public const int FilenameMaxLengthBytes = 64;
 
 		/// <summary>
-		/// The most recent version of the <see cref="GetFileMetadataCount" /> API.
+		/// The most recent version of the <see cref="GetFileMetadataCountOptions" /> API.
 		/// </summary>
-		public const int GetfilemetadatacountApiLatest = 1;
+		public const int GetfilemetadatacountoptionsApiLatest = 1;
 
 		/// <summary>
-		/// DEPRECATED! Use <see cref="GetfilemetadatacountApiLatest" /> instead.
+		/// The most recent version of the <see cref="QueryFileListOptions" /> API.
 		/// </summary>
-		public const int GetfilemetadatacountoptionsApiLatest = GetfilemetadatacountApiLatest;
+		public const int QueryfilelistoptionsApiLatest = 1;
 
 		/// <summary>
-		/// The most recent version of the <see cref="QueryFile" /> API.
+		/// The most recent version of the <see cref="QueryFileOptions" /> API.
 		/// </summary>
-		public const int QueryfileApiLatest = 1;
+		public const int QueryfileoptionsApiLatest = 1;
 
 		/// <summary>
-		/// The most recent version of the <see cref="QueryFileList" /> API.
+		/// The most recent version of the <see cref="ReadFileOptions" /> API.
 		/// </summary>
-		public const int QueryfilelistApiLatest = 1;
-
-		/// <summary>
-		/// DEPRECATED! Use <see cref="QueryfilelistApiLatest" /> instead.
-		/// </summary>
-		public const int QueryfilelistoptionsApiLatest = QueryfilelistApiLatest;
-
-		/// <summary>
-		/// DEPRECATED! Use <see cref="QueryfileApiLatest" /> instead.
-		/// </summary>
-		public const int QueryfileoptionsApiLatest = QueryfileApiLatest;
-
-		/// <summary>
-		/// The most recent version of the <see cref="ReadFile" /> API.
-		/// </summary>
-		public const int ReadfileApiLatest = 1;
-
-		/// <summary>
-		/// DEPRECATED! Use <see cref="ReadfileApiLatest" /> instead.
-		/// </summary>
-		public const int ReadfileoptionsApiLatest = ReadfileApiLatest;
+		public const int ReadfileoptionsApiLatest = 1;
 
 		/// <summary>
 		/// Get the cached copy of a file's metadata by index. The metadata will be for the last retrieved version. The returned pointer must be released by the user when no longer needed.

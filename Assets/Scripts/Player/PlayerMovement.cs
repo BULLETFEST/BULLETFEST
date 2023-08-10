@@ -45,7 +45,8 @@ public class PlayerMovement : NetworkBehaviour
 
 
 #if UNITY_IOS || UNITY_ANDROID
-    if (playerRefs.weapon != null) {
+    if (playerRefs.weapon != null)
+    {
       GameObject nearestPlayer;
       nearestPlayer = Utilities.FindNearest(transform, FindObjectsOfType<DamageController>().Where(x => x.gameObject != gameObject && !x.dead).ToArray());
 
@@ -56,9 +57,9 @@ public class PlayerMovement : NetworkBehaviour
 
       float angle = Mathf.Atan2(playerPos.y, playerPos.x) * Mathf.Rad2Deg;
 
-      Cmd_UpdateGun(Quaternion.Euler(0, xRaw < 0 ? 180 : 0, 0),
-                    Quaternion.Euler(xRaw < 0 ? 180 : 0, xRaw < 0 ? 180 : 0, (xRaw < 0 ? -1 : 1) * angle),
-                    Quaternion.Euler(0, xRaw < 0 ? 180 : 0, 0));
+      Cmd_UpdateGun(Quaternion.Euler(0, playerPos.x < 0 ? 180 : 0, 0),
+                    Quaternion.Euler(playerPos.x < 0 ? 180 : 0, playerPos.x < 0 ? 180 : 0, (playerPos.x < 0 ? -1 : 1) * angle),
+                    Quaternion.Euler(0, playerPos.x < 0 ? 180 : 0, 0));
     }
 #else
     Vector3 mousePos = Input.mousePosition;

@@ -30,7 +30,7 @@ namespace Epic.OnlineServices.PlayerDataStorage
 
 		public void Set(ref DeleteCacheOptions other)
 		{
-			m_ApiVersion = PlayerDataStorageInterface.DeletecacheApiLatest;
+			m_ApiVersion = PlayerDataStorageInterface.DeletecacheoptionsApiLatest;
 			LocalUserId = other.LocalUserId;
 		}
 
@@ -38,7 +38,7 @@ namespace Epic.OnlineServices.PlayerDataStorage
 		{
 			if (other.HasValue)
 			{
-				m_ApiVersion = PlayerDataStorageInterface.DeletecacheApiLatest;
+				m_ApiVersion = PlayerDataStorageInterface.DeletecacheoptionsApiLatest;
 				LocalUserId = other.Value.LocalUserId;
 			}
 		}
