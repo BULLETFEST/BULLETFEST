@@ -133,7 +133,7 @@ PlayerSettings:
   vulkanEnableLateAcquireNextImage: 0
   vulkanEnableCommandBufferRecycling: 1
   loadStoreDebugModeEnabled: 0
-  bundleVersion: 1.1.0.beta-65
+  bundleVersion: 2.0.0.beta-0
   preloadedAssets: []
   metroInputSource: 0
   wsaTransparentSwapchain: 0
@@ -803,10 +803,10 @@ PlayerSettings:
   il2cppCompilerConfiguration:
     Standalone: 2
   il2cppCodeGeneration:
-    Android: 1
+    Android: 0
     Standalone: 1
   il2cppStacktraceInformation:
-    Android: 1
+    Android: 0
   managedStrippingLevel:
     EmbeddedLinux: 1
     GameCoreScarlett: 1
@@ -816,7 +816,7 @@ PlayerSettings:
     PS4: 1
     PS5: 1
     Stadia: 1
-    Standalone: 4
+    Standalone: 0
     WebGL: 1
     Windows Store Apps: 1
     XboxOne: 1

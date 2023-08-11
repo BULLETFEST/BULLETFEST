@@ -22,19 +22,19 @@ public class FirebaseManager : MonoBehaviour
   private static async Task<Response<T>> CreateRequest<T>(string endpoint, NameValueCollection data = null, HTTPMethod method = HTTPMethod.Get)
   {
     WebClient wc = CreateWebClient();
-
     byte[] _res = new byte[0];
     Response<T> res = new(0, "", default);
 
     try
     {
+      System.Uri uri = new(Globals._firebaseTestMode ? $"http://localhost:3000/{endpoint}" : $"https://joobot.glitch.me/{endpoint}");
       if (method == HTTPMethod.Post)
       {
-        _res = await wc.UploadValuesTaskAsync(Globals._firebaseTestMode ? $"http://localhost:3000/{endpoint}" : $"https://joobot.glitch.me/{endpoint}", method.ToString().ToUpper(), data);
+        _res = await wc.UploadValuesTaskAsync(uri, method.ToString().ToUpper(), data);
       }
       else if (method == HTTPMethod.Get)
       {
-        _res = await wc.DownloadDataTaskAsync(Globals._firebaseTestMode ? $"http://localhost:3000/{endpoint}" : $"https://joobot.glitch.me/{endpoint}");
+        _res = await wc.DownloadDataTaskAsync(uri);
       }
     }
     catch (System.Exception e)
@@ -51,7 +51,7 @@ public class FirebaseManager : MonoBehaviour
       res = JsonUtility.FromJson<Response<T>>(responseInString);
     }
 
-    // wc.Dispose();
+    wc.Dispose();
 
     return res;
   }
