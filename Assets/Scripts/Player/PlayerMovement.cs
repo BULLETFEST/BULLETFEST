@@ -45,9 +45,10 @@ public class PlayerMovement : NetworkBehaviour
 
 
 #if UNITY_IOS || UNITY_ANDROID
-    if (playerRefs.weapon != null) {
+    if (playerRefs.weapon != null)
+    {
       GameObject nearestPlayer;
-      nearestPlayer = Utilities.FindNearest(transform, FindObjectsOfType<DamageController>().Where(x => x.gameObject != gameObject && !x.dead).ToArray());
+      nearestPlayer = Utilities.FindNearest(transform, FindObjectsByType<DamageController>(FindObjectsSortMode.None).Where(x => x.gameObject != gameObject && !x.dead).ToArray());
 
       Vector2 playerPos = nearestPlayer.transform.position;
 
@@ -56,9 +57,15 @@ public class PlayerMovement : NetworkBehaviour
 
       float angle = Mathf.Atan2(playerPos.y, playerPos.x) * Mathf.Rad2Deg;
 
-      Cmd_UpdateGun(Quaternion.Euler(0, xRaw < 0 ? 180 : 0, 0),
-                    Quaternion.Euler(xRaw < 0 ? 180 : 0, xRaw < 0 ? 180 : 0, (xRaw < 0 ? -1 : 1) * angle),
-                    Quaternion.Euler(0, xRaw < 0 ? 180 : 0, 0));
+      Cmd_UpdateGun(Quaternion.Euler(0, playerPos.x < 0 ? 180 : 0, 0),
+                    Quaternion.Euler(playerPos.x < 0 ? 180 : 0, playerPos.x < 0 ? 180 : 0, (playerPos.x < 0 ? -1 : 1) * angle),
+                    Quaternion.Euler(0, playerPos.x < 0 ? 180 : 0, 0));
+    }
+    else
+    {
+      Cmd_UpdateGun(Quaternion.Euler(0, lastDir < 0 ? 180 : 0, 0),
+                    Quaternion.Euler(lastDir < 0 ? 180 : 0, lastDir < 0 ? 180 : 0, (lastDir < 0 ? -1 : 1) * 1),
+                    Quaternion.Euler(0, lastDir < 0 ? 180 : 0, 0));
     }
 #else
     Vector3 mousePos = Input.mousePosition;
@@ -100,7 +107,7 @@ public class PlayerMovement : NetworkBehaviour
 
     if (playerRefs.weapon == null) return;
 
-    playerRefs.transform.localRotation = gunRotation;
+    playerRefs.weaponBehavior.transform.localRotation = gunRotation;
 
     if (playerRefs.graphics.sprites.Count >= 4)
     {
@@ -114,9 +121,11 @@ public class PlayerMovement : NetworkBehaviour
   public void SetDir(int dir)
   {
     xRaw = dir;
+    if (dir != 0) lastDir = dir;
   }
 
   int xRaw = 0;
+  int lastDir = 0;
   bool grounded = false;
 
   private void Update()

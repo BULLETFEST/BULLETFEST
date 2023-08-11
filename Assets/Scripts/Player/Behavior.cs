@@ -64,7 +64,7 @@ public class Behavior : NetworkBehaviour
 
     if (componentRefs.weapon.soundOnShoot)
     {
-      FindObjectOfType<Server>().Rpc_PlaySoundAll(componentRefs.weapon.shootSound);
+      FindFirstObjectByType<Server>().Rpc_PlaySoundAll(componentRefs.weapon.shootSound);
     }
 
     afterFire?.Invoke();

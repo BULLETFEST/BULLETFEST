@@ -2,6 +2,6 @@ public class BotWeaponBehavior : WeaponBehavior
 {
   private void Start()
   {
-    arsenal = FindObjectOfType<PlayerBehavior>().gameObject.GetComponentInChildren<WeaponBehavior>().arsenal;
+    arsenal = FindFirstObjectByType<PlayerBehavior>().gameObject.GetComponentInChildren<WeaponBehavior>().arsenal;
   }
 }

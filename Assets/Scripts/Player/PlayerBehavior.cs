@@ -44,7 +44,7 @@ public class PlayerBehavior : Behavior
   [Command]
   private void FetchTime()
   {
-    ((PlayerRefs)componentRefs).timeleft = FindObjectOfType<PlayerSpawnSystem>().timeStamp;
+    ((PlayerRefs)componentRefs).timeleft = FindFirstObjectByType<PlayerSpawnSystem>().timeStamp;
   }
 
   // Update is called once per frame
@@ -55,6 +55,7 @@ public class PlayerBehavior : Behavior
     if (!isLocalPlayer) return;
     if (SettingsUI.IsSettingsOpen) return;
 
+#if !UNITY_IOS && !UNITY_ANDROID
     if (Utilities.GetKeybind("fire") && !componentRefs.lockShooting)
     {
       Cmd_Fire();
@@ -88,12 +89,15 @@ public class PlayerBehavior : Behavior
     {
       ScoreboardManager.Instance.GetComponent<CanvasGroup>().alpha = 0;
     }
+#endif
 
 #if UNITY_IOS || UNITY_ANDROID
-    if (componentRefs.weaponBehavior.awaitingDetonation.Count > 0) {
+    if (componentRefs.weaponBehavior.awaitingDetonation.Count > 0)
+    {
       ((PlayerRefs)componentRefs).uiController.AltFireBtnVisibility(true);
     }
-    else {
+    else
+    {
       ((PlayerRefs)componentRefs).uiController.AltFireBtnVisibility(false);
     }
 #endif

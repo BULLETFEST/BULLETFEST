@@ -77,7 +77,7 @@ public class Utilities : MonoBehaviour
 
   public static bool FindWithType<T>(out T gameObject) where T : Component
   {
-    gameObject = FindObjectOfType<T>();
+    gameObject = FindFirstObjectByType<T>();
     return gameObject != null;
   }
 
@@ -114,7 +114,7 @@ public class Utilities : MonoBehaviour
   {
     Transform[] objects = GameObject.FindGameObjectsWithTag(tag).Select(x => x.transform).ToArray();
 
-    return FindNearest(origin, objects);
+    return FindNearest(origin, objects, maxDist);
   }
 
   public static GameObject FindNearest(Transform origin, Component[] objects, float maxDist = -1)

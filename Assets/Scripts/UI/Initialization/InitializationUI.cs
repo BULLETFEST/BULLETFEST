@@ -27,7 +27,7 @@ public class InitializationUI : MonoBehaviour
 
     if (Globals._testMode)
     {
-      EOSSDKComponent eos = FindObjectOfType<EOSSDKComponent>();
+      EOSSDKComponent eos = FindAnyObjectByType<EOSSDKComponent>();
 
       eos.authInterfaceLogin = true;
       eos.authInterfaceCredentialType = Epic.OnlineServices.Auth.LoginCredentialType.Developer;

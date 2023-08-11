@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -13,7 +12,7 @@ public class SaveSystem : MonoBehaviour
 
   private void Awake()
   {
-    appDataPath = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData);
+    appDataPath = Application.persistentDataPath;
     saveData = LoadPlayer();
 
     defaultBinds = new Dictionary<string, string>() {

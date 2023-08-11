@@ -77,7 +77,7 @@ public class Explosive : Projectile
 
     detonated = true;
 
-    DamageController[] damageControllers = FindObjectsOfType<DamageController>();
+    DamageController[] damageControllers = FindObjectsByType<DamageController>(FindObjectsSortMode.None);
 
     foreach (DamageController controller in damageControllers)
     {
@@ -95,7 +95,7 @@ public class Explosive : Projectile
       NetworkServer.Spawn(spawned);
     }
 
-    FindObjectOfType<Server>().Rpc_PlaySoundAll("Explosion", false, true);
+    FindFirstObjectByType<Server>().Rpc_PlaySoundAll("Explosion", false, true);
     Camera.main.GetComponent<CameraShake>().ShakeAll(shakeDuration, shakeMagnitude);
 
     NetworkServer.Destroy(gameObject);

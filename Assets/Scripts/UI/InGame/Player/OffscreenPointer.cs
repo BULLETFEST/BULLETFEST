@@ -22,7 +22,7 @@ public class OffscreenPointer : NetworkBehaviour
     }
     // pointerRectTransform = new RectTransform[NetworkServer.connections.Count];
 
-    for (int i = 0; i < FindObjectsOfType<PlayerNetworking>().Length; i++)
+    for (int i = 0; i < FindObjectsByType<PlayerNetworking>(FindObjectsSortMode.None).Length; i++)
     {
       pointerRectTransform.Add(Instantiate(arrowPrefab, Vector3.zero, Quaternion.identity, arrowContainer.transform).GetComponent<RectTransform>());
       pointerRectTransform[i].gameObject.SetActive(false);
@@ -31,7 +31,7 @@ public class OffscreenPointer : NetworkBehaviour
 
   private void FixedUpdate()
   {
-    PlayerNetworking[] players = FindObjectsOfType<PlayerNetworking>();
+    PlayerNetworking[] players = FindObjectsByType<PlayerNetworking>(FindObjectsSortMode.None);
 
     while (players.Length > pointerRectTransform.Count)
     {

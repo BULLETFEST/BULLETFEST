@@ -110,7 +110,7 @@ public class GameManager : NetworkBehaviour
       return;
     }
 
-    FindObjectOfType<PlayerSpawnSystem>().SpawnPlayer(conn);
+    FindFirstObjectByType<PlayerSpawnSystem>().SpawnPlayer(conn);
 
 
   }
@@ -123,7 +123,7 @@ public class GameManager : NetworkBehaviour
 
     if (settings.gameMode == GameSettings.GameMode.Deathmatch)
     {
-      StartCoroutine(FindObjectOfType<PlayerSpawnSystem>().Cmd_RespawnPlayer(player.gameObject));
+      StartCoroutine(FindFirstObjectByType<PlayerSpawnSystem>().Cmd_RespawnPlayer(player.gameObject));
       return;
     }
 

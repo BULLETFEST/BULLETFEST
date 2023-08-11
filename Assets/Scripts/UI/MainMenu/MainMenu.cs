@@ -34,7 +34,7 @@ public class MainMenu : MonoBehaviour
   {
     buildNumber.text = "Build " + Application.version;
 
-    nm = FindObjectOfType<MyNetworkManager>();
+    nm = FindAnyObjectByType<MyNetworkManager>();
     playerName.text = PlayerPrefs.GetString("PlayerName", "");
 
     Application.targetFrameRate = (int)Screen.currentResolution.refreshRateRatio.value;
@@ -152,7 +152,7 @@ public class MainMenu : MonoBehaviour
 
   public void OpenSettings()
   {
-    FindObjectOfType<SettingsUI>().GetComponent<Canvas>().enabled = true;
+    FindAnyObjectByType<SettingsUI>().GetComponent<Canvas>().enabled = true;
     SettingsUI.IsSettingsOpen = true;
   }
 

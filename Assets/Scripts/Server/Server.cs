@@ -16,7 +16,7 @@ public class Server : NetworkBehaviour
       StartCoroutine(CalcTimeLeft());
     }
 
-    system = FindObjectOfType<PlayerSpawnSystem>();
+    system = FindAnyObjectByType<PlayerSpawnSystem>();
   }
 
   [ClientRpc]

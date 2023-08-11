@@ -7,7 +7,7 @@ public class BotHauntPlayerState : BotBaseState
 
   public override void EnterState(BotPathfinding manager)
   {
-    nearestPlayer = Utilities.FindNearest(manager.transform, Object.FindObjectsOfType<DamageController>());
+    nearestPlayer = Utilities.FindNearest(manager.transform, Object.FindObjectsByType<DamageController>(FindObjectsSortMode.None));
   }
 
   public void ReachedTarget(BotPathfinding manager) { }
@@ -18,7 +18,7 @@ public class BotHauntPlayerState : BotBaseState
 
   public override void UpdateState(BotPathfinding manager)
   {
-    nearestPlayer = Utilities.FindNearest(manager.transform, Object.FindObjectsOfType<DamageController>().Where(x => x.gameObject != manager.gameObject && !x.dead).ToArray());
+    nearestPlayer = Utilities.FindNearest(manager.transform, Object.FindObjectsByType<DamageController>(FindObjectsSortMode.None).Where(x => x.gameObject != manager.gameObject && !x.dead).ToArray());
 
     if (nearestPlayer != null)
     {
