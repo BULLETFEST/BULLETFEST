@@ -88,7 +88,7 @@ jobs:
         uses: adityak74/google-drive-upload-git-action@main
         with:
           credentials: ${{ secrets.DRIVE_CREDENTIALS }}
-          filename: 'BULLETFEST_${{ matrix.targetPlatform }}.apk'
+          filename: 'BULLETFEST.apk'
           overwrite: true
           folderId: ${{ secrets.DRIVE_FOLDER_ID }}
 
