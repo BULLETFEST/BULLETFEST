@@ -2,7 +2,7 @@
 
 ## Developing:
 
-Required Unity Version: `2022.3.6f1` \
+Required Unity Version: `2023.1.8f1` \
 Recommended IDE: `Visual Studio Code` \
 If you're using VSCode, follow [this](https://code.visualstudio.com/docs/other/unity) setup. \
 `Requires VSCode Extensions:`
@@ -31,5 +31,4 @@ Once we hit 1.0, we will follow [SemVer](https://semver.org/). Until then here's
 
 ## Testing
 
-Recommended way of testing is using two machines, but if limited to one, follow [this](https://github.com/FakeByte/EpicOnlineTransport/tree/master#testing-multiplayer-on-one-device) guide. \
-**Back-end**: Set `testMode` (in `Assets/Scripts/FirebaseManager.cs:13`) to `false`, otherwise the code will try to connect to `localhost:3000`.
+Recommended way of testing is using two machines, but if limited to one, follow [this](https://github.com/FakeByte/EpicOnlineTransport/tree/master#testing-multiplayer-on-one-device) guide.
