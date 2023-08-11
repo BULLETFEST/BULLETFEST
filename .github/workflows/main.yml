@@ -4,8 +4,7 @@ name: UnityBuild
 on:
   # Triggers the workflow on push or pull request events but only for the "main" branch
   push:
-    #  branches: ['main']
-    branches: ['dev']
+    branches: ['main']
 
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
@@ -19,10 +18,10 @@ jobs:
       fail-fast: false
       matrix:
         targetPlatform:
-          #- StandaloneOSX # Build a macOS standalone (Intel 64-bit).
+          - StandaloneOSX # Build a macOS standalone (Intel 64-bit).
           #- StandaloneWindows # Build a Windows standalone.
-          #- StandaloneWindows64 # Build a Windows 64-bit standalone.
-          #- StandaloneLinux64 # Build a Linux 64-bit standalone.
+          - StandaloneWindows64 # Build a Windows 64-bit standalone.
+          - StandaloneLinux64 # Build a Linux 64-bit standalone.
           #- iOS # Build an iOS player.
           - Android # Build an Android .apk standalone app.
           #- WebGL # WebGL.
@@ -88,7 +87,7 @@ jobs:
         uses: adityak74/google-drive-upload-git-action@main
         with:
           credentials: ${{ secrets.DRIVE_CREDENTIALS }}
-          filename: 'BULLETFEST.apk'
+          filename: './build/Android/BULLETFEST.apk'
           overwrite: true
           folderId: ${{ secrets.DRIVE_FOLDER_ID }}
 
@@ -106,28 +105,28 @@ jobs:
           echo "ver=$(cat projectVer.txt)" >> $GITHUB_ENV
         #  echo "patchnotes=$(cat patchnotes.txt)" >> $GITHUB_ENV
 
-      # - name: Create Release
-      #   uses: actions/create-release@v1
-      #   env:
-      #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      #   with:
-      #     tag_name: ${{ env.ver }}
-      #     release_name: BULLETFEST v${{ env.ver }}
-      #     draft: false
-      #     prerelease: false
-      # - uses: Ilshidur/action-discord@master
-      #   env:
-      #     DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK }}
-      #     DISCORD_USERNAME: 'BULLETFEST'
-      #     DISCORD_AVATAR: 'https://cdn.discordapp.com/icons/990696460477665311/b7b41f470d1ad5e791cd72dc3bbe58b4.png?size=256'
-      #   with:
-      #     args: |
-      #       ```A new build has been spotted!```
+      - name: Create Release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: ${{ env.ver }}
+          release_name: BULLETFEST v${{ env.ver }}
+          draft: false
+          prerelease: false
+      - uses: Ilshidur/action-discord@master
+        env:
+          DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK }}
+          DISCORD_USERNAME: 'BULLETFEST'
+          DISCORD_AVATAR: 'https://cdn.discordapp.com/icons/990696460477665311/b7b41f470d1ad5e791cd72dc3bbe58b4.png?size=256'
+        with:
+          args: |
+            ```A new build has been spotted!```
 
-      #       `v${{ env.ver }}`
+            `v${{ env.ver }}`
 
-      #       Downloads:
-      #       Windows: <https://drive.google.com/file/d/1XGsgIlPbgAfFbKJdavXmo9kvYYV1-TMS/view?usp=sharing>
-      #       Linux: <https://drive.google.com/file/d/1rbJa1nVah6mPJ7R5nyyMFGKCw6hGE5jP/view?usp=sharing>
-      #       MacOS (Intel 64 + Apple Silicon): <https://drive.google.com/file/d/1s8wX7TrDSbG93sG5IjDeVvACR_rwN3ET/view?usp=sharing>
-      #       Android: <https://drive.google.com/file/d/1lp_WfbTHPEo4YUJvXchj0ghZbVPNIWNl/view?usp=sharing>
+            Downloads:
+            Windows: <https://drive.google.com/file/d/1XGsgIlPbgAfFbKJdavXmo9kvYYV1-TMS/view?usp=sharing>
+            Linux: <https://drive.google.com/file/d/1rbJa1nVah6mPJ7R5nyyMFGKCw6hGE5jP/view?usp=sharing>
+            MacOS (Intel 64 + Apple Silicon): <https://drive.google.com/file/d/1s8wX7TrDSbG93sG5IjDeVvACR_rwN3ET/view?usp=sharing>
+            Android: <https://drive.google.com/file/d/1lp_WfbTHPEo4YUJvXchj0ghZbVPNIWNl/view?usp=sharing>

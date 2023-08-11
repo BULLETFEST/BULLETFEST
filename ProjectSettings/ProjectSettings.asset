@@ -798,11 +798,12 @@ PlayerSettings:
   additionalCompilerArguments: {}
   platformArchitecture: {}
   scriptingBackend:
-    Android: 0
-    Standalone: 0
+    Android: 1
+    Standalone: 1
   il2cppCompilerConfiguration:
     Standalone: 2
-  il2cppCodeGeneration: {}
+  il2cppCodeGeneration:
+    Standalone: 1
   il2cppStacktraceInformation:
     Android: 1
   managedStrippingLevel:
@@ -814,7 +815,7 @@ PlayerSettings:
     PS4: 1
     PS5: 1
     Stadia: 1
-    Standalone: 0
+    Standalone: 4
     WebGL: 1
     Windows Store Apps: 1
     XboxOne: 1
