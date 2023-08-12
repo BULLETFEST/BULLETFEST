@@ -38,7 +38,9 @@ jobs:
       # Cache
       - uses: actions/cache@v3
         with:
-          path: Library
+          path: |
+            Library
+            .utmp
           key: Library-${{ matrix.targetPlatform }}
           restore-keys: |
             Library-
@@ -60,7 +62,14 @@ jobs:
           #buildsPath: build_${{ matrix.targetPlatform }}
           versioning: None
           #customParameters: -CompressWithLz4HC
-
+      - name: Cache Library
+        id: cache-primes-save
+        uses: actions/cache/save@v3
+        with:
+          path: |
+            Library
+            .utmp
+          key: Library-${{ matrix.targetPlatform }}
       - name: Get Build Version
         run: |
           touch projectVer.txt
@@ -78,10 +87,10 @@ jobs:
           cd ../..
       - if: matrix.targetPlatform != 'Android'
         name: Upload Standalone to Google Drive
-        uses: adityak74/google-drive-upload-git-action@main
+        uses: Jodebu/upload-to-drive@master
         with:
           credentials: ${{ secrets.DRIVE_CREDENTIALS }}
-          filename: 'BULLETFEST_${{ matrix.targetPlatform }}.7z'
+          target: 'BULLETFEST_${{ matrix.targetPlatform }}.7z'
           overwrite: true
           folderId: ${{ secrets.DRIVE_FOLDER_ID }}
 
