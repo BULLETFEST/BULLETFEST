@@ -35,7 +35,7 @@ jobs:
           fetch-depth: 0
           lfs: false
 
-      # Cache
+      # Download Cache
       - uses: actions/cache@v3
         with:
           path: |
@@ -62,6 +62,8 @@ jobs:
           #buildsPath: build_${{ matrix.targetPlatform }}
           versioning: None
           #customParameters: -CompressWithLz4HC
+
+      # Save to cache incase something fails later down the road
       - name: Cache Library
         id: cache-primes-save
         uses: actions/cache/save@v3
@@ -70,6 +72,7 @@ jobs:
             Library
             .utmp
           key: Library-${{ matrix.targetPlatform }}
+
       - name: Get Build Version
         run: |
           touch projectVer.txt
@@ -87,16 +90,16 @@ jobs:
           cd ../..
       - if: matrix.targetPlatform != 'Android'
         name: Upload Standalone to Google Drive
-        uses: Jodebu/upload-to-drive@master
+        uses: mathisve/gdrive-upload-action@main
         with:
           credentials: ${{ secrets.DRIVE_CREDENTIALS }}
-          target: 'BULLETFEST_${{ matrix.targetPlatform }}.7z'
+          filename: 'BULLETFEST_${{ matrix.targetPlatform }}.7z'
           overwrite: true
           folderId: ${{ secrets.DRIVE_FOLDER_ID }}
 
       - if: matrix.targetPlatform == 'Android'
         name: Upload APK to Google Drive
-        uses: adityak74/google-drive-upload-git-action@main
+        uses: mathisve/gdrive-upload-action@main
         with:
           credentials: ${{ secrets.DRIVE_CREDENTIALS }}
           filename: './build/Android/BULLETFEST.apk'
