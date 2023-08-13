@@ -21,15 +21,13 @@ jobs:
           # - StandaloneOSX # Build a macOS standalone (Intel 64-bit).
           #- StandaloneWindows # Build a Windows standalone.
           - StandaloneWindows64 # Build a Windows 64-bit standalone.
-        #  - StandaloneLinux64 # Build a Linux 64-bit standalone.
-        #- iOS # Build an iOS player.
-        #- Android # Build an Android .apk standalone app.
-        #- WebGL # WebGL.
+          #- StandaloneLinux64 # Build a Linux 64-bit standalone.
+          #- iOS # Build an iOS player.
+          #- Android # Build an Android .apk standalone app.
+          #- WebGL # WebGL.
     steps:
       - name: Packages
         run: |
-          sudo add-apt-repository universe
-          sudo apt install libfuse2
           sudo apt-get update
           sudo apt-get install p7zip-full p7zip-rar
       - uses: actions/checkout@v3
@@ -38,95 +36,77 @@ jobs:
           lfs: false
 
       # Download Cache
-      # - uses: actions/cache@v3
-      #   with:
-      #     path: |
-      #       Library
-      #       .utmp
-      #     key: Library-${{ matrix.targetPlatform }}
-      #     restore-keys: |
-      #       Library-
-
-      # - if: matrix.targetPlatform == 'Android'
-      #   uses: jlumbroso/free-disk-space@main
-      #   with:
-      #     android: false
-      #     docker-images: false
-      # - uses: game-ci/unity-builder@v2
-      #   env:
-      #     UNITY_SERIAL: ${{ secrets.UNITY_SERIAL }}
-      #     UNITY_EMAIL: ${{ secrets.UNITY_EMAIL }}
-      #     UNITY_PASSWORD: ${{ secrets.UNITY_PASSWORD }}
-      #   with:
-      #     targetPlatform: ${{ matrix.targetPlatform }}
-      #     allowDirtyBuild: true
-      #     buildName: BULLETFEST #_${{ matrix.targetPlatform }}
-      #     #buildsPath: build_${{ matrix.targetPlatform }}
-      #     versioning: None
-      #     #customParameters: -CompressWithLz4HC
-
-      - if: matrix.targetPlatform == 'StandaloneWindows64'
-        name: Setup Unity
-        uses: kuler90/setup-unity@v1
+      - uses: actions/cache@v3
         with:
-          unity-modules: windows-mono
+          path: |
+            Library
+            .utmp
+          key: Library-${{ matrix.targetPlatform }}
+          restore-keys: |
+            Library-
 
-      - name: Activate Unity
-        uses: kuler90/activate-unity@v1
+      - if: matrix.targetPlatform == 'Android'
+        uses: jlumbroso/free-disk-space@main
         with:
-          unity-username: EliasVal
-          unity-password: ${{ secrets.UNITY_PASSWORD }}
-          unity-serial: ${{ secrets.UNITY_SERIAL }}
-          #unity-authenticator-key: ${{ secrets.UNITY_AUTHENTICATOR_KEY }}
+          android: false
+          docker-images: false
+      - uses: game-ci/unity-builder@main
+        env:
+          UNITY_SERIAL: ${{ secrets.UNITY_SERIAL }}
+          UNITY_EMAIL: ${{ secrets.UNITY_EMAIL }}
+          UNITY_PASSWORD: ${{ secrets.UNITY_PASSWORD }}
+        with:
+          targetPlatform: ${{ matrix.targetPlatform }}
+          allowDirtyBuild: true
+          buildName: BULLETFEST #_${{ matrix.targetPlatform }}
+          #buildsPath: build_${{ matrix.targetPlatform }}
+          versioning: None
+          androidSymbolType: 'none'
 
-      - name: Build Unity
-        uses: kuler90/build-unity@v1
-        with:
-          build-target: ${{ matrix.targetPlatform }}
-          build-path: ./build/
+          #customParameters: -CompressWithLz4HC
 
       # Save to cache incase something fails later down the road
-      # - name: Cache Library
-      #   id: cache-primes-save
-      #   uses: actions/cache/save@v3
-      #   with:
-      #     path: |
-      #       Library
-      #       .utmp
-      #     key: Library-${{ matrix.targetPlatform }}
+      - name: Cache Library
+        id: cache-primes-save
+        uses: actions/cache/save@v3
+        with:
+          path: |
+            Library
+            .utmp
+          key: Library-${{ matrix.targetPlatform }}
 
-      # - name: Get Build Version
-      #   run: |
-      #     touch projectVer.txt
-      #     echo $(cat ./ProjectSettings/ProjectSettings.asset | grep bundleVersion | sed -n -e 's/^.*bundleVersion: //p' ) > projectVer.txt
-      # - uses: actions/upload-artifact@v3
-      #   with:
-      #     name: projectVer
-      #     path: projectVer.txt
+      - name: Get Build Version
+        run: |
+          touch projectVer.txt
+          echo $(cat ./ProjectSettings/ProjectSettings.asset | grep bundleVersion | sed -n -e 's/^.*bundleVersion: //p' ) > projectVer.txt
+      - uses: actions/upload-artifact@v3
+        with:
+          name: projectVer
+          path: projectVer.txt
 
-      # - if: matrix.targetPlatform != 'Android'
-      #   name: Create archive
-      #   run: |
-      #     cd ./build/${{ matrix.targetPlatform }}
-      #     7z a -t7z -m0=lzma -mx=9 -mfb=64 -md=32m -ms=on -x'!BULLETFEST_B*' ../../BULLETFEST_${{ matrix.targetPlatform }}.7z *
-      #     cd ../..
-      # - if: matrix.targetPlatform != 'Android'
-      #   name: Upload Standalone to Google Drive
-      #   uses: mathisve/gdrive-upload-action@main
-      #   with:
-      #     credentials: ${{ secrets.DRIVE_CREDENTIALS }}
-      #     filename: 'BULLETFEST_${{ matrix.targetPlatform }}.7z'
-      #     overwrite: true
-      #     folderId: ${{ secrets.DRIVE_FOLDER_ID }}
+      - if: matrix.targetPlatform != 'Android'
+        name: Create archive
+        run: |
+          cd ./build/${{ matrix.targetPlatform }}
+          7z a -t7z -m0=lzma -mx=9 -mfb=64 -md=32m -ms=on -x'!BULLETFEST_B*' ../../BULLETFEST_${{ matrix.targetPlatform }}.7z *
+          cd ../..
+      - if: matrix.targetPlatform != 'Android'
+        name: Upload Standalone to Google Drive
+        uses: mathisve/gdrive-upload-action@main
+        with:
+          credentials: ${{ secrets.DRIVE_CREDENTIALS }}
+          filename: 'BULLETFEST_${{ matrix.targetPlatform }}.7z'
+          overwrite: true
+          folderId: ${{ secrets.DRIVE_FOLDER_ID }}
 
-      # - if: matrix.targetPlatform == 'Android'
-      #   name: Upload APK to Google Drive
-      #   uses: mathisve/gdrive-upload-action@main
-      #   with:
-      #     credentials: ${{ secrets.DRIVE_CREDENTIALS }}
-      #     filename: './build/Android/BULLETFEST.apk'
-      #     overwrite: true
-      #     folderId: ${{ secrets.DRIVE_FOLDER_ID }}
+      - if: matrix.targetPlatform == 'Android'
+        name: Upload APK to Google Drive
+        uses: mathisve/gdrive-upload-action@main
+        with:
+          credentials: ${{ secrets.DRIVE_CREDENTIALS }}
+          filename: './build/Android/BULLETFEST.apk'
+          overwrite: true
+          folderId: ${{ secrets.DRIVE_FOLDER_ID }}
 
   # NotifyDiscord:
   #   name: Send Discord Notification
