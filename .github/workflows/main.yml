@@ -28,6 +28,8 @@ jobs:
     steps:
       - name: Packages
         run: |
+          sudo add-apt-repository universe
+          sudo apt install libfuse2
           sudo apt-get update
           sudo apt-get install p7zip-full p7zip-rar
       - uses: actions/checkout@v3
