@@ -13,7 +13,7 @@ on:
 jobs:
   buildForAllSupportedPlatforms:
     name: Build for ${{ matrix.targetPlatform }}
-    runs-on: windows-latest
+    runs-on: ubuntu-latest
     strategy:
       fail-fast: false
       matrix:
@@ -26,10 +26,10 @@ jobs:
           #- Android # Build an Android .apk standalone app.
           #- WebGL # WebGL.
     steps:
-      # - name: Packages
-      #   run: |
-      #     sudo apt-get update
-      #     sudo apt-get install p7zip-full p7zip-rar
+      - name: Packages
+        run: |
+          sudo apt-get update
+          sudo apt-get install p7zip-full p7zip-rar
       - uses: actions/checkout@v3
         with:
           fetch-depth: 0
@@ -45,11 +45,13 @@ jobs:
           restore-keys: |
             Library-
 
-      - if: matrix.targetPlatform == 'Android'
+      # - if: matrix.targetPlatform == 'Android'
+      - name: Free up space
         uses: jlumbroso/free-disk-space@main
         with:
-          android: false
+          dotnet: false
           docker-images: false
+          large-packages: false
       - uses: game-ci/unity-builder@main
         env:
           UNITY_SERIAL: ${{ secrets.UNITY_SERIAL }}
