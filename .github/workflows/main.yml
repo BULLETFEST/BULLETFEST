@@ -52,7 +52,7 @@ jobs:
           dotnet: false
           docker-images: false
           large-packages: false
-      - uses: game-ci/unity-builder@main
+      - uses: game-ci/unity-builder@v2
         env:
           UNITY_SERIAL: ${{ secrets.UNITY_SERIAL }}
           UNITY_EMAIL: ${{ secrets.UNITY_EMAIL }}
@@ -63,7 +63,6 @@ jobs:
           buildName: BULLETFEST #_${{ matrix.targetPlatform }}
           #buildsPath: build_${{ matrix.targetPlatform }}
           versioning: None
-          androidSymbolType: 'none'
 
           #customParameters: -CompressWithLz4HC
 
