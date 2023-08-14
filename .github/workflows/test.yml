@@ -86,7 +86,7 @@ jobs:
             Library-
 
       - name: Build ${{ matrix.targetName }} Player
-        run: $UNITY_PATH -quit -batchmode -nographics -silent-crashes -logFile -projectPath . -${{ matrix.targetPlatform }} ${{ matrix.outputDir }} -serial ${{ secrets.UNITY_SERIAL }} -password ${{ secrets.UNITY_PASSWORD }} --username ${{ secrets.UNITY_EMAIL }}
+        run: $UNITY_PATH -quit -batchmode -nographics -silent-crashes -logFile -projectPath . -${{ matrix.targetPlatform }} ${{ matrix.outputFile }} -serial ${{ secrets.UNITY_SERIAL }} -password ${{ secrets.UNITY_PASSWORD }} --username ${{ secrets.UNITY_EMAIL }}
 
       - name: Return License
         run: $UNITY_PATH -quit -batchmode -returnlicense -username ${{ secrets.UNITY_EMAIL }} -password ${{ secrets.UNITY_PASSWORD }}
