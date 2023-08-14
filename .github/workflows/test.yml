@@ -61,6 +61,8 @@ jobs:
             targetName: StandaloneLinux64
             editorModule: linux-mono
     steps:
+      - name: Install sudo package
+        run: apt update && apt install sudo
       - name: Download Packages
         run: |
           sudo apt-get update
