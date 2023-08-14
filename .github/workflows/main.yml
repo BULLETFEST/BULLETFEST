@@ -45,11 +45,13 @@ jobs:
           restore-keys: |
             Library-
 
-      - if: matrix.targetPlatform == 'Android'
+      # - if: matrix.targetPlatform == 'Android'
+      - name: Free up space
         uses: jlumbroso/free-disk-space@main
         with:
-          android: false
+          dotnet: false
           docker-images: false
+          large-packages: false
       - uses: game-ci/unity-builder@v2
         env:
           UNITY_SERIAL: ${{ secrets.UNITY_SERIAL }}
@@ -61,6 +63,7 @@ jobs:
           buildName: BULLETFEST #_${{ matrix.targetPlatform }}
           #buildsPath: build_${{ matrix.targetPlatform }}
           versioning: None
+
           #customParameters: -CompressWithLz4HC
 
       # Save to cache incase something fails later down the road
