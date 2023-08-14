@@ -79,7 +79,7 @@ jobs:
           path: |
             Library
             .utmp
-          key: Library-${{ matrix.targetPlatform }}
+          key: Library-${{ matrix.targetName }}
           restore-keys: |
             Library-
 
