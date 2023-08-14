@@ -3,8 +3,8 @@ name: UnityBuild
 # Controls when the workflow will run
 on:
   # Triggers the workflow on push or pull request events but only for the "main" branch
-  push:
-    branches: ['main']
+  #  push:
+  #    branches: ['main']
 
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
@@ -45,13 +45,11 @@ jobs:
           restore-keys: |
             Library-
 
-      # - if: matrix.targetPlatform == 'Android'
-      - name: Free up space
+      - if: matrix.targetPlatform == 'Android'
         uses: jlumbroso/free-disk-space@main
         with:
-          dotnet: false
+          android: false
           docker-images: false
-          large-packages: false
       - uses: game-ci/unity-builder@v2
         env:
           UNITY_SERIAL: ${{ secrets.UNITY_SERIAL }}
@@ -63,7 +61,6 @@ jobs:
           buildName: BULLETFEST #_${{ matrix.targetPlatform }}
           #buildsPath: build_${{ matrix.targetPlatform }}
           versioning: None
-
           #customParameters: -CompressWithLz4HC
 
       # Save to cache incase something fails later down the road

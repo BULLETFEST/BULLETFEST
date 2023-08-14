@@ -36,10 +36,10 @@ jobs:
     strategy:
       fail-fast: true
       matrix:
-        targetPlatform: []
-        outputFile: []
-        outputDir: []
-        targetName: []
+        targetPlatform: ['']
+        outputFile: ['']
+        outputDir: ['']
+        targetName: ['']
         include:
           - targetPlatform: buildOSXUniversalPlayer
             outputFile: ./build/MacOS/BULLETFEST.app
