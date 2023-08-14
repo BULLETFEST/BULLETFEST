@@ -1,0 +1,114 @@
+name: CI
+on:
+  push:
+    branches: ['main']
+
+  workflow_dispatch:
+
+env:
+  UNITY_PATH: /opt/unity/editors/2023.1.8f1/Editor/Unity
+jobs:
+  SetupEditor:
+    runs-on: ubuntu-latest
+    container: unityci/hub:latest
+    steps:
+      - id: checkArtifact
+        name: Check artifact existence
+        uses: xSAVIKx/artifact-exists-action@v0
+        with:
+          name: 'editor'
+
+      - if: ${{ steps.checkArtifact.outputs.exists }}
+        run: exit 0
+
+      - name: Install Editor
+        run: unity-hub install --version 2023.1.8f1 --cm --m windows-mono -m mac-mono
+
+      - name: Upload Artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: editor
+          path: /opt/unity/editors/2023.1.8f1/Editor/Unity
+
+  Build:
+    runs-on: ubuntu-latest
+    needs: SetupEditor
+    strategy:
+      fail-fast: true
+      matrix:
+        targetPlatform: []
+        outputFile: []
+        outputDir: []
+        targetName: []
+        include:
+          - targetPlatform: buildOSXUniversalPlayer
+            outputFile: ./build/MacOS/BULLETFEST.app
+            outputDir: ./build/MacOS/
+            targetName: StandaloneOSX
+
+          - targetPlatform: buildWindows64Player
+            outputFile: ./build/Windows/BULLETFEST.exe
+            outputDir: ./build/Windows/
+            targetName: StandaloneWindows64
+
+          - targetPlatform: buildLinux64Player
+            outputFile: ./build/Linux/BULLETFEST
+            outputDir: ./build/Linux/
+            targetName: StandaloneLinux64
+    steps:
+      - name: Download Editor
+        uses: actions/download-artifact@v3
+        with:
+          name: editor
+
+      - name: Download Packages
+        run: |
+          sudo apt-get update
+          sudo apt-get install p7zip-full p7zip-rar
+
+      - name: Checkout Project
+        uses: actions/checkout@v3
+
+      - uses: actions/cache@v3
+        with:
+          path: |
+            Library
+            .utmp
+          key: Library-${{ matrix.targetPlatform }}
+          restore-keys: |
+            Library-
+
+      - name: Build ${{ matrix.targetName }} Player
+        run: $UNITY_PATH -quit -batchmode -nographics -silent-crashes -logFile -projectPath . -${{ matrix.targetPlatform }} ${{ matrix.outputDir }} -serial ${{ secrets.UNITY_SERIAL }} -password ${{ secrets.UNITY_PASSWORD }} --username ${{ secrets.UNITY_EMAIL }}
+
+      - name: Return License
+        run: $UNITY_PATH -quit -batchmode -returnlicense -username ${{ secrets.UNITY_EMAIL }} -password ${{ secrets.UNITY_PASSWORD }}
+
+      - name: Create archive
+        run: |
+          cd ${{ matrix.outputDir }}
+          7z a -t7z -m0=lzma -mx=9 -mfb=64 -md=32m -ms=on -x'!BULLETFEST_B*' ../../BULLETFEST_${{ matrix.targetName }}.7z *
+          cd ../..
+
+      - name: Upload Standalone to Google Drive
+        uses: mathisve/gdrive-upload-action@main
+        with:
+          credentials: ${{ secrets.DRIVE_CREDENTIALS }}
+          filename: 'BULLETFEST_${{ matrix.targetName }}.7z'
+          overwrite: true
+          folderId: ${{ secrets.DRIVE_FOLDER_ID }}
+
+        # - name: Build OSX Player
+      #   run: /opt/Unity/Editor/Unity -quit -batchmode -nographics -silent-crashes -logFile -projectPath . -buildOSXUniversalPlayer ./bin-osx/CISample.app
+
+      # - name: Archive Windows Build
+      #   uses: actions/upload-artifact@v1
+      #   with:
+      #     name: CISampleWin64Binary
+      #     path: ./bin-win64
+
+      # - name: Archive Mac Build
+      #   uses: actions/upload-artifact@v1
+      #   with:
+      #     name: CISampleOSXBinary
+      #     path: ./bin-osx

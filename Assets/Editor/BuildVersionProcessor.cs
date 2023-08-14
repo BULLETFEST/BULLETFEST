@@ -9,7 +9,7 @@ public class BuildVersionProcessor : IPreprocessBuildWithReport
   public void OnPreprocessBuild(BuildReport report)
   {
     Version version = new(FindCurrentVersion());
-    version.IncreaseVersion();
+    // version.IncreaseVersion();
     PlayerSettings.bundleVersion = version.GetVersionString();
     PlayerSettings.SplashScreen.show = false;
 
