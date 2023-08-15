@@ -34,11 +34,11 @@ jobs:
             targetName: StandaloneLinux64
             editorModule: linux-mono
 
-          - targetPlatform: Android
-            outputFile: ./build/Android/BULLETFEST.apk
-            outputDir: ./build/Android/
-            targetName: Android
-            editorModule: android
+          # - targetPlatform: Android
+          #   outputFile: ./build/Android/BULLETFEST.apk
+          #   outputDir: ./build/Android/
+          #   targetName: Android
+          #   editorModule: android
     steps:
       - name: Install sudo package
         run: apt update && apt install sudo
@@ -46,22 +46,6 @@ jobs:
         run: |
           sudo apt-get -y update
           sudo apt-get -y install p7zip-full p7zip-rar
-
-      - if: matrix.targetPlatform == 'Android'
-        run: |
-          sudo rm -rf /usr/local/lib/android
-          sudo rm -rf /opt/ghc
-          sudo apt-get autoremove -y
-          sudo apt-get clean
-        # uses: jlumbroso/free-disk-space@main
-        # with:
-        # sudo rm -rf /usr/share/dotnet
-        # sudo apt-get remove -y '^llvm-.*'
-        # sudo apt-get remove -y 'php.*'
-        # sudo apt-get remove -y '^mongodb-.*'
-        # sudo apt-get remove -y '^mysql-.*'
-        # sudo apt-get remove -y google-chrome-stable firefox mono-devel libgl1-mesa-dri
-        #   docker-images: false
 
       - name: Set Editor Install Location
         run: unity-hub ip -s /opt/unity/editors/
@@ -87,27 +71,17 @@ jobs:
       - name: Return License
         run: $UNITY_PATH -quit -batchmode -returnlicense -username ${{ secrets.UNITY_EMAIL }} -password ${{ secrets.UNITY_PASSWORD }}
 
-      - if: matrix.targetPlatform != 'Android'
-        name: Create archive
+      - name: Create archive
         run: |
           cd ${{ matrix.outputDir }}
           7z a -t7z -m0=lzma -mx=9 -mfb=64 -md=32m -ms=on -x'!BULLETFEST_B*' ../../BULLETFEST_${{ matrix.targetName }}.7z *
           cd ../..
-      - if: matrix.targetPlatform != 'Android'
-        name: Upload Standalone to Google Drive
+
+      - name: Upload Standalone to Google Drive
         uses: mathisve/gdrive-upload-action@main
         with:
           credentials: ${{ secrets.DRIVE_CREDENTIALS }}
           filename: 'BULLETFEST_${{ matrix.targetName }}.7z'
-          overwrite: true
-          folderId: ${{ secrets.DRIVE_FOLDER_ID }}
-
-      - if: matrix.targetPlatform == 'Android'
-        name: Upload APK to Google Drive
-        uses: mathisve/gdrive-upload-action@main
-        with:
-          credentials: ${{ secrets.DRIVE_CREDENTIALS }}
-          filename: './build/Android/BULLETFEST.apk'
           overwrite: true
           folderId: ${{ secrets.DRIVE_FOLDER_ID }}
 
@@ -119,10 +93,28 @@ jobs:
         with:
           name: projectVer
           path: projectVer.txt
+  BuildAndroid:
+    name: Build for Android
+    runs-on: ubuntu-latest
+    container: unityci/editor:ubuntu-2023.1.8f1-android-1.1.2
+    steps:
+      - name: Build Android Player
+        run: /opt/unity/Editor/Unity -quit -batchmode -nographics -silent-crashes -logFile -projectPath . -buildTarget Android -executeMethod BuildScript.PerformBuild -serial ${{ secrets.UNITY_SERIAL }} -password ${{ secrets.UNITY_PASSWORD }} --username ${{ secrets.UNITY_EMAIL }}
+
+      - name: Return License
+        run: /opt/unity/Editor/Unity -quit -batchmode -returnlicense -username ${{ secrets.UNITY_EMAIL }} -password ${{ secrets.UNITY_PASSWORD }}
+
+      - name: Upload APK to Google Drive
+        uses: mathisve/gdrive-upload-action@main
+        with:
+          credentials: ${{ secrets.DRIVE_CREDENTIALS }}
+          filename: './build/Android/BULLETFEST.apk'
+          overwrite: true
+          folderId: ${{ secrets.DRIVE_FOLDER_ID }}
   NotifyDiscord:
     name: Send Discord Notification
     runs-on: ubuntu-latest
-    needs: Build
+    needs: [Build, BuildAndroid]
     steps:
       - uses: actions/download-artifact@v3
         with:
