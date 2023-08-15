@@ -93,11 +93,24 @@ jobs:
         with:
           name: projectVer
           path: projectVer.txt
+
   BuildAndroid:
     name: Build for Android
     runs-on: ubuntu-latest
     container: unityci/editor:ubuntu-2023.1.8f1-android-1.1.2
     steps:
+      - name: Checkout Project
+        uses: actions/checkout@v3
+
+      - uses: actions/cache@v3
+        with:
+          path: |
+            Library
+            .utmp
+          key: Library-Android
+          restore-keys: |
+            Library-
+
       - name: Build Android Player
         run: /opt/unity/Editor/Unity -quit -batchmode -nographics -silent-crashes -logFile -projectPath . -buildTarget Android -executeMethod BuildScript.PerformBuild -serial ${{ secrets.UNITY_SERIAL }} -password ${{ secrets.UNITY_PASSWORD }} --username ${{ secrets.UNITY_EMAIL }}
 
