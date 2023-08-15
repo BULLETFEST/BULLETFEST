@@ -103,6 +103,16 @@ jobs:
       - name: Install sudo package
         run: apt update && apt install sudo
 
+      - name: Maximize build space
+        uses: easimon/maximize-build-space@master
+        with:
+          root-reserve-mb: 512
+          swap-size-mb: 1024
+          remove-dotnet: 'true'
+          remove-android: 'true'
+          remove-codeql: 'true'
+          remove-haskell: 'true'
+
       - name: Check installed packages
         run: |
           sudo rm -rf /usr/share/dotnet
@@ -113,10 +123,10 @@ jobs:
           sudo rm -rf /usr/local/lib/android/sdk
           sudo rm -rf /usr/local/lib/android/ndk
 
-      - name: Free up space
-        uses: kfir4444/free-disk-space@No_Fail
-        with:
-          swap-storage: false
+      # - name: Free up space
+      #   uses: kfir4444/free-disk-space@No_Fail
+      #   with:
+      #     swap-storage: false
 
       - name: Checkout Project
         uses: actions/checkout@v3
