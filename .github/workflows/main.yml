@@ -44,10 +44,11 @@ jobs:
         run: apt update && apt install sudo
 
       - if: matrix.targetPlatform == 'Android'
-        uses: jlumbroso/free-disk-space@main
-        with:
-          docker-images: false
-          dotnet: false
+        run: |
+          sudo rm -rf /usr/share/dotnet
+          sudo rm -rf /opt/ghc
+          sudo rm -rf "/usr/local/share/boost"
+          sudo rm -rf "$AGENT_TOOLSDIRECTORY"
 
       - name: Download Packages
         run: |
