@@ -13,7 +13,7 @@ env:
 jobs:
   Build:
     runs-on: ubuntu-latest
-    container: unityci/hub:latest
+    # container: unityci/hub:latest
     strategy:
       # If one jobs fail, they all do immediately
       fail-fast: true
@@ -25,36 +25,45 @@ jobs:
             targetName: StandaloneOSX
             editorModule: mac-mono
 
-          - targetPlatform: buildWindows64Player
-            outputFile: ./build/Windows/BULLETFEST.exe
-            outputDir: ./build/Windows/
-            targetName: StandaloneWindows64
-            editorModule: windows-mono
+          # - targetPlatform: buildWindows64Player
+          #   outputFile: ./build/Windows/BULLETFEST.exe
+          #   outputDir: ./build/Windows/
+          #   targetName: StandaloneWindows64
+          #   editorModule: windows-mono
 
-          - targetPlatform: buildLinux64Player
-            outputFile: ./build/Linux/BULLETFEST
-            outputDir: ./build/Linux/
-            targetName: StandaloneLinux64
-            editorModule: linux-mono
+          # - targetPlatform: buildLinux64Player
+          #   outputFile: ./build/Linux/BULLETFEST
+          #   outputDir: ./build/Linux/
+          #   targetName: StandaloneLinux64
+          #   editorModule: linux-mono
     steps:
-      - name: Install sudo package
-        run: apt update && apt install sudo
-      - name: Download Packages
-        run: |
-          sudo apt-get -y update
-          sudo apt-get -y install p7zip-full p7zip-rar
+      - run: |
+          apt update && apt install sudo
+          curl -sL https://deb.nodesource.com/setup_16.x -o /tmp/nodesource_setup.sh
+          sudo bash /tmp/nodesource_setup.sh
+          sudo apt -y install nodejs
+      - uses: shrink/actions-docker-extract@v2
+        with:
+          image: 'unityci/hub:latest'
+          path: './opt/unityhub/.'
+      # - name: Install sudo package
+      #   run: apt update && apt install sudo
+      # - name: Download Packages
+      #   run: |
+      #     sudo apt-get -y update
+      #     sudo apt-get -y install p7zip-full p7zip-rar
 
-      - name: Checkout Project
-        uses: actions/checkout@v3
+      # - name: Checkout Project
+      #   uses: actions/checkout@v3
 
-      - name: Set Editor Install Location
-        run: unity-hub ip -s /opt/unity/editors/
+      # - name: Set Editor Install Location
+      #   run: unity-hub ip -s /opt/unity/editors/
 
-      - name: Install Editor for ${{ matrix.targetName }}
-        run: unity-hub install --version 2023.1.8f1 --cm --m ${{ matrix.editorModule }}
+      # - name: Install Editor for ${{ matrix.targetName }}
+      #   run: unity-hub install --version 2023.1.8f1 --cm --m ${{ matrix.editorModule }}
 
-      - name: Build ${{ matrix.targetName }} Player
-        run: $UNITY_PATH -quit -batchmode -nographics -silent-crashes -logFile -projectPath . -buildTarget Win64 -executeMethod BuildScript.PerformBuild -serial ${{ secrets.UNITY_SERIAL }} -password ${{ secrets.UNITY_PASSWORD }} --username ${{ secrets.UNITY_EMAIL }}
+      # - name: Build ${{ matrix.targetName }} Player
+      #   run: $UNITY_PATH -quit -batchmode -nographics -silent-crashes -logFile -projectPath . -buildTarget Win64 -executeMethod BuildScript.PerformBuild -serial ${{ secrets.UNITY_SERIAL }} -password ${{ secrets.UNITY_PASSWORD }} --username ${{ secrets.UNITY_EMAIL }}
 
-      - name: Return License
-        run: $UNITY_PATH -quit -batchmode -returnlicense -username ${{ secrets.UNITY_EMAIL }} -password ${{ secrets.UNITY_PASSWORD }}
+      # - name: Return License
+      #   run: $UNITY_PATH -quit -batchmode -returnlicense -username ${{ secrets.UNITY_EMAIL }} -password ${{ secrets.UNITY_PASSWORD }}
