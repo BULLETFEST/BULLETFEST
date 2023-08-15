@@ -97,11 +97,11 @@ jobs:
 
   BuildAndroid:
     name: Build for Android
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-latest
     #container: unityci/editor:ubuntu-2023.1.8f1-android-1.1.2
     steps:
-      - name: Install sudo package
-        run: apt update && apt install sudo
+      # - name: Install sudo package
+      #   run: apt update && apt install sudo
 
       - name: Maximize build space
         uses: easimon/maximize-build-space@master
