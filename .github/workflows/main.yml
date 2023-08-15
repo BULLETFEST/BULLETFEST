@@ -40,14 +40,15 @@ jobs:
             targetName: Android
             editorModule: android
     steps:
+      - name: Install sudo package
+        run: apt update && apt install sudo
+
       - if: matrix.targetPlatform == 'Android'
         uses: jlumbroso/free-disk-space@main
         with:
           docker-images: false
           dotnet: false
 
-      - name: Install sudo package
-        run: apt update && apt install sudo
       - name: Download Packages
         run: |
           sudo apt-get -y update
