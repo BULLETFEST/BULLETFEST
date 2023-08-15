@@ -124,9 +124,7 @@ jobs:
       #     sudo rm -rf /usr/local/lib/android/ndk
 
       - name: Free up space
-        uses: jlumbroso/free-disk-space@main
-        with:
-          docker-images: false
+        uses: kfir4444/free-disk-space@No_Fail
 
       - name: Start Container
         run: /usr/bin/docker pull unityci/editor:ubuntu-2023.1.8f1-android-1.1.2
