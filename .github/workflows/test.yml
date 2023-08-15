@@ -8,40 +8,13 @@ on:
 env:
   UNITY_PATH: /opt/unity/editors/2023.1.8f1/Editor/Unity
 jobs:
-  # SetupEditor:
-  #   runs-on: ubuntu-latest
-  #   container: unityci/hub:latest
-  #   steps:
-  #     - id: checkArtifact
-  #       name: Check artifact existence
-  #       uses: xSAVIKx/artifact-exists-action@v0
-  #       with:
-  #         name: 'editor'
-
-  #     - if: ${{ steps.checkArtifact.outputs.exists }}
-  #       run: exit 0
-
-  #     - name: Install Editor
-  #       run: unity-hub install --version 2023.1.8f1 --cm --m windows-mono -m mac-mono
-
-  #     - name: Upload Artifact
-  #       uses: actions/upload-artifact@v3
-  #       with:
-  #         name: editor
-  #         path: /opt/unity/editors/2023.1.8f1/Editor/Unity
-
   Build:
     runs-on: ubuntu-latest
-    # needs: SetupEditor
     container: unityci/hub:latest
     strategy:
+      # If one jobs fail, they all do immediately
       fail-fast: true
       matrix:
-        # targetPlatform: ['']
-        # outputFile: ['']
-        # outputDir: ['']
-        # targetName: ['']
-        # editorModule: ['']
         include:
           - targetPlatform: buildOSXUniversalPlayer
             outputFile: ./build/MacOS/BULLETFEST.app
@@ -70,6 +43,7 @@ jobs:
 
       - name: Set Editor Install Location
         run: unity-hub ip -s /opt/unity/editors/
+
       - name: Install Editor for ${{ matrix.targetName }}
         run: unity-hub install --version 2023.1.8f1 --cm --m ${{ matrix.editorModule }}
 
@@ -105,17 +79,48 @@ jobs:
           overwrite: true
           folderId: ${{ secrets.DRIVE_FOLDER_ID }}
 
-        # - name: Build OSX Player
-      #   run: /opt/Unity/Editor/Unity -quit -batchmode -nographics -silent-crashes -logFile -projectPath . -buildOSXUniversalPlayer ./bin-osx/CISample.app
+      - name: Get Build Version
+        run: |
+          touch projectVer.txt
+          echo $(cat ./ProjectSettings/ProjectSettings.asset | grep bundleVersion | sed -n -e 's/^.*bundleVersion: //p' ) > projectVer.txt
+      - uses: actions/upload-artifact@v3
+        with:
+          name: projectVer
+          path: projectVer.txt
+  NotifyDiscord:
+    name: Send Discord Notification
+    runs-on: ubuntu-latest
+    needs: Build
+    steps:
+      - uses: actions/download-artifact@v3
+        with:
+          name: projectVer
 
-      # - name: Archive Windows Build
-      #   uses: actions/upload-artifact@v1
-      #   with:
-      #     name: CISampleWin64Binary
-      #     path: ./bin-win64
+      - name: Set Environment Variables
+        run: |
+          echo "ver=$(cat projectVer.txt)" >> $GITHUB_ENV
 
-      # - name: Archive Mac Build
-      #   uses: actions/upload-artifact@v1
-      #   with:
-      #     name: CISampleOSXBinary
-      #     path: ./bin-osx
+      - name: Create Release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: ${{ env.ver }}
+          release_name: BULLETFEST v${{ env.ver }}
+          draft: false
+          prerelease: false
+      - uses: Ilshidur/action-discord@master
+        env:
+          DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK }}
+          DISCORD_USERNAME: 'BULLETFEST'
+        with:
+          args: |
+            ```A new build has been spotted!```
+
+            `v${{ env.ver }}`
+
+            Downloads:
+            Windows: <https://drive.google.com/file/d/1XGsgIlPbgAfFbKJdavXmo9kvYYV1-TMS/view?usp=sharing>
+            Linux: <https://drive.google.com/file/d/1rbJa1nVah6mPJ7R5nyyMFGKCw6hGE5jP/view?usp=sharing>
+            MacOS (Intel 64 + Apple Silicon): <https://drive.google.com/file/d/1s8wX7TrDSbG93sG5IjDeVvACR_rwN3ET/view?usp=sharing>
+            Android: <https://drive.google.com/file/d/1lp_WfbTHPEo4YUJvXchj0ghZbVPNIWNl/view?usp=sharing>
