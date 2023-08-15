@@ -56,8 +56,8 @@ jobs:
       - if: matrix.targetPlatform == 'Android'
         uses: jlumbroso/free-disk-space@main
         with:
-          android: false
           docker-images: false
+          dotnet: false
 
       - name: Checkout Project
         uses: actions/checkout@v3
