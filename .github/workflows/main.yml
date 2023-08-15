@@ -101,7 +101,7 @@ jobs:
     container: unityci/editor:ubuntu-2023.1.8f1-android-1.1.2
     steps:
       - name: Install sudo package
-        run: apt install sudo
+        run: apt update && apt install sudo
 
       - name: Check installed packages
         run: |
