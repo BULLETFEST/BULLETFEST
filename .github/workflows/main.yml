@@ -42,6 +42,7 @@ jobs:
     steps:
       - name: Install sudo package
         run: apt update && apt install sudo
+
       - name: Download Packages
         run: |
           sudo apt-get -y update
@@ -99,6 +100,9 @@ jobs:
     runs-on: ubuntu-latest
     container: unityci/editor:ubuntu-2023.1.8f1-android-1.1.2
     steps:
+      - name: Install sudo package
+        run: apt update && apt install sudo
+
       - name: Free up space
         uses: kfir4444/free-disk-space@No_Fail
         with:
