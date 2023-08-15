@@ -98,7 +98,7 @@ jobs:
   BuildAndroid:
     name: Build for Android
     runs-on: ubuntu-20.04
-    container: unityci/editor:ubuntu-2023.1.8f1-android-1.1.2
+    #container: unityci/editor:ubuntu-2023.1.8f1-android-1.1.2
     steps:
       - name: Install sudo package
         run: apt update && apt install sudo
@@ -127,6 +127,9 @@ jobs:
         uses: kfir4444/free-disk-space@No_Fail
         with:
           swap-storage: false
+
+      - name: Start Container
+        run: /usr/bin/docker pull unityci/editor:ubuntu-2023.1.8f1-android-1.1.2
 
       - name: Checkout Project
         uses: actions/checkout@v3
