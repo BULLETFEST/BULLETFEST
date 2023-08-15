@@ -40,6 +40,12 @@ jobs:
             targetName: Android
             editorModule: android
     steps:
+      - if: matrix.targetPlatform == 'Android'
+        uses: jlumbroso/free-disk-space@main
+        with:
+          docker-images: false
+          dotnet: false
+
       - name: Install sudo package
         run: apt update && apt install sudo
       - name: Download Packages
@@ -52,12 +58,6 @@ jobs:
 
       - name: Install Editor for ${{ matrix.targetName }}
         run: unity-hub install --version 2023.1.8f1 --cm --m ${{ matrix.editorModule }}
-
-      - if: matrix.targetPlatform == 'Android'
-        uses: jlumbroso/free-disk-space@main
-        with:
-          docker-images: false
-          dotnet: false
 
       - name: Checkout Project
         uses: actions/checkout@v3
