@@ -45,7 +45,7 @@ jobs:
       - name: Download Packages
         run: |
           sudo apt-get -y update
-          sudo apt-get -y install p7zip-full p7zip-rar dotnet
+          sudo apt-get -y install p7zip-full p7zip-rar
 
       - if: matrix.targetPlatform == 'Android'
         run: |
