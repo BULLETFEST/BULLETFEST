@@ -111,7 +111,7 @@ jobs:
           curl -sL https://deb.nodesource.com/setup_16.x -o /tmp/nodesource_setup.sh
           sudo bash /tmp/nodesource_setup.sh
           sudo apt -y install nodejs
-          sudo apt-get install -y libglew-dev libcheese7 libcheese-gtk23 libclutter-gst-2.0-0 libclutter-gtk-1.0-0 libclutter-1.0-0 gconf-service libgl1 libglu1-mesa libasound2 libgbm-dev libatk1.0-0 libc6 libcairo2 libcups2 libdbus-1-3 libexpat1 libfontconfig1 libgcc1 libgconf-2-4 libgdk-pixbuf2.0-0 libglib2.0-0 libgtk-3-0 libnspr4 libpango-1.0-0 libpangocairo-1.0-0 libstdc++6 libx11-6 libx11-xcb1 libxcb1 libxcomposite1 libxcursor1 libxdamage1 libxext6 libxfixes3 libxi6 libxrandr2 libxrender1 libxss1 libxtst6 ca-certificates fonts-liberation libnss3 lsb-release xdg-utils wget ca-certificates libglu1
+          sudo apt-get install -y gconf-service libgl1 libglu1-mesa libasound2 libgbm-dev libatk1.0-0 libc6 libcairo2 libcups2 libdbus-1-3 libexpat1 libfontconfig1 libgcc1 libgconf-2-4 libgdk-pixbuf2.0-0 libglib2.0-0 libgtk-3-0 libnspr4 libpango-1.0-0 libpangocairo-1.0-0 libstdc++6 libx11-6 libx11-xcb1 libxcb1 libxcomposite1 libxcursor1 libxdamage1 libxext6 libxfixes3 libxi6 libxrandr2 libxrender1 libxss1 libxtst6 ca-certificates fonts-liberation libnss3 lsb-release xdg-utils wget ca-certificates libglu1
 
       - name: Extract Editor from Docker Image
         id: extract
@@ -120,6 +120,11 @@ jobs:
           image: 'unityci/editor:ubuntu-2023.1.8f1-android-1.1.2'
           path: './opt/unity/.'
           destination: '/opt/unity/'
+
+      - run: |
+          apt-get -q update  && apt-get -q install -y --no-install-recommends apt-utils  && apt-get -q install -y --no-install-recommends --allow-downgrades  ca-certificates  libasound2  libc6-dev  libcap2  libgconf-2-4  libglu1  libgtk-3-0  libncurses5  libnotify4  libnss3  libxtst6  libxss1  cpio  lsb-release  python  python-setuptools  xvfb  xz-utils  && apt-get clean  && rm -rf /var/lib/apt/lists/          
+          apt-get -q update  && apt-get -q install -y --no-install-recommends --allow-downgrades  atop  curl  git  git-lfs  jq  openssh-client  wget  zip  unzip  && git lfs install --system --skip-repo  && apt-get clean  && rm -rf /var/lib/apt/lists/*
+          apt-get -q update  && apt-get -q install -y --no-install-recommends software-properties-common  && add-apt-repository -y ppa:ubuntu-toolchain-r/test  && apt-get -q install -y --only-upgrade libstdc++6  && add-apt-repository -y --remove ppa:ubuntu-toolchain-r/test  && apt-get -q remove -y --auto-remove software-properties-common  && apt-get clean  && rm -rf /var/lib/apt/lists/*
 
       - name: Checkout Project
         uses: actions/checkout@v3
