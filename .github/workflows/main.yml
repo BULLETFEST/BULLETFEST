@@ -113,10 +113,11 @@ jobs:
 
       - name: Extract Editor from Docker Image
         id: extract
-        uses: shrink/actions-docker-extract@v1
+        uses: EliasVal/actions-docker-extract@specifyPath
         with:
           image: 'unityci/editor:ubuntu-2023.1.8f1-android-1.1.2'
           path: './opt/unity/.'
+          destination: '/opt/unity/'
 
       - name: Checkout Project
         uses: actions/checkout@v3
@@ -131,10 +132,10 @@ jobs:
             Library-
 
       - name: Build Android Player
-        run: ${{ steps.extract.outputs.destination }}/Editor/Unity -quit -batchmode -nographics -silent-crashes -logFile -projectPath . -buildTarget Android -executeMethod BuildScript.PerformBuild -serial ${{ secrets.UNITY_SERIAL }} -password ${{ secrets.UNITY_PASSWORD }} --username ${{ secrets.UNITY_EMAIL }}
+        run: /opt/unity/Editor/Unity -quit -batchmode -nographics -silent-crashes -logFile -projectPath . -buildTarget Android -executeMethod BuildScript.PerformBuild -serial ${{ secrets.UNITY_SERIAL }} -password ${{ secrets.UNITY_PASSWORD }} --username ${{ secrets.UNITY_EMAIL }}
 
       - name: Return License
-        run: ${{ steps.extract.outputs.destination }}/Editor/Unity -quit -batchmode -nographics -returnlicense -username ${{ secrets.UNITY_EMAIL }} -password ${{ secrets.UNITY_PASSWORD }}
+        run: /opt/unity/Editor/Unity -quit -batchmode -nographics -returnlicense -username ${{ secrets.UNITY_EMAIL }} -password ${{ secrets.UNITY_PASSWORD }}
 
       - name: Upload APK to Google Drive
         uses: mathisve/gdrive-upload-action@main
