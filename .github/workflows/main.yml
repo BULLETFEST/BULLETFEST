@@ -103,7 +103,6 @@ jobs:
       - name: Free up space
         uses: kfir4444/free-disk-space@No_Fail
         with:
-          large-packages: false
           dotnet: false
 
       - name: Install node v16
