@@ -13,21 +13,21 @@ public class BuildScript
       scenes.Add(scene.path);
     }
 
-    string buildPath = "./build/";
+    string buildPath = "./build";
 
     switch (EditorUserBuildSettings.activeBuildTarget)
     {
       case BuildTarget.StandaloneWindows64:
-        buildPath += "Windows/BULLETFEST.exe";
+        buildPath += "/BULLETFEST.exe";
         break;
       case BuildTarget.StandaloneOSX:
-        buildPath += "MacOS/BULLETFEST.app";
+        buildPath += "/BULLETFEST.app";
         break;
       case BuildTarget.Android:
-        buildPath += "Android/BULLETFEST.apk";
+        buildPath += "/BULLETFEST.apk";
         break;
       case BuildTarget.StandaloneLinux64:
-        buildPath += "Linux/BULLETFEST";
+        buildPath += "/BULLETFEST";
         break;
     }
 

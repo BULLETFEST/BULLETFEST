@@ -65,15 +65,15 @@ jobs:
       - if: matrix.targetPlatform != 'Android'
         name: Create archive
         run: |
-          cd ./build/${{ matrix.targetPlatform }}
-          7z a -t7z -m0=lzma -mx=9 -mfb=64 -md=32m -ms=on -x'!BULLETFEST_B*' ../../BULLETFEST_${{ matrix.targetPlatform }}.7z *
-          cd ../..
+          cd ./build/
+          7z a -t7z -m0=lzma -mx=9 -mfb=64 -md=32m -ms=on -x'!BULLETFEST_B*' ../BULLETFEST_${{ matrix.targetPlatform }}.7z *
+          cd ../
 
       - name: Upload build to Google Drive
         uses: mathisve/gdrive-upload-action@main
         with:
           credentials: ${{ secrets.DRIVE_CREDENTIALS }}
-          filename: ${{ matrix.targetPlatform == 'Android' && './build/Android/BULLETFEST.apk' || format('BULLETFEST_{0}.7z', matrix.targetPlatform) }}
+          filename: ${{ matrix.targetPlatform == 'Android' && './build/BULLETFEST.apk' || format('BULLETFEST_{0}.7z', matrix.targetPlatform) }}
           overwrite: true
           folderId: ${{ secrets.DRIVE_FOLDER_ID }}
 
