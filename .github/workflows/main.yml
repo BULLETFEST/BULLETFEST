@@ -108,14 +108,14 @@ jobs:
       #     curl -sL https://deb.nodesource.com/setup_16.x -o /tmp/nodesource_setup.sh
       #     sudo bash /tmp/nodesource_setup.sh
       #     sudo apt -y install nodejs
-
       - name: Extract Editor from Docker Image
         id: extract
-        uses: EliasVal/actions-docker-extract@specifyPath
-        with:
-          image: 'unityci/editor:ubuntu-2023.1.8f1-android-1.1.2'
-          path: './opt/unity/.'
-          destination: '/opt/unity/'
+        run: docker cp $(docker create unityci/editor:ubuntu-2023.1.8f1-android-1.1.2):/opt/unity/. /opt/unity/
+        # uses: EliasVal/actions-docker-extract@specifyPath
+        # with:
+        #   image: 'unityci/editor:ubuntu-2023.1.8f1-android-1.1.2'
+        #   path: './opt/unity/.'
+        #   destination: '/opt/unity/'
 
       # - run: |
       #     sudo apt-get -q update  && sudo apt-get -q install -y --no-install-recommends apt-utils  && sudo apt-get -q install -y --no-install-recommends --allow-downgrades  ca-certificates  libasound2  libc6-dev  libcap2  libgconf-2-4  libglu1  libgtk-3-0  libncurses5  libnotify4  libnss3  libxtst6  libxss1  cpio  lsb-release  python  python-setuptools  xvfb  xz-utils  && apt-get clean  && sudo rm -rf /var/lib/apt/lists/
