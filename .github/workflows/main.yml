@@ -8,7 +8,7 @@ jobs:
   BuildGame:
     runs-on: ubuntu-latest
     outputs:
-      gameVersion: ${{ steps.archive.outputs.gameVersion }}
+      gameVersion: ${{ steps.buildVersion.outputs.gameVersion }}
     strategy:
       fail-fast: true
       matrix:
@@ -57,14 +57,17 @@ jobs:
           versioning: None
           buildMethod: BuildScript.PerformBuild
 
+      - name: Get Build Version
+        id: buildVersion
+        run: |
+          echo "gameVersion=$(cat ./ProjectSettings/ProjectSettings.asset | grep bundleVersion | sed -n -e 's/^.*bundleVersion: //p' )" >> "$GITHUB_OUTPUT"
+
       - if: matrix.targetPlatform != 'Android'
         name: Create archive
-        id: archive
         run: |
           cd ./build/${{ matrix.targetPlatform }}
           7z a -t7z -m0=lzma -mx=9 -mfb=64 -md=32m -ms=on -x'!BULLETFEST_B*' ../../BULLETFEST_${{ matrix.targetPlatform }}.7z *
           cd ../..
-          echo "gameVersion=${{ steps.buildProject.outputs.buildVersion }}" >> "$GITHUB_OUTPUT"
 
       - name: Upload build to Google Drive
         uses: mathisve/gdrive-upload-action@main
