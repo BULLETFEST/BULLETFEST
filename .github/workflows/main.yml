@@ -13,10 +13,10 @@ jobs:
       fail-fast: true
       matrix:
         targetPlatform:
-          # - StandaloneOSX
+          - StandaloneOSX
           - StandaloneWindows64
-          # - StandaloneLinux64
-          # - Android
+          - StandaloneLinux64
+          - Android
     steps:
       - name: Download required packages
         run: |
@@ -45,7 +45,7 @@ jobs:
 
       - name: Build Project
         id: buildProject
-        uses: game-ci/unity-builder@v2
+        uses: game-ci/unity-builder@v2.1.2
         env:
           UNITY_SERIAL: ${{ secrets.UNITY_SERIAL }}
           UNITY_EMAIL: ${{ secrets.UNITY_EMAIL }}
@@ -82,15 +82,15 @@ jobs:
     runs-on: ubuntu-latest
     needs: BuildGame
     steps:
-      # - name: Create Release
-      #   uses: actions/create-release@v1
-      #   env:
-      #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      #   with:
-      #     tag_name: ${{ needs.BuildGame.outputs.gameVersion }}
-      #     release_name: BULLETFEST v${{ needs.BuildGame.outputs.gameVersion }}
-      #     draft: false
-      #     prerelease: false
+      - name: Create Release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: ${{ needs.BuildGame.outputs.gameVersion }}
+          release_name: BULLETFEST v${{ needs.BuildGame.outputs.gameVersion }}
+          draft: false
+          prerelease: false
       - uses: Ilshidur/action-discord@master
         env:
           DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK }}
