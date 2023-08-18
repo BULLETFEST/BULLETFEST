@@ -55,6 +55,7 @@ jobs:
           allowDirtyBuild: true
           buildName: BULLETFEST
           versioning: None
+          buildMethod: BuildScript.PerformBuild
 
       - if: matrix.targetPlatform != 'Android'
         name: Create archive
