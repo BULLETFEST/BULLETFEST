@@ -74,6 +74,7 @@ jobs:
         with:
           credentials: ${{ secrets.DRIVE_CREDENTIALS }}
           filename: ${{ matrix.targetPlatform == 'Android' && './build/BULLETFEST.apk' || format('BULLETFEST_{0}.7z', matrix.targetPlatform) }}
+          name: ${{ matrix.targetPlatform == 'Android' && 'BULLETFEST.apk' || format('BULLETFEST_{0}.7z', matrix.targetPlatform) }}
           overwrite: true
           folderId: ${{ secrets.DRIVE_FOLDER_ID }}
 
